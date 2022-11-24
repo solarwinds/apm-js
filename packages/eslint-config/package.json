@@ -1,0 +1,40 @@
+{
+  "name": "@swotel/eslint-config",
+  "version": "0.1.0",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^27.1.5",
+    "eslint-plugin-tsdoc": "^0.2.17",
+    "globals": "^13.18.0"
+  },
+  "peerDependencies": {
+    "eslint": "^8.23.0",
+    "jest": "*",
+    "prettier": "*",
+    "typescript": "*"
+  },
+  "devDependencies": {
+    "eslint": "^8.28.0",
+    "prettier": "^2.8.0"
+  },
+  "peerDependenciesMeta": {
+    "jest": {
+      "optional": true
+    },
+    "prettier": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "binding.gyp",
+        "package.json",
+        "tsconfig.json",
+        "tsconfig.build.json",
+        "src/**"
+      ],
+      "outputs": ["dist/**", "oboe.node", "liboboe-1.0.so.0"]
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "inputs": [
+        "binding.gyp",
+        "package.json",
+        "tsconfig.json",
+        "src/**",
+        "test/**"
+      ],
+      "outputs": []
+    }
+  },
+  "globalDependencies": [
+    ".clang-format",
+    ".prettierrc.json",
+    ".yarnrc.yml",
+    "tsconfig.base.json",
+    "yarn.lock"
+  ]
+}
