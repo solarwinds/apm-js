@@ -1,0 +1,17 @@
+# Ignore yarn cache except yarn itself and its plugins
+.yarn/*
+!.yarn/plugins/
+!.yarn/releases/
+.pnp.*
+
+# Turborepo cache
+.turbo/
+node_modules/
+
+# Common build outputs
+*.tsbuildinfo
+*.log
+
+# User-specific files
+.vscode/
+.env

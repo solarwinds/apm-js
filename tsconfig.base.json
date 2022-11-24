@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "es2020", // fully supported since Node.js 14 LTS, needed for globalThis
+    "module": "commonjs",
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true // not included in strict mode but useful
+  }
+}
