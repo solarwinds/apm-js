@@ -17,7 +17,7 @@
 
 ## Available commands
 
-First run `yarn install` to get started.
+First run `git lfs pull` and `yarn install` to get started. This will have to be repeated anytime the dependencies have changed or the version of yarn or oboe is updated. There is no need to run in a container, this should work natively on any machine. However examples and tests need to be ran from Linux x64 or arm64.
 
 - `yarn docker <image>` - Starts a shell session in the specified image
 - `yarn docker <image> build` - Builds the specified image
