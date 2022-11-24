@@ -32,6 +32,7 @@ First run `git lfs pull` and `yarn install` to get started. This will have to be
 
 - Node.js (16 or newer with corepack)
 - clang-format (14 or newer)
+- Git LFS
 
 ## Devtools
 
