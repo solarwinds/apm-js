@@ -150,6 +150,7 @@ function buildOne(
       break
     }
     case "shared": {
+      // generate position independent code for shared objects
       flags.push("-shared", "-fPIC")
       break
     }
