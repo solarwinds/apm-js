@@ -68,6 +68,7 @@ async function fetchNodeHeaders() {
 
   const headersDir = path.join(NODE_DIR, version)
   const includePath = path.join(headersDir, "include", "node")
+  log(`checking for node headers at '${includePath}'`)
   if (await exists(includePath)) {
     return includePath
   }
