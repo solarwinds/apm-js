@@ -12,4 +12,4 @@ RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
 RUN corepack enable
 
 WORKDIR /swotel
-ENTRYPOINT ["/bin/sh", "-c"]
+ENTRYPOINT ["/bin/bash", "-c"]
