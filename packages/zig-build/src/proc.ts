@@ -2,6 +2,8 @@ import * as cproc from "node:child_process"
 import { type Readable } from "node:stream"
 import { type Logger } from "./log"
 
+// executes a process with an optional stream to pipe to stdin and logging its output
+// returns a promise that will resolve or reject once the process exits
 export const exec = (
   cmd: string,
   args: string[],
@@ -29,6 +31,7 @@ export const exec = (
       options.stdin.pipe(proc.stdin)
     }
 
+    // log stdout and stderr with the provided logger, buffering at newlines
     for (const stream of ["stdout", "stderr"] as const) {
       let buffer = Buffer.alloc(0)
       proc[stream].on("data", (data) => {
