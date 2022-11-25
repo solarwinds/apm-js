@@ -6,7 +6,7 @@ describe("init", () => {
   it(
     "should initialise with service key and collector",
     () => {
-      const _reporter = new oboe.Reporter({
+      const reporter = new oboe.Reporter({
         service_key: process.env.TEST_SERVICE_KEY!,
         host: process.env.TEST_COLLECTOR!,
 
@@ -34,6 +34,7 @@ describe("init", () => {
         stdout_clear_nonblocking: 0,
         metric_format: 0,
       })
+      expect(reporter.init_status).toBe(oboe.INIT_OK)
 
       const ready = oboe.Context.isReady(INIT_TIMEOUT)
       expect(ready).toBe(oboe.SERVER_RESPONSE_OK)
