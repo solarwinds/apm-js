@@ -1,0 +1,20 @@
+version: "3"
+services:
+  alpine:
+    build:
+      context: .
+      dockerfile: alpine.Dockerfile
+    volumes:
+      - ..:/swotel
+  centos:
+    build:
+      context: .
+      dockerfile: centos.Dockerfile
+    volumes:
+      - ..:/swotel
+  debian:
+    build:
+      context: .
+      dockerfile: debian.Dockerfile
+    volumes:
+      - ..:/swotel
