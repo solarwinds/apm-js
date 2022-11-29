@@ -4,31 +4,33 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": [
-        "binding.gyp",
+        "build.js",
         "package.json",
         "tsconfig.json",
         "tsconfig.build.json",
         "src/**"
       ],
-      "outputs": ["dist/**", "oboe.node", "liboboe-1.0.so.0"]
+      "outputs": ["dist/**", "npm/*/oboe.node", "npm/*/liboboe-1.0.so.0"]
     },
     "lint": {
       "dependsOn": ["^build"],
       "outputs": []
     },
     "start": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["build"],
       "outputs": []
     },
     "test": {
       "dependsOn": ["build"],
       "inputs": [
-        "binding.gyp",
         "package.json",
         "tsconfig.json",
         "src/**",
-        "test/**"
+        "test/**",
+        "npm/*/oboe.node",
+        "npm/*/liboboe-1.0.so.0"
       ],
+      "env": ["TEST_SERVICE_KEY", "TEST_COLLECTOR"],
       "outputs": []
     }
   },
@@ -37,6 +39,7 @@
     ".prettierrc.json",
     ".yarnrc.yml",
     "tsconfig.base.json",
-    "yarn.lock"
+    "yarn.lock",
+    "packages/eslint-config/index.js"
   ]
 }
