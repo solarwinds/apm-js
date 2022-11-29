@@ -1,0 +1,21 @@
+{
+  "name": "@swotel/bindings-linux-arm64-gnu",
+  "version": "0.0.0",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "oboe.node",
+  "files": [
+    "oboe.node",
+    "liboboe-1.0.so.0"
+  ],
+  "engines": {
+    "node": ">= 14"
+  },
+  "libc": [
+    "glibc"
+  ]
+}

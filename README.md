@@ -28,6 +28,8 @@ First run `git lfs pull` and `yarn install` to get started. This will have to be
 - `yarn test` - Runs all tests
 - `yarn vscode` - Sets up VSCode to work with the project better
 
+Commands ran from the root directory use a build system to ensure all tasks it depends on are run and provide caching. When this behaviour is not desired, it's possible to run commands in directly each package's directory instead.
+
 ## Local dev requirements
 
 - Node.js (16 or newer with corepack)
