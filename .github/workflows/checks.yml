@@ -1,0 +1,122 @@
+name: Checks
+on: push
+jobs:
+  checks:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: sudo apt-get update && sudo apt-get install -y clang-format
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: corepack enable
+
+      - uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.zig-build
+            ~/.cache/zig
+          key: zig-${{ hashFiles('packages/zig-build/src/deps.ts') }}
+          restore-keys: |
+            zig-
+
+      - run: yarn install --immutable
+
+      - run: echo "${{ secrets.TEST_ENV }}" | base64 -d > .env
+      - run: yarn build
+      - run: yarn lint
+      - run: yarn test
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: |
+            .env
+            packages/**/dist/
+            packages/bindings/npm/*/oboe.node
+            packages/bindings/npm/*/liboboe-1.0.so.0
+          retention-days: 1
+
+  tests-x64:
+    needs: checks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - alpine
+          - centos
+          - debian
+      fail-fast: false
+    container:
+      image: ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: ./
+
+      - uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-
+
+      - run: yarn install --immutable
+      - run: yarn test:only
+
+  tests-arm64:
+    needs: checks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - alpine
+          - debian
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: ./
+      - uses: dbhi/qus/action@main
+        with:
+          targets: aarch64
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-
+
+      - run: docker pull --platform linux/arm64 ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
+      - run: |
+          sudo docker run \
+            --platform linux/arm64 \
+            -e CI=$CI \
+            -v $(pwd):/swotel \
+            --rm ghcr.io/${{ github.repository }}/dev:${{ matrix.image }} \
+            -- 'yarn install --immutable && yarn test:only'
