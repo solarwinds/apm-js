@@ -1,0 +1,18 @@
+{
+  "port": 8181,
+  "settingsLocation": "settings.db",
+  "sslResourceFolder": "/swotel/docker/collector/",
+  "defaultCollectors": [
+    {
+      "port": 12224,
+      "protocol": "grpc",
+      "output": {
+        "console": {
+          "EVENT": {},
+          "METRIC": {},
+          "STATUS": {}
+        }
+      }
+    }
+  ]
+}
