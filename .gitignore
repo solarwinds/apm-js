@@ -15,4 +15,3 @@ node_modules/
 # User-specific files
 .vscode/
 .env
-docker/collector/settings.db
