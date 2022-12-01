@@ -34,12 +34,14 @@ jobs:
       - run: yarn build
       - run: yarn lint
       - run: yarn test
+        env:
+          TEST_SERVICE_KEY: ${{ secrets.TEST_SERVICE_KEY }}
+          TEST_COLLECTOR: ${{ secrets.TEST_COLLECTOR }}
 
       - uses: actions/upload-artifact@v3
         with:
           name: build
           path: |
-            .env
             packages/**/dist/
             packages/bindings/npm/*/oboe.node
             packages/bindings/npm/*/liboboe-1.0.so.0
@@ -78,6 +80,9 @@ jobs:
 
       - run: yarn install --immutable
       - run: yarn test:only
+        env:
+          TEST_SERVICE_KEY: ${{ secrets.TEST_SERVICE_KEY }}
+          TEST_COLLECTOR: ${{ secrets.TEST_COLLECTOR }}
 
   tests-arm64:
     needs: checks
@@ -96,9 +101,7 @@ jobs:
         with:
           name: build
           path: ./
-      - uses: dbhi/qus/action@main
-        with:
-          targets: aarch64
+      - uses: docker/setup-qemu-action@v2
       - uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -113,10 +116,13 @@ jobs:
             yarn-
 
       - run: docker pull --platform linux/arm64 ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
-      - run: |
+      - name: Run tests in container using QEMU
+        run: |
           sudo docker run \
             --platform linux/arm64 \
             -e CI=$CI \
+            -e TEST_SERVICE_KEY=${{ secrets.TEST_SERVICE_KEY }} \
+            -e TEST_COLLECTOR=${{ secrets.TEST_COLLECTOR }} \
             -v $(pwd):/swotel \
             --rm ghcr.io/${{ github.repository }}/dev:${{ matrix.image }} \
             -- 'yarn install --immutable && yarn test:only'
