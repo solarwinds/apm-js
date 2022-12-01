@@ -20,7 +20,7 @@
     "vscode": "sdks vscode && node scripts/vscode.js && prettier --write .vscode"
   },
   "devDependencies": {
-    "@yarnpkg/sdks": "^3.0.0-rc.31",
+    "@yarnpkg/sdks": "^3.0.0-rc.32",
     "eslint": "^8.28.0",
     "prettier": "^2.8.0",
     "turbo": "^1.6.3",

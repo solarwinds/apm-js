@@ -1,6 +1,7 @@
 import * as process from "node:process"
+
 import { fetchDeps } from "./deps"
-import { makeLogger, Logger } from "./log"
+import { type Logger, makeLogger } from "./log"
 import { exec } from "./proc"
 
 type GnuTargetTriple =
