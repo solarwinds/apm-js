@@ -21,12 +21,15 @@ First run `git lfs pull` and `yarn install` to get started. This will have to be
 
 - `yarn docker <image>` - Starts a shell session in the specified image
 - `yarn docker <image> build` - Builds the specified image
+- `yarn docker collector` - Attaches to the test collector log stream
 - `yarn build` - Builds everything
 - `yarn lint` - Lints everything
 - `yarn example <name>` - Runs an example
 - `yarn oboe` - Downloads and sets up the latest version of oboe
 - `yarn test` - Runs all tests
 - `yarn vscode` - Sets up VSCode to work with the project better
+
+Docker shell sessions always have a test collector available to them at `collector:12224`. The test collector certificate is mounted at `/swotel/docker/collector/server-grpc.crt`.
 
 Commands ran from the root directory use a build system to ensure all tasks it depends on are run and provide caching. When this behaviour is not desired, it's possible to run commands in directly each package's directory instead.
 

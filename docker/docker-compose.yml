@@ -6,15 +6,30 @@ services:
       dockerfile: alpine.Dockerfile
     volumes:
       - ..:/swotel
+    links:
+      - collector
   centos:
     build:
       context: .
       dockerfile: centos.Dockerfile
     volumes:
       - ..:/swotel
+    links:
+      - collector
   debian:
     build:
       context: .
       dockerfile: debian.Dockerfile
     volumes:
       - ..:/swotel
+    links:
+      - collector
+
+  collector:
+    image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v1.2.0}
+    volumes:
+      - ..:/swotel
+    expose:
+      - 12224
+    environment:
+      PROGRAM_ARGS: /swotel/docker/collector/config.json

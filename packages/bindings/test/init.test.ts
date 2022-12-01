@@ -1,14 +1,25 @@
 import * as oboe from ".."
+import * as fs from "node:fs/promises"
 
 const INIT_TIMEOUT = 10000
 
 describe("init", () => {
+  beforeAll(async () => {
+    if (process.env.TEST_TRUSTEDPATH) {
+      const certificates = await fs.readFile(process.env.TEST_TRUSTEDPATH, {
+        encoding: "utf8",
+      })
+      process.env.TEST_CERTIFICATES = certificates
+    }
+  })
+
   it(
     "should initialise with service key and collector",
     () => {
       const reporter = new oboe.Reporter({
         service_key: process.env.TEST_SERVICE_KEY!,
-        host: process.env.TEST_COLLECTOR!,
+        host: process.env.TEST_COLLECTOR ?? "",
+        certificates: process.env.TEST_CERTIFICATES ?? "",
 
         hostname_alias: "",
         log_level: -2,
@@ -20,7 +31,6 @@ describe("init", () => {
         max_request_size_bytes: -1,
 
         reporter: "",
-        certificates: "",
 
         buffer_size: -1,
         trace_metrics: 1,
