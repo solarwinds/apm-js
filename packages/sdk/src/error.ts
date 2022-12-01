@@ -22,8 +22,6 @@ export class OboeError extends Error {
     const name = method ? `${klass}.${method}` : `new ${klass}`
     super(`'${name}' failed with status '${status}'`)
 
-    this.klass = klass
-
     this.name = "OboeError"
     this.klass = klass
     this.method = method
