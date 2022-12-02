@@ -882,6 +882,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@opentelemetry/api@npm:1.3.x":
+  version: 1.3.0
+  resolution: "@opentelemetry/api@npm:1.3.0"
+  checksum: 33d284b67b6fab20ff72961d289c6487d3cb27caf7489f0231d7030551f82871e081e744b0390751d8aef3bf1614bd79f854788901a354e15274f552581fb374
+  languageName: node
+  linkType: hard
+
 "@opentelemetry/context-async-hooks@npm:1.8.0":
   version: 1.8.0
   resolution: "@opentelemetry/context-async-hooks@npm:1.8.0"
@@ -1349,6 +1356,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@swotel/sdk@workspace:packages/sdk"
   dependencies:
+    "@opentelemetry/api": 1.3.x
     "@opentelemetry/core": 1.8.x
     "@opentelemetry/sdk-node": 0.34.x
     "@opentelemetry/sdk-trace-base": 1.8.x
@@ -1358,8 +1366,6 @@ __metadata:
     eslint: ^8.28.0
     prettier: ^2.8.0
     typescript: ^4.9.3
-  peerDependencies:
-    "@opentelemetry/api": 1.3.x
   languageName: unknown
   linkType: soft
 

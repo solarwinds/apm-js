@@ -11,13 +11,11 @@
     "lint": "prettier --check . && eslint --max-warnings=0 *.js src/**"
   },
   "dependencies": {
+    "@opentelemetry/api": "1.3.x",
     "@opentelemetry/core": "1.8.x",
     "@opentelemetry/sdk-node": "0.34.x",
     "@opentelemetry/sdk-trace-base": "1.8.x",
     "@swotel/bindings": "workspace:^"
-  },
-  "peerDependencies": {
-    "@opentelemetry/api": "1.3.x"
   },
   "devDependencies": {
     "@swotel/eslint-config": "workspace:^",
