@@ -11,12 +11,19 @@ export const CURRENT_PLATFORM_SUPPORTED = (
 export class SwoSDK extends NodeSDK {
   constructor(config: SwoConfiguration) {
     if (CURRENT_PLATFORM_SUPPORTED) {
-      const _reporter = init(config)
+      try {
+        const _reporter = init(config)
+      } catch (error) {
+        console.warn(
+          "swo initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
+          error,
+        )
+      }
     } else {
       console.warn(
-        "THE CURRENT PLATFORM IS NOT SUPPORTED; SUBMISSION WILL BE DISABLED.",
+        "THE CURRENT PLATFORM IS NOT SUPPORTED; TRACE COLLECTION WILL BE DISABLED.",
+        `supported platforms: ${SUPPORTED_PLATFORMS.join(", ")}`,
       )
-      console.info(`supported platforms: ${SUPPORTED_PLATFORMS.join(", ")}`)
     }
 
     super({

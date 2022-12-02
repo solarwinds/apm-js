@@ -58,7 +58,10 @@ export function init(config: SwoConfiguration): oboe.Reporter {
       }
       case oboe.SERVER_RESPONSE_TRY_LATER: {
         if (timeout >= MAX_TIMEOUT) {
-          throw new OboeError("Context", "isReady", status)
+          console.warn(
+            "exceeded maximum timeout for collector readiness, the application will start but may not collect traces immediately",
+          )
+          return reporter
         }
 
         timeout *= 2
