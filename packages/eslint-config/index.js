@@ -4,6 +4,7 @@ const typescriptParser = require("@typescript-eslint/parser")
 const typescriptPlugin = require("@typescript-eslint/eslint-plugin")
 const tsdocPlugin = require("eslint-plugin-tsdoc")
 const jestPlugin = require("eslint-plugin-jest")
+const importsPlugin = require("eslint-plugin-simple-import-sort")
 
 // we use the new ESLint config formats which lets us alias plugins
 // so it's useful to be able to also alias the rules provided in their recommended configs
@@ -59,7 +60,11 @@ module.exports = [
       // here we make the assumption that the tsconfig.json is in the root of the project and named that way
       parserOptions: { project: ["./tsconfig.json"] },
     },
-    plugins: { ts: typescriptPlugin, tsdoc: tsdocPlugin },
+    plugins: {
+      ts: typescriptPlugin,
+      tsdoc: tsdocPlugin,
+      imports: importsPlugin,
+    },
     rules: {
       // the typescript plugin provides an "eslint-recommended" config which disables eslint recommended rules
       // that conflict with typescript
@@ -85,7 +90,12 @@ module.exports = [
       // since we use "noUncheckedIndexedAccess" we need non-null assertions
       "ts/no-non-null-assertion": "off",
       "ts/no-unused-vars": ["warn", unusedOptions],
+      "ts/consistent-type-imports": [
+        "warn",
+        { prefer: "type-imports", fixStyle: "inline-type-imports" },
+      ],
       "tsdoc/syntax": "warn",
+      "imports/imports": "warn",
     },
   },
   // disable rules that conflict with prettier

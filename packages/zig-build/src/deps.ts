@@ -1,10 +1,11 @@
+import * as fs from "node:fs/promises"
+import { type IncomingMessage } from "node:http"
+import * as http from "node:https"
 import * as os from "node:os"
 import * as path from "node:path"
-import * as fs from "node:fs/promises"
-import * as http from "node:https"
-import { type IncomingMessage } from "node:http"
-import { exec } from "./proc"
+
 import { type Logger, makeLogger } from "./log"
+import { exec } from "./proc"
 
 const ZIG_VERSION = "0.10.0"
 const ZIGS: Partial<Record<NodeJS.Platform, Partial<Record<string, string>>>> =

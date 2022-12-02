@@ -1,7 +1,8 @@
-import * as oboe from ".."
 import * as fs from "node:fs/promises"
 
-const INIT_TIMEOUT = 10000
+import * as oboe from ".."
+
+const INIT_TIMEOUT = 10_000
 
 describe("init", () => {
   beforeAll(async () => {
