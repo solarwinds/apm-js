@@ -1,4 +1,8 @@
-import { type Context, type SpanContext,createContextKey } from "@opentelemetry/api"
+import {
+  type Context,
+  type SpanContext,
+  createContextKey,
+} from "@opentelemetry/api"
 
 const TRACE_OPTIONS_KEY = createContextKey("SWO X-Trace-Options")
 const TRACEPARENT_VERSION = "00"
