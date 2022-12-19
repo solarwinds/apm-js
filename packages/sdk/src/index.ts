@@ -1,5 +1,5 @@
 import { NodeSDK } from "@opentelemetry/sdk-node"
-import { ParentBasedSampler, type Sampler } from "@opentelemetry/sdk-trace-base"
+import { type Sampler, ParentBasedSampler } from "@opentelemetry/sdk-trace-base"
 import * as os from "os"
 
 import { type SwoConfiguration, init } from "./config"
