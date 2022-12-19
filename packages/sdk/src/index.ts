@@ -1,5 +1,5 @@
 import { NodeSDK } from "@opentelemetry/sdk-node"
-import { type Sampler } from "@opentelemetry/sdk-trace-base"
+import { ParentBasedSampler, type Sampler } from "@opentelemetry/sdk-trace-base"
 import * as os from "os"
 
 import { type SwoConfiguration, init } from "./config"
@@ -18,7 +18,12 @@ export class SwoSDK extends NodeSDK {
       try {
         const _reporter = init(config)
 
-        sampler = new SwoSampler(config)
+        const swoSampler = new SwoSampler(config)
+        sampler = new ParentBasedSampler({
+          root: swoSampler,
+          remoteParentSampled: swoSampler,
+          remoteParentNotSampled: swoSampler,
+        })
       } catch (error) {
         console.warn(
           "swo initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
