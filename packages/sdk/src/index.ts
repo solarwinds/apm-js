@@ -1,8 +1,13 @@
 import { NodeSDK } from "@opentelemetry/sdk-node"
-import { type Sampler, ParentBasedSampler } from "@opentelemetry/sdk-trace-base"
+import {
+  type Sampler,
+  type SpanExporter,
+  ParentBasedSampler,
+} from "@opentelemetry/sdk-trace-base"
 import * as os from "os"
 
 import { type SwoConfiguration, init } from "./config"
+import { SwoExporter } from "./exporter"
 import { SwoSampler } from "./sampler"
 
 export const SUPPORTED_PLATFORMS = ["linux-arm64", "linux-x64"] as const
@@ -13,10 +18,11 @@ export const CURRENT_PLATFORM_SUPPORTED = (
 export class SwoSDK extends NodeSDK {
   constructor(config: SwoConfiguration) {
     let sampler: Sampler | undefined = undefined
+    let traceExporter: SpanExporter | undefined = undefined
 
     if (CURRENT_PLATFORM_SUPPORTED) {
       try {
-        const _reporter = init(config)
+        const reporter = init(config)
 
         const swoSampler = new SwoSampler(config)
         sampler = new ParentBasedSampler({
@@ -24,6 +30,7 @@ export class SwoSDK extends NodeSDK {
           remoteParentSampled: swoSampler,
           remoteParentNotSampled: swoSampler,
         })
+        traceExporter = new SwoExporter(reporter)
       } catch (error) {
         console.warn(
           "swo initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
@@ -40,6 +47,7 @@ export class SwoSDK extends NodeSDK {
     super({
       ...config,
       sampler,
+      traceExporter,
     })
   }
 }

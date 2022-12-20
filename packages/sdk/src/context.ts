@@ -3,6 +3,7 @@ import {
   type SpanContext,
   createContextKey,
 } from "@opentelemetry/api"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 
 const TRACE_OPTIONS_KEY = createContextKey("SWO X-Trace-Options")
 const TRACEPARENT_VERSION = "00"
@@ -32,4 +33,18 @@ export function traceParent(spanContext: SpanContext): string {
   const flags = spanContext.traceFlags.toString(16).padStart(2, "0")
 
   return `${TRACEPARENT_VERSION}-${traceId}-${spanId}-${flags}`
+}
+
+export function parentSpanContext(span: ReadableSpan): SpanContext | undefined {
+  const spanContext = span.spanContext()
+
+  const parentId = span.parentSpanId
+  if (!parentId) return undefined
+
+  return {
+    traceId: spanContext.traceId,
+    traceFlags: spanContext.traceFlags,
+    traceState: spanContext.traceState,
+    spanId: parentId,
+  }
 }
