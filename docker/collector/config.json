@@ -11,6 +11,20 @@
           "EVENT": {},
           "METRIC": {},
           "STATUS": {}
+        },
+        "udp": {
+          "EVENT": {
+            "host": "udpdump",
+            "port": 12225
+          },
+          "METRIC": {
+            "host": "udpdump",
+            "port": 12225
+          },
+          "STATUS": {
+            "host": "udpdump",
+            "port": 12225
+          }
         }
       }
     }

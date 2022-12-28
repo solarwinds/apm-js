@@ -7,9 +7,9 @@
 - [`docker`](./docker/) - Dockerized dev environment
 - [`examples`](./examples/) - Runnable exemples
 - [`packages`](./packages/) - Actual Node packages that would get published to NPM
-  - [`autoinstrument`](./packages/autoinstrument/) - Package usable with `node -r` to instrument without the manual OTel setup
   - [`bindings`](./packages/bindings/) - N-API bindings experiments
   - [`eslint-config`](./packages/eslint-config/) - Shared ESLint config
+  - [`instrument`](./packages/instrument/) - Package usable with `node -r` to instrument without the manual OTel setup
   - [`merged-config`](./packages/merged-config/) - Utility to merge a config file with environment variables
   - [`sdk`](./packages/sdk/) - SDK implementing OTel interfaces for SWO
   - [`zig-build`](./packages/zig-build/) - `node-gyp` replacement with cross-compiling support

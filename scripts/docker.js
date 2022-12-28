@@ -15,9 +15,7 @@ const image = process.argv[2]
 const shell = shells[image]
 
 if (image === "collector") {
-  exec(
-    "docker compose -f docker/docker-compose.yml logs --no-log-prefix -f collector",
-  )
+  exec("docker compose -f docker/docker-compose.yml logs -f collector udpdump")
 } else if (process.argv[3] === "build") {
   exec(`docker compose -f docker/docker-compose.yml build ${image}`)
 } else {
