@@ -33,3 +33,15 @@ services:
       - 12224
     environment:
       PROGRAM_ARGS: /swotel/docker/collector/config.json
+    depends_on:
+      - udpdump
+
+  udpdump:
+    build:
+      context: .
+      dockerfile: alpine.Dockerfile
+    command: [yarn node /swotel/scripts/udpdump.js]
+    volumes:
+      - ..:/swotel
+    expose:
+      - 12225

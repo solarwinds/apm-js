@@ -1,0 +1,11 @@
+{
+  "name": "@swotel/example-express",
+  "private": true,
+  "scripts": {
+    "start": "node -r @swotel/instrument index.js"
+  },
+  "dependencies": {
+    "@swotel/instrument": "workspace:^",
+    "express": "^4.18.2"
+  }
+}

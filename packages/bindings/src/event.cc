@@ -24,7 +24,7 @@ Napi::Value JsEvent::addInfo(swo::CallbackInfo const info) {
     auto value = info.arg<Napi::Value>(1);
     if (value.IsString()) {
         auto v = swo::from_value<std::string>(value);
-        return info.value(base->addInfo(key.data(), v.data()));
+        return info.value(base->addInfo(key.data(), v));
     } else if (value.IsNumber()) {
         auto v = swo::from_value<double>(value);
         return info.value(base->addInfo(key.data(), v));

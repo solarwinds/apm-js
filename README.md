@@ -7,9 +7,9 @@
 - [`docker`](./docker/) - Dockerized dev environment
 - [`examples`](./examples/) - Runnable exemples
 - [`packages`](./packages/) - Actual Node packages that would get published to NPM
-  - [`autoinstrument`](./packages/autoinstrument/) - Package usable with `node -r` to instrument without the manual OTel setup
   - [`bindings`](./packages/bindings/) - N-API bindings experiments
   - [`eslint-config`](./packages/eslint-config/) - Shared ESLint config
+  - [`instrument`](./packages/instrument/) - Package usable with `node -r` to instrument without the manual OTel setup
   - [`merged-config`](./packages/merged-config/) - Utility to merge a config file with environment variables
   - [`sdk`](./packages/sdk/) - SDK implementing OTel interfaces for SWO
   - [`zig-build`](./packages/zig-build/) - `node-gyp` replacement with cross-compiling support
@@ -25,11 +25,12 @@ First run `git lfs pull` and `yarn install` to get started. This will have to be
 - `yarn build` - Builds everything
 - `yarn lint` - Lints everything
 - `yarn example <name>` - Runs an example
+- `yarn example <name> collector` - Runs an example using the test collector
 - `yarn oboe` - Downloads and sets up the latest version of oboe
 - `yarn test` - Runs all tests
 - `yarn vscode` - Sets up VSCode to work with the project better
 
-Docker shell sessions always have a test collector available to them at `collector:12224`. The test collector certificate is mounted at `/swotel/docker/collector/server-grpc.crt`.
+Docker shell sessions always have a test collector available to them at `collector:12224`. The test collector certificate is mounted at `/swotel/docker/collector/server-grpc.crt`. When running an example, all of its dependencies will be built locally and then the example itself will be ran inside the Alpine container with the test collector available. Examples use port 8080 when run this way.
 
 Commands ran from the root directory use a build system to ensure all tasks it depends on are run and provide caching. When this behaviour is not desired, it's possible to run commands in directly each package's directory instead.
 
