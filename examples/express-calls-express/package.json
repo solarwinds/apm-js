@@ -1,0 +1,15 @@
+{
+  "name": "@swotel/example-express-calls-express",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"node -r @swotel/instrument external.js\" \"node -r @swotel/instrument internal.js\""
+  },
+  "dependencies": {
+    "@swotel/instrument": "workspace:^",
+    "axios": "^1.2.2",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
