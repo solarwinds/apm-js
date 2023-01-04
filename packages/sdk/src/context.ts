@@ -5,6 +5,8 @@ import {
 } from "@opentelemetry/api"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 
+import { cache } from "./cache"
+
 const TRACE_OPTIONS_KEY = createContextKey("SWO X-Trace-Options")
 const TRACEPARENT_VERSION = "00"
 
@@ -46,5 +48,6 @@ export function parentSpanContext(span: ReadableSpan): SpanContext | undefined {
     traceFlags: spanContext.traceFlags,
     traceState: spanContext.traceState,
     spanId: parentId,
+    isRemote: cache.get(spanContext)?.parentRemote,
   }
 }

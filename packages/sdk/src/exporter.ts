@@ -18,6 +18,7 @@ import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import * as oboe from "@swotel/bindings"
 import { inspect } from "util"
 
+import { cache } from "./cache"
 import { parentSpanContext, traceParent } from "./context"
 import { OboeError } from "./error"
 
@@ -42,10 +43,14 @@ export class SwoExporter implements SpanExporter {
           hrTimeToMilliseconds(span.startTime),
           parentMd,
         )
+
+        if (parentContext.isRemote) {
+          SwoExporter.addTxname(context, evt)
+        }
       } else {
         evt = oboe.Context.createEntry(md, hrTimeToMilliseconds(span.startTime))
+        SwoExporter.addTxname(context, evt)
       }
-      // TODO: transaction name
 
       evt.addInfo("Layer", span.name)
       evt.addInfo("sw.span_kind", SpanKind[span.kind])
@@ -66,6 +71,8 @@ export class SwoExporter implements SpanExporter {
       evt = oboe.Context.createExit(hrTimeToMilliseconds(span.endTime))
       evt.addInfo("Layer", span.name)
       this.sendReport(evt)
+
+      cache.clear(context)
     }
 
     const result: ExportResult = this.error
@@ -82,6 +89,15 @@ export class SwoExporter implements SpanExporter {
   private static metadata(span: SpanContext): oboe.Metadata {
     const traceparent = traceParent(span)
     return oboe.Metadata.fromString(traceparent)
+  }
+
+  private static addTxname(ctx: SpanContext, evt: oboe.Event) {
+    const txname = cache.get(ctx)?.txname
+    if (!txname) {
+      return
+    }
+
+    evt.addInfo("TransactionName", txname)
   }
 
   private reportErrorEvent(event: TimedEvent) {
