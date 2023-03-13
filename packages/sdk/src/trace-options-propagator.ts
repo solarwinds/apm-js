@@ -51,9 +51,9 @@ export class TraceOptionsPropagator implements TextMapPropagator<unknown> {
   }
 
   inject(
-    context: Context,
-    carrier: unknown,
-    setter: TextMapSetter<unknown>,
+    _context: Context,
+    _carrier: unknown,
+    _setter: TextMapSetter<unknown>,
   ): void {
     throw new Error("Method not implemented.")
   }
