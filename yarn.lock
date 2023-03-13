@@ -2044,15 +2044,15 @@ __metadata:
     "@swotel/bindings-linux-x64-gnu": "worspace:*"
     "@swotel/bindings-linux-x64-musl": "worspace:*"
     "@swotel/eslint-config": "workspace:^"
-    "@swotel/zig-build": "workspace:^"
     "@types/jest": ^29.4.1
     "@types/node": ^14.0.0
     eslint: ^8.36.0
     jest: ^29.5.0
-    node-addon-api: ^5.0.0
+    node-addon-api: ^6.0.0
     prettier: ^2.8.4
     ts-jest: ^29.0.5
     typescript: ^4.9.5
+    zig-build: ^0.1.1
   dependenciesMeta:
     "@swotel/bindings-linux-arm64-gnu":
       optional: true
@@ -2180,25 +2180,6 @@ __metadata:
     eslint: ^8.36.0
     prettier: ^2.8.4
     typescript: ^4.9.5
-  languageName: unknown
-  linkType: soft
-
-"@swotel/zig-build@workspace:^, @swotel/zig-build@workspace:packages/zig-build":
-  version: 0.0.0-use.local
-  resolution: "@swotel/zig-build@workspace:packages/zig-build"
-  dependencies:
-    "@swotel/eslint-config": "workspace:^"
-    "@types/decompress": ^4.2.4
-    "@types/node": ^16.0.0
-    chalk: ^4.1.2
-    eslint: ^8.36.0
-    prettier: ^2.8.4
-    typescript: ^4.9.5
-  peerDependencies:
-    node-addon-api: "*"
-  peerDependenciesMeta:
-    node-addon-api:
-      optional: true
   languageName: unknown
   linkType: soft
 
@@ -2331,15 +2312,6 @@ __metadata:
     "@types/keygrip": "*"
     "@types/node": "*"
   checksum: d3759efc1182cb0651808570ae13638677b67b0ea724eef7b174e58ffe6ea044b62c7c2715e532f76f88fce4dd8101ed32ac6fbb73226db654017924e8a2a1e6
-  languageName: node
-  linkType: hard
-
-"@types/decompress@npm:^4.2.4":
-  version: 4.2.4
-  resolution: "@types/decompress@npm:4.2.4"
-  dependencies:
-    "@types/node": "*"
-  checksum: e47960f863148ef3afe9060a0c8dfd11d671322a47a341a3bd7128bbdea5b57c10117d76db0cfebf533b695ca81a4ffd4a3e6f338a149a5547052d4f63af9f76
   languageName: node
   linkType: hard
 
@@ -2639,13 +2611,6 @@ __metadata:
   version: 14.18.33
   resolution: "@types/node@npm:14.18.33"
   checksum: 4e23f95186d8ae1d38c999bc6b46fe94e790da88744b0a3bfeedcbd0d9ffe2cb0ff39e85f43014f6739e5270292c1a1f6f97a1fc606fd573a0c17fda9a1d42de
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^16.0.0":
-  version: 16.18.3
-  resolution: "@types/node@npm:16.18.3"
-  checksum: 6b8ba2ea5d842f7986e366cb9184c54d273d492784dc62e08fd5afeae938d9b61aec6e4222d2541cd18f9b1412ba361bbcb3f4204fb003608af80a2a6af959f9
   languageName: node
   linkType: hard
 
@@ -6218,12 +6183,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-addon-api@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "node-addon-api@npm:5.0.0"
+"node-addon-api@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "node-addon-api@npm:6.0.0"
   dependencies:
     node-gyp: latest
-  checksum: 7c5e2043ac37f6108784d94ed73a44ae6d3e68eb968de60680922fc6bc3d17fa69448c0feb4e0c9d3f4c74a0324822e566a8340a56916d9d6f23cb3e85620334
+  checksum: a34a901b9f0d6d201a173e12ed378033e4e0f27f77fd27c225dc7e6f96e88a88e94bd78b2b0404fc95deee20a137f1cbfc92738cbfba38862ed9b6c2e61c1ab2
   languageName: node
   linkType: hard
 
@@ -7884,5 +7849,19 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zig-build@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "zig-build@npm:0.1.1"
+  dependencies:
+    chalk: ^4.1.2
+  peerDependencies:
+    node-addon-api: "*"
+  peerDependenciesMeta:
+    node-addon-api:
+      optional: true
+  checksum: ef7088ffa44c791e67fa0f645fc29dd51b05439ff8b371cc1f3c938665e69b7da86a40c6714f8cfa73269e658f015dd77e1c76df4128017c6a4391d1950c49ad
   languageName: node
   linkType: hard

@@ -1,5 +1,5 @@
 const fs = require("fs")
-const build = require("@swotel/zig-build").default
+const { build } = require("zig-build")
 
 const targets = [
   {
@@ -49,8 +49,9 @@ const configs = targets.map(({ name, triple }) => {
 
     rpath: "$ORIGIN",
   }
-  if (triple.startsWith("x86_64")) config.cpu = "sandybridge"
-  if (triple.endsWith("gnu")) config.glibc = "2.17"
+  if (triple.startsWith("x86_64")) config.cpu = "x86_64_v3"
+  if (triple.startsWith("aarch64")) config.cpu = "generic"
+  if (triple.endsWith("gnu")) config.glibc = "2.27"
 
   return [name, config]
 })
