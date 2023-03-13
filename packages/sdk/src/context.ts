@@ -15,7 +15,7 @@ export interface TraceOptions {
 
   signature?: string
   triggerTrace?: boolean
-  timestamp: number
+  timestamp?: number
 }
 
 export function getTraceOptions(context: Context): TraceOptions | undefined {

@@ -6,10 +6,10 @@ import { OboeError } from "./error"
 const MAX_TIMEOUT = 10_000
 
 type SwoOverrides =
-  | "textMapPropagator"
   | "sampler"
   | "traceExporter"
   | "spanProcessor"
+  | "textMapPropagator"
 export interface SwoConfiguration
   extends Omit<Partial<NodeSDKConfiguration>, SwoOverrides> {
   serviceKey: string
