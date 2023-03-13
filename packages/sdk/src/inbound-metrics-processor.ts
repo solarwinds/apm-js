@@ -1,8 +1,8 @@
 import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api"
 import { hrTimeToMicroseconds } from "@opentelemetry/core"
 import {
-  type ReadableSpan,
   NoopSpanProcessor,
+  type ReadableSpan,
 } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import * as oboe from "@swotel/bindings"

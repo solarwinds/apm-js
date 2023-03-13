@@ -1,10 +1,10 @@
 import { type Context } from "@opentelemetry/api"
 import {
+  BatchSpanProcessor,
   type ReadableSpan,
   type Span,
   type SpanExporter,
   type SpanProcessor,
-  BatchSpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
 
 export class CompoundSpanProcessor extends BatchSpanProcessor {

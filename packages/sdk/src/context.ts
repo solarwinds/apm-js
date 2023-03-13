@@ -1,7 +1,7 @@
 import {
   type Context,
-  type SpanContext,
   createContextKey,
+  type SpanContext,
 } from "@opentelemetry/api"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 

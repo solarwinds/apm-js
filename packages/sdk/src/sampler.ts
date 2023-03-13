@@ -7,8 +7,8 @@ import {
 } from "@opentelemetry/api"
 import {
   type Sampler,
-  type SamplingResult,
   SamplingDecision,
+  type SamplingResult,
 } from "@opentelemetry/sdk-trace-base"
 import * as oboe from "@swotel/bindings"
 import { inspect } from "util"

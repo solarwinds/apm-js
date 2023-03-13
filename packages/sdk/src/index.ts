@@ -5,16 +5,16 @@ import {
 } from "@opentelemetry/core"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import {
+  ParentBasedSampler,
   type Sampler,
   type SpanExporter,
   type SpanProcessor,
-  ParentBasedSampler,
 } from "@opentelemetry/sdk-trace-base"
 import * as os from "os"
 
 import { CompoundSpanProcessor } from "./compound-processor"
 import { CompoundPropagator } from "./compound-propagator"
-import { type SwoConfiguration, init } from "./config"
+import { init, type SwoConfiguration } from "./config"
 import { SwoExporter } from "./exporter"
 import { SwoInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
 import { SwoParentInfoSpanProcessor } from "./parent-info-processor"
