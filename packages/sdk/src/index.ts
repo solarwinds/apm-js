@@ -1,8 +1,4 @@
 import { type TextMapPropagator } from "@opentelemetry/api"
-import {
-  W3CBaggagePropagator,
-  W3CTraceContextPropagator,
-} from "@opentelemetry/core"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import {
   ParentBasedSampler,
@@ -13,7 +9,6 @@ import {
 import * as os from "os"
 
 import { CompoundSpanProcessor } from "./compound-processor"
-import { CompoundPropagator } from "./compound-propagator"
 import { init, type SwoConfiguration } from "./config"
 import { SwoExporter } from "./exporter"
 import { SwoInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
@@ -30,7 +25,7 @@ export class SwoSDK extends NodeSDK {
     let sampler: Sampler | undefined = undefined
     let traceExporter: SpanExporter | undefined = undefined
     let spanProcessor: SpanProcessor | undefined = undefined
-    let textMapPropagator: TextMapPropagator | undefined = undefined
+    const textMapPropagator: TextMapPropagator | undefined = undefined
 
     if (CURRENT_PLATFORM_SUPPORTED) {
       try {
@@ -50,11 +45,6 @@ export class SwoSDK extends NodeSDK {
         spanProcessor = new CompoundSpanProcessor(traceExporter, [
           parentInfoProcessor,
           inboundMetricsProcessor,
-        ])
-
-        textMapPropagator = new CompoundPropagator([
-          new W3CBaggagePropagator(),
-          new W3CTraceContextPropagator(),
         ])
       } catch (error) {
         console.warn(
