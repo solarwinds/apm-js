@@ -1,7 +1,7 @@
 import {
   type Context,
-  type SpanContext,
   createContextKey,
+  type SpanContext,
 } from "@opentelemetry/api"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 
@@ -15,7 +15,7 @@ export interface TraceOptions {
 
   signature?: string
   triggerTrace?: boolean
-  timestamp: number
+  timestamp?: number
 }
 
 export function getTraceOptions(context: Context): TraceOptions | undefined {

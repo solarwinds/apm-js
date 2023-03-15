@@ -1,5 +1,5 @@
 import { type Context, trace } from "@opentelemetry/api"
-import { type Span, NoopSpanProcessor } from "@opentelemetry/sdk-trace-base"
+import { NoopSpanProcessor, type Span } from "@opentelemetry/sdk-trace-base"
 
 import { cache } from "./cache"
 
