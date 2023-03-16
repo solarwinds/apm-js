@@ -4,6 +4,7 @@ RUN microdnf install -y \
     curl-minimal \
     git \
     git-lfs \
+    tar \
     xz
 
 RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash - && \
