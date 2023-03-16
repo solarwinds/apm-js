@@ -23,6 +23,7 @@ jobs:
           - 18-debian
           - 18-ubi
           - 18-ubuntu
+      fail-fast: false
     steps:
       - uses: actions/checkout@v3
 

@@ -1,5 +1,7 @@
 FROM ubuntu:18.04
 
+RUN apt-get install -y software-properties-common
+
 RUN add-apt-repository ppa:git-core/ppa && \
     apt-get update && apt-get install -y \
     curl \
