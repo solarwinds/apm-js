@@ -4,26 +4,38 @@ const { build } = require("zig-build")
 const targets = [
   {
     name: "linux-arm64-gnu",
-    triple: "aarch64-linux-gnu",
+    oboe: "liboboe-1.0-aarch64.so",
+    target: "aarch64-linux-gnu",
+    cpu: "generic",
+    glibc: "2.27",
   },
   {
     name: "linux-arm64-musl",
-    triple: "aarch64-linux-musl",
+    oboe: "liboboe-1.0-alpine-aarch64.so",
+    target: "aarch64-linux-musl",
+    cpu: "generic",
   },
   {
     name: "linux-x64-gnu",
-    triple: "x86_64-linux-gnu",
+    oboe: "liboboe-1.0-x86_64.so",
+    target: "x86_64-linux-gnu",
+    cpu: "x86_64_v3",
+    glibc: "2.27",
   },
   {
     name: "linux-x64-musl",
-    triple: "x86_64-linux-musl",
+    oboe: "liboboe-1.0-alpine-x86_64.so",
+    target: "x86_64-linux-musl",
+    cpu: "x86_64_v3",
   },
 ]
-const configs = targets.map(({ name, triple }) => {
-  fs.copyFileSync(`npm/${name}/liboboe.so`, `npm/${name}/liboboe-1.0.so.0`)
+const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
+  fs.copyFileSync(`oboe/${oboe}`, `npm/${name}/liboboe.so`)
 
   const config = {
-    target: triple,
+    target,
+    cpu,
+    glibc,
     output: `npm/${name}/oboe.node`,
     type: "shared",
 
@@ -49,9 +61,6 @@ const configs = targets.map(({ name, triple }) => {
 
     rpath: "$ORIGIN",
   }
-  if (triple.startsWith("x86_64")) config.cpu = "x86_64_v3"
-  if (triple.startsWith("aarch64")) config.cpu = "generic"
-  if (triple.endsWith("gnu")) config.glibc = "2.27"
 
   return [name, config]
 })

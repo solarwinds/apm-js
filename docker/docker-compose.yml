@@ -1,25 +1,74 @@
 version: "3"
 services:
-  alpine:
+  16-alpine:
     build:
       context: .
-      dockerfile: alpine.Dockerfile
+      dockerfile: 16-alpine3.12.Dockerfile
     volumes:
       - ..:/swotel
     links:
       - collector
-  centos:
+  16-amazonlinux:
     build:
       context: .
-      dockerfile: centos.Dockerfile
+      dockerfile: 16-amazonlinux2.Dockerfile
     volumes:
       - ..:/swotel
     links:
       - collector
-  debian:
+  16-debian:
     build:
       context: .
-      dockerfile: debian.Dockerfile
+      dockerfile: 16-debian10.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+  16-ubi:
+    build:
+      context: .
+      dockerfile: 16-ubi8.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+  16-ubuntu:
+    build:
+      context: .
+      dockerfile: 16-ubuntu18.04.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+
+  18-alpine:
+    build:
+      context: .
+      dockerfile: 18-alpine.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+  18-debian:
+    build:
+      context: .
+      dockerfile: 18-debian.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+  18-ubi:
+    build:
+      context: .
+      dockerfile: 18-ubi.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+  18-ubuntu:
+    build:
+      context: .
+      dockerfile: 18-ubuntu.Dockerfile
     volumes:
       - ..:/swotel
     links:

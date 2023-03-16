@@ -694,7 +694,11 @@ std::string Reporter::getType() {
 /////// Config ///////
 
 bool Config::checkVersion(int version, int revision) {
+#ifndef _WIN32
     return (oboe_config_check_version(version, revision) != 0);
+#else
+    return true;
+#endif
 }
 
 std::string Config::getVersionString() {

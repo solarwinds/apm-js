@@ -4,9 +4,7 @@ on:
     branches:
       - main
     paths:
-      - "docker/alpine.Dockerfile"
-      - "docker/centos.Dockerfile"
-      - "docker/debian.Dockerfile"
+      - "docker/*.Dockerfile"
       - ".github/workflows/images.yml"
   workflow_dispatch:
 jobs:
@@ -15,16 +13,16 @@ jobs:
     strategy:
       matrix:
         image:
-          - alpine
-          - centos
-          - debian
-        include:
-          - image: alpine
-            platforms: linux/amd64,linux/arm64
-          - image: centos
-            platforms: linux/amd64
-          - image: debian
-            platforms: linux/amd64,linux/arm64
+          - 16-alpine3.12
+          - 16-amazonlinux2
+          - 16-debian10
+          - 16-ubi8
+          - 16-ubuntu18.04
+          - 18-alpine
+          # - 18-amazonlinux
+          - 18-debian
+          - 18-ubi
+          - 18-ubuntu
     steps:
       - uses: actions/checkout@v3
 
@@ -41,7 +39,7 @@ jobs:
         with:
           context: docker
           file: docker/${{ matrix.image }}.Dockerfile
-          platforms: ${{ matrix.platforms }}
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
           cache-from: type=gha

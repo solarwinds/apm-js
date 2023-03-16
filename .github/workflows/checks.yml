@@ -1,8 +1,11 @@
 name: Checks
-on: push
+on:
+  - push
+  - pull_request
+
 jobs:
   checks:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - run: sudo apt-get update && sudo apt-get install -y clang-format
       - uses: actions/checkout@v3
@@ -24,7 +27,7 @@ jobs:
           path: |
             ~/.zig-build
             ~/.cache/zig
-          key: zig-${{ hashFiles('packages/zig-build/src/deps.ts') }}
+          key: zig-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             zig-
 
@@ -49,25 +52,79 @@ jobs:
             .root
             packages/**/dist/
             packages/bindings/npm/*/oboe.node
-            packages/bindings/npm/*/liboboe-1.0.so.0
+            packages/bindings/npm/*/liboboe.so
           retention-days: 1
 
-  tests-x64:
-    needs: checks
+  launch-arm64:
+    if: github.event_name == 'pull_request'
+    outputs:
+      matrix: ${{ steps.launch.outputs.matrix }}
     runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.CI_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CI_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - id: launch
+        uses: solarwindscloud/ec2-runner-action@main
+        with:
+          action: launch
+          github-token: ${{ secrets.CI_GITHUB_TOKEN }}
+          matrix: |
+            16-amazonlinux2
+            16-debian10
+            16-ubi8
+            16-ubuntu18.04
+            18-alpine
+            18-debian
+            18-ubi
+            18-ubuntu
+          runner-user: github
+          runner-directory: /gh
+          instance-type: t4g.medium
+          ami-name: gha-arm64-ubuntu22-.*
+          ami-owner: "858939916050"
+          subnet-id: subnet-0fd499f8a50e41807
+          security-group-ids: sg-0fd8d8cd6effda4a5
+
+  tests:
+    if: github.event_name == 'pull_request'
+    needs:
+      - checks
+      - launch-arm64
+    runs-on: ${{ matrix.arch == 'arm64' && fromJSON(needs.launch-arm64.outputs.matrix)[matrix.image].label || 'ubuntu-latest' }}
     strategy:
       matrix:
         image:
-          - alpine
-          - centos
-          - debian
+          - 16-alpine3.12
+          - 16-amazonlinux2
+          - 16-debian10
+          - 16-ubi8
+          - 16-ubuntu18.04
+          - 18-alpine
+          # - 18-amazonlinux
+          - 18-debian
+          - 18-ubi
+          - 18-ubuntu
+        arch:
+          - x64
+          - arm64
+        exclude:
+          - image: 16-alpine3.12
+            arch: arm64
       fail-fast: false
     container:
       image: ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
+      - if: ${{ matrix.arch == 'arm64' && contains(matrix.image, 'alpine') }}
+        run: sed -i "s/ID=alpine/ID=armpine/" /etc/os-release
+
       - uses: actions/checkout@v3
         with:
           lfs: true
@@ -84,50 +141,25 @@ jobs:
             yarn-
 
       - run: yarn install --immutable
-      - run: yarn test:only
+      - run: yarn test --only
         env:
           TEST_SERVICE_KEY: ${{ secrets.TEST_SERVICE_KEY }}
           TEST_COLLECTOR: ${{ secrets.TEST_COLLECTOR }}
 
-  tests-arm64:
-    needs: checks
+  terminate-arm64:
+    if: always() && github.event_name == 'pull_request'
+    needs:
+      - launch-arm64
+      - tests
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        image:
-          - alpine
-          - debian
-      fail-fast: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v1
         with:
-          lfs: true
-      - uses: actions/download-artifact@v3
+          aws-access-key-id: ${{ secrets.CI_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CI_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - uses: solarwindscloud/ec2-runner-action@main
         with:
-          name: build
-          path: ./
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/cache@v3
-        with:
-          path: .yarn/cache
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-
-
-      - run: docker pull --platform linux/arm64 ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
-      - name: Run tests in container using QEMU
-        run: |
-          sudo docker run \
-            --platform linux/arm64 \
-            -e CI=$CI \
-            -e TEST_SERVICE_KEY=${{ secrets.TEST_SERVICE_KEY }} \
-            -e TEST_COLLECTOR=${{ secrets.TEST_COLLECTOR }} \
-            -v $(pwd):/swotel \
-            --rm ghcr.io/${{ github.repository }}/dev:${{ matrix.image }} \
-            -- 'yarn install --immutable && yarn test:only'
+          action: terminate
+          github-token: ${{ secrets.CI_GITHUB_TOKEN }}
+          matrix: ${{ needs.launch-arm64.outputs.matrix }}

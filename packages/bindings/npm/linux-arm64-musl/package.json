@@ -10,7 +10,7 @@
   "main": "oboe.node",
   "files": [
     "oboe.node",
-    "liboboe-1.0.so.0"
+    "liboboe.so"
   ],
   "engines": {
     "node": ">= 14"
