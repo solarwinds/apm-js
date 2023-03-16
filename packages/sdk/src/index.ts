@@ -1,3 +1,5 @@
+import * as os from "node:os"
+
 import { type TextMapPropagator } from "@opentelemetry/api"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import {
@@ -6,7 +8,6 @@ import {
   type SpanExporter,
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
-import * as os from "os"
 
 import { CompoundSpanProcessor } from "./compound-processor"
 import { init, type SwoConfiguration } from "./config"

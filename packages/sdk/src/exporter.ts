@@ -1,3 +1,5 @@
+import { inspect } from "node:util"
+
 import {
   type AttributeValue,
   type SpanContext,
@@ -16,7 +18,6 @@ import {
 } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import * as oboe from "@swotel/bindings"
-import { inspect } from "util"
 
 import { cache } from "./cache"
 import { parentSpanContext, traceParent } from "./context"

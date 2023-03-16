@@ -1,3 +1,5 @@
+import { inspect } from "node:util"
+
 import {
   type Attributes,
   type Context,
@@ -11,7 +13,6 @@ import {
   type SamplingResult,
 } from "@opentelemetry/sdk-trace-base"
 import * as oboe from "@swotel/bindings"
-import { inspect } from "util"
 
 import { type SwoConfiguration } from "./config"
 import { getTraceOptions, traceParent } from "./context"

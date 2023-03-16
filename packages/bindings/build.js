@@ -1,4 +1,4 @@
-const fs = require("fs")
+const fs = require("node:fs")
 const { build } = require("zig-build")
 
 const targets = [
@@ -50,7 +50,7 @@ const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
       "src/span.cc",
       "oboe/include/oboe_api.cpp",
     ],
-    napiVersion: 6,
+    napiVersion: 8,
     std: "c++17",
     exceptions: true,
 

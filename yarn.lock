@@ -452,7 +452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.36.0":
+"@eslint/js@npm:8.36.0, @eslint/js@npm:^8.36.0":
   version: 8.36.0
   resolution: "@eslint/js@npm:8.36.0"
   checksum: b7d6b84b823c8c7784be390741196617565527b1f7c0977fde9455bfb57fd88f81c074a03dd878757d2c33fa29f24291e9ecbc1425710f067917324b55e1bf3a
@@ -2045,7 +2045,7 @@ __metadata:
     "@swotel/bindings-linux-x64-musl": "worspace:*"
     "@swotel/eslint-config": "workspace:^"
     "@types/jest": ^29.4.1
-    "@types/node": ^14.0.0
+    "@types/node": ^16.0.0
     eslint: ^8.36.0
     jest: ^29.5.0
     node-addon-api: ^6.0.0
@@ -2069,6 +2069,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@swotel/eslint-config@workspace:packages/eslint-config"
   dependencies:
+    "@eslint/js": ^8.36.0
     "@typescript-eslint/eslint-plugin": ^5.55.0
     "@typescript-eslint/parser": ^5.55.0
     eslint: ^8.36.0
@@ -2132,7 +2133,7 @@ __metadata:
     "@swotel/eslint-config": "workspace:^"
     "@swotel/merged-config": "workspace:^"
     "@swotel/sdk": "workspace:^"
-    "@types/node": ^14.0.0
+    "@types/node": ^16.0.0
     eslint: ^8.36.0
     prettier: ^2.8.4
   languageName: unknown
@@ -2144,7 +2145,7 @@ __metadata:
   dependencies:
     "@swotel/eslint-config": "workspace:^"
     "@types/jest": ^29.4.1
-    "@types/node": ^14.0.0
+    "@types/node": ^16.0.0
     eslint: ^8.36.0
     jest: ^29.5.0
     prettier: ^2.8.4
@@ -2176,7 +2177,7 @@ __metadata:
     "@opentelemetry/semantic-conventions": 1.10.x
     "@swotel/bindings": "workspace:^"
     "@swotel/eslint-config": "workspace:^"
-    "@types/node": ^14.0.0
+    "@types/node": ^16.0.0
     eslint: ^8.36.0
     prettier: ^2.8.4
     typescript: ^4.9.5
@@ -2607,10 +2608,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^14.0.0":
-  version: 14.18.33
-  resolution: "@types/node@npm:14.18.33"
-  checksum: 4e23f95186d8ae1d38c999bc6b46fe94e790da88744b0a3bfeedcbd0d9ffe2cb0ff39e85f43014f6739e5270292c1a1f6f97a1fc606fd573a0c17fda9a1d42de
+"@types/node@npm:^16.0.0":
+  version: 16.18.16
+  resolution: "@types/node@npm:16.18.16"
+  checksum: 69c422450f046fbdf1904c4fdb9fbc80fda379768f6e5402ac1434fb5955b7b3d0082f02fb9bcd4979f57649ecd9a934277492d757c6ea88d080ba101c1ced48
   languageName: node
   linkType: hard
 
