@@ -4,7 +4,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     git-lfs \
-    xz-utils
+    xz-utils \
+    && apt-get clean
 
 RUN corepack enable
 

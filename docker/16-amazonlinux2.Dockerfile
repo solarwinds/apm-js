@@ -7,7 +7,8 @@ RUN yum install -y \
     xz
 
 RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
-    yum install -y nodejs
+    yum install -y nodejs && \
+    yum clean all
 
 RUN corepack enable
 
