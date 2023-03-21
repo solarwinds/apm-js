@@ -750,7 +750,7 @@ int oboe_sample_is_enabled(oboe_settings_cfg_t *cfg);
 int oboe_tracing_decisions(oboe_tracing_decisions_in_t *in, oboe_tracing_decisions_out_t *out);
 
 /* Oboe configuration interface. */
-
+#ifndef _WIN32
 /**
  * Check if the Oboe library is compatible with a given version.revision.
  *
@@ -762,7 +762,7 @@ int oboe_tracing_decisions(oboe_tracing_decisions_in_t *in, oboe_tracing_decisio
  * @return Non-zero if the Oboe library is considered compatible with the specified revision.
  */
 extern int oboe_config_check_version(int version, int revision);
-
+#endif
 /**
  * Get the Oboe library version number.
  *

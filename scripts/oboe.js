@@ -6,10 +6,10 @@ const axios = require("axios")
 const root =
   "https://ssp-prod-global-agent-binaries.s3.amazonaws.com/apm/c-lib/latest/"
 const libs = [
-  "liboboe-1.0-aarch64.so.0.0.0",
-  "liboboe-1.0-alpine-aarch64.so.0.0.0",
-  "liboboe-1.0-x86_64.so.0.0.0",
-  "liboboe-1.0-alpine-x86_64.so.0.0.0",
+  "liboboe-1.0-aarch64.so",
+  "liboboe-1.0-alpine-aarch64.so",
+  "liboboe-1.0-x86_64.so",
+  "liboboe-1.0-alpine-x86_64.so",
 ]
 const files = [
   "VERSION",

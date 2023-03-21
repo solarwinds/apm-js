@@ -5,14 +5,12 @@ function exec(cmd) {
   return cproc.execSync(cmd, { stdio: "inherit" })
 }
 
-const shells = {
-  alpine: "/bin/sh",
-  centos: "/bin/bash",
-  debian: "/bin/bash",
-}
-
 const image = process.argv[2]
-const shell = shells[image]
+const shell = image.includes("alpine") ? "/bin/sh" : "/bin/bash"
+
+if (!image) {
+  throw new Error("No image specified")
+}
 
 if (image === "collector") {
   exec("docker compose -f docker/docker-compose.yml logs -f collector udpdump")

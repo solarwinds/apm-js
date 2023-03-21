@@ -4,7 +4,7 @@ try {
   const initSymbol = Symbol.for(`$${id}/init`)
 
   if (!globalThis[initSymbol]) {
-    const fs = require("fs")
+    const fs = require("node:fs")
     const mc = require("@swotel/merged-config")
     const { SwoSDK } = require("@swotel/sdk")
     const {

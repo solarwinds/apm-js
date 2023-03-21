@@ -8,9 +8,10 @@
         "package.json",
         "tsconfig.json",
         "tsconfig.build.json",
-        "src/**"
+        "src/**",
+        "oboe/**"
       ],
-      "outputs": ["dist/**", "npm/*/oboe.node", "npm/*/liboboe-1.0.so.0"]
+      "outputs": ["dist/**", "npm/*/oboe.node", "npm/*/liboboe.so"]
     },
     "lint": {
       "dependsOn": ["^build"],
@@ -22,14 +23,7 @@
     },
     "test": {
       "dependsOn": ["build"],
-      "inputs": [
-        "package.json",
-        "tsconfig.json",
-        "src/**",
-        "test/**",
-        "npm/*/oboe.node",
-        "npm/*/liboboe-1.0.so.0"
-      ],
+      "inputs": ["package.json", "tsconfig.json", "src/**", "test/**"],
       "env": ["TEST_SERVICE_KEY", "TEST_COLLECTOR"],
       "outputs": []
     }

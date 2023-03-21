@@ -1,3 +1,4 @@
+const js = require("@eslint/js")
 const globals = require("globals")
 const prettier = require("eslint-config-prettier")
 const typescriptParser = require("@typescript-eslint/parser")
@@ -28,7 +29,7 @@ module.exports = [
   // dist folder is always generated
   { ignores: ["dist/**"] },
   // extend from eslint's recommendations as a baseline
-  "eslint:recommended",
+  js.configs.recommended,
   // use jest plugin and recommended configs in tests
   {
     files: ["**/*.test.js", "**/*.test.ts"],
@@ -41,11 +42,11 @@ module.exports = [
       ...jestPlugin.configs.style.rules,
     },
   },
-  // js files assume node environment with es2020
+  // js files assume node environment with es2021
   {
     files: ["**/*.js"],
     languageOptions: {
-      ecmaVersion: 11,
+      ecmaVersion: 12,
       globals: { ...globals.es2020, ...globals.commonjs, ...globals.node },
     },
     rules: {

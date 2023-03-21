@@ -12,7 +12,6 @@
   - [`instrument`](./packages/instrument/) - Package usable with `node -r` to instrument without the manual OTel setup
   - [`merged-config`](./packages/merged-config/) - Utility to merge a config file with environment variables
   - [`sdk`](./packages/sdk/) - SDK implementing OTel interfaces for SWO
-  - [`zig-build`](./packages/zig-build/) - `node-gyp` replacement with cross-compiling support
 - [`scripts`](./scripts/) - Project management scripts
 
 ## Available commands
