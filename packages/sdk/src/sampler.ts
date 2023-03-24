@@ -50,8 +50,6 @@ export class SwoSampler implements Sampler {
       return { decision: SamplingDecision.NOT_RECORD }
     }
 
-    // TODO: trace state and attributes
-
     const decision = SwoSampler.otelSamplingDecisionFromOboe(decisions)
     const traceState = SwoSampler.traceState(
       decisions,

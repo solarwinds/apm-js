@@ -12,10 +12,14 @@ const TRACEPARENT_VERSION = "00"
 
 export interface TraceOptions {
   header: string
-
   signature?: string
+
   triggerTrace?: boolean
   timestamp?: number
+  swKeys?: string
+
+  custom: Record<string, string>
+  ignored: [string, string | undefined][]
 }
 
 export function getTraceOptions(context: Context): TraceOptions | undefined {
