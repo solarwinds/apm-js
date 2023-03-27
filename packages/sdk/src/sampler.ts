@@ -23,7 +23,19 @@ import { getTraceOptions, type TraceOptions, traceParent } from "./context"
 import { OboeError } from "./error"
 
 const TRACESTATE_KEY = "sw"
-const TRACESTATE_CAPTURE_KEY = "sw.w3c.tracestate"
+const TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY = "xtrace_options_response"
+
+const ATTRIBUTES_SW_KEYS_KEY = "SWKeys"
+const ATTRIBUTES_TRACESTATE_CAPTURE_KEY = "sw.w3c.tracestate"
+
+const TRACE_OPTIONS_RESPONSE_AUTH = "auth"
+const TRACE_OPTIONS_RESPONSE_TRIGGER = "trigger-trace"
+const TRACE_OPTIONS_RESPONSE_IGNORED = "ignored"
+const TRACE_OPTIONS_RESPONSE_TRIGGER_IGNORED = "ignored"
+const TRACE_OPTIONS_RESPONSE_TRIGGER_NOT_REQUESTED = "not-requested"
+
+const EQUALS_W3C = "####"
+const COMMA_W3C = "...."
 
 export class SwoSampler implements Sampler {
   constructor(private readonly config: SwoConfiguration) {}
@@ -142,15 +154,66 @@ export class SwoSampler implements Sampler {
     traceState: TraceState,
     decisions: oboe.Context.DecisionsResult,
     parentSpanContext: SpanContext | undefined,
-    _traceOptions: TraceOptions | undefined,
+    traceOptions: TraceOptions | undefined,
   ): TraceState {
     const spanId = parentSpanContext?.spanId ?? INVALID_SPANID
     const traceFlags = decisions.do_sample.toString(16).padStart(2, "0")
     traceState = traceState.set(TRACESTATE_KEY, `${spanId}-${traceFlags}`)
 
-    // TODO: X-Trace-Options-Response
+    if (traceOptions) {
+      traceState = traceState.set(
+        TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
+        this.traceOptionsResponse(decisions, parentSpanContext, traceOptions),
+      )
+    }
 
     return traceState
+  }
+
+  private static traceOptionsResponse(
+    decisions: oboe.Context.DecisionsResult,
+    parentSpanContext: SpanContext | undefined,
+    traceOptions: TraceOptions,
+  ): string {
+    const response: string[] = []
+
+    if (traceOptions.signature && decisions.auth_msg) {
+      response.push(
+        [TRACE_OPTIONS_RESPONSE_AUTH, decisions.auth_msg].join(EQUALS_W3C),
+      )
+    }
+
+    if (decisions.auth <= 0) {
+      let triggerMessage: string
+      if (traceOptions.triggerTrace) {
+        if (
+          parentSpanContext &&
+          trace.isSpanContextValid(parentSpanContext) &&
+          parentSpanContext.isRemote &&
+          decisions.type === 0
+        ) {
+          triggerMessage = TRACE_OPTIONS_RESPONSE_TRIGGER_IGNORED
+        } else {
+          triggerMessage = decisions.status_msg
+        }
+      } else {
+        triggerMessage = TRACE_OPTIONS_RESPONSE_TRIGGER_NOT_REQUESTED
+      }
+      response.push(
+        [TRACE_OPTIONS_RESPONSE_TRIGGER, triggerMessage].join(EQUALS_W3C),
+      )
+
+      if (traceOptions.ignored.length > 0) {
+        response.push(
+          [
+            TRACE_OPTIONS_RESPONSE_IGNORED,
+            traceOptions.ignored.map(([k]) => k).join(COMMA_W3C),
+          ].join(EQUALS_W3C),
+        )
+      }
+    }
+
+    return response.join(";")
   }
 
   private static attributes(
@@ -166,7 +229,15 @@ export class SwoSampler implements Sampler {
 
     const newAttributes = { ...attributes }
 
-    // TODO: X-Trace-Options
+    if (traceOptions?.swKeys) {
+      newAttributes[ATTRIBUTES_SW_KEYS_KEY] = traceOptions.swKeys
+    }
+
+    if (traceOptions?.custom) {
+      for (const [k, v] of Object.entries(traceOptions.custom)) {
+        newAttributes[k] = v
+      }
+    }
 
     newAttributes.BucketCapacity = decisions.bucket_cap
     newAttributes.BucketRate = decisions.bucket_rate
@@ -181,7 +252,7 @@ export class SwoSampler implements Sampler {
     if (parentSpanContext && trace.isSpanContextValid(parentSpanContext)) {
       let attrTraceState = traceState
 
-      const capture = attributes[TRACESTATE_CAPTURE_KEY]
+      const capture = attributes[ATTRIBUTES_TRACESTATE_CAPTURE_KEY]
       if (capture && typeof capture === "string") {
         attrTraceState = this.updateTraceState(
           createTraceState(capture),
@@ -191,9 +262,12 @@ export class SwoSampler implements Sampler {
         )
       }
 
-      // TODO: Remove X-Trace-Option-Response
+      attrTraceState = attrTraceState.unset(
+        TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
+      )
 
-      newAttributes[TRACESTATE_CAPTURE_KEY] = attrTraceState.serialize()
+      newAttributes[ATTRIBUTES_TRACESTATE_CAPTURE_KEY] =
+        attrTraceState.serialize()
     }
 
     return Object.freeze(newAttributes)
