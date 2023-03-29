@@ -1,3 +1,4 @@
+import { type HttpInstrumentationConfig } from "@opentelemetry/instrumentation-http"
 import { type NodeSDKConfiguration } from "@opentelemetry/sdk-node"
 import * as oboe from "@swotel/bindings"
 
@@ -17,6 +18,8 @@ export interface SwoConfiguration
   certificate?: string
 
   triggerTraceEnabled?: boolean
+
+  http?: HttpInstrumentationConfig
 }
 
 export function init(config: SwoConfiguration): oboe.Reporter {

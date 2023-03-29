@@ -18,7 +18,6 @@ import {
 import { firstIfArray } from "./util"
 
 const TRACESTATE_HEADER = "tracestate"
-const TRACE_PARENT_HEADER = "x-trace"
 const TRACE_OPTIONS_HEADER = "x-trace-options"
 const TRACE_OPTIONS_SIGNATURE_HEADER = "x-trace-options-signature"
 
@@ -145,7 +144,6 @@ export class SwoTraceContextOptionsPropagator
   fields(): string[] {
     return [
       ...super.fields(),
-      TRACE_PARENT_HEADER,
       TRACE_OPTIONS_HEADER,
       TRACE_OPTIONS_SIGNATURE_HEADER,
     ]

@@ -1,7 +1,12 @@
+import { type ServerResponse } from "node:http"
 import * as os from "node:os"
 
-import { type TextMapPropagator } from "@opentelemetry/api"
+import { ROOT_CONTEXT, type TextMapPropagator, trace } from "@opentelemetry/api"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
+import {
+  HttpInstrumentation,
+  type HttpInstrumentationConfig,
+} from "@opentelemetry/instrumentation-http"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import {
   ParentBasedSampler,
@@ -16,7 +21,8 @@ import { SwoExporter } from "./exporter"
 import { SwoInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
 import { SwoParentInfoSpanProcessor } from "./parent-info-processor"
 import { SwoSampler } from "./sampler"
-import { SwoTraceContextOptionsPropagator } from "./trace-options-propagator"
+import { SwoTraceContextOptionsPropagator } from "./trace-context-options-propagator"
+import { SwoTraceOptionsResponsePropagator } from "./trace-options-response-propagator"
 
 export const SUPPORTED_PLATFORMS = ["linux-arm64", "linux-x64"]
 export const CURRENT_PLATFORM = `${os.platform()}-${os.arch()}`
@@ -29,6 +35,7 @@ export class SwoSDK extends NodeSDK {
     let traceExporter: SpanExporter | undefined = undefined
     let spanProcessor: SpanProcessor | undefined = undefined
     let textMapPropagator: TextMapPropagator | undefined = undefined
+    let instrumentations = config.instrumentations
 
     if (CURRENT_PLATFORM_SUPPORTED) {
       try {
@@ -56,6 +63,26 @@ export class SwoSDK extends NodeSDK {
         textMapPropagator = new CompositePropagator({
           propagators: [traceContextOptionsPropagator, baggagePropagator],
         })
+
+        const traceOptionsResponsePropagator =
+          new SwoTraceOptionsResponsePropagator()
+
+        const isHttpInstrumentation = (i: unknown): i is HttpInstrumentation =>
+          i instanceof HttpInstrumentation
+        const httpInstrumentation = instrumentations
+          ?.flat()
+          ?.find(isHttpInstrumentation)
+        const httpConfig = SwoSDK.httpConfig(
+          httpInstrumentation?.getConfig(),
+          traceOptionsResponsePropagator,
+        )
+
+        if (httpInstrumentation) {
+          httpInstrumentation.setConfig(httpConfig)
+        } else {
+          instrumentations ??= []
+          instrumentations.push(new HttpInstrumentation(httpConfig))
+        }
       } catch (error) {
         console.warn(
           "swo initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
@@ -76,6 +103,27 @@ export class SwoSDK extends NodeSDK {
       traceExporter,
       spanProcessor,
       textMapPropagator,
+      instrumentations,
     })
+  }
+
+  private static httpConfig(
+    base: HttpInstrumentationConfig | undefined,
+    responsePropagator: TextMapPropagator<unknown>,
+  ): HttpInstrumentationConfig {
+    return {
+      ...base,
+      responseHook: (span, response) => {
+        // only for server responses originating from the instrumented app
+        if ("setHeader" in response) {
+          const context = trace.setSpan(ROOT_CONTEXT, span)
+          responsePropagator.inject(context, response, {
+            set: (res, k, v) => (res as ServerResponse).setHeader(k, v),
+          })
+        }
+
+        base?.responseHook?.(span, response)
+      },
+    }
   }
 }
