@@ -10,7 +10,6 @@ import {
   COMMA_W3C,
   EQUALS_W3C,
   traceParent,
-  TRACESTATE_SW_KEY,
   TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
 } from "./context"
 
