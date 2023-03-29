@@ -1,13 +1,24 @@
 import {
   type Context,
+  createTraceState,
   type TextMapGetter,
   type TextMapPropagator,
   type TextMapSetter,
+  trace,
 } from "@opentelemetry/api"
+import { W3CTraceContextPropagator } from "@opentelemetry/core"
 
-import { setTraceOptions, type TraceOptions } from "./context"
+import {
+  setTraceOptions,
+  swValue,
+  type TraceOptions,
+  TRACESTATE_SW_KEY,
+  TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
+} from "./context"
 import { firstIfArray } from "./util"
 
+const TRACESTATE_HEADER = "tracestate"
+const TRACE_PARENT_HEADER = "x-trace"
 const TRACE_OPTIONS_HEADER = "x-trace-options"
 const TRACE_OPTIONS_SIGNATURE_HEADER = "x-trace-options-signature"
 
@@ -15,13 +26,49 @@ const TRIGGER_TRACE_KEY = "trigger-trace"
 const TIMESTAMP_KEY = "ts"
 const SW_KEYS_KEY = "sw-keys"
 
-export class SwoTraceOptionsPropagator implements TextMapPropagator<unknown> {
+export class SwoTraceContextOptionsPropagator
+  extends W3CTraceContextPropagator
+  implements TextMapPropagator<unknown>
+{
   inject(
-    _context: Context,
-    _carrier: unknown,
-    _setter: TextMapSetter<unknown>,
+    context: Context,
+    carrier: unknown,
+    setter: TextMapSetter<unknown>,
   ): void {
-    // TODO
+    const tempCarrier: Record<string, string | string[]> = {}
+    const tempGetterSetter: TextMapGetter<typeof tempCarrier> &
+      TextMapSetter<typeof tempCarrier> = {
+      get: (carrier, key) => carrier[key.toLowerCase()],
+      set: (carrier, key, value) => (carrier[key.toLowerCase()] = value),
+      keys: (carrier) => Object.keys(carrier),
+    }
+    super.inject(context, tempCarrier, tempGetterSetter)
+
+    for (const key of tempGetterSetter.keys(tempCarrier)) {
+      setter.set(
+        carrier,
+        key,
+        firstIfArray(tempGetterSetter.get(tempCarrier, key))!,
+      )
+    }
+
+    const spanContext = trace.getSpanContext(context)
+    if (!spanContext || !trace.isSpanContextValid(spanContext)) {
+      return
+    }
+
+    const tracestateHeader = firstIfArray(
+      tempGetterSetter.get(tempCarrier, TRACESTATE_HEADER),
+    )
+    const sw = swValue(spanContext)
+    let traceState = tracestateHeader
+      ? createTraceState(tracestateHeader)
+      : createTraceState()
+
+    traceState = traceState.set(TRACESTATE_SW_KEY, sw)
+    traceState = traceState.unset(TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY)
+
+    setter.set(carrier, TRACESTATE_HEADER, traceState.serialize())
   }
 
   extract(
@@ -29,6 +76,8 @@ export class SwoTraceOptionsPropagator implements TextMapPropagator<unknown> {
     carrier: unknown,
     getter: TextMapGetter<unknown>,
   ): Context {
+    context = super.extract(context, carrier, getter)
+
     const header = firstIfArray(getter.get(carrier, TRACE_OPTIONS_HEADER))
     const signature = firstIfArray(
       getter.get(carrier, TRACE_OPTIONS_SIGNATURE_HEADER),
@@ -94,6 +143,11 @@ export class SwoTraceOptionsPropagator implements TextMapPropagator<unknown> {
   }
 
   fields(): string[] {
-    return [TRACE_OPTIONS_HEADER, TRACE_OPTIONS_SIGNATURE_HEADER]
+    return [
+      ...super.fields(),
+      TRACE_PARENT_HEADER,
+      TRACE_OPTIONS_HEADER,
+      TRACE_OPTIONS_SIGNATURE_HEADER,
+    ]
   }
 }

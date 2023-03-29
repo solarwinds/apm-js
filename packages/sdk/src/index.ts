@@ -1,11 +1,7 @@
 import * as os from "node:os"
 
 import { type TextMapPropagator } from "@opentelemetry/api"
-import {
-  CompositePropagator,
-  W3CBaggagePropagator,
-  W3CTraceContextPropagator,
-} from "@opentelemetry/core"
+import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import {
   ParentBasedSampler,
@@ -20,7 +16,7 @@ import { SwoExporter } from "./exporter"
 import { SwoInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
 import { SwoParentInfoSpanProcessor } from "./parent-info-processor"
 import { SwoSampler } from "./sampler"
-import { SwoTraceOptionsPropagator } from "./trace-options-propagator"
+import { SwoTraceContextOptionsPropagator } from "./trace-options-propagator"
 
 export const SUPPORTED_PLATFORMS = ["linux-arm64", "linux-x64"]
 export const CURRENT_PLATFORM = `${os.platform()}-${os.arch()}`
@@ -54,15 +50,11 @@ export class SwoSDK extends NodeSDK {
           inboundMetricsProcessor,
         ])
 
-        const traceContextPropagator = new W3CTraceContextPropagator()
         const baggagePropagator = new W3CBaggagePropagator()
-        const traceOptionsPropagator = new SwoTraceOptionsPropagator()
+        const traceContextOptionsPropagator =
+          new SwoTraceContextOptionsPropagator()
         textMapPropagator = new CompositePropagator({
-          propagators: [
-            traceContextPropagator,
-            baggagePropagator,
-            traceOptionsPropagator,
-          ],
+          propagators: [traceContextOptionsPropagator, baggagePropagator],
         })
       } catch (error) {
         console.warn(

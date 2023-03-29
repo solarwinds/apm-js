@@ -4,7 +4,6 @@ import {
   type Attributes,
   type Context,
   createTraceState,
-  INVALID_SPANID,
   type Link,
   type SpanContext,
   type SpanKind,
@@ -19,11 +18,17 @@ import {
 import * as oboe from "@swotel/bindings"
 
 import { type SwoConfiguration } from "./config"
-import { getTraceOptions, type TraceOptions, traceParent } from "./context"
+import {
+  COMMA_W3C,
+  EQUALS_W3C,
+  getTraceOptions,
+  swValue,
+  type TraceOptions,
+  traceParent,
+  TRACESTATE_SW_KEY,
+  TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
+} from "./context"
 import { OboeError } from "./error"
-
-const TRACESTATE_KEY = "sw"
-const TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY = "xtrace_options_response"
 
 const ATTRIBUTES_SW_KEYS_KEY = "SWKeys"
 const ATTRIBUTES_TRACESTATE_CAPTURE_KEY = "sw.w3c.tracestate"
@@ -33,9 +38,6 @@ const TRACE_OPTIONS_RESPONSE_TRIGGER = "trigger-trace"
 const TRACE_OPTIONS_RESPONSE_IGNORED = "ignored"
 const TRACE_OPTIONS_RESPONSE_TRIGGER_IGNORED = "ignored"
 const TRACE_OPTIONS_RESPONSE_TRIGGER_NOT_REQUESTED = "not-requested"
-
-const EQUALS_W3C = "####"
-const COMMA_W3C = "...."
 
 export class SwoSampler implements Sampler {
   constructor(private readonly config: SwoConfiguration) {}
@@ -111,7 +113,7 @@ export class SwoSampler implements Sampler {
       header_options: traceOptions?.header,
       header_signature: traceOptions?.signature,
       header_timestamp: traceOptions?.timestamp,
-      tracestate: parentSpanContext?.traceState?.get(TRACESTATE_KEY),
+      tracestate: parentSpanContext?.traceState?.get(TRACESTATE_SW_KEY),
     })
   }
 
@@ -156,9 +158,10 @@ export class SwoSampler implements Sampler {
     parentSpanContext: SpanContext | undefined,
     traceOptions: TraceOptions | undefined,
   ): TraceState {
-    const spanId = parentSpanContext?.spanId ?? INVALID_SPANID
-    const traceFlags = decisions.do_sample.toString(16).padStart(2, "0")
-    traceState = traceState.set(TRACESTATE_KEY, `${spanId}-${traceFlags}`)
+    traceState = traceState.set(
+      TRACESTATE_SW_KEY,
+      swValue(parentSpanContext, decisions),
+    )
 
     if (traceOptions) {
       traceState = traceState.set(
@@ -244,7 +247,7 @@ export class SwoSampler implements Sampler {
     newAttributes.SampleRate = decisions.sample_rate
     newAttributes.SampleSource = decisions.sample_source
 
-    const parentSw = parentSpanContext?.traceState?.get(TRACESTATE_KEY)
+    const parentSw = parentSpanContext?.traceState?.get(TRACESTATE_SW_KEY)
     if (parentSw && parentSpanContext?.isRemote) {
       newAttributes["sw.tracestate_parent_id"] = parentSw.split("-")[0]
     }
