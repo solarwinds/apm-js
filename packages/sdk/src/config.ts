@@ -18,8 +18,6 @@ export interface SwoConfiguration
   certificate?: string
 
   triggerTraceEnabled?: boolean
-
-  http?: HttpInstrumentationConfig
 }
 
 export function init(config: SwoConfiguration): oboe.Reporter {
