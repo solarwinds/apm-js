@@ -1,4 +1,3 @@
-import { type HttpInstrumentationConfig } from "@opentelemetry/instrumentation-http"
 import { type NodeSDKConfiguration } from "@opentelemetry/sdk-node"
 import * as oboe from "@swotel/bindings"
 
