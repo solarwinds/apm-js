@@ -4,7 +4,7 @@ import * as os from "node:os"
 import { ROOT_CONTEXT, type TextMapPropagator, trace } from "@opentelemetry/api"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import {
-  HttpInstrumentation,
+  type HttpInstrumentation,
   type HttpInstrumentationConfig,
 } from "@opentelemetry/instrumentation-http"
 import { NodeSDK } from "@opentelemetry/sdk-node"
@@ -31,8 +31,9 @@ export const CURRENT_PLATFORM_SUPPORTED =
 
 let HttpInstrumentationClass: typeof HttpInstrumentation | undefined
 try {
-  HttpInstrumentationClass =
-    require("@opentelemetry/instrumentation-http").HttpInstrumentation
+  /* eslint-disable-next-line ts/no-var-requires, ts/no-unsafe-member-access */
+  HttpInstrumentationClass = require("@opentelemetry/instrumentation-http")
+    .HttpInstrumentation as typeof HttpInstrumentation
 } catch {
   HttpInstrumentationClass = undefined
 }
@@ -130,7 +131,7 @@ export class SwoSDK extends NodeSDK {
           })
         }
 
-        base?.responseHook?.(span, response)
+        base.responseHook?.(span, response)
       },
     }
   }
