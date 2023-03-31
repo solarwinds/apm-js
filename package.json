@@ -1,7 +1,7 @@
 {
   "name": "swotel",
   "private": true,
-  "packageManager": "yarn@3.4.1",
+  "packageManager": "yarn@3.5.0",
   "workspaces": [
     "examples",
     "examples/*",
@@ -16,13 +16,12 @@
     "lint": "prettier --check *.json .clang-format && turbo run lint",
     "oboe": "node scripts/oboe.js",
     "test": "turbo run test",
-    "vscode": "sdks vscode && node scripts/vscode.js && prettier --write .vscode"
+    "vscode": "yarn dlx @yarnpkg/sdks vscode && node scripts/vscode.js && prettier --write .vscode"
   },
   "devDependencies": {
-    "@yarnpkg/sdks": "^3.0.0-rc.40",
-    "eslint": "^8.36.0",
-    "prettier": "^2.8.4",
-    "turbo": "^1.8.3",
-    "typescript": "^4.9.5"
+    "eslint": "^8.37.0",
+    "prettier": "^2.8.7",
+    "turbo": "^1.8.8",
+    "typescript": "^5.0.3"
   }
 }

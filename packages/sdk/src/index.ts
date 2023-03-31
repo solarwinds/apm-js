@@ -29,13 +29,20 @@ export const CURRENT_PLATFORM = `${os.platform()}-${os.arch()}`
 export const CURRENT_PLATFORM_SUPPORTED =
   SUPPORTED_PLATFORMS.includes(CURRENT_PLATFORM)
 
+let HttpInstrumentationClass: typeof HttpInstrumentation | undefined
+try {
+  HttpInstrumentationClass =
+    require("@opentelemetry/instrumentation-http").HttpInstrumentation
+} catch {
+  HttpInstrumentationClass = undefined
+}
+
 export class SwoSDK extends NodeSDK {
   constructor(config: SwoConfiguration) {
     let sampler: Sampler | undefined = undefined
     let traceExporter: SpanExporter | undefined = undefined
     let spanProcessor: SpanProcessor | undefined = undefined
     let textMapPropagator: TextMapPropagator | undefined = undefined
-    let instrumentations = config.instrumentations
 
     if (CURRENT_PLATFORM_SUPPORTED) {
       try {
@@ -67,21 +74,23 @@ export class SwoSDK extends NodeSDK {
         const traceOptionsResponsePropagator =
           new SwoTraceOptionsResponsePropagator()
 
+        console.log(HttpInstrumentationClass)
         const isHttpInstrumentation = (i: unknown): i is HttpInstrumentation =>
-          i instanceof HttpInstrumentation
-        const httpInstrumentation = instrumentations
+          HttpInstrumentationClass
+            ? i instanceof HttpInstrumentationClass
+            : false
+        const httpInstrumentation = config.instrumentations
           ?.flat()
           ?.find(isHttpInstrumentation)
-        const httpConfig = SwoSDK.httpConfig(
-          httpInstrumentation?.getConfig(),
-          traceOptionsResponsePropagator,
-        )
-
+        console.log(config.instrumentations)
+        console.log(httpInstrumentation)
         if (httpInstrumentation) {
-          httpInstrumentation.setConfig(httpConfig)
-        } else {
-          instrumentations ??= []
-          instrumentations.push(new HttpInstrumentation(httpConfig))
+          httpInstrumentation.setConfig(
+            SwoSDK.httpConfig(
+              httpInstrumentation.getConfig(),
+              traceOptionsResponsePropagator,
+            ),
+          )
         }
       } catch (error) {
         console.warn(
@@ -103,12 +112,11 @@ export class SwoSDK extends NodeSDK {
       traceExporter,
       spanProcessor,
       textMapPropagator,
-      instrumentations,
     })
   }
 
   private static httpConfig(
-    base: HttpInstrumentationConfig | undefined,
+    base: HttpInstrumentationConfig,
     responsePropagator: TextMapPropagator<unknown>,
   ): HttpInstrumentationConfig {
     return {
