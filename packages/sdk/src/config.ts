@@ -2,6 +2,7 @@ import { type NodeSDKConfiguration } from "@opentelemetry/sdk-node"
 import * as oboe from "@swotel/bindings"
 
 import { OboeError } from "./error"
+import { type Logger, type LogLevel } from "./logger"
 
 const MAX_TIMEOUT = 10_000
 
@@ -17,9 +18,11 @@ export interface SwoConfiguration
   certificate?: string
 
   triggerTraceEnabled?: boolean
+
+  logLevel?: LogLevel
 }
 
-export function init(config: SwoConfiguration): oboe.Reporter {
+export function init(config: SwoConfiguration, logger: Logger): oboe.Reporter {
   const reporter = new oboe.Reporter({
     service_key: config.serviceKey,
     host: config.collector ?? "",
@@ -63,7 +66,7 @@ export function init(config: SwoConfiguration): oboe.Reporter {
       case oboe.SERVER_RESPONSE_TRY_LATER:
       case oboe.SERVER_RESPONSE_UNKNOWN: {
         if (timeout >= MAX_TIMEOUT) {
-          console.warn(
+          logger.warn(
             "exceeded maximum timeout for collector readiness, the application will start but may not collect traces immediately",
           )
           return reporter

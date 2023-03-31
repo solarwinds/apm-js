@@ -19,6 +19,7 @@ import { CompoundSpanProcessor } from "./compound-processor"
 import { init, type SwoConfiguration } from "./config"
 import { SwoExporter } from "./exporter"
 import { SwoInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
+import { Logger, LogLevel } from "./logger"
 import { SwoParentInfoSpanProcessor } from "./parent-info-processor"
 import { SwoSampler } from "./sampler"
 import { SwoTraceContextOptionsPropagator } from "./trace-context-options-propagator"
@@ -40,6 +41,8 @@ try {
 
 export class SwoSDK extends NodeSDK {
   constructor(config: SwoConfiguration) {
+    const logger = new Logger(config.logLevel ?? LogLevel.WARN, "swo")
+
     let sampler: Sampler | undefined = undefined
     let traceExporter: SpanExporter | undefined = undefined
     let spanProcessor: SpanProcessor | undefined = undefined
@@ -47,16 +50,16 @@ export class SwoSDK extends NodeSDK {
 
     if (CURRENT_PLATFORM_SUPPORTED) {
       try {
-        const reporter = init(config)
+        const reporter = init(config, logger.sub("init"))
 
-        const swoSampler = new SwoSampler(config)
+        const swoSampler = new SwoSampler(config, logger.sub("sampler"))
         sampler = new ParentBasedSampler({
           root: swoSampler,
           remoteParentSampled: swoSampler,
           remoteParentNotSampled: swoSampler,
         })
 
-        traceExporter = new SwoExporter(reporter)
+        traceExporter = new SwoExporter(reporter, logger.sub("exporter"))
 
         const parentInfoProcessor = new SwoParentInfoSpanProcessor()
         const inboundMetricsProcessor = new SwoInboundMetricsSpanProcessor()
@@ -67,7 +70,7 @@ export class SwoSDK extends NodeSDK {
 
         const baggagePropagator = new W3CBaggagePropagator()
         const traceContextOptionsPropagator =
-          new SwoTraceContextOptionsPropagator()
+          new SwoTraceContextOptionsPropagator(logger.sub("propagator"))
         textMapPropagator = new CompositePropagator({
           propagators: [traceContextOptionsPropagator, baggagePropagator],
         })
@@ -91,17 +94,19 @@ export class SwoSDK extends NodeSDK {
           )
         }
       } catch (error) {
-        console.warn(
-          "swo initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
-          error,
+        logger.warn(
+          "initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
         )
+        if (error instanceof Error) {
+          logger.warn(error)
+        }
       }
     } else {
-      console.warn(
+      logger.warn(
         "THE CURRENT PLATFORM IS NOT SUPPORTED; TRACE COLLECTION WILL BE DISABLED.",
-        `current platform: ${CURRENT_PLATFORM}`,
-        `supported platforms: ${SUPPORTED_PLATFORMS.join(", ")}`,
       )
+      logger.warn(`current platform: ${CURRENT_PLATFORM}`)
+      logger.warn(`supported platforms: ${SUPPORTED_PLATFORMS.join(", ")}`)
     }
 
     super({

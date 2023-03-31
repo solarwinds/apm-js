@@ -15,6 +15,7 @@ import {
   TRACESTATE_SW_KEY,
   TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
 } from "./context"
+import { type Logger } from "./logger"
 import { firstIfArray } from "./util"
 
 const TRACESTATE_HEADER = "tracestate"
@@ -29,6 +30,10 @@ export class SwoTraceContextOptionsPropagator
   extends W3CTraceContextPropagator
   implements TextMapPropagator<unknown>
 {
+  constructor(private readonly logger: Logger) {
+    super()
+  }
+
   inject(
     context: Context,
     carrier: unknown,
@@ -103,34 +108,44 @@ export class SwoTraceContextOptionsPropagator
     for (const [k, v] of kvs) {
       if (k === TRIGGER_TRACE_KEY) {
         if (v !== undefined) {
-          // TODO: debug log invalid
+          this.logger.debug(
+            "invalid trace option for trigger trace, should not have a value",
+          )
           continue
         }
 
         traceOptions.triggerTrace = true
       } else if (k === TIMESTAMP_KEY) {
         if (v === undefined || traceOptions.timestamp !== undefined) {
-          // TODO: debug log invalid
+          this.logger.debug(
+            "invalid trace option for timestamp, should have a value and only be provided once",
+          )
           continue
         }
 
         const ts = Number.parseInt(v)
         if (Number.isNaN(ts)) {
-          // TODO: debug log invalid
+          this.logger.debug(
+            "invalid trace option for timestamp, should be an integer",
+          )
           continue
         }
 
         traceOptions.timestamp = ts
       } else if (k === SW_KEYS_KEY) {
         if (v === undefined || traceOptions.swKeys !== undefined) {
-          // TODO: debug log invalid
+          this.logger.debug(
+            "invalid trace option for sw keys, should have a value and only be provided once",
+          )
           continue
         }
 
         traceOptions.swKeys = v
       } else if (k.startsWith("custom-")) {
         if (v === undefined || traceOptions.custom[k] !== undefined) {
-          // TODO: debug log invalid
+          this.logger.debug(
+            `invalid trace option for custom key ${k}, should have a value and only be provided once`,
+          )
           continue
         }
 

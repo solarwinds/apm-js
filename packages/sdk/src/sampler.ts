@@ -29,6 +29,7 @@ import {
   TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
 } from "./context"
 import { OboeError } from "./error"
+import { type Logger } from "./logger"
 
 const ATTRIBUTES_SW_KEYS_KEY = "SWKeys"
 const ATTRIBUTES_TRACESTATE_CAPTURE_KEY = "sw.w3c.tracestate"
@@ -40,7 +41,10 @@ const TRACE_OPTIONS_RESPONSE_TRIGGER_IGNORED = "ignored"
 const TRACE_OPTIONS_RESPONSE_TRIGGER_NOT_REQUESTED = "not-requested"
 
 export class SwoSampler implements Sampler {
-  constructor(private readonly config: SwoConfiguration) {}
+  constructor(
+    private readonly config: SwoConfiguration,
+    private readonly logger: Logger,
+  ) {}
 
   shouldSample(
     parentContext: Context,
@@ -56,11 +60,11 @@ export class SwoSampler implements Sampler {
     const decisions = this.oboeDecisions(parentSpanContext, traceOptions)
 
     if (decisions.status > oboe.TRACING_DECISIONS_OK) {
-      console.warn(
+      this.logger.warn(
         new OboeError("Context", "getDecisions", decisions.status),
-        decisions.status_msg,
-        decisions.auth_msg,
       )
+      this.logger.debug(decisions.status_msg)
+      this.logger.debug(decisions.auth_msg)
       return { decision: SamplingDecision.NOT_RECORD }
     }
 

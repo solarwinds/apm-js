@@ -22,10 +22,14 @@ import * as oboe from "@swotel/bindings"
 import { cache } from "./cache"
 import { parentSpanContext, traceParent } from "./context"
 import { OboeError } from "./error"
+import { type Logger } from "./logger"
 
 export class SwoExporter implements SpanExporter {
   private error: Error | undefined = undefined
-  constructor(private readonly reporter: oboe.Reporter) {}
+  constructor(
+    private readonly reporter: oboe.Reporter,
+    private readonly logger: Logger,
+  ) {}
 
   export(
     spans: ReadableSpan[],
@@ -153,7 +157,8 @@ export class SwoExporter implements SpanExporter {
     const status = this.reporter.sendReport(evt, false)
     if (status < 0) {
       this.error = new OboeError("Reporter", "sendReport", status)
-      console.warn(this.error, evt.metadataString())
+      this.logger.warn(this.error)
+      this.logger.debug(evt.metadataString())
     }
   }
 
