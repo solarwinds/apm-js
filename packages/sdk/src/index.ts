@@ -75,7 +75,6 @@ export class SwoSDK extends NodeSDK {
         const traceOptionsResponsePropagator =
           new SwoTraceOptionsResponsePropagator()
 
-        console.log(HttpInstrumentationClass)
         const isHttpInstrumentation = (i: unknown): i is HttpInstrumentation =>
           HttpInstrumentationClass
             ? i instanceof HttpInstrumentationClass
@@ -83,8 +82,6 @@ export class SwoSDK extends NodeSDK {
         const httpInstrumentation = config.instrumentations
           ?.flat()
           ?.find(isHttpInstrumentation)
-        console.log(config.instrumentations)
-        console.log(httpInstrumentation)
         if (httpInstrumentation) {
           httpInstrumentation.setConfig(
             SwoSDK.httpConfig(
