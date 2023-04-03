@@ -94,11 +94,11 @@ export class SwoSDK extends NodeSDK {
           )
         }
       } catch (error) {
-        logger.warn(
+        logger.error(
           "initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
         )
         if (error instanceof Error) {
-          logger.warn(error)
+          logger.error(error)
         }
       }
     } else {
