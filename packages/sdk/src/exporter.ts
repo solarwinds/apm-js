@@ -2,6 +2,7 @@ import { inspect } from "node:util"
 
 import {
   type AttributeValue,
+  type DiagLogger,
   type SpanContext,
   SpanKind,
   trace,
@@ -22,13 +23,12 @@ import * as oboe from "@swotel/bindings"
 import { cache } from "./cache"
 import { parentSpanContext, traceParent } from "./context"
 import { OboeError } from "./error"
-import { type Logger } from "./logger"
 
 export class SwoExporter implements SpanExporter {
   private error: Error | undefined = undefined
   constructor(
     private readonly reporter: oboe.Reporter,
-    private readonly logger: Logger,
+    private readonly logger: DiagLogger,
   ) {}
 
   export(
@@ -157,7 +157,7 @@ export class SwoExporter implements SpanExporter {
     const status = this.reporter.sendReport(evt, false)
     if (status < 0) {
       this.error = new OboeError("Reporter", "sendReport", status)
-      this.logger.warn(this.error)
+      this.logger.warn("error sending report", this.error)
       this.logger.debug(evt.metadataString())
     }
   }

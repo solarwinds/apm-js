@@ -1,6 +1,7 @@
 import {
   type Context,
   createTraceState,
+  type DiagLogger,
   type TextMapGetter,
   type TextMapPropagator,
   type TextMapSetter,
@@ -15,7 +16,6 @@ import {
   TRACESTATE_SW_KEY,
   TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
 } from "./context"
-import { type Logger } from "./logger"
 import { firstIfArray } from "./util"
 
 const TRACESTATE_HEADER = "tracestate"
@@ -30,7 +30,7 @@ export class SwoTraceContextOptionsPropagator
   extends W3CTraceContextPropagator
   implements TextMapPropagator<unknown>
 {
-  constructor(private readonly logger: Logger) {
+  constructor(private readonly logger: DiagLogger) {
     super()
   }
 

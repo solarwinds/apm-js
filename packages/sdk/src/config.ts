@@ -1,8 +1,8 @@
+import { type DiagLogger } from "@opentelemetry/api"
 import { type NodeSDKConfiguration } from "@opentelemetry/sdk-node"
 import * as oboe from "@swotel/bindings"
 
 import { OboeError } from "./error"
-import { type Logger, type LogLevel } from "./logger"
 
 const MAX_TIMEOUT = 10_000
 
@@ -18,11 +18,12 @@ export interface SwoConfiguration
   certificate?: string
 
   triggerTraceEnabled?: boolean
-
-  logLevel?: LogLevel
 }
 
-export function init(config: SwoConfiguration, logger: Logger): oboe.Reporter {
+export function init(
+  config: SwoConfiguration,
+  logger: DiagLogger,
+): oboe.Reporter {
   const reporter = new oboe.Reporter({
     service_key: config.serviceKey,
     host: config.collector ?? "",
