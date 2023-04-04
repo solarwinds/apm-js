@@ -2093,9 +2093,12 @@ __metadata:
     "@opentelemetry/semantic-conventions": 1.11.x
     "@swotel/bindings": "workspace:^"
     "@swotel/eslint-config": "workspace:^"
+    "@types/jest": ^29.5.0
     "@types/node": ^16.0.0
     eslint: ^8.37.0
+    jest: ^29.5.0
     prettier: ^2.8.7
+    ts-jest: ^29.0.5
     typescript: ^5.0.3
   peerDependencies:
     "@opentelemetry/instrumentation-http": ">=0.14.0 <0.38.0"

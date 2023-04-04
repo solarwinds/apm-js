@@ -78,7 +78,6 @@ export function parentSpanContext(span: ReadableSpan): SpanContext | undefined {
   return {
     traceId: spanContext.traceId,
     traceFlags: spanContext.traceFlags,
-    traceState: spanContext.traceState,
     spanId: parentId,
     isRemote: cache.get(spanContext)?.parentRemote,
   }

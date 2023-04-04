@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**",
-    "lint:fix": "eslint --fix *.js src/** && prettier --write .",
+    "lint:fix": "eslint --fix *.js src/** test/** && prettier --write .",
     "test": "jest"
   },
   "devDependencies": {
