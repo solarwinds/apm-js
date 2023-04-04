@@ -4,6 +4,7 @@ import {
   type Attributes,
   type Context,
   createTraceState,
+  type DiagLogger,
   type Link,
   type SpanContext,
   type SpanKind,
@@ -40,7 +41,10 @@ const TRACE_OPTIONS_RESPONSE_TRIGGER_IGNORED = "ignored"
 const TRACE_OPTIONS_RESPONSE_TRIGGER_NOT_REQUESTED = "not-requested"
 
 export class SwoSampler implements Sampler {
-  constructor(private readonly config: SwoConfiguration) {}
+  constructor(
+    private readonly config: SwoConfiguration,
+    private readonly logger: DiagLogger,
+  ) {}
 
   shouldSample(
     parentContext: Context,
@@ -56,10 +60,14 @@ export class SwoSampler implements Sampler {
     const decisions = this.oboeDecisions(parentSpanContext, traceOptions)
 
     if (decisions.status > oboe.TRACING_DECISIONS_OK) {
-      console.warn(
+      this.logger.warn(
+        "oboe decisions returned with an error status",
         new OboeError("Context", "getDecisions", decisions.status),
+      )
+      this.logger.debug(
         decisions.status_msg,
         decisions.auth_msg,
+        decisions.status,
       )
       return { decision: SamplingDecision.NOT_RECORD }
     }

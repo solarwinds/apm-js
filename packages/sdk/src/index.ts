@@ -1,7 +1,12 @@
 import { type ServerResponse } from "node:http"
 import * as os from "node:os"
 
-import { ROOT_CONTEXT, type TextMapPropagator, trace } from "@opentelemetry/api"
+import {
+  diag,
+  ROOT_CONTEXT,
+  type TextMapPropagator,
+  trace,
+} from "@opentelemetry/api"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import {
   type HttpInstrumentation,
@@ -40,6 +45,8 @@ try {
 
 export class SwoSDK extends NodeSDK {
   constructor(config: SwoConfiguration) {
+    const logger = diag.createComponentLogger({ namespace: "swo" })
+
     let sampler: Sampler | undefined = undefined
     let traceExporter: SpanExporter | undefined = undefined
     let spanProcessor: SpanProcessor | undefined = undefined
@@ -47,16 +54,25 @@ export class SwoSDK extends NodeSDK {
 
     if (CURRENT_PLATFORM_SUPPORTED) {
       try {
-        const reporter = init(config)
+        const reporter = init(
+          config,
+          diag.createComponentLogger({ namespace: "swo/init" }),
+        )
 
-        const swoSampler = new SwoSampler(config)
+        const swoSampler = new SwoSampler(
+          config,
+          diag.createComponentLogger({ namespace: "swo/sampler" }),
+        )
         sampler = new ParentBasedSampler({
           root: swoSampler,
           remoteParentSampled: swoSampler,
           remoteParentNotSampled: swoSampler,
         })
 
-        traceExporter = new SwoExporter(reporter)
+        traceExporter = new SwoExporter(
+          reporter,
+          diag.createComponentLogger({ namespace: "swo/exporter" }),
+        )
 
         const parentInfoProcessor = new SwoParentInfoSpanProcessor()
         const inboundMetricsProcessor = new SwoInboundMetricsSpanProcessor()
@@ -67,7 +83,9 @@ export class SwoSDK extends NodeSDK {
 
         const baggagePropagator = new W3CBaggagePropagator()
         const traceContextOptionsPropagator =
-          new SwoTraceContextOptionsPropagator()
+          new SwoTraceContextOptionsPropagator(
+            diag.createComponentLogger({ namespace: "swo/propagator" }),
+          )
         textMapPropagator = new CompositePropagator({
           propagators: [traceContextOptionsPropagator, baggagePropagator],
         })
@@ -91,13 +109,13 @@ export class SwoSDK extends NodeSDK {
           )
         }
       } catch (error) {
-        console.warn(
-          "swo initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
+        logger.error(
+          "initialization failed, no traces will be collected. check your configuration to ensure it is correct.",
           error,
         )
       }
     } else {
-      console.warn(
+      logger.warn(
         "THE CURRENT PLATFORM IS NOT SUPPORTED; TRACE COLLECTION WILL BE DISABLED.",
         `current platform: ${CURRENT_PLATFORM}`,
         `supported platforms: ${SUPPORTED_PLATFORMS.join(", ")}`,
