@@ -10,7 +10,7 @@
     "build": "tsc --project tsconfig.build.json",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**",
     "lint:fix": "eslint --fix *.js src/** test/** && prettier --write .",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "dependencies": {
     "@opentelemetry/api": "1.4.x",

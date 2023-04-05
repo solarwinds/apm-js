@@ -11,7 +11,7 @@
   "scripts": {
     "build": "node build.js",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js test/** && clang-format src/** -n --Werror",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "devDependencies": {
     "@swotel/eslint-config": "workspace:^",
