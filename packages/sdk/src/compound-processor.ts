@@ -22,7 +22,8 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
   }
 
   onEnd(span: ReadableSpan): void {
-    [...this.processors].reverse().forEach((p) => p.onEnd(span))
+    /* eslint-disable-next-line ts/no-extra-semi */
+    ;[...this.processors].reverse().forEach((p) => p.onEnd(span))
     super.onEnd(span)
   }
 
