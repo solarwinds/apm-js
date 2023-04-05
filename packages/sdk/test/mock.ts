@@ -1,9 +1,22 @@
 import { randomBytes, randomInt } from "node:crypto"
 
-import { type SpanContext, SpanKind, TraceFlags } from "@opentelemetry/api"
-import { hrTime } from "@opentelemetry/core"
+import {
+  type Attributes,
+  type Context,
+  type SpanContext,
+  SpanKind,
+  type SpanOptions,
+  TraceFlags,
+} from "@opentelemetry/api"
+import { hrTime, type InstrumentationLibrary } from "@opentelemetry/core"
 import { Resource } from "@opentelemetry/resources"
-import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
+import {
+  BasicTracerProvider,
+  type ReadableSpan,
+  type Span,
+  Tracer,
+  type TracerConfig,
+} from "@opentelemetry/sdk-trace-base"
 import type * as oboe from "@swotel/bindings"
 
 import { type TraceOptions } from "../src/context"
@@ -28,6 +41,7 @@ export function traceOptions(
     custom: {},
     ignored: [],
   }
+
   return { ...base, ...override }
 }
 
@@ -37,15 +51,64 @@ export function spanContext(override: Partial<SpanContext> = {}): SpanContext {
     spanId: spanId(),
     traceFlags: TraceFlags.NONE,
   }
+
   return { ...base, ...override }
+}
+
+export function resource(attributes: Attributes = {}): Resource {
+  return new Resource(attributes)
+}
+
+export function instrumentationLibrary(
+  override: Partial<InstrumentationLibrary> = {},
+): InstrumentationLibrary {
+  const base: InstrumentationLibrary = {
+    name: pick(["http", "fs", "crypto"]),
+  }
+
+  return { ...base, ...override }
+}
+
+export function tracerConfig(
+  override: Partial<TracerConfig> = {},
+): TracerConfig {
+  const base: TracerConfig = {}
+
+  return { ...base, ...override }
+}
+
+export function tracer(il?: InstrumentationLibrary, tc?: TracerConfig): Tracer {
+  il ??= instrumentationLibrary()
+  tc ??= tracerConfig()
+
+  return new Tracer(il, tc, new BasicTracerProvider(tc))
+}
+
+export function spanOptions(override: Partial<SpanOptions> = {}): SpanOptions {
+  const base: SpanOptions = {}
+
+  return { ...base, ...override }
+}
+
+export function span(
+  t?: Tracer,
+  name?: string,
+  so?: SpanOptions,
+  context?: Context,
+): Span {
+  t ??= tracer()
+  name ??= pick(["readFile", "writeFile", "connect", "listen", "send", "recv"])
+  so ??= spanOptions()
+
+  return t.startSpan(name, so, context) as Span
 }
 
 export function readableSpan(
   override: Partial<ReadableSpan> = {},
 ): ReadableSpan {
-  const sc = spanContext({})
+  const sc = spanContext()
   const base: ReadableSpan = {
-    name: `Span ${sc.spanId.slice(0, 8)}`,
+    name: pick(["readFile", "writeFile", "connect", "listen", "send", "recv"]),
     kind: pick([SpanKind.INTERNAL, SpanKind.CLIENT, SpanKind.SERVER]),
     spanContext: () => sc,
     startTime: hrTime(),
@@ -57,7 +120,7 @@ export function readableSpan(
     duration: hrTime(),
     ended: pick([true, false]),
     resource: new Resource({}),
-    instrumentationLibrary: { name: pick(["http", "fs"]) },
+    instrumentationLibrary: instrumentationLibrary(),
     droppedAttributesCount: 0,
     droppedEventsCount: 0,
     droppedLinksCount: 0,
@@ -82,5 +145,6 @@ export function oboeDecisions(
     auth_msg: "",
     status: 0,
   }
+
   return { ...base, ...override }
 }

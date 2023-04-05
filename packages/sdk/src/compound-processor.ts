@@ -22,17 +22,17 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
   }
 
   onEnd(span: ReadableSpan): void {
-    this.processors.reverse().forEach((p) => p.onEnd(span))
+    [...this.processors].reverse().forEach((p) => p.onEnd(span))
     super.onEnd(span)
   }
 
   async forceFlush(): Promise<void> {
-    await Promise.all(this.processors.reverse().map((p) => p.forceFlush()))
+    await Promise.all(this.processors.map((p) => p.forceFlush()))
     await super.forceFlush()
   }
 
   async shutdown(): Promise<void> {
-    await Promise.all(this.processors.reverse().map((p) => p.shutdown()))
+    await Promise.all(this.processors.map((p) => p.shutdown()))
     await super.shutdown()
   }
 }
