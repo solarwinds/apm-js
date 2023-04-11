@@ -22,7 +22,7 @@
       "outputs": []
     },
     "test": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "inputs": ["package.json", "tsconfig.json", "src/**", "test/**"],
       "env": ["TEST_SERVICE_KEY", "TEST_COLLECTOR"],
       "outputs": []

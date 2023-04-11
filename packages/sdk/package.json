@@ -7,13 +7,15 @@
     "dist/"
   ],
   "scripts": {
-    "build": "tsc",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/**",
-    "lint:fix": "eslint --fix *.js src/** && prettier --write ."
+    "build": "tsc --project tsconfig.build.json",
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**",
+    "lint:fix": "eslint --fix *.js src/** test/** && prettier --write .",
+    "test": "jest --verbose"
   },
   "dependencies": {
     "@opentelemetry/api": "1.4.x",
     "@opentelemetry/core": "1.11.x",
+    "@opentelemetry/resources": "1.11.x",
     "@opentelemetry/sdk-node": "0.37.x",
     "@opentelemetry/sdk-trace-base": "1.11.x",
     "@opentelemetry/semantic-conventions": "1.11.x",
@@ -22,9 +24,12 @@
   "devDependencies": {
     "@opentelemetry/instrumentation-http": "^0.35.1",
     "@swotel/eslint-config": "workspace:^",
+    "@types/jest": "^29.5.0",
     "@types/node": "^16.0.0",
     "eslint": "^8.37.0",
+    "jest": "^29.5.0",
     "prettier": "^2.8.7",
+    "ts-jest": "^29.1.0",
     "typescript": "^5.0.3"
   },
   "peerDependencies": {
