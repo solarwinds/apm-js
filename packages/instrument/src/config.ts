@@ -1,5 +1,6 @@
 import * as fs from "node:fs"
 
+import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
 import * as mc from "@swotel/merged-config"
 import { type SwoConfiguration } from "@swotel/sdk"
 import { type Service } from "ts-node"
@@ -23,7 +24,9 @@ try {
 export interface ConfigFile {
   collector?: string
   trustedPath?: string
+  logLevel?: LogLevel
 }
+type LogLevel = "verbose" | "debug" | "info" | "warn" | "error" | "none"
 
 export function readConfig(name: string): SwoConfiguration {
   let configFile: ConfigFile
@@ -43,11 +46,19 @@ export function readConfig(name: string): SwoConfiguration {
       serviceKey: { env: true, parser: String, required: true },
       collector: { env: true, file: true, parser: String },
       trustedPath: { env: true, file: true, parser: String },
+      logLevel: {
+        env: true,
+        file: true,
+        parser: parseLogLevel,
+        default: "info",
+      },
     },
     configFile as Record<string, unknown>,
     "SW_APM_",
   )
   const config: SwoConfiguration = { ...raw }
+
+  diag.setLogger(new DiagConsoleLogger(), raw.logLevel)
 
   // TODO: AO cert
   if (raw.trustedPath) {
@@ -85,4 +96,27 @@ function readTsConfig(file: string) {
   tsNodeService.enabled(false)
 
   return "__esModule" in required ? required.default : required
+}
+
+function parseLogLevel(level: unknown): DiagLogLevel {
+  if (typeof level !== "string") {
+    return DiagLogLevel.INFO
+  } else {
+    switch (level.toLowerCase()) {
+      case "verbose":
+        return DiagLogLevel.VERBOSE
+      case "debug":
+        return DiagLogLevel.DEBUG
+      case "info":
+        return DiagLogLevel.INFO
+      case "warn":
+        return DiagLogLevel.WARN
+      case "error":
+        return DiagLogLevel.ERROR
+      case "none":
+        return DiagLogLevel.NONE
+      default:
+        return DiagLogLevel.INFO
+    }
+  }
 }
