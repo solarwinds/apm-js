@@ -29,18 +29,21 @@ import { SwoSampler } from "./sampler"
 import { SwoTraceContextOptionsPropagator } from "./trace-context-options-propagator"
 import { SwoTraceOptionsResponsePropagator } from "./trace-options-response-propagator"
 
+export type { SwoConfiguration } from "./config"
+
 export const SUPPORTED_PLATFORMS = ["linux-arm64", "linux-x64"]
 export const CURRENT_PLATFORM = `${os.platform()}-${os.arch()}`
 export const CURRENT_PLATFORM_SUPPORTED =
   SUPPORTED_PLATFORMS.includes(CURRENT_PLATFORM)
 
-let HttpInstrumentationClass: typeof HttpInstrumentation | undefined
+let instrumentationHttp:
+  | typeof import("@opentelemetry/instrumentation-http")
+  | undefined
 try {
-  /* eslint-disable-next-line ts/no-var-requires, ts/no-unsafe-member-access */
-  HttpInstrumentationClass = require("@opentelemetry/instrumentation-http")
-    .HttpInstrumentation as typeof HttpInstrumentation
+  /* eslint-disable-next-line ts/no-unsafe-assignment */
+  instrumentationHttp = require("@opentelemetry/instrumentation-http")
 } catch {
-  HttpInstrumentationClass = undefined
+  instrumentationHttp = undefined
 }
 
 export class SwoSDK extends NodeSDK {
@@ -94,8 +97,8 @@ export class SwoSDK extends NodeSDK {
           new SwoTraceOptionsResponsePropagator()
 
         const isHttpInstrumentation = (i: unknown): i is HttpInstrumentation =>
-          HttpInstrumentationClass
-            ? i instanceof HttpInstrumentationClass
+          instrumentationHttp
+            ? i instanceof instrumentationHttp.HttpInstrumentation
             : false
         const httpInstrumentation = config.instrumentations
           ?.flat()

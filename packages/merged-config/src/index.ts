@@ -15,20 +15,12 @@ export interface ValueDefinition<T> {
    */
   env?: boolean | string
   /** Default value to use if none was provided */
-  default?: JsonValue
+  default?: T
   /** Whether the value is required */
   required?: boolean
   /** Optional custom parser for the value */
-  parser?: (value: JsonValue) => T
+  parser?: (value: unknown) => T
 }
-
-type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | { [key: string]: JsonValue }
 
 /**
  * Parses a config following the provided definition using the provided file and current environment
@@ -41,9 +33,9 @@ type JsonValue =
  * @param file - Contents of the parsed config file
  * @param envPrefix - Optional prefix to use for environment variable names
  */
-export function config<T extends ConfigDefinition>(
+export function config<const T extends ConfigDefinition>(
   def: T,
-  file: Record<string, JsonValue>,
+  file: Partial<Record<string, unknown>>,
   envPrefix = "",
 ): Config<T> {
   const config: Record<string, unknown> = {}
@@ -82,10 +74,10 @@ type Config<T extends ConfigDefinition> = {
  * we can narrow the type to the return type of said parser.
  */
 type Value<T extends ValueDefinition<unknown>> = T["parser"] extends (
-  value: JsonValue,
+  value: unknown,
 ) => infer TT
   ? TT
-  : JsonValue
+  : unknown
 /**
  * Maps the type of a value definition to `undefined` if it is optional
  *
