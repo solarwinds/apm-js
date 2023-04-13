@@ -10,6 +10,13 @@ export function init(configName: string) {
   const initSymbol = Symbol.for(`${id}/init`)
 
   if (!(initSymbol in globalThis)) {
+    Object.defineProperty(globalThis, initSymbol, {
+      value: true,
+      writable: false,
+      enumerable: false,
+      configurable: false,
+    })
+
     const config = readConfig(configName)
 
     const sdk = new SwoSDK({
@@ -17,12 +24,5 @@ export function init(configName: string) {
       instrumentations: [getNodeAutoInstrumentations()],
     })
     sdk.start()
-
-    Object.defineProperty(globalThis, initSymbol, {
-      value: sdk,
-      writable: false,
-      enumerable: false,
-      configurable: false,
-    })
   }
 }
