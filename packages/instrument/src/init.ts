@@ -5,7 +5,7 @@ import { readConfig } from "./config"
 
 export function init(configName: string) {
   /* eslint-disable-next-line ts/no-var-requires */
-  const pkg = require("./package.json") as { name: string; version: string }
+  const pkg = require("../package.json") as { name: string; version: string }
   const id = `${pkg.name}@${pkg.version}`
   const initSymbol = Symbol.for(`${id}/init`)
 

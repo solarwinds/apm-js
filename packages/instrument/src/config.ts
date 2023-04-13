@@ -1,4 +1,6 @@
 import * as fs from "node:fs"
+import * as path from "node:path"
+import * as process from "node:process"
 
 import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
 import * as mc from "@swotel/merged-config"
@@ -29,14 +31,15 @@ export interface ConfigFile {
 type LogLevel = "verbose" | "debug" | "info" | "warn" | "error" | "none"
 
 export function readConfig(name: string): SwoConfiguration {
-  let configFile: ConfigFile
+  const fullName = path.join(process.cwd(), name)
 
-  if (fs.existsSync(`${name}.json`)) {
-    configFile = readJsonConfig(`${name}.json`)
-  } else if (fs.existsSync(`${name}.js`)) {
-    configFile = readJsConfig(`${name}.js`)
-  } else if (fs.existsSync(`${name}.ts`)) {
-    configFile = readTsConfig(`${name}.ts`)
+  let configFile: ConfigFile
+  if (fs.existsSync(`${fullName}.json`)) {
+    configFile = readJsonConfig(`${fullName}.json`)
+  } else if (fs.existsSync(`${fullName}.js`)) {
+    configFile = readJsConfig(`${fullName}.js`)
+  } else if (fs.existsSync(`${fullName}.ts`)) {
+    configFile = readTsConfig(`${fullName}.ts`)
   } else {
     configFile = {}
   }
