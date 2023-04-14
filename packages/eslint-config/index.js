@@ -93,7 +93,11 @@ module.exports = [
       "ts/no-unused-vars": ["warn", unusedOptions],
       "ts/consistent-type-imports": [
         "warn",
-        { prefer: "type-imports", fixStyle: "inline-type-imports" },
+        {
+          prefer: "type-imports",
+          fixStyle: "inline-type-imports",
+          disallowTypeAnnotations: false,
+        },
       ],
       "tsdoc/syntax": "warn",
       "imports/imports": "warn",
