@@ -103,23 +103,26 @@ function readTsConfig(file: string) {
 
 function parseLogLevel(level: unknown): DiagLogLevel {
   if (typeof level !== "string") {
+    console.warn(`invalid log level`)
     return DiagLogLevel.INFO
-  } else {
-    switch (level.toLowerCase()) {
-      case "verbose":
-        return DiagLogLevel.VERBOSE
-      case "debug":
-        return DiagLogLevel.DEBUG
-      case "info":
-        return DiagLogLevel.INFO
-      case "warn":
-        return DiagLogLevel.WARN
-      case "error":
-        return DiagLogLevel.ERROR
-      case "none":
-        return DiagLogLevel.NONE
-      default:
-        return DiagLogLevel.INFO
+  }
+
+  switch (level.toLowerCase()) {
+    case "verbose":
+      return DiagLogLevel.VERBOSE
+    case "debug":
+      return DiagLogLevel.DEBUG
+    case "info":
+      return DiagLogLevel.INFO
+    case "warn":
+      return DiagLogLevel.WARN
+    case "error":
+      return DiagLogLevel.ERROR
+    case "none":
+      return DiagLogLevel.NONE
+    default: {
+      console.warn(`invalid log level "${level}"`)
+      return DiagLogLevel.INFO
     }
   }
 }
