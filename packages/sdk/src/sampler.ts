@@ -7,7 +7,7 @@ import {
   type DiagLogger,
   type Link,
   type SpanContext,
-  type SpanKind,
+  SpanKind,
   trace,
   type TraceState,
 } from "@opentelemetry/api"
@@ -16,6 +16,7 @@ import {
   SamplingDecision,
   type SamplingResult,
 } from "@opentelemetry/sdk-trace-base"
+import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import * as oboe from "@swotel/bindings"
 
 import { type SwoConfiguration } from "./config"
@@ -49,15 +50,20 @@ export class SwoSampler implements Sampler {
   shouldSample(
     parentContext: Context,
     _traceId: string,
-    _spanName: string,
-    _spanKind: SpanKind,
+    spanName: string,
+    spanKind: SpanKind,
     attributes: Attributes,
     _links: Link[],
   ): SamplingResult {
     const parentSpanContext = trace.getSpanContext(parentContext)
     const traceOptions = getTraceOptions(parentContext)
 
-    const decisions = this.oboeDecisions(parentSpanContext, traceOptions)
+    const tracingMode = this.tracingMode(spanName, spanKind, attributes)
+    const decisions = this.oboeDecisions(
+      parentSpanContext,
+      traceOptions,
+      tracingMode,
+    )
 
     if (decisions.status > oboe.TRACING_DECISIONS_OK) {
       this.logger.warn(
@@ -98,6 +104,7 @@ export class SwoSampler implements Sampler {
   private oboeDecisions(
     parentSpanContext: SpanContext | undefined,
     traceOptions: TraceOptions | undefined,
+    tracingMode: oboe.Context.DecisionsOptions["custom_tracing_mode"],
   ): oboe.Context.DecisionsResult {
     let traceparent: string | null = null
     if (
@@ -111,7 +118,7 @@ export class SwoSampler implements Sampler {
     return oboe.Context.getDecisions({
       in_xtrace: traceparent,
       custom_sample_rate: oboe.SETTINGS_UNSET,
-      custom_tracing_mode: oboe.SETTINGS_UNSET,
+      custom_tracing_mode: tracingMode,
       custom_trigger_mode: this.config.triggerTraceEnabled
         ? oboe.TRIGGER_ENABLED
         : oboe.TRIGGER_DISABLED,
@@ -123,6 +130,42 @@ export class SwoSampler implements Sampler {
       header_timestamp: traceOptions?.timestamp,
       tracestate: parentSpanContext?.traceState?.get(TRACESTATE_SW_KEY),
     })
+  }
+
+  private tracingMode(
+    spanName: string,
+    spanKind: SpanKind,
+    attributes: Attributes,
+  ): oboe.Context.DecisionsOptions["custom_tracing_mode"] {
+    if (!this.config.transactionSettings) {
+      return oboe.SETTINGS_UNSET
+    }
+
+    const kindName = SpanKind[spanKind]
+
+    const httpScheme = attributes[SemanticAttributes.HTTP_SCHEME]?.toString()
+    const netHostName = attributes[SemanticAttributes.NET_HOST_NAME]?.toString()
+    const netHostPort = attributes[SemanticAttributes.NET_HOST_PORT]?.toString()
+    const httpTarget = attributes[SemanticAttributes.HTTP_TARGET]?.toString()
+
+    let identifier: string
+    if (httpScheme && netHostName && httpTarget) {
+      identifier = `${httpScheme}://${netHostName}`
+      if (netHostPort) {
+        identifier = `${identifier}:${netHostPort}`
+      }
+      identifier = `${identifier}${httpTarget}`
+    } else {
+      identifier = `${kindName}:${spanName}`
+    }
+
+    for (const { tracing, matcher } of this.config.transactionSettings) {
+      if (matcher(identifier)) {
+        return tracing ? oboe.TRACE_ENABLED : oboe.TRACE_DISABLED
+      }
+    }
+
+    return oboe.SETTINGS_UNSET
   }
 
   private static otelSamplingDecisionFromOboe(
