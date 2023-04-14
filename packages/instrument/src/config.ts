@@ -33,7 +33,10 @@ export interface ConfigFile {
 type LogLevel = "verbose" | "debug" | "info" | "warn" | "error" | "none"
 type TransactionSetting = {
   tracing: "enabled" | "disabled"
-} & ({ regex: RegExp | string } | { matcher: (identifier: string) => boolean })
+} & (
+  | { regex: RegExp | string }
+  | { matcher: (identifier: string) => boolean | undefined }
+)
 
 export function readConfig(name: string): SwoConfiguration {
   const fullName = path.join(process.cwd(), name)

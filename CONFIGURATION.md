@@ -1,0 +1,1 @@
+packages/instrument/CONFIGURATION.md
