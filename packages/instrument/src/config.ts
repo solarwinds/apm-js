@@ -27,8 +27,16 @@ export interface ConfigFile {
   collector?: string
   trustedPath?: string
   logLevel?: LogLevel
+  transactionSettings?: TransactionSetting[]
 }
+
 type LogLevel = "verbose" | "debug" | "info" | "warn" | "error" | "none"
+type TransactionSetting = {
+  tracing: "enabled" | "disabled"
+} & (
+  | { regex: RegExp | string }
+  | { matcher: (identifier: string) => boolean | undefined }
+)
 
 export function readConfig(name: string): SwoConfiguration {
   const fullName = path.join(process.cwd(), name)
@@ -55,6 +63,7 @@ export function readConfig(name: string): SwoConfiguration {
         parser: parseLogLevel,
         default: "info",
       },
+      transactionSettings: { file: true, parser: parseTransactionSettings },
     },
     configFile as Record<string, unknown>,
     "SW_APM_",
@@ -125,4 +134,70 @@ function parseLogLevel(level: unknown): DiagLogLevel {
       return DiagLogLevel.INFO
     }
   }
+}
+
+function parseTransactionSettings(settings: unknown) {
+  const result: SwoConfiguration["transactionSettings"] = []
+
+  if (!Array.isArray(settings)) {
+    console.warn(`invalid transaction settings`)
+    return result
+  }
+
+  for (let i = 0; i < settings.length; i++) {
+    const setting = settings[i] as unknown
+    const error = `invalid transaction setting at index ${i}`
+
+    if (typeof setting !== "object" || setting === null) {
+      console.warn(`${error}, should be an object, ignoring`)
+      continue
+    }
+
+    if (
+      !("tracing" in setting) ||
+      !(["enabled", "disabled"] as (string | unknown)[]).includes(
+        setting.tracing,
+      )
+    ) {
+      console.warn(
+        `${error}, "tracing" must be "enabled" or "disabled", ignoring`,
+      )
+      continue
+    }
+    const tracing = setting.tracing === "enabled"
+
+    let matcher: (identifier: string) => boolean
+    if ("regex" in setting) {
+      const regex = setting.regex
+      if (typeof regex === "string") {
+        try {
+          const parsed = new RegExp(regex)
+          matcher = (identifier) => parsed.test(identifier)
+        } catch {
+          console.warn(
+            `${error}, "regex" is not a valid regular expression, ignoring`,
+          )
+          continue
+        }
+      } else if (regex instanceof RegExp) {
+        matcher = (identifier) => regex.test(identifier)
+      } else {
+        console.warn(`${error}, "regex" must be a string or a RegExp, ignoring`)
+        continue
+      }
+    } else if ("matcher" in setting) {
+      if (typeof setting.matcher !== "function") {
+        console.warn(`${error}, "matcher" must be a function, ignoring`)
+        continue
+      }
+      matcher = setting.matcher as (identifier: string) => boolean
+    } else {
+      console.warn(`${error}, must have either "regex" or "matcher", ignoring`)
+      continue
+    }
+
+    result.push({ tracing, matcher })
+  }
+
+  return result
 }

@@ -18,6 +18,12 @@ export interface SwoConfiguration
   certificate?: string
 
   triggerTraceEnabled?: boolean
+  transactionSettings?: TransactionSetting[]
+}
+
+export interface TransactionSetting {
+  tracing: boolean
+  matcher: (identifier: string) => boolean
 }
 
 export function init(
