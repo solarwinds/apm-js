@@ -152,9 +152,9 @@ export class SwoSampler implements Sampler {
     if (httpScheme && netHostName && httpTarget) {
       identifier = `${httpScheme}://${netHostName}`
       if (netHostPort) {
-        identifier = `${identifier}:${netHostPort}`
+        identifier += `:${netHostPort}`
       }
-      identifier = `${identifier}${httpTarget}`
+      identifier += httpTarget
     } else {
       identifier = `${kindName}:${spanName}`
     }
