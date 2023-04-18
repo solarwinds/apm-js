@@ -27,7 +27,7 @@ export interface TraceOptions {
   swKeys?: string
 
   custom: Record<string, string>
-  ignored: [string, string | undefined][]
+  ignored: ([string] | [string, string])[]
 }
 
 export function getTraceOptions(context: Context): TraceOptions | undefined {

@@ -256,15 +256,15 @@ export class SwoSampler implements Sampler {
       response.push(
         [TRACE_OPTIONS_RESPONSE_TRIGGER, triggerMessage].join(EQUALS_W3C),
       )
+    }
 
-      if (traceOptions.ignored.length > 0) {
-        response.push(
-          [
-            TRACE_OPTIONS_RESPONSE_IGNORED,
-            traceOptions.ignored.map(([k]) => k).join(COMMA_W3C),
-          ].join(EQUALS_W3C),
-        )
-      }
+    if (traceOptions.ignored.length > 0) {
+      response.push(
+        [
+          TRACE_OPTIONS_RESPONSE_IGNORED,
+          traceOptions.ignored.map(([k]) => k).join(COMMA_W3C),
+        ].join(EQUALS_W3C),
+      )
     }
 
     return response.join(";")
