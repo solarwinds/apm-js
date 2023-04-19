@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@swotel/instrument": "workspace:^",
-    "axios": "^1.3.4",
+    "axios": "^1.3.5",
     "express": "^4.18.2"
   },
   "devDependencies": {
