@@ -49,9 +49,7 @@ describe("swValue", () => {
     it("uses the invalid span id if the parent span context is undefined", () => {
       const decisions = mock.oboeDecisions()
 
-      expect(swValue(undefined, decisions)).toMatch(
-        new RegExp(`^${INVALID_SPANID}-`),
-      )
+      expect(swValue(undefined, decisions)).toStartWith(INVALID_SPANID)
     })
 
     it("returns the right value when do_sample is not set", () => {

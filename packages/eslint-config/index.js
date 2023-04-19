@@ -40,6 +40,7 @@ module.exports = [
     rules: {
       ...jestPlugin.configs.recommended.rules,
       ...jestPlugin.configs.style.rules,
+      "jest/valid-title": ["error", { ignoreTypeOfDescribeName: true }],
     },
   },
   // js files assume node environment with es2021

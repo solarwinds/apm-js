@@ -3,10 +3,13 @@ import { randomBytes, randomInt } from "node:crypto"
 import {
   type Attributes,
   type Context,
+  createTraceState,
+  type DiagLogger,
   type SpanContext,
   SpanKind,
   type SpanOptions,
   TraceFlags,
+  type TraceState,
 } from "@opentelemetry/api"
 import { hrTime, type InstrumentationLibrary } from "@opentelemetry/core"
 import { Resource } from "@opentelemetry/resources"
@@ -90,6 +93,10 @@ export function spanOptions(override: Partial<SpanOptions> = {}): SpanOptions {
   return { ...base, ...override }
 }
 
+export function traceState(raw?: string): TraceState {
+  return createTraceState(raw)
+}
+
 export function span(
   t?: Tracer,
   name?: string,
@@ -147,4 +154,24 @@ export function oboeDecisions(
   }
 
   return { ...base, ...override }
+}
+
+export function logger(): DiagLogger {
+  return {
+    error: () => {
+      /* noop */
+    },
+    warn: () => {
+      /* noop */
+    },
+    info: () => {
+      /* noop */
+    },
+    debug: () => {
+      /* noop */
+    },
+    verbose: () => {
+      /* noop */
+    },
+  }
 }
