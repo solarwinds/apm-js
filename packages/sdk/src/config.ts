@@ -16,6 +16,7 @@ export interface SwoConfiguration
   serviceKey: string
   collector?: string
   certificate?: string
+  metricFormat?: number
 
   triggerTraceEnabled?: boolean
   transactionSettings?: TransactionSetting[]
@@ -56,7 +57,7 @@ export function init(
     ec2_metadata_timeout: -1,
     grpc_proxy: "",
     stdout_clear_nonblocking: 0,
-    metric_format: 0,
+    metric_format: config.metricFormat ?? 0,
   })
   if (reporter.init_status !== oboe.INIT_OK) {
     throw new OboeError("Reporter", reporter.init_status)
