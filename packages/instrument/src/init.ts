@@ -1,8 +1,8 @@
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { SwoSDK } from "@swotel/sdk"
 
-import { readConfig } from "./config"
 import aoCert from "./appoptics.crt"
+import { readConfig } from "./config"
 
 export function init(configName: string) {
   /* eslint-disable-next-line ts/no-var-requires */
