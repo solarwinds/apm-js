@@ -1,6 +1,7 @@
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { SwoSDK } from "@swotel/sdk"
 
+import aoCert from "./appoptics.crt"
 import { readConfig } from "./config"
 
 export function init(configName: string) {
@@ -18,6 +19,14 @@ export function init(configName: string) {
     })
 
     const config = readConfig(configName)
+
+    if (config.collector?.includes("appoptics.com")) {
+      config.metricFormat = 1
+
+      if (!config.certificate) {
+        config.certificate = aoCert
+      }
+    }
 
     const sdk = new SwoSDK({
       ...config,
