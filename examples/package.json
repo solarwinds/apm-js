@@ -6,7 +6,7 @@
   },
   "devDependencies": {
     "@swotel/eslint-config": "workspace:^",
-    "eslint": "^8.38.0",
-    "prettier": "^2.8.7"
+    "eslint": "^8.40.0",
+    "prettier": "^2.8.8"
   }
 }

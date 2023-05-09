@@ -74,6 +74,39 @@ services:
     links:
       - collector
 
+  20-alpine:
+    build:
+      context: .
+      dockerfile: 20-alpine.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+  20-debian:
+    build:
+      context: .
+      dockerfile: 20-debian.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+  20-ubi:
+    build:
+      context: .
+      dockerfile: 20-ubi.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+  20-ubuntu:
+    build:
+      context: .
+      dockerfile: 20-ubuntu.Dockerfile
+    volumes:
+      - ..:/swotel
+    links:
+      - collector
+
   collector:
     image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v1.2.0}
     volumes:
