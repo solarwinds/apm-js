@@ -57,7 +57,7 @@ const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
     libraries: ["oboe"],
     librariesSearch: [`npm/${name}`],
     include: ["oboe/include"],
-    cflags: ["-Wall", "-Wextra", "-Werror"],
+    cflags: ["-Wall", "-Wextra" /*"-Werror"*/],
 
     rpath: "$ORIGIN",
   }

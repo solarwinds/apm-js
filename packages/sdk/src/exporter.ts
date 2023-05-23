@@ -10,7 +10,7 @@ import {
 import {
   type ExportResult,
   ExportResultCode,
-  hrTimeToMilliseconds,
+  hrTimeToMicroseconds,
 } from "@opentelemetry/core"
 import {
   type ReadableSpan,
@@ -45,7 +45,7 @@ export class SwoExporter implements SpanExporter {
         const parentMd = SwoExporter.metadata(parentContext)
         evt = oboe.Context.createEntry(
           md,
-          hrTimeToMilliseconds(span.startTime),
+          hrTimeToMicroseconds(span.startTime),
           parentMd,
         )
 
@@ -53,12 +53,16 @@ export class SwoExporter implements SpanExporter {
           SwoExporter.addTxname(context, evt)
         }
       } else {
-        evt = oboe.Context.createEntry(md, hrTimeToMilliseconds(span.startTime))
+        evt = oboe.Context.createEntry(md, hrTimeToMicroseconds(span.startTime))
         SwoExporter.addTxname(context, evt)
       }
 
-      evt.addInfo("Layer", span.name)
-      evt.addInfo("sw.span_kind", SpanKind[span.kind])
+      const kind = SpanKind[span.kind]
+      const layer = `${kind}:${span.name}`
+
+      evt.addInfo("Layer", layer)
+      evt.addInfo("sw.span_name", span.name)
+      evt.addInfo("sw.span_kind", kind)
       evt.addInfo("Language", "Node.js")
       for (const [key, value] of Object.entries(span.attributes)) {
         evt.addInfo(key, SwoExporter.attributeValue(value))
@@ -73,8 +77,8 @@ export class SwoExporter implements SpanExporter {
         }
       }
 
-      evt = oboe.Context.createExit(hrTimeToMilliseconds(span.endTime))
-      evt.addInfo("Layer", span.name)
+      evt = oboe.Context.createExit(hrTimeToMicroseconds(span.endTime))
+      evt.addInfo("Layer", layer)
       this.sendReport(evt)
 
       cache.clear(context)
@@ -106,7 +110,7 @@ export class SwoExporter implements SpanExporter {
   }
 
   private reportErrorEvent(event: TimedEvent) {
-    const evt = oboe.Context.createEvent(hrTimeToMilliseconds(event.time))
+    const evt = oboe.Context.createEvent(hrTimeToMicroseconds(event.time))
     evt.addInfo("Label", "error")
     evt.addInfo("Spec", "error")
 
@@ -145,7 +149,7 @@ export class SwoExporter implements SpanExporter {
   }
 
   private reportInfoEvent(event: TimedEvent) {
-    const evt = oboe.Context.createEvent(hrTimeToMilliseconds(event.time))
+    const evt = oboe.Context.createEvent(hrTimeToMicroseconds(event.time))
     evt.addInfo("Label", "info")
     for (const [key, value] of Object.entries(event.attributes ?? {})) {
       evt.addInfo(key, SwoExporter.attributeValue(value))

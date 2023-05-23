@@ -1727,7 +1727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-metrics@npm:1.12.0":
+"@opentelemetry/sdk-metrics@npm:1.12.0, @opentelemetry/sdk-metrics@npm:1.12.x":
   version: 1.12.0
   resolution: "@opentelemetry/sdk-metrics@npm:1.12.0"
   dependencies:
@@ -1960,7 +1960,7 @@ __metadata:
     prettier: ^2.8.8
     ts-jest: ^29.1.0
     typescript: ^5.0.4
-    zig-build: ^0.1.1
+    zig-build: ^0.2.0
   dependenciesMeta:
     "@swotel/bindings-linux-arm64-gnu":
       optional: true
@@ -2093,6 +2093,7 @@ __metadata:
     "@opentelemetry/core": 1.12.x
     "@opentelemetry/instrumentation-http": ^0.38.0
     "@opentelemetry/resources": 1.12.x
+    "@opentelemetry/sdk-metrics": 1.12.x
     "@opentelemetry/sdk-node": 0.38.x
     "@opentelemetry/sdk-trace-base": 1.12.x
     "@opentelemetry/semantic-conventions": 1.12.x
@@ -7144,9 +7145,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zig-build@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "zig-build@npm:0.1.1"
+"zig-build@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "zig-build@npm:0.2.0"
   dependencies:
     chalk: ^4.1.2
   peerDependencies:
@@ -7154,6 +7155,6 @@ __metadata:
   peerDependenciesMeta:
     node-addon-api:
       optional: true
-  checksum: ef7088ffa44c791e67fa0f645fc29dd51b05439ff8b371cc1f3c938665e69b7da86a40c6714f8cfa73269e658f015dd77e1c76df4128017c6a4391d1950c49ad
+  checksum: 0aeb56c7798efeb4221d85883a6f068e422c3e255292d0b3dc84e7a6121b7a442fce09bec866ba7c66bffbf2fa1fa9eb7ef2942ba7c29cc443badae92630b1a5
   languageName: node
   linkType: hard

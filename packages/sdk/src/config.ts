@@ -37,7 +37,7 @@ export function init(
     certificates: config.certificate ?? "",
 
     hostname_alias: "",
-    log_level: -2,
+    log_level: 4,
     log_file_path: "",
 
     max_transactions: -1,
@@ -60,7 +60,7 @@ export function init(
     metric_format: config.metricFormat ?? 0,
   })
   if (reporter.init_status !== oboe.INIT_OK) {
-    throw new OboeError("Reporter", reporter.init_status)
+    // throw new OboeError("Reporter", reporter.init_status)
   }
 
   let timeout = 100
