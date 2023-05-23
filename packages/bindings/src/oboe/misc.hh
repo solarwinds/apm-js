@@ -1,7 +1,7 @@
 #include <napi.h>
 #include <oboe.h>
 
-#include "util.hh"
+#include "../util.hh"
 
 swo::Object init_consts(swo::Object const exports) {
     exports.set("SETTINGS_VERSION", OBOE_SETTINGS_VERSION);
