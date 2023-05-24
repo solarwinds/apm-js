@@ -12,8 +12,7 @@ struct CallbackData {
 };
 void call_js_callback(Napi::Env env, Napi::Function cb, std::nullopt_t*, CallbackData* data) {
     if (env != nullptr) {
-        auto latency = Napi::Number::New(env, data->latency);
-        cb.Call({latency});
+        cb.Call({Napi::Number::New(env, data->latency)});
     }
     delete data;
 }
