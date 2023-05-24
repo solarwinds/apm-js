@@ -85,9 +85,7 @@ Napi::Value set_callback(swo::CallbackInfo const info) {
         delete data;
     }
 
-    if (arg.IsNull()) {
-        set = false;
-    } else {
+    if (!arg.IsNull()) {
         auto callback =
             js_callback::New(info, arg.As<Napi::Function>(), "Event Loop Callback", 0, 1);
         auto granularity = info.arg<unsigned int>(1);
@@ -108,6 +106,8 @@ Napi::Value set_callback(swo::CallbackInfo const info) {
         uv_check_start(&check_handle, check_callback);
 
         set = true;
+    } else {
+        set = false;
     }
 
     return info.undefined();
