@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "node build.js",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js test/** && clang-format src/** -n --Werror",
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js test/** && clang-format src/*.hh src/*/* -n --Werror",
     "test": "jest --verbose"
   },
   "devDependencies": {
