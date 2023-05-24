@@ -9,7 +9,9 @@ import { meter } from "."
 const GRANULARITY = 4
 
 const latency = meter.createHistogram("event_loop.latency", {
-  description: "measures the latency of the event loop",
+  description: `measures the latency of the event loop over ${
+    GRANULARITY + 1
+  } iterations`,
   unit: "μs",
   valueType: ValueType.DOUBLE,
 })
