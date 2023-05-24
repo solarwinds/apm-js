@@ -10,12 +10,12 @@ import { meter } from "."
 
 const major = meter.createHistogram("gc.major", {
   description: "measures the duration of major GC cycles",
-  unit: "ms",
+  unit: "μs",
   valueType: ValueType.DOUBLE,
 })
 const minor = meter.createHistogram("gc.minor", {
   description: "measures the duration of minor GC cycles",
-  unit: "ms",
+  unit: "μs",
   valueType: ValueType.DOUBLE,
 })
 
@@ -24,11 +24,11 @@ const obs = new PerformanceObserver((list) => {
     const detail = entry.detail as NodeGCPerformanceDetail
     switch (detail.kind) {
       case constants.NODE_PERFORMANCE_GC_MAJOR: {
-        major.record(entry.duration)
+        major.record(entry.duration * 1000)
         break
       }
       case constants.NODE_PERFORMANCE_GC_MINOR: {
-        minor.record(entry.duration)
+        minor.record(entry.duration * 1000)
         break
       }
       default: {
@@ -39,7 +39,7 @@ const obs = new PerformanceObserver((list) => {
 })
 
 export function start() {
-  obs.observe({ type: "gc", buffered: true })
+  obs.observe({ type: "gc" })
 }
 export function stop() {
   obs.disconnect()
