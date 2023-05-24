@@ -41,6 +41,7 @@ enum OBOE_DEBUG_MODULE {
     OBOE_MODULE_HOST_ID_SERVICE,
     OBOE_MODULE_AWS_RESOURCE_PROVIDER,
     OBOE_MODULE_AZURE_RESOURCE_PROVIDER,
+    OBOE_MODULE_UAMSCLIENT_RESOURCE_PROVIDER
 };
 
 /** Compile time debug logging detail level - cannot log more detailed than this. */

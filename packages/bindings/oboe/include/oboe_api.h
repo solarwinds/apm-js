@@ -315,15 +315,15 @@ class Event : private oboe_event_t {
     ~Event();
 
     // called e.g. from Python e.addInfo("Key", None) & Ruby e.addInfo("Key", nil)
-    bool addInfo(char *key, void *val);
-    bool addInfo(char *key, const std::string& val);
-    bool addInfo(char *key, long val);
-    bool addInfo(char *key, double val);
-    bool addInfo(char *key, bool val);
-    bool addInfo(char *key, const long *vals, int num);
+    bool addInfo(const char *key, void *val);
+    bool addInfo(const char *key, const std::string& val);
+    bool addInfo(const char *key, long val);
+    bool addInfo(const char *key, double val);
+    bool addInfo(const char *key, bool val);
+    bool addInfo(const char *key, const long *vals, int num);
 
 #ifndef SWIG  // for profiling only used by Ruby gem cpp-code
-    bool addInfo(char *key, const std::vector<FrameData> &vals);
+    bool addInfo(const char *key, const std::vector<FrameData> &vals);
 #endif
 
     bool addEdge(oboe_metadata_t *md);

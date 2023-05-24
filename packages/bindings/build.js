@@ -29,10 +29,10 @@ const targets = [
     cpu: "x86_64_v3",
   },
 ]
-const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
+const configs = targets.flatMap(({ name, oboe, target, cpu, glibc }) => {
   fs.copyFileSync(`oboe/${oboe}`, `npm/${name}/liboboe.so`)
 
-  const config = {
+  const oboeConfig = {
     target,
     cpu,
     glibc,
@@ -57,12 +57,30 @@ const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
     libraries: ["oboe"],
     librariesSearch: [`npm/${name}`],
     include: ["oboe/include"],
-    cflags: ["-Wall", "-Wextra" /*"-Werror"*/],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
 
     rpath: "$ORIGIN",
   }
 
-  return [name, config]
+  const metricsConfig = {
+    target,
+    cpu,
+    glibc,
+    output: `npm/${name}/metrics.node`,
+    type: "shared",
+
+    sources: ["src/metrics/metrics.cc"],
+    napiVersion: 8,
+    std: "c++17",
+    exceptions: true,
+
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+  }
+
+  return [
+    [`${name}:oboe`, oboeConfig],
+    [`${name}:metrics`, metricsConfig],
+  ]
 })
 
 build(Object.fromEntries(configs), __dirname)

@@ -17,7 +17,7 @@ import {
   type SamplingResult,
 } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
-import * as oboe from "@swotel/bindings"
+import { oboe } from "@swotel/bindings"
 
 import { type SwoConfiguration } from "./config"
 import {

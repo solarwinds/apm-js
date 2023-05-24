@@ -293,27 +293,27 @@ Event *Event::startTrace(const oboe_metadata_t *md) {
 }
 
 // called e.g. from Python e.addInfo("Key", None) & Ruby e.addInfo("Key", nil)
-bool Event::addInfo(char *key, void *val) {
+bool Event::addInfo(const char *key, void *val) {
     // oboe_event_add_info(evt, key, NULL) does nothing
     (void)key;
     (void)val;
     return true;
 }
 
-bool Event::addInfo(char *key, const std::string& val) {
+bool Event::addInfo(const char *key, const std::string& val) {
     return oboe_event_add_info(this, key, val.c_str()) == 0;
 }
 
-bool Event::addInfo(char *key, long val) {
+bool Event::addInfo(const char *key, long val) {
     int64_t val_ = val;
     return oboe_event_add_info_int64(this, key, val_) == 0;
 }
 
-bool Event::addInfo(char *key, double val) {
+bool Event::addInfo(const char *key, double val) {
     return oboe_event_add_info_double(this, key, val) == 0;
 }
 
-bool Event::addInfo(char *key, bool val) {
+bool Event::addInfo(const char *key, bool val) {
     return oboe_event_add_info_bool(this, key, val) == 0;
 }
 
@@ -321,7 +321,7 @@ bool Event::addInfo(char *key, bool val) {
  * this function was added for profiling
  * to report the timestamps of omitted snapshots
  */
-bool Event::addInfo(char *key, const long *vals, int num) {
+bool Event::addInfo(const char *key, const long *vals, int num) {
     oboe_bson_append_start_array(&(this->bbuf), key);
     for (int i = 0; i < num; i++) {
         oboe_bson_append_long(&(this->bbuf), std::to_string(i).c_str(), (int64_t)vals[i]);
@@ -330,11 +330,12 @@ bool Event::addInfo(char *key, const long *vals, int num) {
     return true;
 }
 
+#ifndef SWIG
 /*
  * A profiling specific addInfo function
  * to add the frames that make up a snapshot
  */
-bool Event::addInfo(char *key, const std::vector<FrameData> &vals) {
+bool Event::addInfo(const char *key, const std::vector<FrameData> &vals) {
     oboe_bson_append_start_array(&(this->bbuf), key);
     int i = 0;
     for (FrameData val : vals) {
@@ -355,6 +356,7 @@ bool Event::addInfo(char *key, const std::vector<FrameData> &vals) {
     oboe_bson_append_finish_object(&(this->bbuf));
     return true;
 }
+#endif
 
 bool Event::addEdge(oboe_metadata_t *md) {
     return oboe_event_add_edge(this, md) == 0;

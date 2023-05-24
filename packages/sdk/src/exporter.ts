@@ -18,7 +18,7 @@ import {
   type TimedEvent,
 } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
-import * as oboe from "@swotel/bindings"
+import { oboe } from "@swotel/bindings"
 
 import { cache } from "./cache"
 import { parentSpanContext, traceParent } from "./context"

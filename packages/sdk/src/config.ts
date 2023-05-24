@@ -1,6 +1,6 @@
 import { type DiagLogger } from "@opentelemetry/api"
 import { type NodeSDKConfiguration } from "@opentelemetry/sdk-node"
-import * as oboe from "@swotel/bindings"
+import { oboe } from "@swotel/bindings"
 
 import { OboeError } from "./error"
 

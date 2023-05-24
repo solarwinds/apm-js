@@ -1,10 +1,10 @@
 import * as fs from "node:fs/promises"
 
-import * as oboe from ".."
+import { oboe } from ".."
 
 const INIT_TIMEOUT = 10_000
 
-describe("init", () => {
+describe("Reporter", () => {
   beforeAll(async () => {
     if (process.env.TEST_TRUSTEDPATH) {
       const certificates = await fs.readFile(process.env.TEST_TRUSTEDPATH, {

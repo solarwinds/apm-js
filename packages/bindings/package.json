@@ -2,10 +2,10 @@
   "name": "@swotel/bindings",
   "version": "0.1.0",
   "main": "index.js",
-  "types": "index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "index.js",
-    "index.d.ts"
+    "types/"
   ],
   "scripts": {
     "build": "node build.js",

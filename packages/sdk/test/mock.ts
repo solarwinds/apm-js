@@ -20,7 +20,7 @@ import {
   Tracer,
   type TracerConfig,
 } from "@opentelemetry/sdk-trace-base"
-import type * as oboe from "@swotel/bindings"
+import type { oboe } from "@swotel/bindings"
 
 import { type TraceOptions } from "../src/context"
 
