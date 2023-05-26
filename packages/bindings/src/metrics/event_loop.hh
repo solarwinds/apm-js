@@ -67,9 +67,9 @@ struct EventLoopData {
     int poll_timeout;
 
     // nanos latency sum
-    uint64_t latency;
+    uint64_t latency_sum;
     // iteration count since last callback
-    unsigned int count;
+    unsigned int iteration_count;
 };
 
 static uv_prepare_t prepare_handle{};
@@ -110,18 +110,18 @@ void on_check(uv_check_t* handle) {
     }
 
     data->prev_check_time = check_time;
-    data->latency += latency;
-    if (data->count++ < data->granularity) {
+    data->latency_sum += latency;
+    if (data->iteration_count++ < data->granularity) {
         return;
     }
 
     // by calling this we are scheduling `call_js_callback` to be run within a JS context with the
     // provided `JsData`. `call_js_callback` will in turn call the actual JS callback passed to
     // `setCallback` which we can't do here outside of the JS context
-    data->js_callback_scheduler.BlockingCall(new JsData{data->latency});
+    data->js_callback_scheduler.BlockingCall(new JsData{data->latency_sum});
 
-    data->latency = 0;
-    data->count = 0;
+    data->latency_sum = 0;
+    data->iteration_count = 0;
 }
 
 Napi::Value set_callback(swo::CallbackInfo const info) {
@@ -155,7 +155,7 @@ Napi::Value set_callback(swo::CallbackInfo const info) {
             .js_callback_scheduler = std::move(js_callback_scheduler),
             .granularity = granularity,
             .prev_check_time = 0,
-            .count = 0,
+            .iteration_count = 0,
         };
         prepare_handle.data = data;
         check_handle.data = data;
