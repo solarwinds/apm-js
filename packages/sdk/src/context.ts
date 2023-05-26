@@ -5,7 +5,7 @@ import {
   type SpanContext,
 } from "@opentelemetry/api"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
-import type * as oboe from "@swotel/bindings"
+import type { oboe } from "@swotel/bindings"
 
 import { cache } from "./cache"
 

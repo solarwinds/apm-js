@@ -9,6 +9,7 @@ import {
   type SpanExporter,
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
+import { oboe } from "@swotel/bindings"
 
 import { CompoundSpanProcessor } from "./compound-processor"
 import { init, type SwoConfiguration } from "./config"
@@ -36,7 +37,7 @@ export class SwoSDK extends NodeSDK {
     let spanProcessor: SpanProcessor | undefined = undefined
     let textMapPropagator: TextMapPropagator | undefined = undefined
 
-    if (CURRENT_PLATFORM_SUPPORTED) {
+    if (CURRENT_PLATFORM_SUPPORTED && !(oboe instanceof Error)) {
       try {
         const reporter = init(
           config,
@@ -90,6 +91,7 @@ export class SwoSDK extends NodeSDK {
         `current platform: ${CURRENT_PLATFORM}`,
         `supported platforms: ${SUPPORTED_PLATFORMS.join(", ")}`,
       )
+      logger.debug("oboe", oboe)
     }
 
     super({

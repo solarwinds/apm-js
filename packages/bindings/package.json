@@ -2,15 +2,14 @@
   "name": "@swotel/bindings",
   "version": "0.1.0",
   "main": "index.js",
-  "types": "index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "index.js",
-    "index.d.ts",
-    "is-musl.js"
+    "types/"
   ],
   "scripts": {
     "build": "node build.js",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js test/** && clang-format src/** -n --Werror",
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js test/** && clang-format src/*.hh src/*/* -n --Werror",
     "test": "jest --verbose"
   },
   "devDependencies": {
@@ -23,7 +22,7 @@
     "prettier": "^2.8.8",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4",
-    "zig-build": "^0.1.1"
+    "zig-build": "^0.2.0"
   },
   "optionalDependencies": {
     "@swotel/bindings-linux-arm64-gnu": "worspace:*",

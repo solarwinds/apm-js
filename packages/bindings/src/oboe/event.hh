@@ -4,7 +4,7 @@
 #include <napi.h>
 #include <oboe_api.h>
 
-#include "util.hh"
+#include "../util.hh"
 
 class JsEvent : public swo::Class<JsEvent, Event> {
   public:

@@ -10,6 +10,7 @@ Napi::Object JsMetadata::init(Napi::Env env, Napi::Object exports) {
         .method<&JsMetadata::isSampled>("isSampled")
         .static_method<makeRandom>("makeRandom")
         .static_method<fromString>("fromString")
+        .method<&JsMetadata::toString>("toString")
         .register_class(env, exports);
 }
 
@@ -34,4 +35,8 @@ Napi::Value JsMetadata::makeRandom(swo::CallbackInfo const info) {
 Napi::Value JsMetadata::fromString(swo::CallbackInfo const info) {
     auto s = info.arg<std::string>(0);
     return JsMetadata::js_new(info, Metadata::fromString(s));
+}
+
+Napi::Value JsMetadata::toString(swo::CallbackInfo const info) {
+    return info.value(base->toString());
 }

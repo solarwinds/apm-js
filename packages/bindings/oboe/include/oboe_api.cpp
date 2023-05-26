@@ -1,14 +1,10 @@
 /**
  * @file oboe_api.cpp - C++ liboboe wrapper primarily used via swig interfaces
  * by the python and ruby agents
- *
- * TODO:  This doc is outdated
- * This API should follow https://github.com/tracelytics/tracelons/wiki/Instrumentation-API
- **/
+ */
 
 #include "oboe_api.h"
 #include <algorithm>
-/////// Metatdata ///////
 
 Metadata::Metadata(const oboe_metadata_t *md) {
     oboe_metadata_copy(this, md);
@@ -40,7 +36,7 @@ bool Metadata::isSampled() {
     return oboe_metadata_is_sampled(this);
 }
 
-Metadata *Metadata::fromString(std::string s) {
+Metadata *Metadata::fromString(const std::string& s) {
     oboe_metadata_t md;
     oboe_metadata_init(&md);
     oboe_metadata_fromstr(&md, s.data(), s.size());
@@ -175,7 +171,7 @@ void Context::set(oboe_metadata_t *md) {
     oboe_context_set(md);
 }
 
-void Context::fromString(std::string s) {
+void Context::fromString(const std::string& s) {
     oboe_context_set_fromstr(s.data(), s.size());
 }
 
@@ -201,7 +197,7 @@ bool Context::isSampled() {
     return oboe_context_is_sampled();
 }
 
-std::string Context::validateTransformServiceName(std::string service_key) {
+std::string Context::validateTransformServiceName(const std::string& service_key) {
     char service_key_cpy[71 + 1 + 256] = {0};  // Flawfinder: ignore, key=71, colon=1, name<=255
     std::copy_n(service_key.begin(), std::min(service_key.size(), sizeof(service_key_cpy)), std::begin(service_key_cpy));
     int len = strlen(service_key_cpy);                                           // Flawfinder: ignore
@@ -226,20 +222,10 @@ bool Context::isLambda() {
     return (bool) oboe_is_lambda();
 }
 
-/**
- * Create a new event object that continues the trace context.
- *
- * NOTE: The returned object must be "delete"d.
- */
 Event *Context::createEvent() {
     return new Event(Context::get());
 }
 
-/**
- * Create a new event object with a new trace context.
- *
- * NOTE: The returned object must be "delete"d.
- */
 Event *Context::startTrace() {
     oboe_metadata_t *md = Context::get();
     oboe_metadata_random(md);
@@ -253,34 +239,36 @@ Event* Context::createEntry(const oboe_metadata_t *md, int64_t timestamp, const 
      * we need to set the thread local metadata the same task id as input parameter md but a different op_id.
      */
     auto thread_local_md = Context::get();
+    // set the thread_local_md to md to fulfill the same trace id requirement in Reporter::sendReport & oboe_event_send
     oboe_metadata_copy(thread_local_md, md);
-    // reset op_id to zeros
+    // reset op_id to zeros to fulfill the different op id requirement in Reporter::sendReport & oboe_event_send
     memset(thread_local_md->ids.op_id, 0, OBOE_MAX_OP_ID_LEN);
 
     auto event = new Event();
+    oboe_event_destroy(event);
     oboe_event_init(event, md, md->ids.op_id);
-    oboe_event_add_info(event, "Label", "entry");
-    oboe_event_add_info_int64(event, "Timestamp_u", timestamp);
-    if (parent_md) {
-        oboe_event_add_edge(event, parent_md);
+
+    event->addInfo("Label", std::string("entry"));
+    event->addInfo("Timestamp_u", timestamp);
+    if(parent_md) {
+        event->addEdge(const_cast<oboe_metadata*>(parent_md));
     }
     return event;
 }
 
 Event* Context::createEvent(int64_t timestamp) {
     auto event = new Event(Context::get());
-    oboe_event_add_info_int64(event, "Timestamp_u", timestamp);
+    event->addInfo("Timestamp_u", timestamp);
     return event;
 }
 
 Event* Context::createExit(int64_t timestamp) {
     auto event = createEvent(timestamp);
-    oboe_event_add_info(event, "Label", "exit");
+    event->addInfo("Label", std::string("exit"));
     return event;
 }
 
 /////// Event ///////
-
 Event::Event() {
     oboe_event_init(this, Context::get(), NULL);
 }
@@ -305,27 +293,27 @@ Event *Event::startTrace(const oboe_metadata_t *md) {
 }
 
 // called e.g. from Python e.addInfo("Key", None) & Ruby e.addInfo("Key", nil)
-bool Event::addInfo(char *key, void *val) {
+bool Event::addInfo(const char *key, void *val) {
     // oboe_event_add_info(evt, key, NULL) does nothing
     (void)key;
     (void)val;
     return true;
 }
 
-bool Event::addInfo(char *key, const std::string &val) {
-    return oboe_event_add_info(this, key, val.data()) == 0;
+bool Event::addInfo(const char *key, const std::string& val) {
+    return oboe_event_add_info(this, key, val.c_str()) == 0;
 }
 
-bool Event::addInfo(char *key, long val) {
+bool Event::addInfo(const char *key, long val) {
     int64_t val_ = val;
     return oboe_event_add_info_int64(this, key, val_) == 0;
 }
 
-bool Event::addInfo(char *key, double val) {
+bool Event::addInfo(const char *key, double val) {
     return oboe_event_add_info_double(this, key, val) == 0;
 }
 
-bool Event::addInfo(char *key, bool val) {
+bool Event::addInfo(const char *key, bool val) {
     return oboe_event_add_info_bool(this, key, val) == 0;
 }
 
@@ -333,7 +321,7 @@ bool Event::addInfo(char *key, bool val) {
  * this function was added for profiling
  * to report the timestamps of omitted snapshots
  */
-bool Event::addInfo(char *key, const long *vals, int num) {
+bool Event::addInfo(const char *key, const long *vals, int num) {
     oboe_bson_append_start_array(&(this->bbuf), key);
     for (int i = 0; i < num; i++) {
         oboe_bson_append_long(&(this->bbuf), std::to_string(i).c_str(), (int64_t)vals[i]);
@@ -342,11 +330,12 @@ bool Event::addInfo(char *key, const long *vals, int num) {
     return true;
 }
 
+#ifndef SWIG
 /*
  * A profiling specific addInfo function
  * to add the frames that make up a snapshot
  */
-bool Event::addInfo(char *key, const std::vector<FrameData> &vals) {
+bool Event::addInfo(const char *key, const std::vector<FrameData> &vals) {
     oboe_bson_append_start_array(&(this->bbuf), key);
     int i = 0;
     for (FrameData val : vals) {
@@ -367,25 +356,16 @@ bool Event::addInfo(char *key, const std::vector<FrameData> &vals) {
     oboe_bson_append_finish_object(&(this->bbuf));
     return true;
 }
+#endif
 
 bool Event::addEdge(oboe_metadata_t *md) {
     return oboe_event_add_edge(this, md) == 0;
 }
 
 bool Event::addHostname() {
-    static char oboe_hostname[HOST_NAME_MAX + 1] = {'\0'}; // Flawfinder: ignore
-
-    if (oboe_hostname[0] == '\0') {
-        (void)gethostname(oboe_hostname, sizeof(oboe_hostname) - 1);
-        if (oboe_hostname[0] == '\0') {
-            // Something is wrong but we don't want to to report this more than
-            // once so we'll set it to a minimal non-empty string.
-            OBOE_DEBUG_LOG_WARNING(OBOE_MODULE_LIBOBOE, "Failed to get hostname, setting it to '?'");
-            oboe_hostname[0] = '?';
-            oboe_hostname[1] = '\0';
-        }
-    }
-    return oboe_event_add_info(this, "Hostname", oboe_hostname) == 0;
+    char host[256] = {0};
+    gethostname(host, sizeof(host)/sizeof(char));
+    return oboe_event_add_info(this, "Hostname", host) == 0;
 }
 
 bool Event::addContextOpId(const oboe_metadata_t *md) {
@@ -530,8 +510,14 @@ MetricTags::MetricTags(size_t count) {
 
 MetricTags::~MetricTags() {
     for (size_t i = 0; i < size; i++) {
-        delete tags[i].key; tags[i].key = nullptr;
-        delete tags[i].value; tags[i].value = nullptr;
+        if (tags[i].key) {
+            free(tags[i].key);
+            tags[i].key = nullptr;
+        }
+        if (tags[i].value) {
+            free(tags[i].value);
+            tags[i].value = nullptr;
+        }
     }
     delete[] tags;
 }

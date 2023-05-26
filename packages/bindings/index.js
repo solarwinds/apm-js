@@ -12,9 +12,15 @@ function triple() {
   }
 }
 
-const t = triple()
-try {
-  module.exports = require(`@swotel/bindings-${t}`)
-} catch (err) {
-  module.exports = new Error(`unsupported platform ${t}`, { cause: err })
+function nativeRequireAssign(name, exports) {
+  const t = triple()
+  try {
+    exports[name] = require(`@swotel/bindings-${t}/${name}.node`)
+  } catch (cause) {
+    exports[name] = new Error(`unsupported platform ${t}`, { cause })
+  }
 }
+
+const e = (module.exports = {})
+nativeRequireAssign("oboe", e)
+nativeRequireAssign("metrics", e)

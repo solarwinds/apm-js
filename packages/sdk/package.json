@@ -16,6 +16,7 @@
     "@opentelemetry/api": "1.4.x",
     "@opentelemetry/core": "1.12.x",
     "@opentelemetry/resources": "1.12.x",
+    "@opentelemetry/sdk-metrics": "1.12.x",
     "@opentelemetry/sdk-node": "0.38.x",
     "@opentelemetry/sdk-trace-base": "1.12.x",
     "@opentelemetry/semantic-conventions": "1.12.x",

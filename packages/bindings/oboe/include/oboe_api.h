@@ -1,13 +1,8 @@
 /**
- * @file oboe_api.hpp - C++ liboboe wrapper primarily for generating SWIG interfaces
- * and used by Ruby c++ extension for profiling
- *
- * TODO:  This doc is outdated
- * This API should follow https://github.com/tracelytics/tracelons/wiki/Instrumentation-API
+ * C++ liboboe wrapper primarily for generating SWIG interfaces
  */
-
-#ifndef OBOE_API_HPP
-#define OBOE_API_HPP
+#ifndef OBOE_API_H
+#define OBOE_API_H
 
 #include <unistd.h>
 #include <cstdlib>
@@ -39,28 +34,47 @@ typedef struct frame_data {
 class Metadata : private oboe_metadata_t {
     friend class Reporter;
     friend class Context;
-
-   public:
+public:
     Metadata(const oboe_metadata_t *md);
     ~Metadata();
-
-    // these new objects are managed by SWIG %newobject
     /**
-     * Create a new event object using this Metadata's context.
-     *
-     * NOTE: The returned object must be "delete"d.
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @return Event*
      */
     Event *createEvent();
-
+    /**
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @return Metadata*
+     */
     Metadata *copy();
     bool isValid();
     bool isSampled();
-
+    /**
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @param sampled bool default=true
+     * @return Metadata*
+     */
     static Metadata *makeRandom(bool sampled = true);
-    static Metadata *fromString(std::string s);
-
+    /**
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @param s std::string
+     * @return Metadata*
+     */
+    static Metadata *fromString(const std::string& s);
+    /**
+     * Return this pointer
+     * No Object ownership changed via SWIG
+     * @return oboe_metadata_t*
+     */
     oboe_metadata_t *metadata();
-
 #ifdef SWIGJAVA
     std::string toStr();
 #else
@@ -169,10 +183,12 @@ class Context {
         long header_timestamp = 0);
 
     /**
-     * Get a pointer to the current context (from thread-local storage)
+     * Return a pointer to the current context
+     * Return a pointer in C++ heap
+     * No object ownership changed via SWIG
+     * @return oboe_metadata_t*
      */
     static oboe_metadata_t *get();
-
     /**
      * Get the current context as a printable string.
      */
@@ -189,10 +205,16 @@ class Context {
 
     /**
      * Set the current context from a string.
+     * @param s const std::string&
      */
-    static void fromString(std::string s);
+    static void fromString(const std::string& s);
 
-    // this new object is managed by SWIG %newobject
+    /**
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @return Metadata*
+     */
     static Metadata *copy();
 
     static void setSampledFlag();
@@ -206,7 +228,7 @@ class Context {
     /**
      * Perform validation and replacement of invalid characters on the given service key.
      */
-    static std::string validateTransformServiceName(std::string service_key);
+    static std::string validateTransformServiceName(const std::string& service_key);
 
     /**
      * Shut down the Oboe library.
@@ -235,31 +257,45 @@ class Context {
      */
     static bool isLambda();
 
-    // these new objects are managed by SWIG %newobject
     /**
-     * Create a new event object using the thread's context.
-     *
-     * NOTE: The returned object must be "delete"d.
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @return Event*
      */
     static Event *createEvent();
+    /**
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @return Event*
+     */
     static Event *startTrace();
-
     /**
      * Create entry event with user-defined metadata and timestamp
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
      * @param md const oboe_metadata_t *
      * @param timestamp int64_t
-     * @param parent_md const oboe_metadata_t *
+     * @param parent_md const oboe_metadata_t * default = nullptr
      * @return Event*
      */
     static Event* createEntry(const oboe_metadata_t *md, int64_t timestamp, const oboe_metadata_t *parent_md = nullptr);
     /**
      * Create an continuous event with user-defined timestamp
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
      * @param timestamp int64_t
      * @return Event*
      */
     static Event* createEvent(int64_t timestamp);
     /**
      * Create exit event with user-defined timestamp
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
      * @param timestamp int64_t
      * @return Event*
      */
@@ -279,15 +315,15 @@ class Event : private oboe_event_t {
     ~Event();
 
     // called e.g. from Python e.addInfo("Key", None) & Ruby e.addInfo("Key", nil)
-    bool addInfo(char *key, void *val);
-    bool addInfo(char *key, const std::string &val);
-    bool addInfo(char *key, long val);
-    bool addInfo(char *key, double val);
-    bool addInfo(char *key, bool val);
-    bool addInfo(char *key, const long *vals, int num);
+    bool addInfo(const char *key, void *val);
+    bool addInfo(const char *key, const std::string& val);
+    bool addInfo(const char *key, long val);
+    bool addInfo(const char *key, double val);
+    bool addInfo(const char *key, bool val);
+    bool addInfo(const char *key, const long *vals, int num);
 
 #ifndef SWIG  // for profiling only used by Ruby gem cpp-code
-    bool addInfo(char *key, const std::vector<FrameData> &vals);
+    bool addInfo(const char *key, const std::vector<FrameData> &vals);
 #endif
 
     bool addEdge(oboe_metadata_t *md);
@@ -296,9 +332,10 @@ class Event : private oboe_event_t {
     bool addHostname();
 
     /**
-     * Get a new copy of this metadata.
-     *
-     * NOTE: The returned object must be "delete"d.
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @return Metadata*
      */
     Metadata *getMetadata();
     std::string metadataString();
@@ -325,16 +362,15 @@ class Event : private oboe_event_t {
 
     bool addSpanRef(const oboe_metadata_t *md);
     bool addProfileEdge(std::string id);
-
     /**
-      * Create a new event object using the given metadata context.
-      *
-      * NOTE: The metadata context must be unique to the new trace.
-      *
-      * NOTE: The returned object must be "delete"d.
-      *
-      * @param md The metadata object to use when creating the new event.
-      */
+     * Create a new event object using the given metadata context.
+     * NOTE: The metadata context must be unique to the new trace.
+     * Return an `new` C++ object
+     * Object ownership changed via SWIG
+     * SWIG managed the de-allocation using %newobject keyword
+     * @param md const oboe_metadata_t*
+     * @return Event*
+     */
     static Event *startTrace(const oboe_metadata_t *md);
 };
 
@@ -362,6 +398,9 @@ class MetricTags {
      * Please note that SWIG doesn't have the definition of
      * oboe_metric_tag_t.
      * Ruby and Python should not call this method
+     *
+     * Return tags as pointer.
+     * No object ownership changed via SWIG
      * @return oboe_metric_tag_t*
      */
     oboe_metric_tag_t *get() const;
@@ -459,4 +498,4 @@ class Config {
     static std::string getVersionString();
 };
 
-#endif  // OBOE_API_HPP
+#endif  // OBOE_API_H

@@ -4,7 +4,7 @@
 #include <napi.h>
 #include <oboe_api.h>
 
-#include "util.hh"
+#include "../util.hh"
 
 class JsReporter : public swo::Class<JsReporter, Reporter> {
   public:

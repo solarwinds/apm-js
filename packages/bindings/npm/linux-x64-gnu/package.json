@@ -7,9 +7,9 @@
   "cpu": [
     "x64"
   ],
-  "main": "oboe.node",
   "files": [
     "oboe.node",
+    "metrics.node",
     "liboboe.so"
   ],
   "engines": {

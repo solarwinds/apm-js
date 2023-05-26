@@ -29,10 +29,10 @@ const targets = [
     cpu: "x86_64_v3",
   },
 ]
-const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
+const configs = targets.flatMap(({ name, oboe, target, cpu, glibc }) => {
   fs.copyFileSync(`oboe/${oboe}`, `npm/${name}/liboboe.so`)
 
-  const config = {
+  const oboeConfig = {
     target,
     cpu,
     glibc,
@@ -40,14 +40,14 @@ const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
     type: "shared",
 
     sources: [
-      "src/bindings.cc",
-      "src/context.cc",
-      "src/custom_metrics.cc",
-      "src/event.cc",
-      "src/metadata.cc",
-      "src/metric_tags.cc",
-      "src/reporter.cc",
-      "src/span.cc",
+      "src/oboe/oboe.cc",
+      "src/oboe/context.cc",
+      "src/oboe/custom_metrics.cc",
+      "src/oboe/event.cc",
+      "src/oboe/metadata.cc",
+      "src/oboe/metric_tags.cc",
+      "src/oboe/reporter.cc",
+      "src/oboe/span.cc",
       "oboe/include/oboe_api.cpp",
     ],
     napiVersion: 8,
@@ -62,7 +62,25 @@ const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
     rpath: "$ORIGIN",
   }
 
-  return [name, config]
+  const metricsConfig = {
+    target,
+    cpu,
+    glibc,
+    output: `npm/${name}/metrics.node`,
+    type: "shared",
+
+    sources: ["src/metrics/metrics.cc"],
+    napiVersion: 8,
+    std: "c++17",
+    exceptions: true,
+
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+  }
+
+  return [
+    [`${name}:oboe`, oboeConfig],
+    [`${name}:metrics`, metricsConfig],
+  ]
 })
 
 build(Object.fromEntries(configs), __dirname)

@@ -4,7 +4,7 @@
 #include <napi.h>
 #include <oboe_api.h>
 
-#include "util.hh"
+#include "../util.hh"
 
 class JsContext : public swo::Class<JsContext, Context, swo::ClassType::Static> {
   public:

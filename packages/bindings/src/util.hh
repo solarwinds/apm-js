@@ -53,6 +53,8 @@ class Object {
 class Env {
   public:
     inline Env(Napi::Env const env) : env(env) {}
+    inline constexpr operator Napi::Env const&() const { return env; }
+    inline constexpr operator napi_env() const { return env; }
 
     inline Napi::Value undefined() const { return env.Undefined(); }
     inline Object object() const { return Object(Napi::Object::New(env)); }

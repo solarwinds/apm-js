@@ -4,7 +4,7 @@
 #include <napi.h>
 #include <oboe_api.h>
 
-#include "util.hh"
+#include "../util.hh"
 
 class JsMetricTags : public swo::Class<JsMetricTags, MetricTags> {
   public:
