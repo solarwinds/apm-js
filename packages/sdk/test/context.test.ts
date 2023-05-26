@@ -1,9 +1,20 @@
-import { INVALID_SPANID, ROOT_CONTEXT, TraceFlags } from "@opentelemetry/api"
+import {
+  context,
+  INVALID_SPANID,
+  ROOT_CONTEXT,
+  type Span,
+  trace,
+  TraceFlags,
+} from "@opentelemetry/api"
+import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 
+import { SwoParentInfoSpanProcessor } from "../src"
+import { cache } from "../src/cache"
 import {
   getTraceOptions,
   parentSpanContext,
   setTraceOptions,
+  setTransactionName,
   swValue,
   traceParent,
 } from "../src/context"
@@ -101,5 +112,42 @@ describe("parentSpanContext", () => {
       ...spanContext,
       spanId: parentSpanId,
     })
+  })
+})
+
+describe("setTransactionName", () => {
+  it("returns false if there is no active span", () => {
+    expect(setTransactionName(ROOT_CONTEXT, "foo")).toBe(false)
+  })
+
+  it("returns false if there is no cache entry", () => {
+    expect(
+      setTransactionName(trace.setSpan(ROOT_CONTEXT, mock.span()), "foo"),
+    ).toBe(false)
+  })
+
+  it("returns true and sets the transaction name of the root span if there is a cache entry", () => {
+    const txname = "foo"
+
+    const provider = new NodeTracerProvider()
+    provider.addSpanProcessor(new SwoParentInfoSpanProcessor())
+    provider.register()
+
+    const tracer = trace.getTracer("test")
+
+    let parent: Span
+    tracer.startActiveSpan("parent", (s) => {
+      parent = s
+
+      tracer.startActiveSpan("child", (s) => {
+        expect(setTransactionName(context.active(), txname)).toBe(true)
+
+        s.end()
+      })
+
+      s.end()
+    })
+
+    expect(cache.get(parent!.spanContext())?.txname).toBe(txname)
   })
 })

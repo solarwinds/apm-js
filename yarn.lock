@@ -1775,7 +1775,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-trace-node@npm:1.12.0":
+"@opentelemetry/sdk-trace-node@npm:1.12.0, @opentelemetry/sdk-trace-node@npm:1.12.x":
   version: 1.12.0
   resolution: "@opentelemetry/sdk-trace-node@npm:1.12.0"
   dependencies:
@@ -2093,6 +2093,7 @@ __metadata:
     "@opentelemetry/sdk-metrics": 1.12.x
     "@opentelemetry/sdk-node": 0.38.x
     "@opentelemetry/sdk-trace-base": 1.12.x
+    "@opentelemetry/sdk-trace-node": 1.12.x
     "@opentelemetry/semantic-conventions": 1.12.x
     "@swotel/bindings": "workspace:^"
     "@swotel/eslint-config": "workspace:^"
