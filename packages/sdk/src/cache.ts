@@ -2,6 +2,7 @@ import { type SpanContext } from "@opentelemetry/api"
 
 export interface SpanCache {
   txname?: string
+  parentId?: string
   parentRemote?: boolean
 }
 
@@ -12,12 +13,31 @@ class Cache {
     return this.spanCache.get(Cache.key(ctx))
   }
 
-  setParentRemote(ctx: SpanContext, parentRemote: boolean | undefined): void {
+  getRoot(ctx: SpanContext): SpanCache | undefined {
+    for (;;) {
+      const c = this.get(ctx)
+
+      if (!c) return undefined
+      if (!c.parentId || c.parentRemote) return c
+
+      ctx = { ...ctx, traceId: ctx.traceId, spanId: c.parentId }
+    }
+  }
+
+  setParentInfo(
+    ctx: SpanContext,
+    parentInfo: { id?: string; remote?: boolean },
+  ): void {
     const cache = this.get(ctx)
     if (cache) {
-      cache.parentRemote = parentRemote
+      if (parentInfo.id !== undefined) cache.parentId = parentInfo.id
+      if (parentInfo.remote !== undefined)
+        cache.parentRemote = parentInfo.remote
     } else {
-      this.spanCache.set(Cache.key(ctx), { parentRemote })
+      this.spanCache.set(Cache.key(ctx), {
+        parentId: parentInfo.id,
+        parentRemote: parentInfo.remote,
+      })
     }
   }
   setTxname(ctx: SpanContext, txname: string): boolean {

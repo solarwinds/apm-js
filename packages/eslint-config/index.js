@@ -102,6 +102,7 @@ module.exports = [
       ],
       "tsdoc/syntax": "warn",
       "imports/imports": "warn",
+      "imports/exports": "warn",
     },
   },
   // disable rules that conflict with prettier

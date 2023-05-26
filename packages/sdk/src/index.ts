@@ -13,6 +13,7 @@ import { oboe } from "@swotel/bindings"
 
 import { CompoundSpanProcessor } from "./compound-processor"
 import { init, type SwoConfiguration } from "./config"
+import { setTransactionName } from "./context"
 import { SwoExporter } from "./exporter"
 import { SwoInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
 import { SwoParentInfoSpanProcessor } from "./parent-info-processor"
@@ -102,4 +103,14 @@ export class SwoSDK extends NodeSDK {
       textMapPropagator,
     })
   }
+}
+
+export {
+  setTransactionName,
+  SwoExporter,
+  SwoInboundMetricsSpanProcessor,
+  SwoParentInfoSpanProcessor,
+  SwoSampler,
+  SwoTraceContextOptionsPropagator,
+  SwoTraceOptionsResponsePropagator,
 }
