@@ -1,5 +1,5 @@
 {
-  "name": "@swotel/example-express-calls-express",
+  "name": "@swotel/example-distributed-hello",
   "private": true,
   "scripts": {
     "start": "concurrently \"node -r @swotel/instrument external.js\" \"node -r @swotel/instrument internal.js\""

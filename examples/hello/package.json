@@ -1,5 +1,5 @@
 {
-  "name": "@swotel/example-http",
+  "name": "@swotel/example-hello",
   "private": true,
   "scripts": {
     "start": "node -r @swotel/instrument index.js"
