@@ -115,7 +115,11 @@ void on_check(uv_check_t* handle) {
         return;
     }
 
+    // by calling this we are scheduling `call_js_callback` to be run within a JS context with the
+    // provided `JsData`. `call_js_callback` will in turn call the actual JS callback passed to
+    // `setCallback` which we can't do here outside of the JS context
     data->js_callback_scheduler.BlockingCall(new JsData{data->latency});
+
     data->latency = 0;
     data->count = 0;
 }
