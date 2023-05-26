@@ -23,12 +23,19 @@ export class SwoInboundMetricsSpanProcessor extends NoopSpanProcessor {
       return
     }
 
-    const { isHttp, transaction, method, status, url } =
-      SwoInboundMetricsSpanProcessor.httpSpanMeta(span)
+    const {
+      isHttp,
+      transaction: defaultTransaction,
+      method,
+      status,
+      url,
+    } = SwoInboundMetricsSpanProcessor.httpSpanMeta(span)
     const hasError = span.status.code === SpanStatusCode.ERROR
     const duration = hrTimeToMicroseconds(span.duration)
     // TODO
     const domain = null
+
+    const transaction = cache.get(context)?.txname ?? defaultTransaction
 
     let txname: string
     if (isHttp) {
