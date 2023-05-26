@@ -2002,18 +2002,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@swotel/example-express-calls-express@workspace:examples/distributed-hello":
+"@swotel/example-distributed-hello@workspace:examples/distributed-hello":
   version: 0.0.0-use.local
-  resolution: "@swotel/example-express-calls-express@workspace:examples/distributed-hello"
+  resolution: "@swotel/example-distributed-hello@workspace:examples/distributed-hello"
   dependencies:
     "@swotel/instrument": "workspace:^"
     concurrently: ^8.0.1
   languageName: unknown
   linkType: soft
 
-"@swotel/example-http@workspace:examples/hello":
+"@swotel/example-hello@workspace:examples/hello":
   version: 0.0.0-use.local
-  resolution: "@swotel/example-http@workspace:examples/hello"
+  resolution: "@swotel/example-hello@workspace:examples/hello"
   dependencies:
     "@swotel/instrument": "workspace:^"
   languageName: unknown
