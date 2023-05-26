@@ -19,7 +19,7 @@ const env = Object.fromEntries(
 )
 if (collector) {
   env.SW_APM_COLLECTOR = "collector:12224"
-  env.SW_APM_TRUSTED_PATH = "/swotel/docker/collector/server-grpc.crt"
+  env.SW_APM_TRUSTED_PATH = "/swotel/docker/apm-collector/server-grpc.crt"
 }
 
 // run example inside container

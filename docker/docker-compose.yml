@@ -7,7 +7,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   16-amazonlinux:
     build:
       context: .
@@ -15,7 +16,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   16-debian:
     build:
       context: .
@@ -23,7 +25,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   16-ubi:
     build:
       context: .
@@ -31,7 +34,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   16-ubuntu:
     build:
       context: .
@@ -39,7 +43,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
 
   18-alpine:
     build:
@@ -48,7 +53,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   18-debian:
     build:
       context: .
@@ -56,7 +62,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   18-ubi:
     build:
       context: .
@@ -64,7 +71,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   18-ubuntu:
     build:
       context: .
@@ -72,7 +80,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
 
   20-alpine:
     build:
@@ -81,7 +90,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   20-debian:
     build:
       context: .
@@ -89,7 +99,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   20-ubi:
     build:
       context: .
@@ -97,7 +108,8 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
   20-ubuntu:
     build:
       context: .
@@ -105,19 +117,19 @@ services:
     volumes:
       - ..:/swotel
     links:
-      - collector
+      - apm-collector
+      - otel-collector
 
-  collector:
-    image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v1.2.0}
+  apm-collector:
+    image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v1.2.2}
     volumes:
       - ..:/swotel
     expose:
       - 12224
     environment:
-      PROGRAM_ARGS: /swotel/docker/collector/config.json
+      PROGRAM_ARGS: /swotel/docker/apm-collector/config.json
     depends_on:
       - udpdump
-
   udpdump:
     build:
       context: .
@@ -127,3 +139,11 @@ services:
       - ..:/swotel
     expose:
       - 12225
+
+  otel-collector:
+    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector-contrib:0.78.0}
+    command: [--config=/swotel/docker/otel-collector/config.yml]
+    volumes:
+      - ..:/swotel
+    expose:
+      - 4317

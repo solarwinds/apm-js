@@ -1,7 +1,7 @@
 {
   "port": 8181,
   "settingsLocation": "settings.db",
-  "sslResourceFolder": "/swotel/docker/collector/",
+  "sslResourceFolder": "/swotel/docker/apm-collector/",
   "defaultCollectors": [
     {
       "port": 12224,

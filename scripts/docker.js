@@ -13,7 +13,11 @@ if (!image) {
 }
 
 if (image === "collector") {
-  exec("docker compose -f docker/docker-compose.yml logs -f collector udpdump")
+  exec(
+    "docker compose -f docker/docker-compose.yml logs --since 2m -f otel-collector udpdump",
+  )
+} else if (image === "down") {
+  exec("docker compose -f docker/docker-compose.yml down")
 } else if (process.argv[3] === "build") {
   exec(`docker compose -f docker/docker-compose.yml build ${image}`)
 } else {
