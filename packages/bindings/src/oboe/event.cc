@@ -26,8 +26,13 @@ Napi::Value JsEvent::addInfo(swo::CallbackInfo const info) {
         auto v = swo::from_value<std::string>(value);
         return info.value(base->addInfo(key.data(), v));
     } else if (value.IsNumber()) {
-        auto v = swo::from_value<double>(value);
-        return info.value(base->addInfo(key.data(), v));
+        auto d = swo::from_value<double>(value);
+        if (swo::is_integer(d)) {
+            auto i = swo::from_value<long>(value);
+            return info.value(base->addInfo(key.data(), i));
+        } else {
+            return info.value(base->addInfo(key.data(), d));
+        }
     } else if (value.IsBoolean()) {
         auto v = swo::from_value<bool>(value);
         return info.value(base->addInfo(key.data(), v));
