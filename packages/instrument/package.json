@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@opentelemetry/api": "1.4.x",
-    "@opentelemetry/auto-instrumentations-node": "^0.36.6",
+    "@opentelemetry/auto-instrumentations-node": "^0.37.0",
     "@swotel/merged-config": "workspace:^",
     "@swotel/sdk": "workspace:^"
   },
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@swotel/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",
-    "eslint": "^8.40.0",
+    "eslint": "^8.41.0",
     "json5": "^2.2.3",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
