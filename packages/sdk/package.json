@@ -19,6 +19,7 @@
     "@opentelemetry/sdk-metrics": "1.12.x",
     "@opentelemetry/sdk-node": "0.38.x",
     "@opentelemetry/sdk-trace-base": "1.12.x",
+    "@opentelemetry/sdk-trace-node": "1.12.x",
     "@opentelemetry/semantic-conventions": "1.12.x",
     "@swotel/bindings": "workspace:^"
   },

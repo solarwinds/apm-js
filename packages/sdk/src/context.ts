@@ -3,6 +3,7 @@ import {
   createContextKey,
   INVALID_SPANID,
   type SpanContext,
+  trace,
 } from "@opentelemetry/api"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 import type { oboe } from "@swotel/bindings"
@@ -81,4 +82,15 @@ export function parentSpanContext(span: ReadableSpan): SpanContext | undefined {
     spanId: parentId,
     isRemote: cache.get(spanContext)?.parentRemote,
   }
+}
+
+export function setTransactionName(context: Context, name: string): boolean {
+  const spanContext = trace.getSpanContext(context)
+  if (!spanContext) return false
+
+  const rootCache = cache.getRoot(spanContext)
+  if (!rootCache) return false
+
+  rootCache.txname = name
+  return true
 }
