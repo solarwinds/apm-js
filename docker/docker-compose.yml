@@ -121,7 +121,7 @@ services:
       - otel-collector
 
   apm-collector:
-    image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v1.2.2}
+    image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v2.0.0}
     volumes:
       - ..:/swotel
     expose:

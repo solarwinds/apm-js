@@ -1,6 +1,7 @@
 #ifndef _UTIL_HH_
 #define _UTIL_HH_
 
+#include <cmath>
 #include <cstdint>
 #include <optional>
 
@@ -22,6 +23,8 @@ namespace {
 constexpr int64_t MAX_SAFE_INTEGER = cpow(2, 53) - 1;
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_SAFE_INTEGER
 constexpr int64_t MIN_SAFE_INTEGER = -MAX_SAFE_INTEGER;
+
+inline bool is_integer(double value) { return std::fmod(value, 1) == 0; }
 
 // declare each class so they can be referenced before their definition
 // since they are also defined in this header
