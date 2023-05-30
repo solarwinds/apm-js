@@ -52,6 +52,7 @@ jobs:
             .root
             packages/**/dist/
             packages/bindings/npm/*/oboe.node
+            packages/bindings/npm/*/metrics.node
             packages/bindings/npm/*/liboboe.so
           retention-days: 1
 
@@ -61,7 +62,7 @@ jobs:
       matrix: ${{ steps.launch.outputs.matrix }}
     runs-on: ubuntu-latest
     steps:
-      - uses: aws-actions/configure-aws-credentials@v1
+      - uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.CI_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.CI_SECRET_ACCESS_KEY }}
@@ -162,7 +163,7 @@ jobs:
       - tests
     runs-on: ubuntu-latest
     steps:
-      - uses: aws-actions/configure-aws-credentials@v1
+      - uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.CI_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.CI_SECRET_ACCESS_KEY }}
