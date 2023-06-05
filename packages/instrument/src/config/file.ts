@@ -2,10 +2,12 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import * as process from "node:process"
 
-import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
+import { DiagLogLevel } from "@opentelemetry/api"
 import * as mc from "@swotel/merged-config"
 import { type SwoConfiguration } from "@swotel/sdk"
 import { type Service } from "ts-node"
+
+import aoCert from "../appoptics.crt"
 
 let json: typeof import("json5") | typeof JSON
 try {
@@ -63,6 +65,7 @@ export function readConfig(name: string): SwoConfiguration {
         parser: parseLogLevel,
         default: "info",
       },
+      triggerTraceEnabled: { file: true, parser: Boolean },
       transactionSettings: { file: true, parser: parseTransactionSettings },
     },
     configFile as Record<string, unknown>,
@@ -70,13 +73,18 @@ export function readConfig(name: string): SwoConfiguration {
   )
   const config: SwoConfiguration = { ...raw }
 
-  diag.setLogger(new DiagConsoleLogger(), raw.logLevel)
-
-  // TODO: AO cert
   if (raw.trustedPath) {
     config.certificate = fs.readFileSync(raw.trustedPath, {
       encoding: "utf8",
     })
+  }
+
+  if (config.collector?.includes("appoptics.com")) {
+    config.metricFormat = 1
+
+    if (!config.certificate) {
+      config.certificate = aoCert
+    }
   }
 
   return config

@@ -1,4 +1,5 @@
 const dgram = require("node:dgram")
+const { inspect } = require("node:util")
 const bson = require("bson")
 
 const socket = dgram.createSocket("udp4")
@@ -9,7 +10,7 @@ socket.on("message", (msg) => {
     bufIdx = bson.deserializeStream(msg, bufIdx, 1, msgs, msgIdx)
   }
   for (const m of msgs) {
-    console.log(m)
+    console.log(inspect(m, { depth: Infinity, sorted: true, colors: true }))
   }
 })
 

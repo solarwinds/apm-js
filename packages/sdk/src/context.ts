@@ -6,7 +6,7 @@ import {
   trace,
 } from "@opentelemetry/api"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
-import type { oboe } from "@swotel/bindings"
+import { oboe } from "@swotel/bindings"
 
 import { cache } from "./cache"
 
@@ -93,4 +93,8 @@ export function setTransactionName(context: Context, name: string): boolean {
 
   rootCache.txname = name
   return true
+}
+
+export function waitUntilAgentReady(timeout: number): number {
+  return oboe.Context.isReady(timeout)
 }

@@ -1001,7 +1001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api@npm:1.4.x, @opentelemetry/api@npm:^1.0.0":
+"@opentelemetry/api@npm:1.4.x, @opentelemetry/api@npm:^1.0.0, @opentelemetry/api@npm:^1.4.1":
   version: 1.4.1
   resolution: "@opentelemetry/api@npm:1.4.1"
   checksum: e783c40d1a518abf9c4c5d65223237c1392cd9a6c53ac6e2c3ef0c05ff7266e3dfc4fd9874316dae0dcb7a97950878deb513bcbadfaad653d48f0215f2a0911b
@@ -1616,7 +1616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation@npm:0.39.1, @opentelemetry/instrumentation@npm:^0.39.1":
+"@opentelemetry/instrumentation@npm:0.39.1, @opentelemetry/instrumentation@npm:0.39.x, @opentelemetry/instrumentation@npm:^0.39.1":
   version: 0.39.1
   resolution: "@opentelemetry/instrumentation@npm:0.39.1"
   dependencies:
@@ -1783,7 +1783,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/resources@npm:1.13.0, @opentelemetry/resources@npm:1.13.x, @opentelemetry/resources@npm:^1.0.0, @opentelemetry/resources@npm:^1.12.0, @opentelemetry/resources@npm:^1.8.0":
+"@opentelemetry/resources@npm:1.13.0, @opentelemetry/resources@npm:1.13.x, @opentelemetry/resources@npm:^1.0.0, @opentelemetry/resources@npm:^1.12.0, @opentelemetry/resources@npm:^1.13.0, @opentelemetry/resources@npm:^1.8.0":
   version: 1.13.0
   resolution: "@opentelemetry/resources@npm:1.13.0"
   dependencies:
@@ -1821,7 +1821,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-node@npm:0.39.x, @opentelemetry/sdk-node@npm:^0.39.1":
+"@opentelemetry/sdk-node@npm:^0.39.1":
   version: 0.39.1
   resolution: "@opentelemetry/sdk-node@npm:0.39.1"
   dependencies:
@@ -1856,7 +1856,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-trace-node@npm:1.13.0, @opentelemetry/sdk-trace-node@npm:1.13.x":
+"@opentelemetry/sdk-trace-node@npm:1.13.0, @opentelemetry/sdk-trace-node@npm:1.13.x, @opentelemetry/sdk-trace-node@npm:^1.13.0":
   version: 1.13.0
   resolution: "@opentelemetry/sdk-trace-node@npm:1.13.0"
   dependencies:
@@ -2116,6 +2116,13 @@ __metadata:
   dependencies:
     "@opentelemetry/api": 1.4.x
     "@opentelemetry/auto-instrumentations-node": ^0.37.0
+    "@opentelemetry/core": 1.13.x
+    "@opentelemetry/instrumentation": 0.39.x
+    "@opentelemetry/resources": 1.13.x
+    "@opentelemetry/sdk-trace-base": 1.13.x
+    "@opentelemetry/sdk-trace-node": 1.13.x
+    "@opentelemetry/semantic-conventions": 1.13.x
+    "@swotel/bindings": "workspace:^"
     "@swotel/eslint-config": "workspace:^"
     "@swotel/merged-config": "workspace:^"
     "@swotel/sdk": "workspace:^"
@@ -2167,14 +2174,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@swotel/sdk@workspace:packages/sdk"
   dependencies:
-    "@opentelemetry/api": 1.4.x
+    "@opentelemetry/api": ^1.4.1
     "@opentelemetry/core": 1.13.x
+    "@opentelemetry/instrumentation": ^0.39.1
     "@opentelemetry/instrumentation-http": ^0.39.1
-    "@opentelemetry/resources": 1.13.x
+    "@opentelemetry/resources": ^1.13.0
     "@opentelemetry/sdk-metrics": 1.13.x
-    "@opentelemetry/sdk-node": 0.39.x
     "@opentelemetry/sdk-trace-base": 1.13.x
-    "@opentelemetry/sdk-trace-node": 1.13.x
+    "@opentelemetry/sdk-trace-node": ^1.13.0
     "@opentelemetry/semantic-conventions": 1.13.x
     "@swotel/bindings": "workspace:^"
     "@swotel/eslint-config": "workspace:^"
@@ -2187,8 +2194,11 @@ __metadata:
     ts-jest: ^29.1.0
     typescript: ^5.0.4
   peerDependencies:
+    "@opentelemetry/api": 1.4.x
     "@opentelemetry/instrumentation-http": ">=0.14.0 <0.40.0"
   peerDependenciesMeta:
+    "@opentelemetry/api":
+      optional: false
     "@opentelemetry/instrumentation-http":
       optional: true
   languageName: unknown
