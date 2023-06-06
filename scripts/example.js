@@ -18,7 +18,7 @@ const env = Object.fromEntries(
   Object.entries(process.env).filter(([key]) => key.startsWith("SW_APM_")),
 )
 if (collector) {
-  env.SW_APM_COLLECTOR = "collector:12224"
+  env.SW_APM_COLLECTOR = "apm-collector:12224"
   env.SW_APM_TRUSTED_PATH = "/swotel/docker/apm-collector/server-grpc.crt"
 }
 

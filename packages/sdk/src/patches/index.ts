@@ -1,4 +1,5 @@
-import { type SwoConfiguration } from "../config"
+import { type Instrumentation } from "@opentelemetry/instrumentation"
+
 import { ConfigPatcher } from "../config-patcher"
 import { type SwoTraceOptionsResponsePropagator } from "../trace-options-response-propagator"
 import * as http from "./http"
@@ -7,10 +8,7 @@ export interface Options {
   traceOptionsResponsePropagator: SwoTraceOptionsResponsePropagator
 }
 
-export function patch(
-  instrumentations: SwoConfiguration["instrumentations"],
-  options: Options,
-) {
+export function patch(instrumentations: Instrumentation[], options: Options) {
   const patcher = new ConfigPatcher()
 
   /**

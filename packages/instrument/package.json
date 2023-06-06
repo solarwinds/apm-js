@@ -13,6 +13,12 @@
   "dependencies": {
     "@opentelemetry/api": "1.4.x",
     "@opentelemetry/auto-instrumentations-node": "^0.37.0",
+    "@opentelemetry/core": "1.13.x",
+    "@opentelemetry/instrumentation": "0.39.x",
+    "@opentelemetry/resources": "1.13.x",
+    "@opentelemetry/sdk-trace-base": "1.13.x",
+    "@opentelemetry/sdk-trace-node": "1.13.x",
+    "@opentelemetry/semantic-conventions": "1.13.x",
     "@swotel/merged-config": "workspace:^",
     "@swotel/sdk": "workspace:^"
   },
@@ -29,6 +35,7 @@
     }
   },
   "devDependencies": {
+    "@swotel/bindings": "workspace:^",
     "@swotel/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",
     "eslint": "^8.41.0",
