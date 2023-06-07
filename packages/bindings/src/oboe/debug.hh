@@ -5,6 +5,10 @@
 
 #include "../util.hh"
 
+/*
+See ../metrics/event_loop.hh for a detailed explanation of some of the concepts used here.
+*/
+
 namespace {
 
 struct JsData {
@@ -55,6 +59,8 @@ Napi::Value debug_log_add(swo::CallbackInfo const info) {
 
     auto status = oboe_debug_log_add(on_log, static_cast<void*>(ctx), level);
     if (status != 0) {
+        // note that if we don't enter this branch the context is leaked
+        // this is voluntary. this function should be called a small and constant number of time
         delete ctx;
     }
 
