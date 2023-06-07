@@ -1,4 +1,8 @@
-import { DiagLogLevel, DiagLogFunction, DiagLogger } from "@opentelemetry/api"
+import {
+  type DiagLogFunction,
+  type DiagLogger,
+  DiagLogLevel,
+} from "@opentelemetry/api"
 import { oboe } from "@swotel/bindings"
 import { type SwoConfiguration } from "@swotel/sdk"
 

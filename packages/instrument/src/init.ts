@@ -7,14 +7,14 @@ import {
   NodeTracerProvider,
   ParentBasedSampler,
 } from "@opentelemetry/sdk-trace-node"
-import * as sdk from "@swotel/sdk"
 import { oboe } from "@swotel/bindings"
+import * as sdk from "@swotel/sdk"
 
 import { readConfig } from "./config/file"
 import {
   createReporter,
-  otelLevelToOboe,
   oboeLevelToLogger,
+  otelLevelToOboe,
 } from "./config/oboe"
 
 export function init(configName: string) {
