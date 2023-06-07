@@ -102,6 +102,26 @@ export const REPORTER_FLUSH_BAD_UTF8: number
 export const REPORTER_FLUSH_NO_REPORTER: number
 export const REPORTER_FLUSH_REPORTER_NOT_READY: number
 
+export const DEBUG_DISABLED: number
+export const DEBUG_FATAL: number
+export const DEBUG_ERROR: number
+export const DEBUG_WARNING: number
+export const DEBUG_INFO: number
+export const DEBUG_LOW: number
+export const DEBUG_MEDIUM: number
+export const DEBUG_HIGH: number
+
+export function debug_log_add(
+  logger: (
+    module: string,
+    level: number,
+    source_name: string | null,
+    source_lineno: number,
+    msg: string,
+  ) => void,
+  level: number,
+): number
+
 export class Metadata {
   private constructor()
 

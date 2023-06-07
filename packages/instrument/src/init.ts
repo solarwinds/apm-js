@@ -7,10 +7,15 @@ import {
   NodeTracerProvider,
   ParentBasedSampler,
 } from "@opentelemetry/sdk-trace-node"
+import { oboe } from "@swotel/bindings"
 import * as sdk from "@swotel/sdk"
 
 import { readConfig } from "./config/file"
-import { createReporter } from "./config/oboe"
+import {
+  createReporter,
+  oboeLevelToOtelLogger,
+  otelLevelToOboeLevel,
+} from "./config/oboe"
 
 export function init(configName: string) {
   /* eslint-disable-next-line ts/no-var-requires */
@@ -27,17 +32,33 @@ export function init(configName: string) {
     })
 
     const config = readConfig(configName)
-    const reporter = createReporter(config)
 
     diag.setLogger(new DiagConsoleLogger(), config.logLevel)
-    const logger = diag.createComponentLogger({ namespace: "swo" })
     if (sdk.OBOE_ERROR) {
-      logger.warn(
-        "Unsupported platform, application will not be instrumented",
-        sdk.OBOE_ERROR,
-      )
+      diag
+        .createComponentLogger({ namespace: "swo/init" })
+        .warn(
+          "Unsupported platform, application will not be instrumented",
+          sdk.OBOE_ERROR,
+        )
       return
     }
+
+    const reporter = createReporter(config)
+
+    oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
+      const logger = diag.createComponentLogger({
+        namespace: `swo/oboe/${module}`,
+      })
+      const log = oboeLevelToOtelLogger(level, logger)
+
+      if (sourceName && level > oboe.DEBUG_INFO) {
+        const source = { source: sourceName, line: sourceLine }
+        log(message, source)
+      } else {
+        log(message)
+      }
+    }, otelLevelToOboeLevel(config.logLevel))
 
     const sampler = new sdk.SwoSampler(
       config,

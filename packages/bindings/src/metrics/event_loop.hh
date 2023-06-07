@@ -144,6 +144,9 @@ Napi::Value set_callback(swo::CallbackInfo const info) {
         // create the thread-safe function with its reference count set to 1
         auto js_callback_scheduler =
             ThreadSafeFunction::New(info, arg.As<Napi::Function>(), "Event Loop Callback", 0, 1);
+        // don't prevent node from exiting because of this callback
+        js_callback_scheduler.Unref(info);
+
         auto granularity = info.arg<unsigned int>(1);
 
         // re.initialise the libuv handles
