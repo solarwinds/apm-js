@@ -226,8 +226,9 @@ template <typename T, ClassType ty> class ClassDefinition {
 class NullableString {
   public:
     constexpr inline NullableString() noexcept : value() {}
-    constexpr inline NullableString(std::nullopt_t) : value() {}
+    constexpr inline NullableString(std::nullopt_t) noexcept : value() {}
     constexpr inline NullableString(std::string&& value) noexcept : value(value) {}
+    inline NullableString(const char* value) : value(value ? std::optional{value} : std::nullopt) {}
 
     constexpr inline char const* data() const noexcept { return value ? value->data() : nullptr; }
 
@@ -339,6 +340,11 @@ template <> inline Napi::Object from_value(Napi::Value const& value) {
     return value.As<Napi::Object>();
 }
 
+// Napi::Function
+template <> inline Napi::Function from_value(Napi::Value const& value) {
+    return value.As<Napi::Function>();
+}
+
 // Object
 template <> inline Object from_value(Napi::Value const& value) {
     return Object(from_value<Napi::Object>(value));
@@ -357,6 +363,14 @@ template <> inline NullableString from_value(Napi::Value const& value) {
         return NullableString(std::nullopt);
     } else {
         return NullableString(value.As<Napi::String>().Utf8Value());
+    }
+}
+inline Napi::Value to_value(Napi::Env env, NullableString self) {
+    auto data = self.data();
+    if (data) {
+        return Napi::String::New(env, data);
+    } else {
+        return env.Null();
     }
 }
 
