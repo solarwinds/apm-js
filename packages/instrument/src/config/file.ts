@@ -26,9 +26,11 @@ try {
 }
 
 export interface ConfigFile {
+  serviceKey?: string
   collector?: string
   trustedPath?: string
   logLevel?: LogLevel
+  triggerTraceEnabled?: boolean
   transactionSettings?: TransactionSetting[]
 }
 
@@ -56,7 +58,13 @@ export function readConfig(name: string): SwoConfiguration {
 
   const raw = mc.config(
     {
-      serviceKey: { env: true, parser: String, required: true },
+      serviceKey: { env: true, file: true, parser: String, required: true },
+      enabled: {
+        env: true,
+        file: true,
+        parser: parseBoolean({ name: "enabled", default: true }),
+        default: true,
+      },
       collector: { env: true, file: true, parser: String },
       trustedPath: { env: true, file: true, parser: String },
       logLevel: {
@@ -65,7 +73,11 @@ export function readConfig(name: string): SwoConfiguration {
         parser: parseLogLevel,
         default: "info",
       },
-      triggerTraceEnabled: { file: true, parser: Boolean },
+      triggerTraceEnabled: {
+        file: true,
+        parser: parseBoolean({ name: "trigger trace", default: true }),
+        default: true,
+      },
       transactionSettings: { file: true, parser: parseTransactionSettings },
     },
     configFile as Record<string, unknown>,
@@ -117,6 +129,30 @@ function readTsConfig(file: string) {
 
   return "__esModule" in required ? required.default : required
 }
+
+const parseBoolean =
+  (options: { name: string; default: boolean }) => (value: unknown) => {
+    switch (typeof value) {
+      case "boolean":
+        return value
+      case "string": {
+        switch (value.toLowerCase()) {
+          case "true":
+            return true
+          case "false":
+            return false
+          default: {
+            console.warn(`invalid ${options.name} boolean value "${value}"`)
+            return options.default
+          }
+        }
+      }
+      default: {
+        console.warn(`invalid ${options.name} boolean value`)
+        return options.default
+      }
+    }
+  }
 
 function parseLogLevel(level: unknown): DiagLogLevel {
   if (typeof level !== "string") {

@@ -32,6 +32,10 @@ export function init(configName: string) {
     })
 
     const config = readConfig(configName)
+    if (!config.enabled) {
+      console.info("Library disabled, application will not be instrumented")
+      return
+    }
 
     diag.setLogger(new DiagConsoleLogger(), config.logLevel)
     if (sdk.OBOE_ERROR) {

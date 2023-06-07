@@ -2,12 +2,13 @@ import { type DiagLogLevel } from "@opentelemetry/api"
 
 export interface SwoConfiguration {
   serviceKey: string
+  enabled: boolean
   collector?: string
   certificate?: string
   metricFormat?: number
   logLevel?: DiagLogLevel
 
-  triggerTraceEnabled?: boolean
+  triggerTraceEnabled: boolean
   transactionSettings?: TransactionSetting[]
 }
 
