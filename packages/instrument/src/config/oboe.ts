@@ -13,7 +13,7 @@ export function createReporter(config: SwoConfiguration): oboe.Reporter {
     certificates: config.certificate ?? "",
 
     hostname_alias: "",
-    log_level: otelLevelToOboe(config.logLevel ?? DiagLogLevel.INFO),
+    log_level: otelLevelToOboeLevel(config.logLevel),
     log_file_path: "",
 
     max_transactions: -1,
@@ -37,7 +37,7 @@ export function createReporter(config: SwoConfiguration): oboe.Reporter {
   })
 }
 
-export function otelLevelToOboe(level?: DiagLogLevel): number {
+export function otelLevelToOboeLevel(level?: DiagLogLevel): number {
   switch (level) {
     case DiagLogLevel.NONE:
       return oboe.DEBUG_DISABLED
@@ -58,7 +58,7 @@ export function otelLevelToOboe(level?: DiagLogLevel): number {
   }
 }
 
-export function oboeLevelToLogger(
+export function oboeLevelToOtelLogger(
   level: number,
   logger: DiagLogger,
 ): DiagLogFunction {

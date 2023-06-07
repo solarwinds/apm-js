@@ -13,8 +13,8 @@ import * as sdk from "@swotel/sdk"
 import { readConfig } from "./config/file"
 import {
   createReporter,
-  oboeLevelToLogger,
-  otelLevelToOboe,
+  oboeLevelToOtelLogger,
+  otelLevelToOboeLevel,
 } from "./config/oboe"
 
 export function init(configName: string) {
@@ -50,7 +50,7 @@ export function init(configName: string) {
       const logger = diag.createComponentLogger({
         namespace: `swo/oboe/${module}`,
       })
-      const log = oboeLevelToLogger(level, logger)
+      const log = oboeLevelToOtelLogger(level, logger)
 
       if (sourceName && level > oboe.DEBUG_INFO) {
         const source = { source: sourceName, line: sourceLine }
@@ -58,7 +58,7 @@ export function init(configName: string) {
       } else {
         log(message)
       }
-    }, otelLevelToOboe(config.logLevel))
+    }, otelLevelToOboeLevel(config.logLevel))
 
     const sampler = new sdk.SwoSampler(
       config,
