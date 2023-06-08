@@ -23,9 +23,23 @@ import {
 import type { oboe } from "@swotel/bindings"
 
 import { type TraceOptions } from "../src/context"
+import { SwoConfiguration } from "../src"
 
-function pick<T>(choices: T[]): T {
+export function pick<T>(choices: T[]): T {
   return choices[randomInt(choices.length)]!
+}
+
+export function config(
+  override: Partial<SwoConfiguration> = {},
+): SwoConfiguration {
+  const base: SwoConfiguration = {
+    serviceKey: "",
+    enabled: true,
+    triggerTraceEnabled: true,
+    insertTraceIdsIntoLogs: true,
+  }
+
+  return { ...base, ...override }
 }
 
 export function traceId(): string {
