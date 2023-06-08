@@ -31,6 +31,7 @@ export interface ConfigFile {
   trustedPath?: string
   logLevel?: LogLevel
   triggerTraceEnabled?: boolean
+  insertTraceIdsIntoLogs?: boolean
   transactionSettings?: TransactionSetting[]
 }
 
@@ -76,6 +77,14 @@ export function readConfig(name: string): SwoConfiguration {
       triggerTraceEnabled: {
         file: true,
         parser: parseBoolean({ name: "trigger trace", default: true }),
+        default: true,
+      },
+      insertTraceIdsIntoLogs: {
+        file: true,
+        parser: parseBoolean({
+          name: "insert trace ids into logs",
+          default: true,
+        }),
         default: true,
       },
       transactionSettings: { file: true, parser: parseTransactionSettings },

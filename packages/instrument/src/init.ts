@@ -92,7 +92,14 @@ export function init(configName: string) {
     const traceOptionsResponsePropagator =
       new sdk.SwoTraceOptionsResponsePropagator()
 
-    const instrumentations = getNodeAutoInstrumentations()
+    const instrumentations = getNodeAutoInstrumentations({
+      "@opentelemetry/instrumentation-bunyan": {
+        enabled: config.insertTraceIdsIntoLogs,
+      },
+      "@opentelemetry/instrumentation-pino": {
+        enabled: config.insertTraceIdsIntoLogs,
+      },
+    })
     sdk.patch(instrumentations, { traceOptionsResponsePropagator })
     registerInstrumentations({ instrumentations })
 
