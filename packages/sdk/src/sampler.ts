@@ -96,7 +96,7 @@ export class SwoSampler implements Sampler {
 
   toString(): string {
     return `SwoSampler ${inspect(
-      { triggerTraceEnabled: this.config.triggerTraceEnabled ?? false },
+      { triggerTraceEnabled: this.config.triggerTraceEnabled },
       { breakLength: Infinity, compact: true },
     )}`
   }

@@ -7,9 +7,8 @@ export interface SwoConfiguration {
   certificate?: string
   metricFormat?: number
   logLevel?: DiagLogLevel
-  tracingMode?: boolean
-
   triggerTraceEnabled: boolean
+  tracingMode?: boolean
   insertTraceIdsIntoLogs: boolean
   transactionSettings?: TransactionSetting[]
 }

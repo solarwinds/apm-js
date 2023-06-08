@@ -22,8 +22,8 @@ import {
 } from "@opentelemetry/sdk-trace-base"
 import type { oboe } from "@swotel/bindings"
 
+import { type SwoConfiguration } from "../src"
 import { type TraceOptions } from "../src/context"
-import { SwoConfiguration } from "../src"
 
 export function pick<T>(choices: T[]): T {
   return choices[randomInt(choices.length)]!

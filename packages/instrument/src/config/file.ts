@@ -3,12 +3,12 @@ import * as path from "node:path"
 import * as process from "node:process"
 
 import { DiagLogLevel } from "@opentelemetry/api"
+import { type InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node"
 import * as mc from "@swotel/merged-config"
 import { type SwoConfiguration } from "@swotel/sdk"
 import { type Service } from "ts-node"
 
 import aoCert from "../appoptics.crt"
-import { InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node"
 
 let json: typeof import("json5") | typeof JSON
 try {
@@ -32,8 +32,8 @@ export interface ConfigFile {
   collector?: string
   trustedPath?: string
   logLevel?: LogLevel
-  tracingMode?: TracingMode
   triggerTraceEnabled?: boolean
+  tracingMode?: TracingMode
   insertTraceIdsIntoLogs?: boolean
   transactionSettings?: TransactionSetting[]
   instrumentations?: InstrumentationConfigMap
@@ -83,14 +83,15 @@ export function readConfig(name: string): SwoConfigurationWithInstrumentations {
         parser: parseLogLevel,
         default: "info",
       },
+      triggerTraceEnabled: {
+        file: true,
+        env: true,
+        parser: parseBoolean({ name: "trigger trace", default: true }),
+        default: true,
+      },
       tracingMode: {
         file: true,
         parser: parseTracingMode,
-      },
-      triggerTraceEnabled: {
-        file: true,
-        parser: parseBoolean({ name: "trigger trace", default: true }),
-        default: true,
       },
       insertTraceIdsIntoLogs: {
         file: true,
