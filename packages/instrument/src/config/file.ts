@@ -84,8 +84,8 @@ export function readConfig(name: string): SwoConfigurationWithInstrumentations {
         default: "info",
       },
       triggerTraceEnabled: {
-        file: true,
         env: true,
+        file: true,
         parser: parseBoolean({ name: "trigger trace", default: true }),
         default: true,
       },
