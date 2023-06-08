@@ -27,17 +27,20 @@ try {
 
 export interface ConfigFile {
   serviceKey?: string
+  enabled?: boolean
   collector?: string
   trustedPath?: string
   logLevel?: LogLevel
+  tracingMode?: TracingMode
   triggerTraceEnabled?: boolean
   insertTraceIdsIntoLogs?: boolean
   transactionSettings?: TransactionSetting[]
 }
 
 type LogLevel = "verbose" | "debug" | "info" | "warn" | "error" | "none"
+type TracingMode = "enabled" | "disabled"
 type TransactionSetting = {
-  tracing: "enabled" | "disabled"
+  tracing: TracingMode
 } & (
   | { regex: RegExp | string }
   | { matcher: (identifier: string) => boolean | undefined }
@@ -73,6 +76,10 @@ export function readConfig(name: string): SwoConfiguration {
         file: true,
         parser: parseLogLevel,
         default: "info",
+      },
+      tracingMode: {
+        file: true,
+        parser: parseTracingMode,
       },
       triggerTraceEnabled: {
         file: true,
@@ -185,6 +192,24 @@ function parseLogLevel(level: unknown): DiagLogLevel {
     default: {
       console.warn(`invalid log level "${level}"`)
       return DiagLogLevel.INFO
+    }
+  }
+}
+
+function parseTracingMode(mode: unknown): boolean | undefined {
+  if (typeof mode !== "string") {
+    console.warn(`invalid tracing mode`)
+    return undefined
+  }
+
+  switch (mode.toLowerCase()) {
+    case "enabled":
+      return true
+    case "disabled":
+      return false
+    default: {
+      console.warn(`invalid tracing mode "${mode}"`)
+      return undefined
     }
   }
 }

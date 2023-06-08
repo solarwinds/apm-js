@@ -7,6 +7,7 @@ export interface SwoConfiguration {
   certificate?: string
   metricFormat?: number
   logLevel?: DiagLogLevel
+  tracingMode?: boolean
 
   triggerTraceEnabled: boolean
   insertTraceIdsIntoLogs: boolean

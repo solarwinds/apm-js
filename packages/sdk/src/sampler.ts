@@ -137,8 +137,15 @@ export class SwoSampler implements Sampler {
     spanKind: SpanKind,
     attributes: Attributes,
   ): oboe.Context.DecisionsOptions["custom_tracing_mode"] {
+    let base = oboe.SETTINGS_UNSET
+    if (this.config.tracingMode === true) {
+      base = oboe.TRACE_ENABLED
+    } else if (this.config.tracingMode === false) {
+      base = oboe.TRACE_DISABLED
+    }
+
     if (!this.config.transactionSettings) {
-      return oboe.SETTINGS_UNSET
+      return base
     }
 
     const kindName = SpanKind[spanKind]
@@ -165,7 +172,7 @@ export class SwoSampler implements Sampler {
       }
     }
 
-    return oboe.SETTINGS_UNSET
+    return base
   }
 
   private static otelSamplingDecisionFromOboe(
