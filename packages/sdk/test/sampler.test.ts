@@ -73,6 +73,28 @@ describe("SwoSampler", () => {
       expect(result).toBe(oboe.TRACE_DISABLED)
     })
 
+    it("is enabled if config is disabled but matching transaction setting is enabled", () => {
+      const settings = [{ tracing: true, matcher: () => true }]
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: false, transactionSettings: settings }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.TRACE_ENABLED)
+    })
+
+    it("is disabled if config is enabled but matching transaction setting is disabled", () => {
+      const settings = [{ tracing: false, matcher: () => true }]
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: true, transactionSettings: settings }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.TRACE_DISABLED)
+    })
+
     it("respects the first matching transaction setting for http spans", () => {
       const target = "/auth"
       const settings = [
