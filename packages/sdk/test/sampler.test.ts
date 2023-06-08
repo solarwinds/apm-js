@@ -10,22 +10,89 @@ import * as mock from "./mock"
 describe("SwoSampler", () => {
   const tracingMode = "tracingMode" as const
   describe(tracingMode, () => {
-    it("is unset when no transaction settings", () => {
-      const sampler = new SwoSampler({ serviceKey: "" }, mock.logger())
-
-      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.SETTINGS_UNSET)
-    })
-
-    it("is unset when no transaction setting matches", () => {
-      const settings = [{ tracing: false, matcher: () => false }]
+    it("is unset when no config or transaction settings", () => {
       const sampler = new SwoSampler(
-        { serviceKey: "", transactionSettings: settings },
+        mock.config({ tracingMode: undefined, transactionSettings: undefined }),
         mock.logger(),
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
       expect(result).toBe(oboe.SETTINGS_UNSET)
+    })
+
+    it("is enabled when config is true and no transaction settings", () => {
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: true, transactionSettings: undefined }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.TRACE_ENABLED)
+    })
+
+    it("is disabled when config is false and no transaction settings", () => {
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: false, transactionSettings: undefined }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.TRACE_DISABLED)
+    })
+
+    it("is unset when no config no transaction setting matches", () => {
+      const settings = [{ tracing: false, matcher: () => false }]
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: undefined, transactionSettings: settings }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.SETTINGS_UNSET)
+    })
+
+    it("is enabled when config is true and no transaction setting matches", () => {
+      const settings = [{ tracing: true, matcher: () => false }]
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: true, transactionSettings: settings }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.TRACE_ENABLED)
+    })
+
+    it("is disabled when config is false and no transaction setting matches", () => {
+      const settings = [{ tracing: false, matcher: () => true }]
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: false, transactionSettings: settings }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.TRACE_DISABLED)
+    })
+
+    it("is enabled if config is disabled but matching transaction setting is enabled", () => {
+      const settings = [{ tracing: true, matcher: () => true }]
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: false, transactionSettings: settings }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.TRACE_ENABLED)
+    })
+
+    it("is disabled if config is enabled but matching transaction setting is disabled", () => {
+      const settings = [{ tracing: false, matcher: () => true }]
+      const sampler = new SwoSampler(
+        mock.config({ tracingMode: true, transactionSettings: settings }),
+        mock.logger(),
+      )
+
+      const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
+      expect(result).toBe(oboe.TRACE_DISABLED)
     })
 
     it("respects the first matching transaction setting for http spans", () => {
@@ -41,7 +108,7 @@ describe("SwoSampler", () => {
       }
 
       const sampler = new SwoSampler(
-        { serviceKey: "", transactionSettings: settings },
+        mock.config({ transactionSettings: settings }),
         mock.logger(),
       )
 
@@ -60,7 +127,7 @@ describe("SwoSampler", () => {
         { tracing: false, matcher: () => true },
       ]
       const sampler = new SwoSampler(
-        { serviceKey: "", transactionSettings: settings },
+        mock.config({ transactionSettings: settings }),
         mock.logger(),
       )
 

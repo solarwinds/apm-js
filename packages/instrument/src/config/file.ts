@@ -3,6 +3,7 @@ import * as path from "node:path"
 import * as process from "node:process"
 
 import { DiagLogLevel } from "@opentelemetry/api"
+import { type InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node"
 import * as mc from "@swotel/merged-config"
 import { type SwoConfiguration } from "@swotel/sdk"
 import { type Service } from "ts-node"
@@ -26,21 +27,32 @@ try {
 }
 
 export interface ConfigFile {
+  serviceKey?: string
+  enabled?: boolean
   collector?: string
   trustedPath?: string
   logLevel?: LogLevel
+  triggerTraceEnabled?: boolean
+  tracingMode?: TracingMode
+  insertTraceContextIntoLogs?: boolean
   transactionSettings?: TransactionSetting[]
+  instrumentations?: InstrumentationConfigMap
 }
 
 type LogLevel = "verbose" | "debug" | "info" | "warn" | "error" | "none"
+type TracingMode = "enabled" | "disabled"
 type TransactionSetting = {
-  tracing: "enabled" | "disabled"
+  tracing: TracingMode
 } & (
   | { regex: RegExp | string }
   | { matcher: (identifier: string) => boolean | undefined }
 )
 
-export function readConfig(name: string): SwoConfiguration {
+type SwoConfigurationWithInstrumentations = SwoConfiguration & {
+  instrumentations?: InstrumentationConfigMap
+}
+
+export function readConfig(name: string): SwoConfigurationWithInstrumentations {
   const fullName = path.join(process.cwd(), name)
 
   let configFile: ConfigFile
@@ -56,7 +68,13 @@ export function readConfig(name: string): SwoConfiguration {
 
   const raw = mc.config(
     {
-      serviceKey: { env: true, parser: String, required: true },
+      serviceKey: { env: true, file: true, parser: String, required: true },
+      enabled: {
+        env: true,
+        file: true,
+        parser: parseBoolean({ name: "enabled", default: true }),
+        default: true,
+      },
       collector: { env: true, file: true, parser: String },
       trustedPath: { env: true, file: true, parser: String },
       logLevel: {
@@ -65,13 +83,30 @@ export function readConfig(name: string): SwoConfiguration {
         parser: parseLogLevel,
         default: "info",
       },
-      triggerTraceEnabled: { file: true, parser: Boolean },
+      triggerTraceEnabled: {
+        env: true,
+        file: true,
+        parser: parseBoolean({ name: "trigger trace", default: true }),
+        default: true,
+      },
+      tracingMode: {
+        file: true,
+        parser: parseTracingMode,
+      },
+      insertTraceContextIntoLogs: {
+        file: true,
+        parser: parseBoolean({
+          name: "insert trace ids into logs",
+          default: true,
+        }),
+        default: true,
+      },
       transactionSettings: { file: true, parser: parseTransactionSettings },
     },
     configFile as Record<string, unknown>,
     "SW_APM_",
   )
-  const config: SwoConfiguration = { ...raw }
+  const config: SwoConfigurationWithInstrumentations = { ...raw }
 
   if (raw.trustedPath) {
     config.certificate = fs.readFileSync(raw.trustedPath, {
@@ -118,6 +153,30 @@ function readTsConfig(file: string) {
   return "__esModule" in required ? required.default : required
 }
 
+const parseBoolean =
+  (options: { name: string; default: boolean }) => (value: unknown) => {
+    switch (typeof value) {
+      case "boolean":
+        return value
+      case "string": {
+        switch (value.toLowerCase()) {
+          case "true":
+            return true
+          case "false":
+            return false
+          default: {
+            console.warn(`invalid ${options.name} boolean value "${value}"`)
+            return options.default
+          }
+        }
+      }
+      default: {
+        console.warn(`invalid ${options.name} boolean value`)
+        return options.default
+      }
+    }
+  }
+
 function parseLogLevel(level: unknown): DiagLogLevel {
   if (typeof level !== "string") {
     console.warn(`invalid log level`)
@@ -140,6 +199,24 @@ function parseLogLevel(level: unknown): DiagLogLevel {
     default: {
       console.warn(`invalid log level "${level}"`)
       return DiagLogLevel.INFO
+    }
+  }
+}
+
+function parseTracingMode(mode: unknown): boolean | undefined {
+  if (typeof mode !== "string") {
+    console.warn(`invalid tracing mode`)
+    return undefined
+  }
+
+  switch (mode.toLowerCase()) {
+    case "enabled":
+      return true
+    case "disabled":
+      return false
+    default: {
+      console.warn(`invalid tracing mode "${mode}"`)
+      return undefined
     }
   }
 }
