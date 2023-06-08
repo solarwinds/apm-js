@@ -99,6 +99,7 @@ export function init(configName: string) {
       "@opentelemetry/instrumentation-pino": {
         enabled: config.insertTraceIdsIntoLogs,
       },
+      ...config.instrumentations,
     })
     sdk.patch(instrumentations, { traceOptionsResponsePropagator })
     registerInstrumentations({ instrumentations })

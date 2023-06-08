@@ -8,6 +8,7 @@ import { type SwoConfiguration } from "@swotel/sdk"
 import { type Service } from "ts-node"
 
 import aoCert from "../appoptics.crt"
+import { InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node"
 
 let json: typeof import("json5") | typeof JSON
 try {
@@ -35,6 +36,7 @@ export interface ConfigFile {
   triggerTraceEnabled?: boolean
   insertTraceIdsIntoLogs?: boolean
   transactionSettings?: TransactionSetting[]
+  instrumentations?: InstrumentationConfigMap
 }
 
 type LogLevel = "verbose" | "debug" | "info" | "warn" | "error" | "none"
@@ -46,7 +48,11 @@ type TransactionSetting = {
   | { matcher: (identifier: string) => boolean | undefined }
 )
 
-export function readConfig(name: string): SwoConfiguration {
+type SwoConfigurationWithInstrumentations = SwoConfiguration & {
+  instrumentations?: InstrumentationConfigMap
+}
+
+export function readConfig(name: string): SwoConfigurationWithInstrumentations {
   const fullName = path.join(process.cwd(), name)
 
   let configFile: ConfigFile
@@ -99,7 +105,7 @@ export function readConfig(name: string): SwoConfiguration {
     configFile as Record<string, unknown>,
     "SW_APM_",
   )
-  const config: SwoConfiguration = { ...raw }
+  const config: SwoConfigurationWithInstrumentations = { ...raw }
 
   if (raw.trustedPath) {
     config.certificate = fs.readFileSync(raw.trustedPath, {
