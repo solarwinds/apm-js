@@ -94,10 +94,10 @@ export function init(configName: string) {
 
     const instrumentations = getNodeAutoInstrumentations({
       "@opentelemetry/instrumentation-bunyan": {
-        enabled: config.insertTraceIdsIntoLogs,
+        enabled: config.insertTraceContextIntoLogs,
       },
       "@opentelemetry/instrumentation-pino": {
-        enabled: config.insertTraceIdsIntoLogs,
+        enabled: config.insertTraceContextIntoLogs,
       },
       ...config.instrumentations,
     })

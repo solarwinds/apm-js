@@ -9,7 +9,7 @@ export interface SwoConfiguration {
   logLevel?: DiagLogLevel
   triggerTraceEnabled: boolean
   tracingMode?: boolean
-  insertTraceIdsIntoLogs: boolean
+  insertTraceContextIntoLogs: boolean
   transactionSettings?: TransactionSetting[]
 }
 

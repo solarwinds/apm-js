@@ -36,7 +36,7 @@ export function config(
     serviceKey: "",
     enabled: true,
     triggerTraceEnabled: true,
-    insertTraceIdsIntoLogs: true,
+    insertTraceContextIntoLogs: true,
   }
 
   return { ...base, ...override }

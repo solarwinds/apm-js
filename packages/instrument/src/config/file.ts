@@ -34,7 +34,7 @@ export interface ConfigFile {
   logLevel?: LogLevel
   triggerTraceEnabled?: boolean
   tracingMode?: TracingMode
-  insertTraceIdsIntoLogs?: boolean
+  insertTraceContextIntoLogs?: boolean
   transactionSettings?: TransactionSetting[]
   instrumentations?: InstrumentationConfigMap
 }
@@ -93,7 +93,7 @@ export function readConfig(name: string): SwoConfigurationWithInstrumentations {
         file: true,
         parser: parseTracingMode,
       },
-      insertTraceIdsIntoLogs: {
+      insertTraceContextIntoLogs: {
         file: true,
         parser: parseBoolean({
           name: "insert trace ids into logs",
