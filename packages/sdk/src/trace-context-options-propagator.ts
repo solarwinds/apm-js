@@ -26,6 +26,8 @@ const TRIGGER_TRACE_KEY = "trigger-trace"
 const TIMESTAMP_KEY = "ts"
 const SW_KEYS_KEY = "sw-keys"
 
+const CUSTOM_KEY_REGEX = /^custom-[^\s]+$/
+
 export class SwoTraceContextOptionsPropagator
   extends W3CTraceContextPropagator
   implements TextMapPropagator<unknown>
@@ -91,6 +93,10 @@ export class SwoTraceContextOptionsPropagator
       return context
     }
 
+    return setTraceOptions(context, this.parseTraceOptions(header, signature))
+  }
+
+  private parseTraceOptions(header: string, signature?: string): TraceOptions {
     const traceOptions: TraceOptions = {
       header,
       signature,
@@ -101,16 +107,19 @@ export class SwoTraceContextOptionsPropagator
     const kvs = header
       .split(";")
       .filter((kv) => kv.length > 0)
-      .map(
-        (kv) =>
-          kv.split("=", 2).map((s) => s.trim()) as [string] | [string, string],
-      )
+      .map<[string, string | undefined]>((kv) => {
+        const [k, ...vs] = kv.split("=").map((s) => s.trim())
+        return [k!, vs.length > 0 ? vs.join("=") : undefined]
+      })
+      .filter(([k]) => k.length > 0)
     for (const [k, v] of kvs) {
       if (k === TRIGGER_TRACE_KEY) {
         if (v !== undefined) {
           this.logger.debug(
             "invalid trace option for trigger trace, should not have a value",
           )
+
+          traceOptions.ignored.push([k, v])
           continue
         }
 
@@ -120,6 +129,8 @@ export class SwoTraceContextOptionsPropagator
           this.logger.debug(
             "invalid trace option for timestamp, should have a value and only be provided once",
           )
+
+          traceOptions.ignored.push([k, v])
           continue
         }
 
@@ -128,6 +139,8 @@ export class SwoTraceContextOptionsPropagator
           this.logger.debug(
             "invalid trace option for timestamp, should be an integer",
           )
+
+          traceOptions.ignored.push([k, v])
           continue
         }
 
@@ -141,19 +154,23 @@ export class SwoTraceContextOptionsPropagator
         }
 
         traceOptions.swKeys = v
-      } else if (k.startsWith("custom-")) {
+      } else if (CUSTOM_KEY_REGEX.test(k)) {
         if (v === undefined || traceOptions.custom[k] !== undefined) {
           this.logger.debug(
             `invalid trace option for custom key ${k}, should have a value and only be provided once`,
           )
+
+          traceOptions.ignored.push([k, v])
           continue
         }
 
         traceOptions.custom[k] = v
+      } else {
+        traceOptions.ignored.push([k, v])
       }
     }
 
-    return setTraceOptions(context, traceOptions)
+    return traceOptions
   }
 
   fields(): string[] {
