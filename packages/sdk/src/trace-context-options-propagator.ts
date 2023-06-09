@@ -26,6 +26,8 @@ const TRIGGER_TRACE_KEY = "trigger-trace"
 const TIMESTAMP_KEY = "ts"
 const SW_KEYS_KEY = "sw-keys"
 
+const CUSTOM_KEY_REGEX = /^custom-[^\s]+$/
+
 export class SwoTraceContextOptionsPropagator
   extends W3CTraceContextPropagator
   implements TextMapPropagator<unknown>
@@ -91,6 +93,10 @@ export class SwoTraceContextOptionsPropagator
       return context
     }
 
+    return setTraceOptions(context, this.parseTraceOptions(header, signature))
+  }
+
+  private parseTraceOptions(header: string, signature?: string): TraceOptions {
     const traceOptions: TraceOptions = {
       header,
       signature,
@@ -105,6 +111,7 @@ export class SwoTraceContextOptionsPropagator
         (kv) =>
           kv.split("=", 2).map((s) => s.trim()) as [string] | [string, string],
       )
+      .filter(([k]) => k.length > 0)
     for (const [k, v] of kvs) {
       if (k === TRIGGER_TRACE_KEY) {
         if (v !== undefined) {
@@ -141,8 +148,8 @@ export class SwoTraceContextOptionsPropagator
         }
 
         traceOptions.swKeys = v
-      } else if (k.startsWith("custom-")) {
-        if (v === undefined || traceOptions.custom[k] !== undefined) {
+      } else if (CUSTOM_KEY_REGEX.test(k) && v !== undefined) {
+        if (traceOptions.custom[k] !== undefined) {
           this.logger.debug(
             `invalid trace option for custom key ${k}, should have a value and only be provided once`,
           )
@@ -150,10 +157,12 @@ export class SwoTraceContextOptionsPropagator
         }
 
         traceOptions.custom[k] = v
+      } else {
+        traceOptions.ignored.push(v ? [k, v] : [k])
       }
     }
 
-    return setTraceOptions(context, traceOptions)
+    return traceOptions
   }
 
   fields(): string[] {
