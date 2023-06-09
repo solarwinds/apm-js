@@ -1,4 +1,4 @@
-import { TraceOptions } from "../src/context"
+import { type TraceOptions } from "../src/context"
 import { SwoTraceContextOptionsPropagator } from "../src/trace-context-options-propagator"
 import * as mock from "./mock"
 
