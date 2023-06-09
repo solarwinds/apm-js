@@ -107,10 +107,10 @@ export class SwoTraceContextOptionsPropagator
     const kvs = header
       .split(";")
       .filter((kv) => kv.length > 0)
-      .map(
-        (kv) =>
-          kv.split("=", 2).map((s) => s.trim()) as [string] | [string, string],
-      )
+      .map<[string, string | undefined]>((kv) => {
+        const [k, ...vs] = kv.split("=").map((s) => s.trim())
+        return [k!, vs.length > 0 ? vs.join("=") : undefined]
+      })
       .filter(([k]) => k.length > 0)
     for (const [k, v] of kvs) {
       if (k === TRIGGER_TRACE_KEY) {
@@ -118,6 +118,8 @@ export class SwoTraceContextOptionsPropagator
           this.logger.debug(
             "invalid trace option for trigger trace, should not have a value",
           )
+
+          traceOptions.ignored.push([k, v])
           continue
         }
 
@@ -127,6 +129,8 @@ export class SwoTraceContextOptionsPropagator
           this.logger.debug(
             "invalid trace option for timestamp, should have a value and only be provided once",
           )
+
+          traceOptions.ignored.push([k, v])
           continue
         }
 
@@ -135,6 +139,8 @@ export class SwoTraceContextOptionsPropagator
           this.logger.debug(
             "invalid trace option for timestamp, should be an integer",
           )
+
+          traceOptions.ignored.push([k, v])
           continue
         }
 
@@ -148,17 +154,19 @@ export class SwoTraceContextOptionsPropagator
         }
 
         traceOptions.swKeys = v
-      } else if (CUSTOM_KEY_REGEX.test(k) && v !== undefined) {
-        if (traceOptions.custom[k] !== undefined) {
+      } else if (CUSTOM_KEY_REGEX.test(k)) {
+        if (v === undefined || traceOptions.custom[k] !== undefined) {
           this.logger.debug(
             `invalid trace option for custom key ${k}, should have a value and only be provided once`,
           )
+
+          traceOptions.ignored.push([k, v])
           continue
         }
 
         traceOptions.custom[k] = v
       } else {
-        traceOptions.ignored.push(v ? [k, v] : [k])
+        traceOptions.ignored.push([k, v])
       }
     }
 

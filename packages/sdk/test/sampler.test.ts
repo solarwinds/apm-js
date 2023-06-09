@@ -305,7 +305,10 @@ describe("SwoSampler", () => {
       const k2 = "key 2"
       const decisions = mock.oboeDecisions()
       const traceOptions = mock.traceOptions({
-        ignored: [[k1], [k2, "value"]],
+        ignored: [
+          [k1, undefined],
+          [k2, "value"],
+        ],
       })
 
       const response = SwoSampler[traceOptionsResponse](
