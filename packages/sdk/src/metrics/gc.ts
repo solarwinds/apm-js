@@ -5,19 +5,25 @@ import {
 } from "node:perf_hooks"
 
 import { ValueType } from "@opentelemetry/api"
+import { lazy } from "@swotel/lazy"
 
 import { meter } from "."
 
-const major = meter.createHistogram("gc.major", {
-  description: "measures the duration of major GC cycles",
-  unit: "μs",
-  valueType: ValueType.DOUBLE,
-})
-const minor = meter.createHistogram("gc.minor", {
-  description: "measures the duration of minor GC cycles",
-  unit: "μs",
-  valueType: ValueType.DOUBLE,
-})
+const major = lazy(() =>
+  meter.createHistogram("gc.major", {
+    description: "measures the duration of major GC cycles",
+    unit: "μs",
+    valueType: ValueType.DOUBLE,
+  }),
+)
+
+const minor = lazy(() =>
+  meter.createHistogram("gc.minor", {
+    description: "measures the duration of minor GC cycles",
+    unit: "μs",
+    valueType: ValueType.DOUBLE,
+  }),
+)
 
 const obs = new PerformanceObserver((list) => {
   for (const entry of list.getEntriesByType("gc")) {

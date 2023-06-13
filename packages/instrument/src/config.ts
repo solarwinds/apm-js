@@ -4,11 +4,13 @@ import * as process from "node:process"
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { type InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node"
+import { oboe } from "@swotel/bindings"
 import * as mc from "@swotel/merged-config"
 import { type SwoConfiguration } from "@swotel/sdk"
 import { type Service } from "ts-node"
 
-import aoCert from "../appoptics.crt"
+import aoCert from "./appoptics.crt"
+import { View } from "@opentelemetry/sdk-metrics"
 
 let json: typeof import("json5") | typeof JSON
 try {
@@ -33,12 +35,18 @@ export interface ConfigFile {
   trustedPath?: string
   logLevel?: LogLevel
   triggerTraceEnabled?: boolean
+  runtimeMetrics?: boolean
   tracingMode?: TracingMode
   insertTraceContextIntoLogs?: boolean
   transactionSettings?: TransactionSetting[]
   instrumentations?: InstrumentationConfigMap
+  metricViews?: View[]
 }
 
+interface ServiceKey {
+  token: string
+  name: string
+}
 type LogLevel = "verbose" | "debug" | "info" | "warn" | "error" | "none"
 type TracingMode = "enabled" | "disabled"
 type TransactionSetting = {
@@ -48,11 +56,12 @@ type TransactionSetting = {
   | { matcher: (identifier: string) => boolean | undefined }
 )
 
-type SwoConfigurationWithInstrumentations = SwoConfiguration & {
+export interface ExtendedSwoConfiguration extends SwoConfiguration {
   instrumentations?: InstrumentationConfigMap
+  views?: View[]
 }
 
-export function readConfig(name: string): SwoConfigurationWithInstrumentations {
+export function readConfig(name: string): ExtendedSwoConfiguration {
   const fullName = path.join(process.cwd(), name)
 
   let configFile: ConfigFile
@@ -68,7 +77,12 @@ export function readConfig(name: string): SwoConfigurationWithInstrumentations {
 
   const raw = mc.config(
     {
-      serviceKey: { env: true, file: true, parser: String, required: true },
+      serviceKey: {
+        env: true,
+        file: true,
+        parser: parseServiceKey,
+        required: true,
+      },
       enabled: {
         env: true,
         file: true,
@@ -89,6 +103,12 @@ export function readConfig(name: string): SwoConfigurationWithInstrumentations {
         parser: parseBoolean({ name: "trigger trace", default: true }),
         default: true,
       },
+      runtimeMetrics: {
+        env: true,
+        file: true,
+        parser: parseBoolean({ name: "runtime metrics", default: true }),
+        default: true,
+      },
       tracingMode: {
         file: true,
         parser: parseTracingMode,
@@ -102,11 +122,22 @@ export function readConfig(name: string): SwoConfigurationWithInstrumentations {
         default: true,
       },
       transactionSettings: { file: true, parser: parseTransactionSettings },
+      instrumentations: {
+        file: true,
+        parser: (v) => v as InstrumentationConfigMap,
+      },
+      metricViews: { file: true, parser: (v) => v as View[] },
     },
     configFile as Record<string, unknown>,
     "SW_APM_",
   )
-  const config: SwoConfigurationWithInstrumentations = { ...raw }
+  const config: ExtendedSwoConfiguration = {
+    ...raw,
+    token: raw.serviceKey.token,
+    serviceName: raw.serviceKey.name,
+    oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
+    otelLogLevel: raw.logLevel,
+  }
 
   if (raw.trustedPath) {
     config.certificate = fs.readFileSync(raw.trustedPath, {
@@ -153,6 +184,27 @@ function readTsConfig(file: string) {
   return "__esModule" in required ? required.default : required
 }
 
+function otelLevelToOboeLevel(level?: DiagLogLevel): number {
+  switch (level) {
+    case DiagLogLevel.NONE:
+      return oboe.DEBUG_DISABLED
+    case DiagLogLevel.ERROR:
+      return oboe.DEBUG_ERROR
+    case DiagLogLevel.WARN:
+      return oboe.DEBUG_WARNING
+    case DiagLogLevel.INFO:
+      return oboe.DEBUG_INFO
+    case DiagLogLevel.DEBUG:
+      return oboe.DEBUG_LOW
+    case DiagLogLevel.VERBOSE:
+      return oboe.DEBUG_MEDIUM
+    case DiagLogLevel.ALL:
+      return oboe.DEBUG_HIGH
+    default:
+      return oboe.DEBUG_INFO
+  }
+}
+
 const parseBoolean =
   (options: { name: string; default: boolean }) => (value: unknown) => {
     switch (typeof value) {
@@ -176,6 +228,19 @@ const parseBoolean =
       }
     }
   }
+
+function parseServiceKey(key: unknown): ServiceKey {
+  const s = String(key)
+  const parts = s.split(":")
+  if (parts.length !== 2) {
+    console.warn("invalid service key")
+  }
+
+  return {
+    token: parts[0] ?? s,
+    name: parts[1] ?? "",
+  }
+}
 
 function parseLogLevel(level: unknown): DiagLogLevel {
   if (typeof level !== "string") {
