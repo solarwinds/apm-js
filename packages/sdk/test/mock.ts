@@ -10,6 +10,7 @@ import {
   type SpanOptions,
   TraceFlags,
   type TraceState,
+  DiagLogLevel,
 } from "@opentelemetry/api"
 import { hrTime, type InstrumentationLibrary } from "@opentelemetry/core"
 import { Resource } from "@opentelemetry/resources"
@@ -33,8 +34,12 @@ export function config(
   override: Partial<SwoConfiguration> = {},
 ): SwoConfiguration {
   const base: SwoConfiguration = {
-    serviceKey: "",
+    token: "",
+    serviceName: "",
     enabled: true,
+    oboeLogLevel: 6,
+    otelLogLevel: DiagLogLevel.ALL,
+    runtimeMetrics: true,
     triggerTraceEnabled: true,
     insertTraceContextIntoLogs: true,
   }
