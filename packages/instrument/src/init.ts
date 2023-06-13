@@ -7,7 +7,6 @@ import {
 } from "@opentelemetry/api"
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-grpc"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
 import { Resource } from "@opentelemetry/resources"
 import {
@@ -22,7 +21,7 @@ import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@swotel/bindings"
 import * as sdk from "@swotel/sdk"
 
-import { readConfig, type ExtendedSwoConfiguration } from "./config"
+import { type ExtendedSwoConfiguration, readConfig } from "./config"
 
 export function init(configName: string) {
   /* eslint-disable-next-line ts/no-var-requires */

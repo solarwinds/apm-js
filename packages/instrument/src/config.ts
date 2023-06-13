@@ -4,13 +4,13 @@ import * as process from "node:process"
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { type InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node"
+import { type View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@swotel/bindings"
 import * as mc from "@swotel/merged-config"
 import { type SwoConfiguration } from "@swotel/sdk"
 import { type Service } from "ts-node"
 
 import aoCert from "./appoptics.crt"
-import { View } from "@opentelemetry/sdk-metrics"
 
 let json: typeof import("json5") | typeof JSON
 try {
