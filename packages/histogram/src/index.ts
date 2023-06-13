@@ -166,10 +166,16 @@ export class OtelHistogram {
   // we just reuse the upper bound of the first bucket and lower bound of the
   // last one. This is not ideal but it's better than making up values.
   private boundedBucketBoundaries(): number[] {
-    return [
-      this.min ?? this.bucketBoundaries[0]!,
-      ...this.bucketBoundaries,
-      this.max ?? this.bucketBoundaries[this.bucketBoundaries.length - 1]!,
-    ]
+    const upperOfFirst = this.bucketBoundaries[0]!
+    const lowerOfLast = this.bucketBoundaries[this.bucketBoundaries.length - 1]!
+
+    const lowermostEstimate =
+      this.min !== undefined && this.min < upperOfFirst
+        ? this.min
+        : upperOfFirst
+    const uppermostEstimate =
+      this.max !== undefined && this.max > lowerOfLast ? this.max : lowerOfLast
+
+    return [lowermostEstimate, ...this.bucketBoundaries, uppermostEstimate]
   }
 }
