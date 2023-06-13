@@ -5,12 +5,12 @@ import {
   type Context,
   createTraceState,
   type DiagLogger,
+  DiagLogLevel,
   type SpanContext,
   SpanKind,
   type SpanOptions,
   TraceFlags,
   type TraceState,
-  DiagLogLevel,
 } from "@opentelemetry/api"
 import { hrTime, type InstrumentationLibrary } from "@opentelemetry/core"
 import { Resource } from "@opentelemetry/resources"
