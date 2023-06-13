@@ -172,7 +172,7 @@ function initMetrics(
 
   const reader = new PeriodicExportingMetricReader({
     exporter,
-    exportIntervalMillis: 30_000,
+    exportIntervalMillis: 60_000,
   })
 
   const provider = new MeterProvider({

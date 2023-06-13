@@ -32,14 +32,8 @@ export class SwoMetricsExporter implements PushMetricExporter {
       const scopeTags = SwoMetricsExporter.scopeTags(scopeMetric.scope)
 
       for (const metric of scopeMetric.metrics) {
-        if (metric.aggregationTemporality !== AggregationTemporality.DELTA) {
-          this.logger.warn(
-            "aggregation temporalities other than DELTA are not supported",
-          )
-          continue
-        }
-
         const name = `trace.node.${metric.descriptor.name}`
+        const temporality = metric.aggregationTemporality
         const descriptorTags = SwoMetricsExporter.descriptorTags(
           metric.descriptor,
         )
@@ -56,11 +50,36 @@ export class SwoMetricsExporter implements PushMetricExporter {
 
           switch (metric.dataPointType) {
             case DataPointType.SUM: {
-              this.exportSum(dataPoint.value as number, name, tags, tagCount)
+              if (temporality === AggregationTemporality.DELTA) {
+                this.exportCounter(
+                  dataPoint.value as number,
+                  name,
+                  tags,
+                  tagCount,
+                )
+              } else {
+                this.exportSummary(
+                  dataPoint.value as number,
+                  name,
+                  tags,
+                  tagCount,
+                )
+              }
               break
             }
             case DataPointType.GAUGE: {
-              this.exportGauge(dataPoint.value as number, name, tags, tagCount)
+              if (temporality === AggregationTemporality.CUMULATIVE) {
+                this.exportSummary(
+                  dataPoint.value as number,
+                  name,
+                  tags,
+                  tagCount,
+                )
+              } else {
+                this.logger.warn(
+                  "gauges with delta aggregation are not supported",
+                )
+              }
               break
             }
             case DataPointType.HISTOGRAM: {
@@ -87,8 +106,17 @@ export class SwoMetricsExporter implements PushMetricExporter {
     })
   }
 
-  selectAggregationTemporality(): AggregationTemporality {
-    return AggregationTemporality.DELTA
+  selectAggregationTemporality(
+    instrumentType: InstrumentType,
+  ): AggregationTemporality {
+    switch (instrumentType) {
+      case InstrumentType.UP_DOWN_COUNTER:
+      case InstrumentType.OBSERVABLE_UP_DOWN_COUNTER:
+      case InstrumentType.OBSERVABLE_GAUGE:
+        return AggregationTemporality.CUMULATIVE
+      default:
+        return AggregationTemporality.DELTA
+    }
   }
   selectAggregation(instrumentType: InstrumentType): Aggregation {
     switch (instrumentType) {
@@ -106,7 +134,7 @@ export class SwoMetricsExporter implements PushMetricExporter {
     return Promise.resolve()
   }
 
-  private exportSum(
+  private exportCounter(
     value: number,
     name: string,
     tags: oboe.MetricTags,
@@ -122,7 +150,7 @@ export class SwoMetricsExporter implements PushMetricExporter {
     })
   }
 
-  private exportGauge(
+  private exportSummary(
     value: number,
     name: string,
     tags: oboe.MetricTags,
