@@ -11,16 +11,17 @@ const GRANULARITY = 2
 
 const latency = lazy(() =>
   meter.createHistogram("eventloop", {
-    description: `measures the latency of the event loop over ${
-      GRANULARITY + 1
-    } iterations`,
+    description: `measures the latency of the event loop`,
     unit: "μs",
     valueType: ValueType.DOUBLE,
   }),
 )
 
 export function start() {
-  metrics.eventLoop.setCallback((l) => latency.record(l / 1000), GRANULARITY)
+  metrics.eventLoop.setCallback(
+    (l) => latency.record(l / 1000 / (GRANULARITY + 1)),
+    GRANULARITY,
+  )
 }
 export function stop() {
   metrics.eventLoop.setCallback(null)
