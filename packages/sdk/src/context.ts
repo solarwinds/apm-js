@@ -85,6 +85,8 @@ export function parentSpanContext(span: ReadableSpan): SpanContext | undefined {
 }
 
 export function setTransactionName(context: Context, name: string): boolean {
+  if (!name) return false
+
   const spanContext = trace.getSpanContext(context)
   if (!spanContext) return false
 
