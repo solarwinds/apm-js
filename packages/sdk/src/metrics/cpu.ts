@@ -1,6 +1,6 @@
 import * as process from "node:process"
 
-import { BatchObservableResult, ValueType } from "@opentelemetry/api"
+import { type BatchObservableResult, ValueType } from "@opentelemetry/api"
 import { lazy } from "@swotel/lazy"
 
 import { meter } from "."
