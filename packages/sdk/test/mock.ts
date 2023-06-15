@@ -5,6 +5,7 @@ import {
   type Context,
   createTraceState,
   type DiagLogger,
+  DiagLogLevel,
   type SpanContext,
   SpanKind,
   type SpanOptions,
@@ -33,8 +34,12 @@ export function config(
   override: Partial<SwoConfiguration> = {},
 ): SwoConfiguration {
   const base: SwoConfiguration = {
-    serviceKey: "",
+    token: "",
+    serviceName: "",
     enabled: true,
+    oboeLogLevel: 6,
+    otelLogLevel: DiagLogLevel.ALL,
+    runtimeMetrics: true,
     triggerTraceEnabled: true,
     insertTraceContextIntoLogs: true,
   }

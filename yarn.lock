@@ -1001,7 +1001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api@npm:1.4.x, @opentelemetry/api@npm:^1.0.0, @opentelemetry/api@npm:^1.4.1":
+"@opentelemetry/api@npm:1.4.x, @opentelemetry/api@npm:^1.0.0, @opentelemetry/api@npm:^1.4.x":
   version: 1.4.1
   resolution: "@opentelemetry/api@npm:1.4.1"
   checksum: e783c40d1a518abf9c4c5d65223237c1392cd9a6c53ac6e2c3ef0c05ff7266e3dfc4fd9874316dae0dcb7a97950878deb513bcbadfaad653d48f0215f2a0911b
@@ -1092,6 +1092,38 @@ __metadata:
   peerDependencies:
     "@opentelemetry/api": ^1.0.0
   checksum: 4310048f6916f3f49b390fee916f60577a5f5f9e5e2d9c4c109ac4a38636492b2df5497dce435b66193313a0fc94c0cba077713c22fa7feab9d4cbc0b0e02394
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/exporter-metrics-otlp-grpc@npm:0.39.x":
+  version: 0.39.1
+  resolution: "@opentelemetry/exporter-metrics-otlp-grpc@npm:0.39.1"
+  dependencies:
+    "@grpc/grpc-js": ^1.7.1
+    "@opentelemetry/core": 1.13.0
+    "@opentelemetry/exporter-metrics-otlp-http": 0.39.1
+    "@opentelemetry/otlp-grpc-exporter-base": 0.39.1
+    "@opentelemetry/otlp-transformer": 0.39.1
+    "@opentelemetry/resources": 1.13.0
+    "@opentelemetry/sdk-metrics": 1.13.0
+  peerDependencies:
+    "@opentelemetry/api": ^1.3.0
+  checksum: cc9aa4ba0bad0fad74bed514cbf37c28096053275ec4f3ac75e02e2798916a790d1fb899e72866fdf714f7bc1a0be209ab39917431944069ed3bc7599f13a5f7
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/exporter-metrics-otlp-http@npm:0.39.1":
+  version: 0.39.1
+  resolution: "@opentelemetry/exporter-metrics-otlp-http@npm:0.39.1"
+  dependencies:
+    "@opentelemetry/core": 1.13.0
+    "@opentelemetry/otlp-exporter-base": 0.39.1
+    "@opentelemetry/otlp-transformer": 0.39.1
+    "@opentelemetry/resources": 1.13.0
+    "@opentelemetry/sdk-metrics": 1.13.0
+  peerDependencies:
+    "@opentelemetry/api": ^1.3.0
+  checksum: 36bce4f354f163eaf98052cebbe26fa7ce8bd3abede9db1158980cb1337a2d92cabc75f2af87c5ea86f372aed30fb327774ca61a615c1e8000c5fca6104f81f7
   languageName: node
   linkType: hard
 
@@ -1350,7 +1382,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation-http@npm:^0.39.1":
+"@opentelemetry/instrumentation-http@npm:0.39.x, @opentelemetry/instrumentation-http@npm:^0.39.1":
   version: 0.39.1
   resolution: "@opentelemetry/instrumentation-http@npm:0.39.1"
   dependencies:
@@ -1783,7 +1815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/resources@npm:1.13.0, @opentelemetry/resources@npm:1.13.x, @opentelemetry/resources@npm:^1.0.0, @opentelemetry/resources@npm:^1.12.0, @opentelemetry/resources@npm:^1.13.0, @opentelemetry/resources@npm:^1.8.0":
+"@opentelemetry/resources@npm:1.13.0, @opentelemetry/resources@npm:1.13.x, @opentelemetry/resources@npm:^1.0.0, @opentelemetry/resources@npm:^1.12.0, @opentelemetry/resources@npm:^1.8.0":
   version: 1.13.0
   resolution: "@opentelemetry/resources@npm:1.13.0"
   dependencies:
@@ -1856,7 +1888,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-trace-node@npm:1.13.0, @opentelemetry/sdk-trace-node@npm:1.13.x, @opentelemetry/sdk-trace-node@npm:^1.13.0":
+"@opentelemetry/sdk-trace-node@npm:1.13.0, @opentelemetry/sdk-trace-node@npm:1.13.x":
   version: 1.13.0
   resolution: "@opentelemetry/sdk-trace-node@npm:1.13.0"
   dependencies:
@@ -2110,6 +2142,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@swotel/histogram@workspace:^, @swotel/histogram@workspace:packages/histogram":
+  version: 0.0.0-use.local
+  resolution: "@swotel/histogram@workspace:packages/histogram"
+  dependencies:
+    "@opentelemetry/api": ^1.4.x
+    "@opentelemetry/sdk-metrics": 1.13.x
+    "@swotel/eslint-config": "workspace:^"
+    "@types/node": ^16.0.0
+    eslint: ^8.41.0
+    prettier: ^2.8.8
+    typescript: ^5.0.4
+  languageName: unknown
+  linkType: soft
+
 "@swotel/instrument@workspace:^, @swotel/instrument@workspace:packages/instrument":
   version: 0.0.0-use.local
   resolution: "@swotel/instrument@workspace:packages/instrument"
@@ -2117,8 +2163,10 @@ __metadata:
     "@opentelemetry/api": 1.4.x
     "@opentelemetry/auto-instrumentations-node": ^0.37.0
     "@opentelemetry/core": 1.13.x
+    "@opentelemetry/exporter-metrics-otlp-grpc": 0.39.x
     "@opentelemetry/instrumentation": 0.39.x
     "@opentelemetry/resources": 1.13.x
+    "@opentelemetry/sdk-metrics": 1.13.x
     "@opentelemetry/sdk-trace-base": 1.13.x
     "@opentelemetry/sdk-trace-node": 1.13.x
     "@opentelemetry/semantic-conventions": 1.13.x
@@ -2140,6 +2188,17 @@ __metadata:
       optional: true
     ts-node:
       optional: true
+  languageName: unknown
+  linkType: soft
+
+"@swotel/lazy@workspace:^, @swotel/lazy@workspace:packages/lazy":
+  version: 0.0.0-use.local
+  resolution: "@swotel/lazy@workspace:packages/lazy"
+  dependencies:
+    "@swotel/eslint-config": "workspace:^"
+    eslint: ^8.41.0
+    prettier: ^2.8.8
+    typescript: ^5.0.4
   languageName: unknown
   linkType: soft
 
@@ -2174,17 +2233,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@swotel/sdk@workspace:packages/sdk"
   dependencies:
-    "@opentelemetry/api": ^1.4.1
+    "@opentelemetry/api": 1.4.x
     "@opentelemetry/core": 1.13.x
-    "@opentelemetry/instrumentation": ^0.39.1
-    "@opentelemetry/instrumentation-http": ^0.39.1
-    "@opentelemetry/resources": ^1.13.0
+    "@opentelemetry/instrumentation": 0.39.x
+    "@opentelemetry/instrumentation-http": 0.39.x
+    "@opentelemetry/resources": 1.13.x
     "@opentelemetry/sdk-metrics": 1.13.x
     "@opentelemetry/sdk-trace-base": 1.13.x
-    "@opentelemetry/sdk-trace-node": ^1.13.0
+    "@opentelemetry/sdk-trace-node": 1.13.x
     "@opentelemetry/semantic-conventions": 1.13.x
     "@swotel/bindings": "workspace:^"
     "@swotel/eslint-config": "workspace:^"
+    "@swotel/histogram": "workspace:^"
+    "@swotel/lazy": "workspace:^"
     "@types/jest": ^29.5.1
     "@types/node": ^16.0.0
     eslint: ^8.41.0

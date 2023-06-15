@@ -1,0 +1,23 @@
+{
+  "name": "@swotel/histogram",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/**",
+    "lint:fix": "eslint --fix *.js src/** && prettier --write ."
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "^1.4.x",
+    "@opentelemetry/sdk-metrics": "1.13.x",
+    "@swotel/eslint-config": "workspace:^",
+    "@types/node": "^16.0.0",
+    "eslint": "^8.41.0",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
+  }
+}

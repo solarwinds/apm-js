@@ -17,23 +17,9 @@
     "@opentelemetry/sdk-metrics": "1.13.x",
     "@opentelemetry/sdk-trace-base": "1.13.x",
     "@opentelemetry/semantic-conventions": "1.13.x",
-    "@swotel/bindings": "workspace:^"
-  },
-  "devDependencies": {
-    "@opentelemetry/api": "^1.4.1",
-    "@opentelemetry/instrumentation": "^0.39.1",
-    "@opentelemetry/instrumentation-http": "^0.39.1",
-    "@opentelemetry/resources": "^1.13.0",
-    "@opentelemetry/sdk-trace-node": "^1.13.0",
-    "@swotel/eslint-config": "workspace:^",
-    "@types/jest": "^29.5.1",
-    "@types/node": "^16.0.0",
-    "eslint": "^8.41.0",
-    "jest": "^29.5.0",
-    "jest-extended": "^3.2.4",
-    "prettier": "^2.8.8",
-    "ts-jest": "^29.1.0",
-    "typescript": "^5.0.4"
+    "@swotel/bindings": "workspace:^",
+    "@swotel/histogram": "workspace:^",
+    "@swotel/lazy": "workspace:^"
   },
   "peerDependencies": {
     "@opentelemetry/api": "1.4.x",
@@ -46,5 +32,21 @@
     "@opentelemetry/instrumentation-http": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "1.4.x",
+    "@opentelemetry/instrumentation": "0.39.x",
+    "@opentelemetry/instrumentation-http": "0.39.x",
+    "@opentelemetry/resources": "1.13.x",
+    "@opentelemetry/sdk-trace-node": "1.13.x",
+    "@swotel/eslint-config": "workspace:^",
+    "@types/jest": "^29.5.1",
+    "@types/node": "^16.0.0",
+    "eslint": "^8.41.0",
+    "jest": "^29.5.0",
+    "jest-extended": "^3.2.4",
+    "prettier": "^2.8.8",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.4"
   }
 }
