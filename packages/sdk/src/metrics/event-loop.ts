@@ -18,10 +18,11 @@ const latency = lazy(() =>
 )
 
 export function start() {
-  metrics.eventLoop.setCallback(
-    (l) => latency.record(l / 1000 / (GRANULARITY + 1)),
-    GRANULARITY,
-  )
+  metrics.eventLoop.setCallback((l) => {
+    for (let i = 0; i < GRANULARITY + 1; i++) {
+      latency.record(l / 1000 / (GRANULARITY + 1))
+    }
+  }, GRANULARITY)
 }
 export function stop() {
   metrics.eventLoop.setCallback(null)

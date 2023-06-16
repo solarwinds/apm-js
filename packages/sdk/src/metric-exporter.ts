@@ -83,17 +83,29 @@ export class SwoMetricsExporter implements PushMetricExporter {
               break
             }
             case DataPointType.HISTOGRAM: {
-              const histogram = OtelHistogram.fromHistogram(
-                dataPoint.value as Histogram,
-              )
-              this.exportHistogram(histogram, name, tags, tagCount)
+              if (temporality === AggregationTemporality.DELTA) {
+                const histogram = OtelHistogram.fromHistogram(
+                  dataPoint.value as Histogram,
+                )
+                this.exportHistogram(histogram, name, tags, tagCount)
+              } else {
+                this.logger.warn(
+                  "histograms with cumulative aggregation are not supported",
+                )
+              }
               break
             }
             case DataPointType.EXPONENTIAL_HISTOGRAM: {
-              const histogram = OtelHistogram.fromExponentialHistogram(
-                dataPoint.value as ExponentialHistogram,
-              )
-              this.exportHistogram(histogram, name, tags, tagCount)
+              if (temporality === AggregationTemporality.DELTA) {
+                const histogram = OtelHistogram.fromExponentialHistogram(
+                  dataPoint.value as ExponentialHistogram,
+                )
+                this.exportHistogram(histogram, name, tags, tagCount)
+              } else {
+                this.logger.warn(
+                  "histograms with cumulative aggregation are not supported",
+                )
+              }
               break
             }
           }

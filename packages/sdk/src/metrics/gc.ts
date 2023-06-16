@@ -16,7 +16,6 @@ const major = lazy(() =>
     valueType: ValueType.DOUBLE,
   }),
 )
-
 const minor = lazy(() =>
   meter.createHistogram("gc.minor", {
     description: "measures the duration of minor GC cycles",
