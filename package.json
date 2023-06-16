@@ -13,7 +13,8 @@
     "build": "turbo run build",
     "docker": "node scripts/docker.js",
     "example": "node scripts/example.js",
-    "lint": "prettier --check *.json .clang-format && turbo run lint",
+    "lint": "prettier --check *.json *.md && turbo run lint",
+    "lint:fix": "prettier --write *.json *.md && turbo run lint:fix",
     "oboe": "node scripts/oboe.js",
     "test": "turbo run test",
     "vscode": "yarn dlx @yarnpkg/sdks vscode && node scripts/vscode.js && prettier --write .vscode"
