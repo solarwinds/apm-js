@@ -43,8 +43,10 @@ export function dependencies(pnp: PnpApi | undefined = pnpApi): Dependencies {
   const dependencies = new Dependencies()
 
   if (pnp && "getAllLocators" in pnp && pnp.VERSIONS.getAllLocators === 1) {
+    // Yarn >= 2 PnP-based environment
     collectPnpApiDependencies(dependencies, pnp)
   } else {
+    // Other node_modules-based environment
     collectNodeModulesDependencies(dependencies)
   }
 
