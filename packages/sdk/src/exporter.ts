@@ -5,6 +5,7 @@ import {
   type DiagLogger,
   type SpanContext,
   SpanKind,
+  SpanStatusCode,
   trace,
 } from "@opentelemetry/api"
 import {
@@ -64,9 +65,35 @@ export class SwoExporter implements SpanExporter {
       evt.addInfo("sw.span_name", span.name)
       evt.addInfo("sw.span_kind", kind)
       evt.addInfo("Language", "Node.js")
+
+      evt.addInfo("otel.scope.name", span.instrumentationLibrary.name)
+      evt.addInfo(
+        "otel.scope.version",
+        span.instrumentationLibrary.version ?? null,
+      )
+      if (span.status.code !== SpanStatusCode.UNSET) {
+        evt.addInfo("otel.status_code", SpanStatusCode[span.status.code])
+      }
+      if (span.status.message) {
+        evt.addInfo("otel.status_description", span.status.message)
+      }
+      if (span.droppedAttributesCount > 0) {
+        evt.addInfo(
+          "otel.dropped_attributes_count",
+          span.droppedAttributesCount,
+        )
+      }
+      if (span.droppedEventsCount > 0) {
+        evt.addInfo("otel.dropped_events_count", span.droppedEventsCount)
+      }
+      if (span.droppedLinksCount > 0) {
+        evt.addInfo("otel.dropped_links_count", span.droppedLinksCount)
+      }
+
       for (const [key, value] of Object.entries(span.attributes)) {
         evt.addInfo(key, SwoExporter.attributeValue(value))
       }
+
       this.sendReport(evt)
 
       for (const event of span.events) {
