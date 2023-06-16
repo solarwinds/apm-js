@@ -8,7 +8,6 @@ import {
 } from "@opentelemetry/api"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 
-import { SwoParentInfoSpanProcessor } from "../src"
 import { cache } from "../src/cache"
 import {
   getTraceOptions,
@@ -18,6 +17,7 @@ import {
   swValue,
   traceParent,
 } from "../src/context"
+import { SwoParentInfoSpanProcessor } from "../src/parent-info-processor"
 import * as mock from "./mock"
 
 describe("getTraceOptions", () => {

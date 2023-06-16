@@ -20,7 +20,8 @@
     "@swotel/bindings": "workspace:^",
     "@swotel/dependencies": "workspace:^",
     "@swotel/histogram": "workspace:^",
-    "@swotel/lazy": "workspace:^"
+    "@swotel/lazy": "workspace:^",
+    "semver": "^7.5.2"
   },
   "peerDependencies": {
     "@opentelemetry/api": "1.4.x",
@@ -43,6 +44,7 @@
     "@swotel/eslint-config": "workspace:^",
     "@types/jest": "^29.5.1",
     "@types/node": "^16.0.0",
+    "@types/semver": "^7.5.0",
     "eslint": "^8.41.0",
     "jest": "^29.5.0",
     "jest-extended": "^3.2.4",

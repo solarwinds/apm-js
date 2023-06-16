@@ -8,7 +8,7 @@ import { SwoInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
 import { SwoMetricsExporter } from "./metric-exporter"
 import { SwoParentInfoSpanProcessor } from "./parent-info-processor"
 import { patch } from "./patches"
-import { createReporter } from "./reporter"
+import { createReporter, initMessage, sendStatus } from "./reporter"
 import { SwoSampler } from "./sampler"
 import { SwoTraceContextOptionsPropagator } from "./trace-context-options-propagator"
 import { SwoTraceOptionsResponsePropagator } from "./trace-options-response-propagator"
@@ -20,7 +20,9 @@ export const METRICS_ERROR: Error | false =
 export {
   CompoundSpanProcessor,
   createReporter,
+  initMessage,
   patch,
+  sendStatus,
   setTransactionName,
   SwoConfiguration,
   SwoExporter,
