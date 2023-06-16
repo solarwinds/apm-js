@@ -59,4 +59,20 @@ describe("initMessage", () => {
       SemanticResourceAttributes.PROCESS_COMMAND_ARGS,
     )
   })
+
+  it("doesn't override base attributes with resource attributes", () => {
+    const message = initMessage(
+      new Resource({
+        __Init: false,
+        Layer: "python",
+        Label: "multiple",
+      }),
+    )
+
+    expect(message).toMatchObject({
+      __Init: true,
+      Layer: "nodejs",
+      Label: "single",
+    })
+  })
 })
