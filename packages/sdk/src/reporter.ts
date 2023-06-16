@@ -76,16 +76,16 @@ export function initMessage(
   )
 
   return {
+    ...depsVersions,
+    ...libsVersions,
+    ...resourceAttributes,
+
     __Init: true,
     Layer: "nodejs",
     Label: "single",
 
     "APM.Version": packageJson.version,
     "APM.Extension.Version": oboe.Config.getVersionString(),
-
-    ...depsVersions,
-    ...libsVersions,
-    ...resourceAttributes,
   }
 }
 
