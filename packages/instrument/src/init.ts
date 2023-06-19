@@ -8,7 +8,13 @@ import {
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
-import { Resource } from "@opentelemetry/resources"
+import {
+  detectResourcesSync,
+  hostDetectorSync,
+  osDetectorSync,
+  processDetectorSync,
+  Resource,
+} from "@opentelemetry/resources"
 import {
   MeterProvider,
   PeriodicExportingMetricReader,
@@ -53,11 +59,17 @@ export function init(configName: string) {
       return
     }
 
-    const resource = Resource.default().merge(
-      new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
-      }),
-    )
+    const resource = Resource.default()
+      .merge(
+        detectResourcesSync({
+          detectors: [hostDetectorSync, osDetectorSync, processDetectorSync],
+        }),
+      )
+      .merge(
+        new Resource({
+          [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
+        }),
+      )
 
     initTracing(config, resource, initLogger)
     switch (config.runtimeMetrics) {
@@ -99,6 +111,8 @@ function initTracing(
       log(message)
     }
   }, config.oboeLogLevel)
+
+  sdk.sendStatus(reporter, sdk.initMessage(resource))
 
   const sampler = new sdk.SwoSampler(
     config,

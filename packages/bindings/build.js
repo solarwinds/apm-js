@@ -41,6 +41,7 @@ const configs = targets.flatMap(({ name, oboe, target, cpu, glibc }) => {
 
     sources: [
       "src/oboe/oboe.cc",
+      "src/oboe/config.cc",
       "src/oboe/context.cc",
       "src/oboe/custom_metrics.cc",
       "src/oboe/event.cc",

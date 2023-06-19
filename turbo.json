@@ -17,6 +17,10 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
     "start": {
       "dependsOn": ["build"],
       "outputs": []

@@ -1,5 +1,6 @@
 #include <napi.h>
 
+#include "config.hh"
 #include "consts.hh"
 #include "context.hh"
 #include "custom_metrics.hh"
@@ -20,6 +21,7 @@ Napi::Object init(Napi::Env env, Napi::Object exports) {
     exports = JsMetricTags::init(env, exports);
     exports = JsCustomMetrics::init(env, exports);
     exports = JsReporter::init(env, exports);
+    exports = JsConfig::init(env, exports);
     return exports;
 }
 

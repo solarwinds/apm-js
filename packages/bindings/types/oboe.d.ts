@@ -322,3 +322,8 @@ export class Reporter {
   flush(): void
   getType(): string
 }
+
+export namespace Config {
+  function checkVersion(version: number, revision: number): boolean
+  function getVersionString(): string
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@swotel/dependencies",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**",
+    "lint:fix": "eslint --fix *.js src/** test/** && prettier --write .",
+    "test": "jest --verbose"
+  },
+  "devDependencies": {
+    "@swotel/eslint-config": "workspace:^",
+    "@types/jest": "^29.5.1",
+    "@types/node": "^16.0.0",
+    "eslint": "^8.41.0",
+    "jest": "^29.5.0",
+    "prettier": "^2.8.8",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.4"
+  }
+}
