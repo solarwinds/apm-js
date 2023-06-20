@@ -2,7 +2,8 @@
   "name": "@swotel/examples",
   "private": true,
   "scripts": {
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js '*/**/*.{js,ts}'"
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js '*/**/*.{js,ts}'",
+    "lint:fix": "eslint --fix *.js '*/**/*.{js,ts}' && prettier --write ."
   },
   "devDependencies": {
     "@swotel/eslint-config": "workspace:^",

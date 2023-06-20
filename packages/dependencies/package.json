@@ -1,6 +1,10 @@
 {
   "name": "@swotel/dependencies",
   "version": "0.1.0",
+  "license": "Apache-2.0",
+  "contributors": [
+    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

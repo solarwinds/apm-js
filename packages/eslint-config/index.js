@@ -1,3 +1,19 @@
+/*
+Copyright 2023 SolarWinds Worldwide, LLC.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 const js = require("@eslint/js")
 const globals = require("globals")
 const prettier = require("eslint-config-prettier")
@@ -6,6 +22,35 @@ const typescriptPlugin = require("@typescript-eslint/eslint-plugin")
 const tsdocPlugin = require("eslint-plugin-tsdoc")
 const jestPlugin = require("eslint-plugin-jest")
 const importsPlugin = require("eslint-plugin-simple-import-sort")
+const headerPlugin = require("eslint-plugin-header")
+
+const noticeTemplate = `
+Copyright [yyyy] [name of copyright owner]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+`
+
+// Ensures the license notice is kept up to date
+const initialYear = 2023
+const currentYear = new Date().getFullYear()
+const year =
+  currentYear === initialYear ? currentYear : `${initialYear}-${currentYear}`
+
+const holder = "SolarWinds Worldwide, LLC."
+
+const notice = noticeTemplate
+  .replace("[yyyy]", year)
+  .replace("[name of copyright owner]", holder)
 
 // we use the new ESLint config formats which lets us alias plugins
 // so it's useful to be able to also alias the rules provided in their recommended configs
@@ -62,15 +107,21 @@ module.exports = [
       // here we make the assumption that the tsconfig.json is in the root of the project and named that way
       parserOptions: { project: ["./tsconfig.json"] },
     },
+    rules: {
+      // the typescript plugin provides an "eslint-recommended" config which disables eslint recommended rules
+      // that conflict with typescript
+      ...typescriptPlugin.configs["eslint-recommended"].overrides[0].rules,
+    },
+  },
+  {
+    files: ["**/*.ts"],
+    ignores: ["**/*.d.ts"],
     plugins: {
       ts: typescriptPlugin,
       tsdoc: tsdocPlugin,
       imports: importsPlugin,
     },
     rules: {
-      // the typescript plugin provides an "eslint-recommended" config which disables eslint recommended rules
-      // that conflict with typescript
-      ...typescriptPlugin.configs["eslint-recommended"].overrides[0].rules,
       // extends from typescript recommended config
       ...mapRules(
         typescriptPlugin.configs["recommended"].rules,
@@ -103,6 +154,19 @@ module.exports = [
       "tsdoc/syntax": "warn",
       "imports/imports": "warn",
       "imports/exports": "warn",
+    },
+  },
+  {
+    files: ["**/*.d.ts"],
+    rules: {
+      "no-unused-vars": "off",
+    },
+  },
+  {
+    files: ["**/*.js", "**/*.ts"],
+    plugins: { header: headerPlugin },
+    rules: {
+      "header/header": ["error", "block", notice, 2],
     },
   },
   // disable rules that conflict with prettier

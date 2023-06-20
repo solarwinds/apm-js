@@ -1,6 +1,10 @@
 {
   "name": "@swotel/bindings",
   "version": "0.1.0",
+  "license": "Apache-2.0",
+  "contributors": [
+    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
+  ],
   "main": "index.js",
   "types": "types/index.d.ts",
   "files": [
@@ -9,8 +13,8 @@
   ],
   "scripts": {
     "build": "node build.js",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js test/** && clang-format src/*.hh src/*/* -n --Werror",
-    "lint:fix": "eslint --fix *.js test/** && prettier --write . && clang-format src/*.hh src/*/* -i --Werror",
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js types/** test/** && clang-format src/*.hh src/*/* -n --Werror",
+    "lint:fix": "eslint --fix *.js types/** test/** && prettier --write . && clang-format src/*.hh src/*/* -i --Werror",
     "test": "jest --verbose"
   },
   "devDependencies": {

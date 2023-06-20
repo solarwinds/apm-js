@@ -1,6 +1,10 @@
 {
   "name": "@swotel/lazy",
   "version": "0.1.0",
+  "license": "Apache-2.0",
+  "contributors": [
+    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -8,7 +12,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/**"
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/**",
+    "lint:fix": "eslint --fix *.js src/** && prettier --write ."
   },
   "devDependencies": {
     "@swotel/eslint-config": "workspace:^",
