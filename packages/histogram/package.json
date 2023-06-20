@@ -20,8 +20,8 @@
     "@opentelemetry/sdk-metrics": "1.13.x",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",
-    "eslint": "^8.41.0",
+    "eslint": "^8.43.0",
     "prettier": "^2.8.8",
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.3"
   }
 }

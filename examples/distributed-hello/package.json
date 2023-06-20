@@ -8,6 +8,6 @@
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
-    "concurrently": "^8.0.1"
+    "concurrently": "^8.2.0"
   }
 }
