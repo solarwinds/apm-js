@@ -15,7 +15,6 @@
     "lint:fix": "eslint --fix *.js src/** && prettier --write ."
   },
   "dependencies": {
-    "@opentelemetry/api": "1.4.x",
     "@opentelemetry/auto-instrumentations-node": "^0.37.1",
     "@opentelemetry/core": "1.14.x",
     "@opentelemetry/exporter-metrics-otlp-grpc": "0.40.x",
@@ -29,10 +28,14 @@
     "@solarwinds-apm/sdk": "workspace:^"
   },
   "peerDependencies": {
+    "@opentelemetry/api": "1.4.x",
     "json5": ">=1.0.0",
     "ts-node": ">=9.0.0"
   },
   "peerDependenciesMeta": {
+    "@opentelemetry/api": {
+      "optional": false
+    },
     "json5": {
       "optional": true
     },
@@ -41,6 +44,7 @@
     }
   },
   "devDependencies": {
+    "@opentelemetry/api": "1.4.x",
     "@solarwinds-apm/bindings": "workspace:^",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",

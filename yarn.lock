@@ -2190,6 +2190,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/example-distributed-hello@workspace:examples/distributed-hello"
   dependencies:
+    "@opentelemetry/api": 1.4.x
     concurrently: ^8.2.0
     solarwinds-apm: "workspace:^"
   languageName: unknown
@@ -2199,6 +2200,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/example-hello@workspace:examples/hello"
   dependencies:
+    "@opentelemetry/api": 1.4.x
     solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
@@ -6332,9 +6334,12 @@ __metadata:
     ts-node: ^10.9.1
     typescript: ^5.1.3
   peerDependencies:
+    "@opentelemetry/api": 1.4.x
     json5: ">=1.0.0"
     ts-node: ">=9.0.0"
   peerDependenciesMeta:
+    "@opentelemetry/api":
+      optional: false
     json5:
       optional: true
     ts-node:
