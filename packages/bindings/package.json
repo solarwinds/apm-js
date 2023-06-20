@@ -1,6 +1,6 @@
 {
-  "name": "@swotel/bindings",
-  "version": "0.1.0",
+  "name": "@solarwinds-apm/bindings",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -18,7 +18,7 @@
     "test": "jest --verbose"
   },
   "devDependencies": {
-    "@swotel/eslint-config": "workspace:^",
+    "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/jest": "^29.5.1",
     "@types/node": "^16.0.0",
     "eslint": "^8.41.0",
@@ -30,9 +30,9 @@
     "zig-build": "^0.2.0"
   },
   "optionalDependencies": {
-    "@swotel/bindings-linux-arm64-gnu": "worspace:*",
-    "@swotel/bindings-linux-arm64-musl": "worspace:*",
-    "@swotel/bindings-linux-x64-gnu": "worspace:*",
-    "@swotel/bindings-linux-x64-musl": "worspace:*"
+    "@solarwinds-apm/bindings-linux-arm64-gnu": "worspace:*",
+    "@solarwinds-apm/bindings-linux-arm64-musl": "worspace:*",
+    "@solarwinds-apm/bindings-linux-x64-gnu": "worspace:*",
+    "@solarwinds-apm/bindings-linux-x64-musl": "worspace:*"
   }
 }

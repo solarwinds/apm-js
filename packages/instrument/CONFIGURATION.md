@@ -26,7 +26,7 @@ When required, the package will look for the file in the current working directo
 The package exports a type for the config file which can be used to type check it when using TypeScript or add a JSDoc type annotation when using JavaScript.
 
 ```ts
-import type { ConfigFile } from "@swotel/instrument"
+import type { ConfigFile } from "solarwinds-apm"
 
 const config: ConfigFile = {
   // ...
@@ -35,7 +35,7 @@ export default config
 ```
 
 ```js
-/** @type {import('@swotel/instrument').ConfigFile} */
+/** @type {import('solarwinds-apm').ConfigFile} */
 module.exports = {
   // ...
 }

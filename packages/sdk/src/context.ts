@@ -22,7 +22,7 @@ import {
   trace,
 } from "@opentelemetry/api"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
-import { oboe } from "@swotel/bindings"
+import { oboe } from "@solarwinds-apm/bindings"
 
 import { cache } from "./cache"
 

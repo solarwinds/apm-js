@@ -14,6 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const base = require("@swotel/eslint-config")
+const base = require("@solarwinds-apm/eslint-config")
 
 module.exports = [...base]

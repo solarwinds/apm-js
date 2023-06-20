@@ -2032,39 +2032,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swotel/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu, @swotel/bindings-linux-arm64-gnu@worspace:*":
+"@solarwinds-apm/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu, @solarwinds-apm/bindings-linux-arm64-gnu@worspace:*":
   version: 0.0.0-use.local
-  resolution: "@swotel/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu"
+  resolution: "@solarwinds-apm/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu"
   languageName: unknown
   linkType: soft
 
-"@swotel/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl, @swotel/bindings-linux-arm64-musl@worspace:*":
+"@solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl, @solarwinds-apm/bindings-linux-arm64-musl@worspace:*":
   version: 0.0.0-use.local
-  resolution: "@swotel/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl"
+  resolution: "@solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl"
   languageName: unknown
   linkType: soft
 
-"@swotel/bindings-linux-x64-gnu@workspace:packages/bindings/npm/linux-x64-gnu, @swotel/bindings-linux-x64-gnu@worspace:*":
+"@solarwinds-apm/bindings-linux-x64-gnu@workspace:packages/bindings/npm/linux-x64-gnu, @solarwinds-apm/bindings-linux-x64-gnu@worspace:*":
   version: 0.0.0-use.local
-  resolution: "@swotel/bindings-linux-x64-gnu@workspace:packages/bindings/npm/linux-x64-gnu"
+  resolution: "@solarwinds-apm/bindings-linux-x64-gnu@workspace:packages/bindings/npm/linux-x64-gnu"
   languageName: unknown
   linkType: soft
 
-"@swotel/bindings-linux-x64-musl@workspace:packages/bindings/npm/linux-x64-musl, @swotel/bindings-linux-x64-musl@worspace:*":
+"@solarwinds-apm/bindings-linux-x64-musl@workspace:packages/bindings/npm/linux-x64-musl, @solarwinds-apm/bindings-linux-x64-musl@worspace:*":
   version: 0.0.0-use.local
-  resolution: "@swotel/bindings-linux-x64-musl@workspace:packages/bindings/npm/linux-x64-musl"
+  resolution: "@solarwinds-apm/bindings-linux-x64-musl@workspace:packages/bindings/npm/linux-x64-musl"
   languageName: unknown
   linkType: soft
 
-"@swotel/bindings@workspace:^, @swotel/bindings@workspace:packages/bindings":
+"@solarwinds-apm/bindings@workspace:^, @solarwinds-apm/bindings@workspace:packages/bindings":
   version: 0.0.0-use.local
-  resolution: "@swotel/bindings@workspace:packages/bindings"
+  resolution: "@solarwinds-apm/bindings@workspace:packages/bindings"
   dependencies:
-    "@swotel/bindings-linux-arm64-gnu": "worspace:*"
-    "@swotel/bindings-linux-arm64-musl": "worspace:*"
-    "@swotel/bindings-linux-x64-gnu": "worspace:*"
-    "@swotel/bindings-linux-x64-musl": "worspace:*"
-    "@swotel/eslint-config": "workspace:^"
+    "@solarwinds-apm/bindings-linux-arm64-gnu": "worspace:*"
+    "@solarwinds-apm/bindings-linux-arm64-musl": "worspace:*"
+    "@solarwinds-apm/bindings-linux-x64-gnu": "worspace:*"
+    "@solarwinds-apm/bindings-linux-x64-musl": "worspace:*"
+    "@solarwinds-apm/eslint-config": "workspace:^"
     "@types/jest": ^29.5.1
     "@types/node": ^16.0.0
     eslint: ^8.41.0
@@ -2075,22 +2075,22 @@ __metadata:
     typescript: ^5.0.4
     zig-build: ^0.2.0
   dependenciesMeta:
-    "@swotel/bindings-linux-arm64-gnu":
+    "@solarwinds-apm/bindings-linux-arm64-gnu":
       optional: true
-    "@swotel/bindings-linux-arm64-musl":
+    "@solarwinds-apm/bindings-linux-arm64-musl":
       optional: true
-    "@swotel/bindings-linux-x64-gnu":
+    "@solarwinds-apm/bindings-linux-x64-gnu":
       optional: true
-    "@swotel/bindings-linux-x64-musl":
+    "@solarwinds-apm/bindings-linux-x64-musl":
       optional: true
   languageName: unknown
   linkType: soft
 
-"@swotel/dependencies@workspace:^, @swotel/dependencies@workspace:packages/dependencies":
+"@solarwinds-apm/dependencies@workspace:^, @solarwinds-apm/dependencies@workspace:packages/dependencies":
   version: 0.0.0-use.local
-  resolution: "@swotel/dependencies@workspace:packages/dependencies"
+  resolution: "@solarwinds-apm/dependencies@workspace:packages/dependencies"
   dependencies:
-    "@swotel/eslint-config": "workspace:^"
+    "@solarwinds-apm/eslint-config": "workspace:^"
     "@types/jest": ^29.5.1
     "@types/node": ^16.0.0
     eslint: ^8.41.0
@@ -2101,9 +2101,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@swotel/eslint-config@workspace:^, @swotel/eslint-config@workspace:packages/eslint-config":
+"@solarwinds-apm/eslint-config@workspace:^, @solarwinds-apm/eslint-config@workspace:packages/eslint-config":
   version: 0.0.0-use.local
-  resolution: "@swotel/eslint-config@workspace:packages/eslint-config"
+  resolution: "@solarwinds-apm/eslint-config@workspace:packages/eslint-config"
   dependencies:
     "@eslint/js": ^8.41.0
     "@typescript-eslint/eslint-plugin": ^5.59.8
@@ -2131,40 +2131,40 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@swotel/example-distributed-hello@workspace:examples/distributed-hello":
+"@solarwinds-apm/example-distributed-hello@workspace:examples/distributed-hello":
   version: 0.0.0-use.local
-  resolution: "@swotel/example-distributed-hello@workspace:examples/distributed-hello"
+  resolution: "@solarwinds-apm/example-distributed-hello@workspace:examples/distributed-hello"
   dependencies:
-    "@swotel/instrument": "workspace:^"
     concurrently: ^8.0.1
+    solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
 
-"@swotel/example-hello@workspace:examples/hello":
+"@solarwinds-apm/example-hello@workspace:examples/hello":
   version: 0.0.0-use.local
-  resolution: "@swotel/example-hello@workspace:examples/hello"
+  resolution: "@solarwinds-apm/example-hello@workspace:examples/hello"
   dependencies:
-    "@swotel/instrument": "workspace:^"
+    solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
 
-"@swotel/examples@workspace:examples":
+"@solarwinds-apm/examples@workspace:examples":
   version: 0.0.0-use.local
-  resolution: "@swotel/examples@workspace:examples"
+  resolution: "@solarwinds-apm/examples@workspace:examples"
   dependencies:
-    "@swotel/eslint-config": "workspace:^"
+    "@solarwinds-apm/eslint-config": "workspace:^"
     eslint: ^8.41.0
     prettier: ^2.8.8
   languageName: unknown
   linkType: soft
 
-"@swotel/histogram@workspace:^, @swotel/histogram@workspace:packages/histogram":
+"@solarwinds-apm/histogram@workspace:^, @solarwinds-apm/histogram@workspace:packages/histogram":
   version: 0.0.0-use.local
-  resolution: "@swotel/histogram@workspace:packages/histogram"
+  resolution: "@solarwinds-apm/histogram@workspace:packages/histogram"
   dependencies:
     "@opentelemetry/api": ^1.4.x
     "@opentelemetry/sdk-metrics": 1.13.x
-    "@swotel/eslint-config": "workspace:^"
+    "@solarwinds-apm/eslint-config": "workspace:^"
     "@types/node": ^16.0.0
     eslint: ^8.41.0
     prettier: ^2.8.8
@@ -2172,57 +2172,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@swotel/instrument@workspace:^, @swotel/instrument@workspace:packages/instrument":
+"@solarwinds-apm/lazy@workspace:^, @solarwinds-apm/lazy@workspace:packages/lazy":
   version: 0.0.0-use.local
-  resolution: "@swotel/instrument@workspace:packages/instrument"
+  resolution: "@solarwinds-apm/lazy@workspace:packages/lazy"
   dependencies:
-    "@opentelemetry/api": 1.4.x
-    "@opentelemetry/auto-instrumentations-node": ^0.37.0
-    "@opentelemetry/core": 1.13.x
-    "@opentelemetry/exporter-metrics-otlp-grpc": 0.39.x
-    "@opentelemetry/instrumentation": 0.39.x
-    "@opentelemetry/resources": 1.13.x
-    "@opentelemetry/sdk-metrics": 1.13.x
-    "@opentelemetry/sdk-trace-base": 1.13.x
-    "@opentelemetry/sdk-trace-node": 1.13.x
-    "@opentelemetry/semantic-conventions": 1.13.x
-    "@swotel/bindings": "workspace:^"
-    "@swotel/eslint-config": "workspace:^"
-    "@swotel/merged-config": "workspace:^"
-    "@swotel/sdk": "workspace:^"
-    "@types/node": ^16.0.0
-    eslint: ^8.41.0
-    json5: ^2.2.3
-    prettier: ^2.8.8
-    ts-node: ^10.9.1
-    typescript: ^5.0.4
-  peerDependencies:
-    json5: ">=1.0.0"
-    ts-node: ">=9.0.0"
-  peerDependenciesMeta:
-    json5:
-      optional: true
-    ts-node:
-      optional: true
-  languageName: unknown
-  linkType: soft
-
-"@swotel/lazy@workspace:^, @swotel/lazy@workspace:packages/lazy":
-  version: 0.0.0-use.local
-  resolution: "@swotel/lazy@workspace:packages/lazy"
-  dependencies:
-    "@swotel/eslint-config": "workspace:^"
+    "@solarwinds-apm/eslint-config": "workspace:^"
     eslint: ^8.41.0
     prettier: ^2.8.8
     typescript: ^5.0.4
   languageName: unknown
   linkType: soft
 
-"@swotel/merged-config@workspace:^, @swotel/merged-config@workspace:packages/merged-config":
+"@solarwinds-apm/merged-config@workspace:^, @solarwinds-apm/merged-config@workspace:packages/merged-config":
   version: 0.0.0-use.local
-  resolution: "@swotel/merged-config@workspace:packages/merged-config"
+  resolution: "@solarwinds-apm/merged-config@workspace:packages/merged-config"
   dependencies:
-    "@swotel/eslint-config": "workspace:^"
+    "@solarwinds-apm/eslint-config": "workspace:^"
     "@types/jest": ^29.5.1
     "@types/node": ^16.0.0
     eslint: ^8.41.0
@@ -2233,11 +2198,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@swotel/scripts@workspace:scripts":
+"@solarwinds-apm/scripts@workspace:scripts":
   version: 0.0.0-use.local
-  resolution: "@swotel/scripts@workspace:scripts"
+  resolution: "@solarwinds-apm/scripts@workspace:scripts"
   dependencies:
-    "@swotel/eslint-config": "workspace:^"
+    "@solarwinds-apm/eslint-config": "workspace:^"
     axios: ^1.4.0
     bson: ^5.3.0
     eslint: ^8.41.0
@@ -2245,9 +2210,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@swotel/sdk@workspace:^, @swotel/sdk@workspace:packages/sdk":
+"@solarwinds-apm/sdk@workspace:^, @solarwinds-apm/sdk@workspace:packages/sdk":
   version: 0.0.0-use.local
-  resolution: "@swotel/sdk@workspace:packages/sdk"
+  resolution: "@solarwinds-apm/sdk@workspace:packages/sdk"
   dependencies:
     "@opentelemetry/api": 1.4.x
     "@opentelemetry/core": 1.13.x
@@ -2258,11 +2223,11 @@ __metadata:
     "@opentelemetry/sdk-trace-base": 1.13.x
     "@opentelemetry/sdk-trace-node": 1.13.x
     "@opentelemetry/semantic-conventions": 1.13.x
-    "@swotel/bindings": "workspace:^"
-    "@swotel/dependencies": "workspace:^"
-    "@swotel/eslint-config": "workspace:^"
-    "@swotel/histogram": "workspace:^"
-    "@swotel/lazy": "workspace:^"
+    "@solarwinds-apm/bindings": "workspace:^"
+    "@solarwinds-apm/dependencies": "workspace:^"
+    "@solarwinds-apm/eslint-config": "workspace:^"
+    "@solarwinds-apm/histogram": "workspace:^"
+    "@solarwinds-apm/lazy": "workspace:^"
     "@types/jest": ^29.5.1
     "@types/node": ^16.0.0
     "@types/semver": ^7.5.0
@@ -2281,6 +2246,17 @@ __metadata:
       optional: false
     "@opentelemetry/instrumentation-http":
       optional: true
+  languageName: unknown
+  linkType: soft
+
+"@solarwinds-apm/solarwinds-apm@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@solarwinds-apm/solarwinds-apm@workspace:."
+  dependencies:
+    eslint: ^8.41.0
+    prettier: ^2.8.8
+    turbo: ^1.9.9
+    typescript: ^5.0.4
   languageName: unknown
   linkType: soft
 
@@ -6250,6 +6226,41 @@ __metadata:
   languageName: node
   linkType: hard
 
+"solarwinds-apm@workspace:^, solarwinds-apm@workspace:packages/instrument":
+  version: 0.0.0-use.local
+  resolution: "solarwinds-apm@workspace:packages/instrument"
+  dependencies:
+    "@opentelemetry/api": 1.4.x
+    "@opentelemetry/auto-instrumentations-node": ^0.37.0
+    "@opentelemetry/core": 1.13.x
+    "@opentelemetry/exporter-metrics-otlp-grpc": 0.39.x
+    "@opentelemetry/instrumentation": 0.39.x
+    "@opentelemetry/resources": 1.13.x
+    "@opentelemetry/sdk-metrics": 1.13.x
+    "@opentelemetry/sdk-trace-base": 1.13.x
+    "@opentelemetry/sdk-trace-node": 1.13.x
+    "@opentelemetry/semantic-conventions": 1.13.x
+    "@solarwinds-apm/bindings": "workspace:^"
+    "@solarwinds-apm/eslint-config": "workspace:^"
+    "@solarwinds-apm/merged-config": "workspace:^"
+    "@solarwinds-apm/sdk": "workspace:^"
+    "@types/node": ^16.0.0
+    eslint: ^8.41.0
+    json5: ^2.2.3
+    prettier: ^2.8.8
+    ts-node: ^10.9.1
+    typescript: ^5.0.4
+  peerDependencies:
+    json5: ">=1.0.0"
+    ts-node: ">=9.0.0"
+  peerDependenciesMeta:
+    json5:
+      optional: true
+    ts-node:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "source-map-support@npm:0.5.13":
   version: 0.5.13
   resolution: "source-map-support@npm:0.5.13"
@@ -6399,17 +6410,6 @@ __metadata:
   checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
   languageName: node
   linkType: hard
-
-"swotel@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "swotel@workspace:."
-  dependencies:
-    eslint: ^8.41.0
-    prettier: ^2.8.8
-    turbo: ^1.9.9
-    typescript: ^5.0.4
-  languageName: unknown
-  linkType: soft
 
 "tar@npm:^6.1.11, tar@npm:^6.1.2":
   version: 6.1.11

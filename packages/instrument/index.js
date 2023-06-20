@@ -21,8 +21,8 @@ try {
 
   if (!globalThis[initSymbol]) {
     const fs = require("node:fs")
-    const mc = require("@swotel/merged-config")
-    const { SwoSDK } = require("@swotel/sdk")
+    const mc = require("@solarwinds-apm/merged-config")
+    const { SwoSDK } = require("@solarwinds-apm/sdk")
     const {
       getNodeAutoInstrumentations,
     } = require("@opentelemetry/auto-instrumentations-node")

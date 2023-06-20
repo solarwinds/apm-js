@@ -33,7 +33,7 @@ import {
   type SamplingResult,
 } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
-import { oboe } from "@swotel/bindings"
+import { oboe } from "@solarwinds-apm/bindings"
 
 import { type SwoConfiguration } from "./config"
 import {

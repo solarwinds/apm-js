@@ -40,8 +40,8 @@ import {
   ParentBasedSampler,
 } from "@opentelemetry/sdk-trace-node"
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
-import { oboe } from "@swotel/bindings"
-import * as sdk from "@swotel/sdk"
+import { oboe } from "@solarwinds-apm/bindings"
+import * as sdk from "@solarwinds-apm/sdk"
 
 import { type ExtendedSwoConfiguration, readConfig } from "./config"
 

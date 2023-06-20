@@ -1,6 +1,6 @@
 {
-  "name": "@swotel/lazy",
-  "version": "0.1.0",
+  "name": "@solarwinds-apm/lazy",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -16,7 +16,7 @@
     "lint:fix": "eslint --fix *.js src/** && prettier --write ."
   },
   "devDependencies": {
-    "@swotel/eslint-config": "workspace:^",
+    "@solarwinds-apm/eslint-config": "workspace:^",
     "eslint": "^8.41.0",
     "prettier": "^2.8.8",
     "typescript": "^5.0.4"

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import { metrics } from "@opentelemetry/api"
-import { lazy } from "@swotel/lazy"
+import { lazy } from "@solarwinds-apm/lazy"
 
 import * as cpu from "./cpu"
 import * as eventLoop from "./event-loop"
