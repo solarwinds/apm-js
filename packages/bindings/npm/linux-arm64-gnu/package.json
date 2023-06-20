@@ -1,5 +1,5 @@
 {
-  "name": "@swotel/bindings-linux-arm64-gnu",
+  "name": "@solarwinds-apm/bindings-linux-arm64-gnu",
   "version": "0.0.0",
   "os": [
     "linux"

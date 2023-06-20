@@ -1,6 +1,6 @@
 {
-  "name": "@swotel/eslint-config",
-  "version": "0.1.0",
+  "name": "@solarwinds-apm/eslint-config",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"

@@ -1,6 +1,6 @@
 {
-  "name": "@swotel/instrument",
-  "version": "0.1.0",
+  "name": "solarwinds-apm",
+  "version": "13.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -25,8 +25,8 @@
     "@opentelemetry/sdk-trace-base": "1.13.x",
     "@opentelemetry/sdk-trace-node": "1.13.x",
     "@opentelemetry/semantic-conventions": "1.13.x",
-    "@swotel/merged-config": "workspace:^",
-    "@swotel/sdk": "workspace:^"
+    "@solarwinds-apm/merged-config": "workspace:^",
+    "@solarwinds-apm/sdk": "workspace:^"
   },
   "peerDependencies": {
     "json5": ">=1.0.0",
@@ -41,8 +41,8 @@
     }
   },
   "devDependencies": {
-    "@swotel/bindings": "workspace:^",
-    "@swotel/eslint-config": "workspace:^",
+    "@solarwinds-apm/bindings": "workspace:^",
+    "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",
     "eslint": "^8.41.0",
     "json5": "^2.2.3",

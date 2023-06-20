@@ -1,11 +1,11 @@
 {
-  "name": "@swotel/example-distributed-hello",
+  "name": "@solarwinds-apm/example-distributed-hello",
   "private": true,
   "scripts": {
-    "start": "concurrently \"node -r @swotel/instrument external.js\" \"node -r @swotel/instrument internal.js\""
+    "start": "concurrently \"node -r solarwinds-apm external.js\" \"node -r solarwinds-apm internal.js\""
   },
   "dependencies": {
-    "@swotel/instrument": "workspace:^"
+    "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
     "concurrently": "^8.0.1"

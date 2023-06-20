@@ -18,7 +18,7 @@ import * as process from "node:process"
 import * as v8 from "node:v8"
 
 import { type BatchObservableResult, ValueType } from "@opentelemetry/api"
-import { lazy } from "@swotel/lazy"
+import { lazy } from "@solarwinds-apm/lazy"
 
 import { meter } from "."
 

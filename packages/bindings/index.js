@@ -31,7 +31,7 @@ function triple() {
 function nativeRequireAssign(name, exports) {
   const t = triple()
   try {
-    exports[name] = require(`@swotel/bindings-${t}/${name}.node`)
+    exports[name] = require(`@solarwinds-apm/bindings-${t}/${name}.node`)
   } catch (cause) {
     exports[name] = new Error(`unsupported platform ${t}`, { cause })
   }

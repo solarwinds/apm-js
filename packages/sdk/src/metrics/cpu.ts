@@ -17,7 +17,7 @@ limitations under the License.
 import * as process from "node:process"
 
 import { type BatchObservableResult, ValueType } from "@opentelemetry/api"
-import { lazy } from "@swotel/lazy"
+import { lazy } from "@solarwinds-apm/lazy"
 
 import { meter } from "."
 

@@ -17,7 +17,7 @@ limitations under the License.
 import { SpanKind } from "@opentelemetry/api"
 import { SamplingDecision } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
-import { oboe } from "@swotel/bindings"
+import { oboe } from "@solarwinds-apm/bindings"
 
 import { swValue } from "../src/context"
 import { SwoSampler } from "../src/sampler"

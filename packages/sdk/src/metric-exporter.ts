@@ -34,8 +34,8 @@ import {
   type PushMetricExporter,
   type ResourceMetrics,
 } from "@opentelemetry/sdk-metrics"
-import { oboe } from "@swotel/bindings"
-import { OtelHistogram } from "@swotel/histogram"
+import { oboe } from "@solarwinds-apm/bindings"
+import { OtelHistogram } from "@solarwinds-apm/histogram"
 
 export class SwoMetricsExporter implements PushMetricExporter {
   constructor(private readonly logger: DiagLogger) {}

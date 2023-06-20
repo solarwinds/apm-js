@@ -21,7 +21,7 @@ import {
 } from "node:perf_hooks"
 
 import { ValueType } from "@opentelemetry/api"
-import { lazy } from "@swotel/lazy"
+import { lazy } from "@solarwinds-apm/lazy"
 
 import { meter } from "."
 

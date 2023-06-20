@@ -1,10 +1,10 @@
 {
-  "name": "@swotel/example-hello",
+  "name": "@solarwinds-apm/example-hello",
   "private": true,
   "scripts": {
-    "start": "node -r @swotel/instrument index.js"
+    "start": "node -r solarwinds-apm index.js"
   },
   "dependencies": {
-    "@swotel/instrument": "workspace:^"
+    "solarwinds-apm": "workspace:^"
   }
 }

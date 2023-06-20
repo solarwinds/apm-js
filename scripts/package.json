@@ -1,5 +1,5 @@
 {
-  "name": "@swotel/scripts",
+  "name": "@solarwinds-apm/scripts",
   "scripts": {
     "lint": "prettier --check . && eslint --max-warnings=0 *.js",
     "lint:fix": "eslint --fix *.js && prettier --write ."
@@ -9,7 +9,7 @@
     "bson": "^5.3.0"
   },
   "devDependencies": {
-    "@swotel/eslint-config": "workspace:^",
+    "@solarwinds-apm/eslint-config": "workspace:^",
     "eslint": "^8.41.0",
     "prettier": "^2.8.8"
   }

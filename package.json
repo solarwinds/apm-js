@@ -1,5 +1,5 @@
 {
-  "name": "swotel",
+  "name": "@solarwinds-apm/solarwinds-apm",
   "private": true,
   "license": "Apache-2.0",
   "packageManager": "yarn@3.5.1",

@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 import { ValueType } from "@opentelemetry/api"
-import { metrics } from "@swotel/bindings"
-import { lazy } from "@swotel/lazy"
+import { metrics } from "@solarwinds-apm/bindings"
+import { lazy } from "@solarwinds-apm/lazy"
 
 import { meter } from "."
 

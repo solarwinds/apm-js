@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import { context } from "@opentelemetry/api"
-import * as sdk from "@swotel/sdk"
+import * as sdk from "@solarwinds-apm/sdk"
 
 import { init } from "./init"
 

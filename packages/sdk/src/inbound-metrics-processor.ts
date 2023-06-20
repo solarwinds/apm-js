@@ -21,7 +21,7 @@ import {
   type ReadableSpan,
 } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
-import { oboe } from "@swotel/bindings"
+import { oboe } from "@solarwinds-apm/bindings"
 
 import { cache } from "./cache"
 import { parentSpanContext } from "./context"
