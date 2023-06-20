@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/** Config definition with each key defining the value it expects */
 export type ConfigDefinition = Record<string, ValueDefinition<unknown>>
 /** Config value definition */
 export interface ValueDefinition<T> {
