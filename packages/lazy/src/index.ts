@@ -14,6 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * Creates a lazy proxy object that will initialize the proxied object using
+ * the provided function on first access.
+ *
+ * @param init - Initialization function
+ * @returns Lazy proxy object
+ */
 export function lazy<T>(init: () => T): T {
   const valueKey = Symbol("value")
   const initKey = Symbol("init")
