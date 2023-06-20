@@ -1,18 +1,24 @@
 {
   "name": "@swotel/eslint-config",
   "version": "0.1.0",
+  "license": "Apache-2.0",
+  "contributors": [
+    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
+  ],
   "main": "index.js",
   "files": [
     "index.js"
   ],
   "scripts": {
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js"
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js",
+    "lint:fix": "eslint --fix *.js && prettier --write ."
   },
   "dependencies": {
     "@eslint/js": "^8.41.0",
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-jest": "^27.2.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-tsdoc": "^0.2.17",
