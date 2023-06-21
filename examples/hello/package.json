@@ -5,6 +5,7 @@
     "start": "node -r solarwinds-apm index.js"
   },
   "dependencies": {
+    "@opentelemetry/api": "1.4.x",
     "solarwinds-apm": "workspace:^"
   }
 }

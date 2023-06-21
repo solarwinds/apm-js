@@ -5,9 +5,10 @@
     "start": "concurrently \"node -r solarwinds-apm external.js\" \"node -r solarwinds-apm internal.js\""
   },
   "dependencies": {
+    "@opentelemetry/api": "1.4.x",
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
-    "concurrently": "^8.0.1"
+    "concurrently": "^8.2.0"
   }
 }

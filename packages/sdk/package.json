@@ -17,10 +17,10 @@
     "test": "jest --verbose"
   },
   "dependencies": {
-    "@opentelemetry/core": "1.13.x",
-    "@opentelemetry/sdk-metrics": "1.13.x",
-    "@opentelemetry/sdk-trace-base": "1.13.x",
-    "@opentelemetry/semantic-conventions": "1.13.x",
+    "@opentelemetry/core": "1.14.x",
+    "@opentelemetry/sdk-metrics": "1.14.x",
+    "@opentelemetry/sdk-trace-base": "1.14.x",
+    "@opentelemetry/semantic-conventions": "1.14.x",
     "@solarwinds-apm/bindings": "workspace:^",
     "@solarwinds-apm/dependencies": "workspace:^",
     "@solarwinds-apm/histogram": "workspace:^",
@@ -41,19 +41,19 @@
   },
   "devDependencies": {
     "@opentelemetry/api": "1.4.x",
-    "@opentelemetry/instrumentation": "0.39.x",
-    "@opentelemetry/instrumentation-http": "0.39.x",
-    "@opentelemetry/resources": "1.13.x",
-    "@opentelemetry/sdk-trace-node": "1.13.x",
+    "@opentelemetry/instrumentation": "0.40.x",
+    "@opentelemetry/instrumentation-http": "0.40.x",
+    "@opentelemetry/resources": "1.14.x",
+    "@opentelemetry/sdk-trace-node": "1.14.x",
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "@types/jest": "^29.5.1",
+    "@types/jest": "^29.5.2",
     "@types/node": "^16.0.0",
     "@types/semver": "^7.5.0",
-    "eslint": "^8.41.0",
+    "eslint": "^8.43.0",
     "jest": "^29.5.0",
-    "jest-extended": "^3.2.4",
+    "jest-extended": "^4.0.0",
     "prettier": "^2.8.8",
     "ts-jest": "^29.1.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.3"
   }
 }

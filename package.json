@@ -2,7 +2,7 @@
   "name": "@solarwinds-apm/solarwinds-apm",
   "private": true,
   "license": "Apache-2.0",
-  "packageManager": "yarn@3.5.1",
+  "packageManager": "yarn@3.6.0",
   "workspaces": [
     "examples",
     "examples/*",
@@ -21,9 +21,9 @@
     "vscode": "yarn dlx @yarnpkg/sdks vscode && node scripts/vscode.js && prettier --write .vscode"
   },
   "devDependencies": {
-    "eslint": "^8.41.0",
+    "eslint": "^8.43.0",
     "prettier": "^2.8.8",
-    "turbo": "^1.9.9",
-    "typescript": "^5.0.4"
+    "turbo": "^1.10.3",
+    "typescript": "^5.1.3"
   }
 }

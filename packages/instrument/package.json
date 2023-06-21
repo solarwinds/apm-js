@@ -15,24 +15,27 @@
     "lint:fix": "eslint --fix *.js src/** && prettier --write ."
   },
   "dependencies": {
-    "@opentelemetry/api": "1.4.x",
-    "@opentelemetry/auto-instrumentations-node": "^0.37.0",
-    "@opentelemetry/core": "1.13.x",
-    "@opentelemetry/exporter-metrics-otlp-grpc": "0.39.x",
-    "@opentelemetry/instrumentation": "0.39.x",
-    "@opentelemetry/resources": "1.13.x",
-    "@opentelemetry/sdk-metrics": "1.13.x",
-    "@opentelemetry/sdk-trace-base": "1.13.x",
-    "@opentelemetry/sdk-trace-node": "1.13.x",
-    "@opentelemetry/semantic-conventions": "1.13.x",
+    "@opentelemetry/auto-instrumentations-node": "^0.37.1",
+    "@opentelemetry/core": "1.14.x",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "0.40.x",
+    "@opentelemetry/instrumentation": "0.40.x",
+    "@opentelemetry/resources": "1.14.x",
+    "@opentelemetry/sdk-metrics": "1.14.x",
+    "@opentelemetry/sdk-trace-base": "1.14.x",
+    "@opentelemetry/sdk-trace-node": "1.14.x",
+    "@opentelemetry/semantic-conventions": "1.14.x",
     "@solarwinds-apm/merged-config": "workspace:^",
     "@solarwinds-apm/sdk": "workspace:^"
   },
   "peerDependencies": {
+    "@opentelemetry/api": "1.4.x",
     "json5": ">=1.0.0",
     "ts-node": ">=9.0.0"
   },
   "peerDependenciesMeta": {
+    "@opentelemetry/api": {
+      "optional": false
+    },
     "json5": {
       "optional": true
     },
@@ -41,13 +44,14 @@
     }
   },
   "devDependencies": {
+    "@opentelemetry/api": "1.4.x",
     "@solarwinds-apm/bindings": "workspace:^",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",
-    "eslint": "^8.41.0",
+    "eslint": "^8.43.0",
     "json5": "^2.2.3",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.3"
   }
 }
