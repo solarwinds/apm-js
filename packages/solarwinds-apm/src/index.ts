@@ -20,7 +20,7 @@ import * as sdk from "@solarwinds-apm/sdk"
 import { init } from "./init"
 
 try {
-  init("swo.config")
+  init("solarwinds.apm.config")
 } catch (err) {
   console.warn(err)
 }

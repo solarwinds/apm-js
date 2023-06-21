@@ -6309,9 +6309,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"solarwinds-apm@workspace:^, solarwinds-apm@workspace:packages/instrument":
+"solarwinds-apm@workspace:^, solarwinds-apm@workspace:packages/solarwinds-apm":
   version: 0.0.0-use.local
-  resolution: "solarwinds-apm@workspace:packages/instrument"
+  resolution: "solarwinds-apm@workspace:packages/solarwinds-apm"
   dependencies:
     "@opentelemetry/api": 1.4.x
     "@opentelemetry/auto-instrumentations-node": ^0.37.1
