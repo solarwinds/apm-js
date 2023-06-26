@@ -1,11 +1,15 @@
 {
   "name": "@solarwinds-apm/bindings-linux-x64-gnu",
   "version": "0.0.0",
+  "license": "Apache-2.0",
   "os": [
     "linux"
   ],
   "cpu": [
     "x64"
+  ],
+  "libc": [
+    "glibc"
   ],
   "files": [
     "oboe.node",
@@ -13,9 +17,6 @@
     "liboboe.so"
   ],
   "engines": {
-    "node": ">= 16"
-  },
-  "libc": [
-    "glibc"
-  ]
+    "node": ">=16"
+  }
 }

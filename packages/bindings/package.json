@@ -15,7 +15,8 @@
     "build": "node build.js",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js types/** test/** && clang-format src/*.hh src/*/* -n --Werror",
     "lint:fix": "eslint --fix *.js types/** test/** && prettier --write . && clang-format src/*.hh src/*/* -i --Werror",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "oboe": "node oboe.js"
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
@@ -34,5 +35,8 @@
     "@solarwinds-apm/bindings-linux-arm64-musl": "worspace:*",
     "@solarwinds-apm/bindings-linux-x64-gnu": "worspace:*",
     "@solarwinds-apm/bindings-linux-x64-musl": "worspace:*"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }

@@ -1,25 +1,28 @@
 # Configuration
 
-When using the `instrument` package for instrumentation, configuration options are read from both then environment and an optional configuration file, with environment variables taking precedence over config file values.
+Configuration options are read from both then environment and an optional configuration file, with environment variables taking precedence over config file values.
 
 All configuration options are optional except for the service key which is always required.
 
 ## Environment Variables
 
-| Name                     | Description                                     |
-| ------------------------ | ----------------------------------------------- |
-| **`SW_APM_SERVICE_KEY`** | **Service key**                                 |
-| `SW_APM_COLLECTOR`       | Collector URL                                   |
-| `SW_APM_TRUSTED_PATH`    | Path to the collector's SSL certificate         |
-| `SW_APM_LOG_LEVEL`       | Logging level for the instrumentation libraries |
+| Name                           | Default           | Description                                     |
+| ------------------------------ | ----------------- | ----------------------------------------------- |
+| **`SW_APM_SERVICE_KEY`**       |                   | **Service key**                                 |
+| `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled       |
+| `SW_APM_COLLECTOR`             | Default collector | Collector URL                                   |
+| `SW_APM_TRUSTED_PATH`          | None              | Path to the collector's SSL certificate         |
+| `SW_APM_LOG_LEVEL`             | `info`            | Logging level for the instrumentation libraries |
+| `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled       |
+| `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be enabled       |
 
 ## Configuration File
 
 When required, the package will look for the file in the current working directory under three possible formats, in the following order:
 
-- `swo.config.json` - JSON config, doesn't support certain options, optional peer dependency on `json5`
-- `swo.config.js` - JavaScript config, supports all options
-- `swo.config.ts` - TypeScript config, supports all options, required peer dependency on `ts-node`
+- `solarwinds.apm.config.json` - JSON config, doesn't support certain options, optional peer dependency on `json5`
+- `solarwinds.apm.config.js` - JavaScript config, supports all options
+- `solarwinds.apm.config.ts` - TypeScript config, supports all options, required peer dependency on `ts-node`
 
 ### Type Checking
 
@@ -43,12 +46,20 @@ module.exports = {
 
 ### Specification
 
-| Key                   | Description                                       |
-| --------------------- | ------------------------------------------------- |
-| `collector`           | Collector URL                                     |
-| `trustedPath`         | Path to the collector's SSL certificate           |
-| `logLevel`            | Logging level for the instrumentation libraries   |
-| `transactionSettings` | See [Transaction Settings](#transaction-settings) |
+| Key                          | Default           | Description                                           |
+| ---------------------------- | ----------------- | ----------------------------------------------------- |
+| **`serviceKey`**             |                   | **Service key**                                       |
+| `enabled`                    | `true`            | Whether instrumentation should be enabled             |
+| `collector`                  | Default collector | Collector URL                                         |
+| `trustedPath`                | None              | Path to the collector's SSL certificate               |
+| `logLevel`                   | `info`            | Logging level for the instrumentation libraries       |
+| `triggerTraceEnabled`        | `true`            | Whether trigger tracing should be enabled             |
+| `runtimeMetrics`             | `true`            | Whether runtime metrics should be enabled             |
+| `tracingMode`                | None              | Custom tracing mode                                   |
+| `insertTraceContextIntoLogs` | `true`            | Whether to insert trace context information into logs |
+| `transactionSettings`        | None              | See [Transaction Settings](#transaction-settings)     |
+| `instrumentations`           | None              | Custom instrumentation configurations                 |
+| `metricViews`                | None              | Custom metric views                                   |
 
 #### Transaction Settings
 

@@ -56,6 +56,30 @@ jobs:
             packages/bindings/npm/*/liboboe.so
           retention-days: 1
 
+  versions:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: corepack enable
+
+      - uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-
+
+      - run: yarn install --immutable
+
+      - run: yarn version check
+
   launch-arm64:
     if: github.event_name == 'pull_request'
     outputs:

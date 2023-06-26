@@ -93,7 +93,7 @@ module.exports = [
     files: ["**/*.js"],
     languageOptions: {
       ecmaVersion: 12,
-      globals: { ...globals.es2020, ...globals.commonjs, ...globals.node },
+      globals: { ...globals.es2021, ...globals.commonjs, ...globals.node },
     },
     rules: {
       "no-unused-vars": ["warn", unusedOptions],
