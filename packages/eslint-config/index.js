@@ -105,7 +105,10 @@ module.exports = [
     languageOptions: {
       parser: typescriptParser,
       // here we make the assumption that the tsconfig.json is in the root of the project and named that way
-      parserOptions: { project: ["./tsconfig.json"] },
+      parserOptions: {
+        project: ["./tsconfig.json", "./test/tsconfig.json"],
+        EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
+      },
     },
     rules: {
       // the typescript plugin provides an "eslint-recommended" config which disables eslint recommended rules

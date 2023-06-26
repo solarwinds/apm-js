@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**",
-    "lint:fix": "eslint --fix *.js src/** test/** && prettier --write .",
+    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**/*.ts",
+    "lint:fix": "eslint --fix *.js src/** test/**/*.ts && prettier --write .",
     "test": "jest --verbose"
   },
   "devDependencies": {
