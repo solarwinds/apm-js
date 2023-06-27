@@ -1,11 +1,15 @@
 {
   "name": "@solarwinds-apm/bindings-linux-x64-musl",
   "version": "0.0.0",
+  "license": "Apache-2.0",
   "os": [
     "linux"
   ],
   "cpu": [
     "x64"
+  ],
+  "libc": [
+    "musl"
   ],
   "files": [
     "oboe.node",
@@ -13,9 +17,6 @@
     "liboboe.so"
   ],
   "engines": {
-    "node": ">= 16"
-  },
-  "libc": [
-    "musl"
-  ]
+    "node": ">=16"
+  }
 }

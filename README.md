@@ -1,44 +1,25 @@
-# swotel (name pending)
+# @solarwinds-apm
 
-**_WORK IN PROGRESS_** OTel based SWO Node library playground
+This repo holds the source code for the OpenTelemetry-based SolarWinds APM Node.js library and its dependencies. If you're looking for information about the library itself, such as installation and usage instruction, check out its [dedicated README](./packages/solarwinds-apm#README).
 
-## Project structure
+## Repository Setup
 
-- [`docker`](./docker/) - Dockerized dev environment
-- [`examples`](./examples/) - Runnable exemples
-- [`packages`](./packages/) - Actual Node packages that would get published to NPM
-  - [`bindings`](./packages/bindings/) - N-API bindings experiments
-  - [`eslint-config`](./packages/eslint-config/) - Shared ESLint config
-  - [`instrument`](./packages/instrument/) - Package usable with `node -r` to instrument without the manual OTel setup
-  - [`merged-config`](./packages/merged-config/) - Utility to merge a config file with environment variables
-  - [`sdk`](./packages/sdk/) - SDK implementing OTel interfaces for SWO
-- [`scripts`](./scripts/) - Project management scripts
+```sh
+git lfs pull
+yarn install
+```
 
-## Available commands
+## Examples
 
-First run `git lfs pull` and `yarn install` to get started. This will have to be repeated anytime the dependencies have changed or the version of yarn or oboe is updated. There is no need to run in a container, this should work natively on any machine. However examples and tests need to be ran from Linux x64 or arm64.
+This project contains a few examples of how to use the library in the [`examples/`](./examples/) directory. They can be run using `yarn example <name>` from the project root.
 
-- `yarn docker <image>` - Starts a shell session in the specified image
-- `yarn docker <image> build` - Builds the specified image
-- `yarn docker collector` - Attaches to the test collector log stream
-- `yarn build` - Builds everything
-- `yarn lint` - Lints everything
-- `yarn example <name>` - Runs an example
-- `yarn example <name> collector` - Runs an example using the test collector
-- `yarn oboe` - Downloads and sets up the latest version of oboe
-- `yarn test` - Runs all tests
-- `yarn vscode` - Sets up VSCode to work with the project better
+- [`hello`](./examples/hello) is a simple hello world HTTP server.
+- [`distributed-hello`](./examples/distributed-hello/) is a simple distributed example where the main HTTP server sends a request to a secondary one and uses the response as its own response.
 
-Docker shell sessions always have a test collector available to them at `collector:12224`. The test collector certificate is mounted at `/swotel/docker/collector/server-grpc.crt`. When running an example, all of its dependencies will be built locally and then the example itself will be ran inside the Alpine container with the test collector available. Examples use port 8080 when run this way.
+## Node.js Version Support
 
-Commands ran from the root directory use a build system to ensure all tasks it depends on are run and provide caching. When this behaviour is not desired, it's possible to run commands in directly each package's directory instead.
+The packages in this project support all currently maintained LTS versions. At the moment this means Node.js 16, 18 and 20 are supported.
 
-## Local dev requirements
+## License
 
-- Node.js (16 or newer with corepack)
-- clang-format (14 or newer)
-- Git LFS
-
-## Devtools
-
-The project is setup to use [Yarn](https://yarnpkg.com/) with workspaces as it is orders of magnitude faster than npm for large projects, especially in Docker where filesystem operations are much slower. [Turborepo](https://turborepo.org) is used as a build system to speedup tasks and make things a lot nicer (ie. automatically build typescript and native dependencies when running an example).
+This project is licensed under the [Apache License, Version 2.0](./LICENSE).

@@ -17,7 +17,12 @@ limitations under the License.
 const path = require("node:path")
 
 module.exports = {
-  preset: "ts-jest",
+  transform: {
+    "^.+\\.ts$": [
+      "ts-jest",
+      { tsconfig: path.join(__dirname, "test", "tsconfig.json") },
+    ],
+  },
   testEnvironment: "node",
   setupFilesAfterEnv: [
     "jest-extended/all",

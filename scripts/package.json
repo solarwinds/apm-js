@@ -1,11 +1,11 @@
 {
   "name": "@solarwinds-apm/scripts",
+  "private": true,
   "scripts": {
     "lint": "prettier --check . && eslint --max-warnings=0 *.js",
     "lint:fix": "eslint --fix *.js && prettier --write ."
   },
   "dependencies": {
-    "axios": "^1.4.0",
     "bson": "^5.3.0"
   },
   "devDependencies": {

@@ -16,14 +16,14 @@
     "example": "node scripts/example.js",
     "lint": "prettier --check *.json *.md && turbo run lint",
     "lint:fix": "prettier --write *.json *.md && turbo run lint:fix",
-    "oboe": "node scripts/oboe.js",
+    "plugins:upgrade": "yarn plugin import version && yarn plugin import interactive-tools",
     "test": "turbo run test",
     "vscode": "yarn dlx @yarnpkg/sdks vscode && node scripts/vscode.js && prettier --write .vscode"
   },
   "devDependencies": {
     "eslint": "^8.43.0",
     "prettier": "^2.8.8",
-    "turbo": "^1.10.3",
+    "turbo": "^1.10.6",
     "typescript": "^5.1.3"
   }
 }
