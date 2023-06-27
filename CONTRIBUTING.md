@@ -27,7 +27,7 @@ This project is structured as a monorepo separated into a few key directories.
 - [`packages`](./packages/) contains the published npm packages, which may each have their own `README` and `CONTRIBUTING.md` files
 - [`examples`](./examples/) contains runnable example projects
 - [`scripts`](./scripts/) contains project management scripts
-- [`docker`](./docker/) contains the anything related to the docker environment used in CI, for running examples, and optionally for development
+- [`docker`](./docker/) contains anything related to the docker environment used in CI, for running examples, and optionally for development
 
 ## Docker
 
@@ -41,11 +41,11 @@ The project includes a set of Docker images for various combinations of Node ver
 
 The lowest supported Node version should be coupled with the oldest supported distro versions, while the newest supported Node version should be coupled with the latest distro versions. This is to cover a wide range of environments while keeping the number of images manageable.
 
-It is possible to start a development environment in any of the images using `yarn docker <image>`. This will start a shell session in the image with the project mounted under `/swotel`. The environment will also have both the APM test collector and and the OTel collector available at `apm-collector:12224` and `otel-collector:4317` respectively.
+It is possible to start a development environment in any of the images using `yarn docker <image>`. This will start a shell session in the image with the project mounted under `/swotel`. The environment will also have both the APM test collector and the OTel collector available at `apm-collector:12224` and `otel-collector:4317` respectively.
 
 ## Running tests
 
-Test can be ran with `yarn test`, either at the project root for all packages or in a package's directory for just that package. Additionally, when running in a package directory, any arguments accepted by Jest can be passed to the command. Note that while most of the tests do not depend on the bindings, some do and will fail on unsupported platforms. An easy way to run tests on a supported platform is to use the docker environment.
+Tests can be run with `yarn test`, either at the project root for all packages or in a package's directory for just that package. Additionally, when running in a package directory, any arguments accepted by Jest can be passed to the command. Note that while most of the tests do not depend on the bindings, some do and will fail on unsupported platforms. An easy way to run tests on a supported platform is to use the docker environment.
 
 ## Code style
 
@@ -57,13 +57,13 @@ Code style can be checked using `yarn lint` and fixed as much as possible with `
 
 This project aims to support all currently maintained and future LTS Node versions.
 
-When a new future LTS is released (any even Node versions) the project should be updated to support it so that by the time it becomes an LTS is has already been well-tested. In most cases this doesn't require any change apart from updating the Docker images. It is however possible, although unlikely, that a future release may break native code or a dependency, which should be kept in mind.
+When a new future LTS is released (any even-numbered Node versions) the project should be updated to support it so that by the time it becomes an LTS it has already been well-tested. In most cases this doesn't require any change apart from updating the Docker images. It is however possible, although unlikely, that a future release may break native code or a dependency, which should be kept in mind.
 
 When a current LTS goes out of maintenance, support for it should be removed. This project should not support its dependents in using unsupported, potentially insecure Node versions. The version of `@types/node` depended on by all packages should be updated to the next LTS version, for instance going from `^14.0.0` to `^16.0.0`. The `target` in the [base tsconfig](./tsconfig.base.json) should be updated to the highest standard supported by the next LTS version (check [`node.green`](https://node.green) for this) and the same should be done for the `languageOptions` in the ESLint configuration package. The Docker images for the old LTS should be removed, and the distro versions used by the Docker images for the next LTS should be changed to the lowest supported versions if necessary, for instance removing `14-alpine3.12` and moving from `16-alpine` to `16-alpine:3.12`. All `package.json` `engines` fields should also be updated to the next LTS version.
 
 ## Upgrading dependencies
 
-Shared dependencies across the project should all use the same version whenever possible. Most of the dependencies can be updating using `yarn upgrade-interactive`, with special care taken when the version change is breaking. All non-OTel dependencies should use caret ranges whenever possible.
+Shared dependencies across the project should all use the same version whenever possible. Most of the dependencies can be updated using `yarn upgrade-interactive`, with special care taken when the version change is breaking. All non-OTel dependencies should use caret ranges whenever possible.
 
 OTel dependencies should not be upgraded using this command and the work should be done manually. Special care must be taken to consider version compatibility between different OTel packages, and the version should be specified with only the patch version being variable, for instance `1.4.x`. The `@opentelemetry/api` package should never be listed in the `dependencies` and always in `peerDependencies` and `devDependencies` if needed instead. The only version of it in the dependency tree should always be the one provided by the instrumented application. The required version should be updated in the main package's [README](./packages/solarwinds-apm/README.md).
 

@@ -11,7 +11,7 @@ yarn install
 
 ## Examples
 
-This project contains a few examples of how to use the library in the [`examples/`](./examples/) directory. They can be ran using `yarn example <name>` from the project root.
+This project contains a few examples of how to use the library in the [`examples/`](./examples/) directory. They can be run using `yarn example <name>` from the project root.
 
 - [`hello`](./examples/hello) is a simple hello world HTTP server.
 - [`distributed-hello`](./examples/distributed-hello/) is a simple distributed example where the main HTTP server sends a request to a secondary one and uses the response as its own response.

@@ -8,7 +8,7 @@ The new OpenTelemetry-based SolarWinds APM Node.js library. Currently following 
 npm install --save solarwinds-apm @opentelemetry/api@1.4.x
 ```
 
-Install using your package manager then follow the [configuration guide](./CONFIGURATION.md). Ma sure to install the matching version of `@opentelmetry/api` as it is required for the library to work. The two packages should be updated at the same time and kept in sync.
+Install using your package manager then follow the [configuration guide](./CONFIGURATION.md). Make sure to install the matching version of `@opentelmetry/api` as it is required for the library to work. The two packages should be updated at the same time and kept in sync.
 
 The library can then be initialised either from the command line, the environment, or directly from code.
 

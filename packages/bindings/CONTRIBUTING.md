@@ -6,11 +6,11 @@ This package doesn't use `node-pre-gyp` nor `node-gyp`. Instead, each supported 
 
 ### Adding a new platform
 
-New platforms can only be added if they are supported by liboboe. The first step to support them is to add the appropriate shared objects (`.so`) for the platform to the list that is downloaded in [`oboe.js`](./oboe.js) and running `yarn oboe` to download them. Then a new subpackage can be created under `npm/` following the `<process.platform>-<process.arch>[-<libc>]` scheme. Refer to the other subpackages for reference. The package should then be added as an optional dependency of the main one and the [build script](./build.js) should be updated to build the code for the new platform.
+New platforms can only be added if they are supported by the native core dependency, liboboe. The first step to support them is to add the appropriate shared objects (`.so`) for the platform to the list that is downloaded in [`oboe.js`](./oboe.js) and running `yarn oboe` to download them. Then a new subpackage can be created under `npm/` following the `<process.platform>-<process.arch>[-<libc>]` scheme. Refer to the other subpackages for reference. The package should then be added as an optional dependency of the main one and the [build script](./build.js) should be updated to build the code for the new platform.
 
 ## Updating oboe
 
-Updating oboe is a fairly simple two-step process. First run `yarn oboe` which will download the latest version. Then check the diff between the current version and the new on in [`oboe_api.h`](./oboe//include/oboe_api.h). The bindings are set up to pretty much mirror the header so any changes should be reflected in them. The typings in [`types/oboe.d.ts`](./types/oboe.d.ts) should also be updated as necessary.
+Updating oboe is a fairly simple two-step process. First run `yarn oboe` which will download the latest version. Then check the diff between the current version and the new one in [`oboe_api.h`](./oboe//include/oboe_api.h). The bindings are set up to pretty much mirror the header so any changes should be reflected in them. The typings in [`types/oboe.d.ts`](./types/oboe.d.ts) should also be updated as necessary.
 
 ### Adding a new class
 
