@@ -25,7 +25,6 @@ It should export a single `patch` function of type
 `Patch<InstrumentationConfig>` where `InstrumentationConfig` is the config type
 specific to the instrumentation being patched.
 */
-
 import * as bunyan from "./bunyan"
 import * as http from "./http"
 import * as pino from "./pino"
