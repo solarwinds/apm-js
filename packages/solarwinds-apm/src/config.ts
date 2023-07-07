@@ -59,6 +59,14 @@ export interface ConfigFile {
   metricViews?: View[]
 }
 
+const DEFAULT_FILE_NAME = "solarwinds.apm.config"
+enum FileType {
+  Json,
+  Js,
+  Ts,
+  None,
+}
+
 interface ServiceKey {
   token: string
   name: string
@@ -77,18 +85,24 @@ export interface ExtendedSwoConfiguration extends SwoConfiguration {
   views?: View[]
 }
 
-export function readConfig(name: string): ExtendedSwoConfiguration {
-  const fullName = path.join(process.cwd(), name)
-
+export function readConfig(): ExtendedSwoConfiguration {
+  const [path, type] = pathAndType()
   let configFile: ConfigFile
-  if (fs.existsSync(`${fullName}.json`)) {
-    configFile = readJsonConfig(`${fullName}.json`)
-  } else if (fs.existsSync(`${fullName}.js`)) {
-    configFile = readJsConfig(`${fullName}.js`)
-  } else if (fs.existsSync(`${fullName}.ts`)) {
-    configFile = readTsConfig(`${fullName}.ts`)
-  } else {
-    configFile = {}
+  switch (type) {
+    case FileType.Ts: {
+      configFile = readTsConfig(path)
+      break
+    }
+    case FileType.Js: {
+      configFile = readJsConfig(path)
+      break
+    }
+    case FileType.Json: {
+      configFile = readJsonConfig(path)
+      break
+    }
+    case FileType.None:
+      configFile = {}
   }
 
   const raw = mc.config(
@@ -170,6 +184,46 @@ export function readConfig(name: string): ExtendedSwoConfiguration {
   }
 
   return config
+}
+
+function pathAndType(): [path: string, type: FileType] {
+  const cwd = process.cwd()
+  let override = process.env.SW_APM_CONFIG_FILE
+
+  if (override) {
+    if (!path.isAbsolute(override)) {
+      override = path.join(cwd, override)
+    }
+    if (!fs.existsSync(override)) {
+      console.warn(`couldn't read config file at ${override}`)
+      return [override, FileType.None]
+    }
+
+    const ext = path.extname(override)
+    switch (ext) {
+      case ".ts":
+        return [override, FileType.Ts]
+      case ".js":
+        return [override, FileType.Js]
+      case ".json":
+        return [override, FileType.Json]
+      default: {
+        console.warn(`unknown config file extension for ${override}`)
+        return [override, FileType.None]
+      }
+    }
+  } else {
+    const fullName = path.join(cwd, DEFAULT_FILE_NAME)
+    if (fs.existsSync(`${fullName}.ts`)) {
+      return [`${fullName}.ts`, FileType.Ts]
+    } else if (fs.existsSync(`${fullName}.js`)) {
+      return [`${fullName}.js`, FileType.Js]
+    } else if (fs.existsSync(`${fullName}.json`)) {
+      return [`${fullName}.json`, FileType.Json]
+    } else {
+      return [fullName, FileType.None]
+    }
+  }
 }
 
 function readJsonConfig(file: string) {

@@ -45,7 +45,7 @@ import * as sdk from "@solarwinds-apm/sdk"
 
 import { type ExtendedSwoConfiguration, readConfig } from "./config"
 
-export function init(configName: string) {
+export function init() {
   /* eslint-disable-next-line ts/no-var-requires */
   const pkg = require("../package.json") as { name: string; version: string }
   const id = `${pkg.name}@${pkg.version}`
@@ -59,7 +59,7 @@ export function init(configName: string) {
       configurable: false,
     })
 
-    const config = readConfig(configName)
+    const config = readConfig()
 
     diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
     const initLogger = diag.createComponentLogger({ namespace: "swo/init" })
