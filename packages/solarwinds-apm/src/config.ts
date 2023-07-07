@@ -85,16 +85,22 @@ export interface ExtendedSwoConfiguration extends SwoConfiguration {
   views?: View[]
 }
 
-export function readConfig(name: string): ExtendedSwoConfiguration {
+export function readConfig(): ExtendedSwoConfiguration {
   const [path, type] = pathAndType()
   let configFile: ConfigFile
   switch (type) {
-    case FileType.Ts:
+    case FileType.Ts: {
       configFile = readTsConfig(path)
-    case FileType.Js:
+      break
+    }
+    case FileType.Js: {
       configFile = readJsConfig(path)
-    case FileType.Json:
+      break
+    }
+    case FileType.Json: {
       configFile = readJsonConfig(path)
+      break
+    }
     case FileType.None:
       configFile = {}
   }
