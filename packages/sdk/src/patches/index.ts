@@ -14,30 +14,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type Instrumentation } from "@opentelemetry/instrumentation"
+import { type TextMapPropagator } from "@opentelemetry/api"
+import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
 
-import { ConfigPatcher } from "../config-patcher"
-import { type SwoTraceOptionsResponsePropagator } from "../trace-options-response-propagator"
+import * as bunyan from "./bunyan"
 import * as http from "./http"
+import * as pino from "./pino"
 
 export interface Options {
-  traceOptionsResponsePropagator: SwoTraceOptionsResponsePropagator
+  responsePropagator: TextMapPropagator<unknown>
+  insertTraceContextIntoLogs: boolean
 }
 
-export function patch(instrumentations: Instrumentation[], options: Options) {
-  const patcher = new ConfigPatcher()
+export type Patch<Config extends InstrumentationConfig> = (
+  config: Config,
+  options: Options,
+) => Config
 
-  /**
-   * Every instrumentation config patch should live in its own file in this directory.
-   *
-   * It should export a single `patch(patcher: ConfigPatcher, options: Options): void` function
-   * which calls `patcher.patch` and will itself be called here.
-   *
-   * Patches will usually follow the same format of conditionally importing the constructor
-   * of the instrumentation they patch and return early if the package is not installed
-   * as every instrumentation is optional.
-   */
-  http.patch(patcher, options)
+const patches = { bunyan, http, pino } as const
+type Patches = typeof patches
+type PatchableConfigs = {
+  [Module in keyof Patches as `@opentelemetry/instrumentation-${Module}`]?: Patches[Module] extends {
+    patch: Patch<infer Config>
+  }
+    ? Config
+    : never
+}
 
-  patcher.apply(instrumentations)
+export function patch(
+  configs: PatchableConfigs,
+  options: Options,
+): PatchableConfigs {
+  const patched = { ...configs }
+  for (const [name, { patch }] of Object.entries(patches)) {
+    const prefixed = `@opentelemetry/instrumentation-${name}` as const
+    patched[prefixed] = patch(configs[prefixed] ?? {}, options)
+  }
+  return patched
 }

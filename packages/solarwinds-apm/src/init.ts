@@ -158,16 +158,12 @@ function initTracing(
   const traceOptionsResponsePropagator =
     new sdk.SwoTraceOptionsResponsePropagator()
 
-  const instrumentations = getNodeAutoInstrumentations({
-    "@opentelemetry/instrumentation-bunyan": {
-      enabled: config.insertTraceContextIntoLogs,
-    },
-    "@opentelemetry/instrumentation-pino": {
-      enabled: config.insertTraceContextIntoLogs,
-    },
-    ...config.instrumentations,
-  })
-  sdk.patch(instrumentations, { traceOptionsResponsePropagator })
+  const instrumentations = getNodeAutoInstrumentations(
+    sdk.patch(config.instrumentations ?? {}, {
+      responsePropagator: traceOptionsResponsePropagator,
+      insertTraceContextIntoLogs: config.insertTraceContextIntoLogs,
+    }),
+  )
   registerInstrumentations({ instrumentations })
 
   const provider = new NodeTracerProvider({
