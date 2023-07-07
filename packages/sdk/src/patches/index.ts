@@ -17,6 +17,14 @@ limitations under the License.
 import { type TextMapPropagator } from "@opentelemetry/api"
 import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
 
+/**
+ * Every instrumentation config patch should live in its own file in this
+ * directory.
+ *
+ * It should export a single `patch` function of type
+ * `Patch<InstrumentationConfig`> where `InstrumentationConfig` is the config
+ * type specific to the instrumentation being patched.
+ */
 import * as bunyan from "./bunyan"
 import * as http from "./http"
 import * as pino from "./pino"
