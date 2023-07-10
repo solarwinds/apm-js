@@ -133,7 +133,7 @@ services:
   udpdump:
     build:
       context: .
-      dockerfile: alpine.Dockerfile
+      dockerfile: 18-alpine.Dockerfile
     command: [yarn node /swotel/scripts/udpdump.js]
     volumes:
       - ..:/swotel
