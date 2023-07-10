@@ -5,6 +5,14 @@
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
+    "directory": "packages/sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
