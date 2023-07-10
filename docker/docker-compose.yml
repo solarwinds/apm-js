@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: 16-alpine3.12.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: 16-amazonlinux2.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: 16-debian10.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -32,7 +32,7 @@ services:
       context: .
       dockerfile: 16-ubi8.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -41,7 +41,7 @@ services:
       context: .
       dockerfile: 16-ubuntu18.04.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -51,7 +51,7 @@ services:
       context: .
       dockerfile: 18-alpine.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -60,7 +60,7 @@ services:
       context: .
       dockerfile: 18-debian.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -69,7 +69,7 @@ services:
       context: .
       dockerfile: 18-ubi.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -78,7 +78,7 @@ services:
       context: .
       dockerfile: 18-ubuntu.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -88,7 +88,7 @@ services:
       context: .
       dockerfile: 20-alpine.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -97,7 +97,7 @@ services:
       context: .
       dockerfile: 20-debian.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -106,7 +106,7 @@ services:
       context: .
       dockerfile: 20-ubi.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -115,7 +115,7 @@ services:
       context: .
       dockerfile: 20-ubuntu.Dockerfile
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     links:
       - apm-collector
       - otel-collector
@@ -123,27 +123,27 @@ services:
   apm-collector:
     image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v2.0.0}
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     expose:
       - 12224
     environment:
-      PROGRAM_ARGS: /swotel/docker/apm-collector/config.json
+      PROGRAM_ARGS: /solarwinds-apm/docker/apm-collector/config.json
     depends_on:
       - udpdump
   udpdump:
     build:
       context: .
       dockerfile: 18-alpine.Dockerfile
-    command: [yarn node /swotel/scripts/udpdump.js]
+    command: [yarn node /solarwinds-apm/scripts/udpdump.js]
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     expose:
       - 12225
 
   otel-collector:
     image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector-contrib:0.78.0}
-    command: [--config=/swotel/docker/otel-collector/config.yml]
+    command: [--config=/solarwinds-apm/docker/otel-collector/config.yml]
     volumes:
-      - ..:/swotel
+      - ..:/solarwinds-apm
     expose:
       - 4317

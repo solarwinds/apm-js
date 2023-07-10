@@ -11,5 +11,5 @@ RUN apk add --no-cache \
 
 RUN corepack enable
 
-WORKDIR /swotel
+WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/sh", "-c"]

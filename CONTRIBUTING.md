@@ -41,7 +41,7 @@ The project includes a set of Docker images for various combinations of Node ver
 
 The lowest supported Node version should be coupled with the oldest supported distro versions, while the newest supported Node version should be coupled with the latest distro versions. This is to cover a wide range of environments while keeping the number of images manageable.
 
-It is possible to start a development environment in any of the images using `yarn docker <image>`. This will start a shell session in the image with the project mounted under `/swotel`. The environment will also have both the APM test collector and the OTel collector available at `apm-collector:12224` and `otel-collector:4317` respectively.
+It is possible to start a development environment in any of the images using `yarn docker <image>`. This will start a shell session in the image with the project mounted under `/solarwinds-apm`. The environment will also have both the APM test collector and the OTel collector available at `apm-collector:12224` and `otel-collector:4317` respectively.
 
 ## Running tests
 

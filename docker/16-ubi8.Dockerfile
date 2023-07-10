@@ -14,5 +14,5 @@ RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
 
 RUN corepack enable
 
-WORKDIR /swotel
+WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/bash", "-c"]
