@@ -12,5 +12,5 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 
 RUN corepack enable
 
-WORKDIR /swotel
+WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/sh", "-c"]

@@ -9,5 +9,5 @@ RUN apt-get update && apt-get install -y \
 
 RUN corepack enable
 
-WORKDIR /swotel
+WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/bash", "-c"]
