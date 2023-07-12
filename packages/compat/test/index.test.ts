@@ -234,6 +234,20 @@ describe("pInstrument", () => {
     expect(span?.name).toBe("child")
   })
 
+  it("supports custom attributes", async () => {
+    await inParent(async () => {
+      const r = await pInstrument(
+        () => ({ name: "child", kvpairs: { key: "value" } }),
+        () => Promise.resolve("return"),
+      )
+      expect(r).toBe("return")
+    })
+
+    const span = exporter.getFinishedSpans()[0]
+    expect(span?.name).toBe("child")
+    expect(span?.attributes).toMatchObject({ key: "value" })
+  })
+
   it("captures errors", async () => {
     await inParent(async () => {
       let error: unknown = undefined
@@ -257,5 +271,34 @@ describe("pInstrument", () => {
     expect(
       span?.attributes[SemanticAttributes.EXCEPTION_STACKTRACE],
     ).toBeDefined()
+  })
+
+  it("doesn't collect backtraces if explicitly disabled", async () => {
+    await inParent(async () => {
+      let error: unknown = undefined
+      try {
+        await pInstrument(
+          "child",
+          async () => {
+            await Promise.resolve()
+            throw new Error("error")
+          },
+          { collectBacktraces: false },
+        )
+      } catch (e) {
+        error = e
+      }
+      expect(error).toBeInstanceOf(Error)
+    })
+
+    const span = exporter.getFinishedSpans()[0]
+    expect(span?.name).toBe("child")
+    expect(span?.status).toMatchObject({
+      code: SpanStatusCode.ERROR,
+      message: "error",
+    })
+    expect(
+      span?.attributes[SemanticAttributes.EXCEPTION_STACKTRACE],
+    ).toBeUndefined()
   })
 })
