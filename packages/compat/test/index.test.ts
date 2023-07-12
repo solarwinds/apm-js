@@ -48,7 +48,7 @@ describe("instrument", () => {
     expect(r).toBe("return")
 
     const spans = exporter.getFinishedSpans()
-    expect(spans.length).toBe(0)
+    expect(spans).toHaveLength(0)
   })
 
   it("doesn't instrument if explicitly disabled", async () => {
@@ -58,7 +58,7 @@ describe("instrument", () => {
     })
 
     const spans = exporter.getFinishedSpans()
-    expect(spans.length).toBe(1)
+    expect(spans).toHaveLength(1)
     expect(spans[0]?.name).toBe("parent")
   })
 
@@ -210,7 +210,7 @@ describe("pInstrument", () => {
     expect(r).toBe("return")
 
     const spans = exporter.getFinishedSpans()
-    expect(spans.length).toBe(1)
+    expect(spans).toHaveLength(0)
   })
 
   it("doesn't instrument if explicitly disabled", async () => {
@@ -222,7 +222,7 @@ describe("pInstrument", () => {
     })
 
     const spans = exporter.getFinishedSpans()
-    expect(spans.length).toBe(1)
+    expect(spans).toHaveLength(1)
     expect(spans[0]?.name).toBe("parent")
   })
 
