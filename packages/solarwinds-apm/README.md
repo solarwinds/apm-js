@@ -33,3 +33,8 @@ Unlike previous non-OpenTelemetry version, all manual instrumentation and metric
 ## Migrating from legacy versions
 
 When migrating from older versions not built on top of OTel, `@opentelemetry/api@1.4.x` must be added as an extra dependency. The config file will also need to be renamed and updated as some of the fields have changed, see the [configuration guide](./CONFIGURATION.md) for details. Manual instrumentation and metrics will also need to be migrated to use the OTel API, except for the `instrument` and `pInstrument` methods which are provided by the `@solarwinds-apm/compat` package to facilitate migrating.
+
+```diff
+- const { instrument, pInstrument } = require("solarwinds-apm")
++ const { instrument, pInstrument } = require("@solarwinds-apm/compat")
+```
