@@ -64,7 +64,7 @@ const memoryUsageMeters = lazy(
           valueType: ValueType.INT,
         },
       ),
-    } as const),
+    }) as const,
 )
 
 const heapStatisticsMeters = lazy(
@@ -126,7 +126,7 @@ const heapStatisticsMeters = lazy(
           valueType: ValueType.INT,
         },
       ),
-    } as const),
+    }) as const,
 )
 
 function memoryUsageCallback(batch: BatchObservableResult) {
