@@ -28,7 +28,7 @@ import {
   TraceFlags,
   type TraceState,
 } from "@opentelemetry/api"
-import { hrTime, type InstrumentationLibrary } from "@opentelemetry/core"
+import { hrTime, type InstrumentationScope } from "@opentelemetry/core"
 import { Resource } from "@opentelemetry/resources"
 import {
   BasicTracerProvider,
@@ -58,6 +58,7 @@ export function config(
     runtimeMetrics: true,
     triggerTraceEnabled: true,
     insertTraceContextIntoLogs: true,
+    insertTraceContextIntoQueries: true,
   }
 
   return { ...base, ...override }
@@ -97,10 +98,10 @@ export function resource(attributes: Attributes = {}): Resource {
   return new Resource(attributes)
 }
 
-export function instrumentationLibrary(
-  override: Partial<InstrumentationLibrary> = {},
-): InstrumentationLibrary {
-  const base: InstrumentationLibrary = {
+export function instrumentationScope(
+  override: Partial<InstrumentationScope> = {},
+): InstrumentationScope {
+  const base: InstrumentationScope = {
     name: pick(["http", "fs", "crypto"]),
   }
 
@@ -115,11 +116,11 @@ export function tracerConfig(
   return { ...base, ...override }
 }
 
-export function tracer(il?: InstrumentationLibrary, tc?: TracerConfig): Tracer {
-  il ??= instrumentationLibrary()
+export function tracer(is?: InstrumentationScope, tc?: TracerConfig): Tracer {
+  is ??= instrumentationScope()
   tc ??= tracerConfig()
 
-  return new Tracer(il, tc, new BasicTracerProvider(tc))
+  return new Tracer(is, tc, new BasicTracerProvider(tc))
 }
 
 export function spanOptions(override: Partial<SpanOptions> = {}): SpanOptions {
@@ -162,7 +163,7 @@ export function readableSpan(
     duration: hrTime(),
     ended: pick([true, false]),
     resource: new Resource({}),
-    instrumentationLibrary: instrumentationLibrary(),
+    instrumentationLibrary: instrumentationScope(),
     droppedAttributesCount: 0,
     droppedEventsCount: 0,
     droppedLinksCount: 0,
