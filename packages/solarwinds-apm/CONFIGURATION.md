@@ -48,20 +48,21 @@ module.exports = {
 
 ### Specification
 
-| Key                          | Default           | Description                                           |
-| ---------------------------- | ----------------- | ----------------------------------------------------- |
-| **`serviceKey`**             |                   | **Service key**                                       |
-| `enabled`                    | `true`            | Whether instrumentation should be enabled             |
-| `collector`                  | Default collector | Collector URL                                         |
-| `trustedPath`                | None              | Path to the collector's SSL certificate               |
-| `logLevel`                   | `info`            | Logging level for the instrumentation libraries       |
-| `triggerTraceEnabled`        | `true`            | Whether trigger tracing should be enabled             |
-| `runtimeMetrics`             | `true`            | Whether runtime metrics should be enabled             |
-| `tracingMode`                | None              | Custom tracing mode                                   |
-| `insertTraceContextIntoLogs` | `true`            | Whether to insert trace context information into logs |
-| `transactionSettings`        | None              | See [Transaction Settings](#transaction-settings)     |
-| `instrumentations`           | None              | Custom instrumentation configurations                 |
-| `metricViews`                | None              | Custom metric views                                   |
+| Key                             | Default           | Description                                                  |
+| ------------------------------- | ----------------- | ------------------------------------------------------------ |
+| **`serviceKey`**                |                   | **Service key**                                              |
+| `enabled`                       | `true`            | Whether instrumentation should be enabled                    |
+| `collector`                     | Default collector | Collector URL                                                |
+| `trustedPath`                   | None              | Path to the collector's SSL certificate                      |
+| `logLevel`                      | `info`            | Logging level for the instrumentation libraries              |
+| `triggerTraceEnabled`           | `true`            | Whether trigger tracing should be enabled                    |
+| `runtimeMetrics`                | `true`            | Whether runtime metrics should be enabled                    |
+| `tracingMode`                   | None              | Custom tracing mode                                          |
+| `insertTraceContextIntoLogs`    | `true`            | Whether to insert trace context information into logs        |
+| `insertTraceContextIntoQueries` | `true`            | Whether to insert trace context information into SQL queries |
+| `transactionSettings`           | None              | See [Transaction Settings](#transaction-settings)            |
+| `instrumentations`              | None              | Custom instrumentation configurations                        |
+| `metricViews`                   | None              | Custom metric views                                          |
 
 #### Transaction Settings
 

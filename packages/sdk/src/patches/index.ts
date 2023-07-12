@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type TextMapPropagator } from "@opentelemetry/api"
-import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
-
 /*
 Every instrumentation config patch should live in its own file in this
 directory.
@@ -25,21 +22,27 @@ It should export a single `patch` function of type
 `Patch<InstrumentationConfig>` where `InstrumentationConfig` is the config type
 specific to the instrumentation being patched.
 */
+
+import { type TextMapPropagator } from "@opentelemetry/api"
+import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
+
+import { type SwoConfiguration } from "../config"
 import * as bunyan from "./bunyan"
 import * as http from "./http"
+import * as mysql2 from "./mysql2"
+import * as pg from "./pg"
 import * as pino from "./pino"
 
-export interface Options {
+export interface SwoPatchesConfiguration extends SwoConfiguration {
   responsePropagator: TextMapPropagator<unknown>
-  insertTraceContextIntoLogs: boolean
 }
 
 export type Patch<Config extends InstrumentationConfig> = (
   config: Config,
-  options: Options,
+  options: SwoPatchesConfiguration,
 ) => Config
 
-const patches = { bunyan, http, pino } as const
+const patches = { bunyan, http, mysql2, pg, pino } as const
 type Patches = typeof patches
 type PatchableConfigs = {
   [Module in keyof Patches as `@opentelemetry/instrumentation-${Module}`]?: Patches[Module] extends {
@@ -51,12 +54,15 @@ type PatchableConfigs = {
 
 export function patch(
   configs: PatchableConfigs,
-  options: Options,
+  options: SwoPatchesConfiguration,
 ): PatchableConfigs {
   const patched = { ...configs }
   for (const [name, { patch }] of Object.entries(patches)) {
     const prefixed = `@opentelemetry/instrumentation-${name}` as const
-    patched[prefixed] = patch(configs[prefixed] ?? {}, options)
+    patched[prefixed] = patch(
+      (configs[prefixed] ?? {}) as InstrumentationConfig,
+      options,
+    ) as InstrumentationConfig
   }
   return patched
 }

@@ -151,6 +151,14 @@ export function readConfig(): ExtendedSwoConfiguration {
         }),
         default: true,
       },
+      insertTraceContextIntoQueries: {
+        file: true,
+        parser: parseBoolean({
+          name: "insert trace ids into SQL queries",
+          default: true,
+        }),
+        default: true,
+      },
       transactionSettings: { file: true, parser: parseTransactionSettings },
       instrumentations: {
         file: true,
