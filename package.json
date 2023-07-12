@@ -21,9 +21,9 @@
     "vscode": "yarn dlx @yarnpkg/sdks vscode && node scripts/vscode.js && prettier --write .vscode"
   },
   "devDependencies": {
-    "eslint": "^8.43.0",
-    "prettier": "^2.8.8",
-    "turbo": "^1.10.6",
-    "typescript": "^5.1.3"
+    "eslint": "^8.44.0",
+    "prettier": "^3.0.0",
+    "turbo": "^1.10.7",
+    "typescript": "^5.1.6"
   }
 }
