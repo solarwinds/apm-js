@@ -160,8 +160,8 @@ function initTracing(
 
   const instrumentations = getNodeAutoInstrumentations(
     sdk.patch(config.instrumentations ?? {}, {
+      ...config,
       responsePropagator: traceOptionsResponsePropagator,
-      insertTraceContextIntoLogs: config.insertTraceContextIntoLogs,
     }),
   )
   registerInstrumentations({ instrumentations })
