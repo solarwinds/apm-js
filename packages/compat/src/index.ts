@@ -134,6 +134,10 @@ export function pInstrument<T>(
   run: () => Promise<T>,
   options?: InstrumentOptions,
 ): Promise<T> {
+  if (options?.enabled === false || !trace.getActiveSpan()) {
+    return run()
+  }
+
   return startActiveSpan(span, async (span) => {
     try {
       return await run()

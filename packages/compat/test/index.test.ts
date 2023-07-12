@@ -204,6 +204,26 @@ describe("instrument", () => {
 })
 
 describe("pInstrument", () => {
+  it("doesn't instrument if there's no parent span", async () => {
+    const r = await pInstrument("parent", () => Promise.resolve("return"))
+    expect(r).toBe("return")
+
+    const span = exporter.getFinishedSpans()[0]
+    expect(span).toBeUndefined()
+  })
+
+  it("doesn't instrument if explicitly disabled", async () => {
+    await inParent(async () => {
+      const r = await pInstrument("child", () => Promise.resolve("return"), {
+        enabled: false,
+      })
+      expect(r).toBe("return")
+    })
+
+    const span = exporter.getFinishedSpans()[0]
+    expect(span?.name).toBe("parent")
+  })
+
   it("instruments async function", async () => {
     await inParent(async () => {
       const r = await pInstrument("child", () => Promise.resolve("return"))
