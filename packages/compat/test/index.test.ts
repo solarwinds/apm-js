@@ -47,8 +47,8 @@ describe("instrument", () => {
     const r = instrument("parent", () => "return")
     expect(r).toBe("return")
 
-    const span = exporter.getFinishedSpans()[0]
-    expect(span).toBeUndefined()
+    const spans = exporter.getFinishedSpans()
+    expect(spans.length).toBe(0)
   })
 
   it("doesn't instrument if explicitly disabled", async () => {
@@ -57,8 +57,9 @@ describe("instrument", () => {
       expect(r).toBe("return")
     })
 
-    const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("parent")
+    const spans = exporter.getFinishedSpans()
+    expect(spans.length).toBe(1)
+    expect(spans[0]?.name).toBe("parent")
   })
 
   it("instruments synchronous function", async () => {
@@ -208,8 +209,8 @@ describe("pInstrument", () => {
     const r = await pInstrument("parent", () => Promise.resolve("return"))
     expect(r).toBe("return")
 
-    const span = exporter.getFinishedSpans()[0]
-    expect(span).toBeUndefined()
+    const spans = exporter.getFinishedSpans()
+    expect(spans.length).toBe(1)
   })
 
   it("doesn't instrument if explicitly disabled", async () => {
@@ -220,8 +221,9 @@ describe("pInstrument", () => {
       expect(r).toBe("return")
     })
 
-    const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("parent")
+    const spans = exporter.getFinishedSpans()
+    expect(spans.length).toBe(1)
+    expect(spans[0]?.name).toBe("parent")
   })
 
   it("instruments async function", async () => {
