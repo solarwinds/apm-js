@@ -72,6 +72,13 @@ async function downloadLib(lib) {
   if (checksum.data.toString("utf-8").trim() !== realChecksum) {
     throw new Error(`invalid checksum for "${lib}"`)
   }
+
+  const soPath = path.join(oboePath, lib)
+  const checksumPath = `${soPath}.sha256`
+
+  await fs.mkdir(path.dirname(soPath), { recursive: true })
+  await fs.writeFile(soPath, so.data)
+  await fs.writeFile(checksumPath, checksum.data)
 }
 
 async function downloadFile(file) {
