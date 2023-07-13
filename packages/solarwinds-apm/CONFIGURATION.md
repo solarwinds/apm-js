@@ -58,8 +58,8 @@ module.exports = {
 | `triggerTraceEnabled`           | `true`            | Whether trigger tracing should be enabled                    |
 | `runtimeMetrics`                | `true`            | Whether runtime metrics should be enabled                    |
 | `tracingMode`                   | None              | Custom tracing mode                                          |
-| `insertTraceContextIntoLogs`    | `true`            | Whether to insert trace context information into logs        |
-| `insertTraceContextIntoQueries` | `true`            | Whether to insert trace context information into SQL queries |
+| `insertTraceContextIntoLogs`    | `false`           | Whether to insert trace context information into logs        |
+| `insertTraceContextIntoQueries` | `false`           | Whether to insert trace context information into SQL queries |
 | `transactionSettings`           | None              | See [Transaction Settings](#transaction-settings)            |
 | `instrumentations`              | None              | Custom instrumentation configurations                        |
 | `metricViews`                   | None              | Custom metric views                                          |
