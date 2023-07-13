@@ -2273,7 +2273,6 @@ __metadata:
   resolution: "@solarwinds-apm/example-hello-manual@workspace:examples/hello-manual"
   dependencies:
     "@opentelemetry/api": 1.4.x
-    "@opentelemetry/semantic-conventions": 1.15.x
     solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
