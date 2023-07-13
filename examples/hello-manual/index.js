@@ -26,7 +26,7 @@ const server = http.createServer((req, res) => {
     { attributes: { [SemanticAttributes.HTTP_ROUTE]: "/:name" } },
     (span) => {
       const url = new URL(req.url, `http://${req.headers.host}`)
-      const name = url.pathname.split("/")[0] ?? "World!"
+      const name = url.pathname.split("/")[1] ?? "World!"
 
       res.writeHead(200, { "Content-Type": "text/plain" })
       res.end(`Hello, ${name}!`)
