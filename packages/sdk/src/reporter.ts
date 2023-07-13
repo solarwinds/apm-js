@@ -52,7 +52,7 @@ export function createReporter(config: SwoConfiguration): oboe.Reporter {
     ec2_metadata_timeout: -1,
     grpc_proxy: "",
     stdout_clear_nonblocking: 0,
-    metric_format: config.metricFormat ?? 0,
+    metric_format: config.metricFormat ?? 2,
   })
 }
 

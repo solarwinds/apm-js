@@ -184,11 +184,8 @@ export function readConfig(): ExtendedSwoConfiguration {
   }
 
   if (config.collector?.includes("appoptics.com")) {
-    config.metricFormat = 1
-
-    if (!config.certificate) {
-      config.certificate = aoCert
-    }
+    config.metricFormat ??= 1
+    config.certificate ??= aoCert
   }
 
   return config
