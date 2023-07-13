@@ -14,7 +14,8 @@ yarn install
 This project contains a few examples of how to use the library in the [`examples/`](./examples/) directory. They can be run using `yarn example <name>` from the project root.
 
 - [`hello`](./examples/hello) is a simple hello world HTTP server.
-- [`distributed-hello`](./examples/distributed-hello/) is a simple distributed example where the main HTTP server sends a request to a secondary one and uses the response as its own response.
+- [`hello-distributed`](./examples/hello-distributed/) is a simple distributed example where the main HTTP server sends a request to a secondary one and uses the response as its own response.
+- [`hello-manual`](./examples/hello-manual/) is an example of how to use the OTel API for manually instrumenting code on top of `solarwinds-apm`.
 
 ## Node.js Version Support
 

@@ -28,7 +28,9 @@ require("solarwinds-apm")
 
 ## Custom Instrumentation and Metrics
 
-Unlike previous non-OpenTelemetry version, all manual instrumentation and metrics collection are handled through the OpenTelemetry API using the `@opentelemetry/api` packages. The [OpenTelemetry JS documentation](https://opentelemetry.io/docs/instrumentation/js/manual/) for manual instrumentation provides instructions. Note that `solarwinds-apm` takes care of the initial registration of all components.
+Unlike previous non-OpenTelemetry version, all manual instrumentation and metrics collection are handled through the OpenTelemetry API using the `@opentelemetry/api` packages. The [OpenTelemetry JS documentation](https://opentelemetry.io/docs/instrumentation/js/manual/) for manual instrumentation provides instructions (note that `solarwinds-apm` takes care of the initial registration of all components), and the [SDK docs](https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_api.html) are available to see all that the API provides.
+
+An example of using manual instrumentation APIs in tandem with the library is available [in the main repository](../../examples/hello-manual).
 
 ## Migrating from legacy versions
 

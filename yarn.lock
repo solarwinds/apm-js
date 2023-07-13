@@ -2258,12 +2258,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@solarwinds-apm/example-distributed-hello@workspace:examples/distributed-hello":
+"@solarwinds-apm/example-hello-distributed@workspace:examples/hello-distributed":
   version: 0.0.0-use.local
-  resolution: "@solarwinds-apm/example-distributed-hello@workspace:examples/distributed-hello"
+  resolution: "@solarwinds-apm/example-hello-distributed@workspace:examples/hello-distributed"
   dependencies:
     "@opentelemetry/api": 1.4.x
     concurrently: ^8.2.0
+    solarwinds-apm: "workspace:^"
+  languageName: unknown
+  linkType: soft
+
+"@solarwinds-apm/example-hello-manual@workspace:examples/hello-manual":
+  version: 0.0.0-use.local
+  resolution: "@solarwinds-apm/example-hello-manual@workspace:examples/hello-manual"
+  dependencies:
+    "@opentelemetry/api": 1.4.x
     solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
