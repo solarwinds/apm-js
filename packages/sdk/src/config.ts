@@ -29,6 +29,7 @@ export interface SwoConfiguration {
   runtimeMetrics: boolean
   tracingMode?: boolean
   insertTraceContextIntoLogs: boolean
+  insertTraceContextIntoQueries: boolean
   transactionSettings?: TransactionSetting[]
 }
 
