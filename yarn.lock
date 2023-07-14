@@ -6211,7 +6211,7 @@ __metadata:
   linkType: hard
 
 "semver@npm:^6.0.0, semver@npm:^6.3.0":
-  version: 6.3.0
+  version: 6.3.1
   resolution: "semver@npm:6.3.1"
   bin:
     semver: ./bin/semver.js
