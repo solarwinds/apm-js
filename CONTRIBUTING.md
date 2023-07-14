@@ -73,7 +73,7 @@ The Yarn version can be updated using `yarn set version latest` and the Yarn plu
 
 ## Versioning
 
-All packages in the workspace are versioned independently following semver. After making changes to packages, the required version bump strategy for the changes should be specified by running `yarn version check --interactive`. This requirement is checked in CI using `yarn version check`. When ready to publish the new packages, `yarn version apply --all` can be run to change the version of each package by going through all the bump strategies required by changes since the last release and picking the highest one. It is also possible to use `yarn version apply --all --prerelease` to create a prerelease version instead.
+All packages in the workspace are versioned independently following semver. After making changes to packages, the required version bump strategy for the changes should be specified by running `yarn version check --interactive`. This requirement is checked in CI using `yarn version check`. When ready to publish the new packages, `yarn version:stable` can be run to change the version of each package by going through all the bump strategies required by changes since the last release and picking the highest one. Tags will be created for all the new versions. It is also possible to use `yarn version:pre` to create a prerelease version instead.
 
 ## Adding packages
 

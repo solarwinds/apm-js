@@ -18,6 +18,9 @@
   "files": [
     "dist/"
   ],
+  "publishConfig": {
+    "provenance": true
+  },
   "scripts": {
     "build": "tsc",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**/*.ts",

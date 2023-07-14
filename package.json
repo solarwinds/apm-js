@@ -18,6 +18,8 @@
     "lint:fix": "prettier --write *.json *.md && turbo run lint:fix",
     "plugins:upgrade": "yarn plugin import version && yarn plugin import interactive-tools",
     "test": "turbo run test",
+    "version:stable": "node scripts/version.js",
+    "version:pre": "node scripts/version.js pre",
     "vscode": "yarn dlx @yarnpkg/sdks vscode && node scripts/vscode.js && prettier --write .vscode"
   },
   "devDependencies": {

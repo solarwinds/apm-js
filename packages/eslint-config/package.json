@@ -17,6 +17,9 @@
   "files": [
     "index.js"
   ],
+  "publishConfig": {
+    "provenance": true
+  },
   "scripts": {
     "lint": "prettier --check . && eslint --max-warnings=0 *.js",
     "lint:fix": "eslint --fix *.js && prettier --write ."
