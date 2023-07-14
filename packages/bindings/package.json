@@ -19,6 +19,9 @@
     "index.js",
     "types/"
   ],
+  "publishConfig": {
+    "provenance": true
+  },
   "scripts": {
     "build": "node build.js",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js types/** test/** && clang-format src/*.hh src/*/* -n --Werror",

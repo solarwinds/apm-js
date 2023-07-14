@@ -2,6 +2,11 @@
   "name": "@solarwinds-apm/bindings-linux-x64-musl",
   "version": "0.0.0",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
+    "directory": "packages/bindings/npm/linux-x64-musl"
+  },
   "os": [
     "linux"
   ],
@@ -16,6 +21,9 @@
     "metrics.node",
     "liboboe.so"
   ],
+  "publishConfig": {
+    "provenance": true
+  },
   "engines": {
     "node": ">=16"
   }
