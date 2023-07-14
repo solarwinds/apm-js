@@ -45,4 +45,4 @@ if (version.includes("pre")) {
 }
 
 console.log(`$ ${command}`)
-cproc.execSync(command, {stdio: "inherit"})
+cproc.execSync(command, { stdio: "inherit" })
