@@ -7,7 +7,7 @@
     "examples",
     "examples/*",
     "packages/*",
-    "packages/*/npm/*",
+    "packages/bindings/npm/*",
     "scripts"
   ],
   "scripts": {

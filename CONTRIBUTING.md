@@ -75,6 +75,10 @@ The Yarn version can be updated using `yarn set version latest` and the Yarn plu
 
 All packages in the workspace are versioned independently following semver. After making changes to packages, the required version bump strategy for the changes should be specified by running `yarn version check --interactive`. This requirement is checked in CI using `yarn version check`. When ready to publish the new packages, `yarn version:stable` can be run to change the version of each package by going through all the bump strategies required by changes since the last release and picking the highest one. Tags will be created for all the new versions. It is also possible to use `yarn version:pre` to create a prerelease version instead.
 
+## Releasing
+
+Releasing is done through a manually triggered GitHub workflow, which internally uses the `yarn publish` command, which in turns lints then builds then publishes every public package.
+
 ## Adding packages
 
 New packages can be added in the `packages/` directory when the functionality doesn't really fit in any other package or might be useful individually. A good starting point for a simple TypeScript package with tests is the [`dependencies`](./packages/dependencies/) package. New packages should attempt to follow the same structure as existing ones as much as possible to keep things consistent and easy to navigate and work with.
@@ -84,6 +88,7 @@ Running a command in one package should do the same thing as running it in anoth
 - `build` should build TypeScript packages.
 - `lint` should lint the source following the shared code style using Prettier and ESLint without applying fixes.
 - `lint:fix` should lint the source following the shared code style and apply fixes where possible.
+- `publish` should publish the package if it isn't already, using the `prerelease` tag for prerelease versions.
 - `test` should run the test suite if there is one.
 
 This is especially important given this repo uses Turborepo to run commands in all packages at once from the root by depending on this set of shared scripts existing. It is also used to run examples by ensuring any package an example depends on is built before running it.
