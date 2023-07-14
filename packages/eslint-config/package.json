@@ -22,7 +22,8 @@
   },
   "scripts": {
     "lint": "prettier --check . && eslint --max-warnings=0 *.js",
-    "lint:fix": "eslint --fix *.js && prettier --write ."
+    "lint:fix": "eslint --fix *.js && prettier --write .",
+    "publish": "node ../../scripts/publish.js"
   },
   "dependencies": {
     "@eslint/js": "^8.44.0",

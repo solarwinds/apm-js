@@ -25,6 +25,7 @@
     "build": "tsc",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**/*.ts",
     "lint:fix": "eslint --fix *.js src/** test/**/*.ts && prettier --write .",
+    "publish": "node ../../scripts/publish.js",
     "test": "jest --verbose"
   },
   "devDependencies": {
