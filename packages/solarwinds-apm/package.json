@@ -40,7 +40,8 @@
   "scripts": {
     "build": "tsc",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js src/**",
-    "lint:fix": "eslint --fix *.js src/** && prettier --write ."
+    "lint:fix": "eslint --fix *.js src/** && prettier --write .",
+    "publish": "node ../../scripts/publish.js"
   },
   "dependencies": {
     "@opentelemetry/auto-instrumentations-node": "^0.38.0",

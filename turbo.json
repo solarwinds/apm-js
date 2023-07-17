@@ -21,6 +21,10 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
+    "publish": {
+      "dependsOn": ["^publish"],
+      "outputs": []
+    },
     "start": {
       "dependsOn": ["build"],
       "outputs": []

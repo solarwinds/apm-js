@@ -26,6 +26,7 @@
     "build": "node build.js",
     "lint": "prettier --check . && eslint --max-warnings=0 *.js types/** test/** && clang-format src/*.hh src/*/* -n --Werror",
     "lint:fix": "eslint --fix *.js types/** test/** && prettier --write . && clang-format src/*.hh src/*/* -i --Werror",
+    "publish": "node ../../scripts/publish.js",
     "test": "jest --verbose",
     "oboe": "node oboe.js"
   },

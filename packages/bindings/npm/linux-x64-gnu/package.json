@@ -7,6 +7,9 @@
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
     "directory": "packages/bindings/npm/linux-x64-gnu"
   },
+  "scripts": {
+    "publish": "node ../../../../scripts/publish.js"
+  },
   "os": [
     "linux"
   ],
