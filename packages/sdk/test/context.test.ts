@@ -50,50 +50,24 @@ describe("getTraceOptions", () => {
 })
 
 describe("swValue", () => {
-  describe("given a span context", () => {
-    it("returns the right value for NONE flags", () => {
-      const spanId = mock.spanId()
-      const spanContext = mock.spanContext({
-        spanId,
-        traceFlags: TraceFlags.NONE,
-      })
-
-      expect(swValue(spanContext)).toBe(`${spanId}-00`)
+  it("returns the right value for NONE flags", () => {
+    const spanId = mock.spanId()
+    const spanContext = mock.spanContext({
+      spanId,
+      traceFlags: TraceFlags.NONE,
     })
 
-    it("returns the right value for SAMPLED flags", () => {
-      const spanId = mock.spanId()
-      const spanContext = mock.spanContext({
-        spanId,
-        traceFlags: TraceFlags.SAMPLED,
-      })
-
-      expect(swValue(spanContext)).toBe(`${spanId}-01`)
-    })
+    expect(swValue(spanContext)).toBe(`${spanId}-00`)
   })
 
-  describe("given a parent span context and decisions", () => {
-    it("uses the invalid span id if the parent span context is undefined", () => {
-      const decisions = mock.oboeDecisions()
-
-      expect(swValue(undefined, decisions)).toStartWith(INVALID_SPANID)
+  it("returns the right value for SAMPLED flags", () => {
+    const spanId = mock.spanId()
+    const spanContext = mock.spanContext({
+      spanId,
+      traceFlags: TraceFlags.SAMPLED,
     })
 
-    it("returns the right value when do_sample is not set", () => {
-      const spanId = mock.spanId()
-      const parentSpanContext = mock.spanContext({ spanId })
-      const decisions = mock.oboeDecisions({ do_sample: 0 })
-
-      expect(swValue(parentSpanContext, decisions)).toBe(`${spanId}-00`)
-    })
-
-    it("returns the right value when do_sample is set", () => {
-      const spanId = mock.spanId()
-      const parentSpanContext = mock.spanContext({ spanId })
-      const decisions = mock.oboeDecisions({ do_sample: 1 })
-
-      expect(swValue(parentSpanContext, decisions)).toBe(`${spanId}-01`)
-    })
+    expect(swValue(spanContext)).toBe(`${spanId}-01`)
   })
 })
 
