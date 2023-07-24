@@ -75,19 +75,6 @@ module.exports = [
   { ignores: ["dist/**"] },
   // extend from eslint's recommendations as a baseline
   js.configs.recommended,
-  // use jest plugin and recommended configs in tests
-  {
-    files: ["**/*.test.js", "**/*.test.ts"],
-    languageOptions: {
-      globals: globals.jest,
-    },
-    plugins: { jest: jestPlugin },
-    rules: {
-      ...jestPlugin.configs.recommended.rules,
-      ...jestPlugin.configs.style.rules,
-      "jest/valid-title": ["error", { ignoreTypeOfDescribeName: true }],
-    },
-  },
   // js files assume node environment with es2021
   {
     files: ["**/*.js"],
@@ -106,7 +93,7 @@ module.exports = [
       parser: typescriptParser,
       // here we make the assumption that the tsconfig.json is in the root of the project and named that way
       parserOptions: {
-        project: ["./tsconfig.json", "./test/tsconfig.json"],
+        project: true,
         EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
       },
     },
@@ -116,6 +103,20 @@ module.exports = [
       ...typescriptPlugin.configs["eslint-recommended"].overrides[0].rules,
     },
   },
+  // use jest plugin and recommended configs in tests
+  {
+    files: ["**/*.test.js", "**/*.test.ts"],
+    languageOptions: {
+      globals: globals.jest,
+    },
+    plugins: { jest: jestPlugin },
+    rules: {
+      ...jestPlugin.configs.recommended.rules,
+      ...jestPlugin.configs.style.rules,
+      "jest/valid-title": ["error", { ignoreTypeOfDescribeName: true }],
+    },
+  },
+  // ts sources
   {
     files: ["**/*.ts"],
     ignores: ["**/*.d.ts"],
@@ -125,21 +126,15 @@ module.exports = [
       imports: importsPlugin,
     },
     rules: {
-      // extends from typescript recommended config
+      // extends from typescript strict config
       ...mapRules(
-        typescriptPlugin.configs["recommended"].rules,
+        typescriptPlugin.configs["strict-type-checked"].rules,
         "@typescript-eslint",
         "ts",
       ),
-      // also use rules that require type information
+      // also use the typescript stylistic rules
       ...mapRules(
-        typescriptPlugin.configs["recommended-requiring-type-checking"].rules,
-        "@typescript-eslint",
-        "ts",
-      ),
-      // also use the typescript recommended strict rules
-      ...mapRules(
-        typescriptPlugin.configs["strict"].rules,
+        typescriptPlugin.configs["stylistic-type-checked"].rules,
         "@typescript-eslint",
         "ts",
       ),
@@ -159,12 +154,14 @@ module.exports = [
       "imports/exports": "warn",
     },
   },
+  // ts declarations
   {
     files: ["**/*.d.ts"],
     rules: {
       "no-unused-vars": "off",
     },
   },
+  // license notices
   {
     files: ["**/*.js", "**/*.ts"],
     plugins: { header: headerPlugin },

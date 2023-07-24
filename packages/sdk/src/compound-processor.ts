@@ -34,12 +34,16 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
 
   onStart(span: Span, parentContext: Context): void {
     super.onStart(span, parentContext)
-    this.processors.forEach((p) => p.onStart(span, parentContext))
+    this.processors.forEach((p) => {
+      p.onStart(span, parentContext)
+    })
   }
 
   onEnd(span: ReadableSpan): void {
     /* eslint-disable-next-line ts/no-extra-semi */
-    ;[...this.processors].reverse().forEach((p) => p.onEnd(span))
+    ;[...this.processors].reverse().forEach((p) => {
+      p.onEnd(span)
+    })
     super.onEnd(span)
   }
 

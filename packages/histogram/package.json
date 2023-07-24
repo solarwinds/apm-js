@@ -23,8 +23,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/**",
-    "lint:fix": "eslint --fix *.js src/** && prettier --write .",
+    "lint": "prettier --check . && eslint . --max-warnings=0",
+    "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js"
   },
   "devDependencies": {
@@ -32,7 +32,7 @@
     "@opentelemetry/sdk-metrics": "1.15.x",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",
-    "eslint": "^8.44.0",
+    "eslint": "^8.45.0",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6"
   },

@@ -380,9 +380,7 @@ function parseTransactionSettings(settings: unknown) {
 
     if (
       !("tracing" in setting) ||
-      !(["enabled", "disabled"] as (string | unknown)[]).includes(
-        setting.tracing,
-      )
+      !(["enabled", "disabled"] as unknown[]).includes(setting.tracing)
     ) {
       console.warn(
         `${error}, "tracing" must be "enabled" or "disabled", ignoring`,

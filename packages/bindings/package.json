@@ -24,8 +24,8 @@
   },
   "scripts": {
     "build": "node build.js",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js types/** test/** && clang-format src/*.hh src/*/* -n --Werror",
-    "lint:fix": "eslint --fix *.js types/** test/** && prettier --write . && clang-format src/*.hh src/*/* -i --Werror",
+    "lint": "prettier --check . && eslint . --max-warnings=0 && clang-format src/*.hh src/*/* -n --Werror",
+    "lint:fix": "eslint --fix . && prettier --write . && clang-format src/*.hh src/*/* -i --Werror",
     "publish": "node ../../scripts/publish.js",
     "test": "jest --verbose",
     "oboe": "node oboe.js"
@@ -34,13 +34,13 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/jest": "^29.5.3",
     "@types/node": "^16.0.0",
-    "eslint": "^8.44.0",
+    "eslint": "^8.45.0",
     "jest": "^29.6.1",
     "node-addon-api": "^7.0.0",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6",
-    "zig-build": "^0.2.0"
+    "zig-build": "^0.2.1"
   },
   "optionalDependencies": {
     "@solarwinds-apm/bindings-linux-arm64-gnu": "worspace:*",

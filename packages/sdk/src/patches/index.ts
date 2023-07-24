@@ -28,6 +28,7 @@ import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
 
 import { type SwoConfiguration } from "../config"
 import * as bunyan from "./bunyan"
+import * as fs from "./fs"
 import * as http from "./http"
 import * as mysql2 from "./mysql2"
 import * as pg from "./pg"
@@ -42,7 +43,7 @@ export type Patch<Config extends InstrumentationConfig> = (
   options: SwoPatchesConfiguration,
 ) => Config
 
-const patches = { bunyan, http, mysql2, pg, pino } as const
+const patches = { bunyan, fs, http, mysql2, pg, pino } as const
 type Patches = typeof patches
 type PatchableConfigs = {
   [Module in keyof Patches as `@opentelemetry/instrumentation-${Module}`]?: Patches[Module] extends {

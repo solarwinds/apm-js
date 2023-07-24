@@ -40,7 +40,6 @@ import {
   COMMA_W3C,
   EQUALS_W3C,
   getTraceOptions,
-  swValue,
   type TraceOptions,
   traceParent,
   TRACESTATE_SW_KEY,
@@ -232,11 +231,6 @@ export class SwoSampler implements Sampler {
     parentSpanContext: SpanContext | undefined,
     traceOptions: TraceOptions | undefined,
   ): TraceState {
-    traceState = traceState.set(
-      TRACESTATE_SW_KEY,
-      swValue(parentSpanContext, decisions),
-    )
-
     if (traceOptions) {
       traceState = traceState.set(
         TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,

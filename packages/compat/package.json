@@ -23,8 +23,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "lint": "prettier --check . && eslint --max-warnings=0 *.js src/** test/**/*.ts",
-    "lint:fix": "eslint --fix *.js src/** test/**/*.ts && prettier --write .",
+    "lint": "prettier --check . && eslint . --max-warnings=0",
+    "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js",
     "test": "jest --verbose"
   },
@@ -46,7 +46,7 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/jest": "^29.5.3",
     "@types/node": "^16.0.0",
-    "eslint": "^8.44.0",
+    "eslint": "^8.45.0",
     "jest": "^29.6.1",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.1",
