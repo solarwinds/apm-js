@@ -16,7 +16,6 @@ limitations under the License.
 
 import {
   context,
-  INVALID_SPANID,
   ROOT_CONTEXT,
   type Span,
   trace,
