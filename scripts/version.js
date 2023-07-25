@@ -81,7 +81,11 @@ const bumped = gitStatus()
   .filter(({ file }) => /packages\/[^/]+\/package.json/.test(file))
   .map(({ file }) => readJson(file))
 
-exec("git commit -m 'versions'")
+const commitMessage = bumped
+  .map(({ name, version }) => `${name} ${version}`)
+  .sort()
+  .join(", ")
+exec(`git commit -m 'version bump' -m '${commitMessage}'`)
 
 for (const { name, version } of bumped) {
   const tag =
