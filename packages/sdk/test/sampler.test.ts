@@ -207,20 +207,6 @@ describe("SwoSampler", () => {
 
   const updateTraceState = "updateTraceState" as const
   describe(updateTraceState, () => {
-    it("sets sw value", () => {
-      const old = mock.traceState()
-      const decisions = mock.oboeDecisions()
-
-      const updated = SwoSampler[updateTraceState](
-        old,
-        decisions,
-        undefined,
-        undefined,
-      )
-
-      expect(updated.get("sw")).toEqual(swValue(undefined, decisions))
-    })
-
     it("sets trace options response when present", () => {
       const old = mock.traceState()
       const decisions = mock.oboeDecisions()

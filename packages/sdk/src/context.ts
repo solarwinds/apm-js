@@ -17,7 +17,6 @@ limitations under the License.
 import {
   type Context,
   createContextKey,
-  INVALID_SPANID,
   type SpanContext,
   trace,
 } from "@opentelemetry/api"
@@ -58,22 +57,10 @@ export function setTraceOptions(
   return context.setValue(TRACE_OPTIONS_KEY, traceOptions)
 }
 
-export function swValue(spanContext: SpanContext): string
-export function swValue(
-  parentSpanContext: SpanContext | undefined,
-  decisions: oboe.Context.DecisionsResult,
-): string
-export function swValue(
-  ...args:
-    | [spanContext: SpanContext]
-    | [
-        parentSpanContext: SpanContext | undefined,
-        decisions: oboe.Context.DecisionsResult,
-      ]
-): string {
-  const spanId = args[0]?.spanId ?? INVALID_SPANID
+export function swValue(spanContext: SpanContext): string {
+  const spanId = spanContext.spanId
 
-  const flagsInt = args.length === 2 ? args[1].do_sample : args[0].traceFlags
+  const flagsInt = spanContext.traceFlags
   const flags = flagsInt.toString(16).padStart(2, "0")
 
   return `${spanId}-${flags}`

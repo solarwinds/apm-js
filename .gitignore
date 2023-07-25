@@ -1,7 +1,6 @@
 # Ignore yarn cache except yarn itself and its plugins
 .yarn/*
-!.yarn/plugins/
-!.yarn/releases/
+!.yarn/versions/
 .pnp.*
 
 # Turborepo cache

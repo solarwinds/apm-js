@@ -135,7 +135,8 @@ export class SwoExporter implements SpanExporter {
   }
 
   shutdown(): Promise<void> {
-    return Promise.resolve(oboe.Context.shutdown())
+    oboe.Context.shutdown()
+    return Promise.resolve()
   }
 
   private static metadata(span: SpanContext): oboe.Metadata {

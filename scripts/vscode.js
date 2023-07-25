@@ -36,6 +36,13 @@ for (const recommendation of recommendations) {
 if (!settingsJson["eslint.experimental.useFlatConfig"]) {
   settingsJson["eslint.experimental.useFlatConfig"] = true
 }
+const eslintWorkingDirectories = ["packages/*", "examples", "scripts"]
+settingsJson["eslint.workingDirectories"] ??= eslintWorkingDirectories
+for (const ewd of eslintWorkingDirectories) {
+  if (!settingsJson["eslint.workingDirectories"].includes(ewd)) {
+    settingsJson["eslint.workingDirectories"].push(ewd)
+  }
+}
 
 const updatedExtensions = JSON.stringify(extensionsJson, null, 2)
 fs.writeFileSync("./.vscode/extensions.json", updatedExtensions)

@@ -80,6 +80,13 @@ exec("git add yarn.lock 'packages/**/package.json'")
 const bumped = gitStatus()
   .filter(({ file }) => /packages\/[^/]+\/package.json/.test(file))
   .map(({ file }) => readJson(file))
+
+const commitMessage = bumped
+  .map(({ name, version }) => `${name} ${version}`)
+  .sort()
+  .join(", ")
+exec(`git commit -m 'version bump' -m '${commitMessage}'`)
+
 for (const { name, version } of bumped) {
   const tag =
     name === "solarwinds-apm"
