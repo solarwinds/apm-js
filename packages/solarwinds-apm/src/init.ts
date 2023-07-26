@@ -158,12 +158,15 @@ function initTracing(
   const traceOptionsResponsePropagator =
     new sdk.SwoTraceOptionsResponsePropagator()
 
-  const instrumentations = getNodeAutoInstrumentations(
-    sdk.patch(config.instrumentations ?? {}, {
-      ...config,
-      responsePropagator: traceOptionsResponsePropagator,
-    }),
-  )
+  const instrumentations = [
+    ...getNodeAutoInstrumentations(
+      sdk.patch(config.instrumentations?.configs ?? {}, {
+        ...config,
+        responsePropagator: traceOptionsResponsePropagator,
+      }),
+    ),
+    ...(config.instrumentations?.extra ?? []),
+  ]
   registerInstrumentations({ instrumentations })
 
   const provider = new NodeTracerProvider({
@@ -202,7 +205,7 @@ function initMetrics(
 
   const provider = new MeterProvider({
     resource,
-    views: config.views,
+    views: config.metricViews,
   })
   provider.addMetricReader(reader)
   metrics.setGlobalMeterProvider(provider)

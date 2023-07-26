@@ -1,0 +1,5 @@
+.next/
+.prisma/
+
+db.sqlite
+db.sqlite-journal
