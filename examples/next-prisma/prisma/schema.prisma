@@ -1,0 +1,16 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["tracing"]
+  output          = "../.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:db.sqlite"
+}
+
+model Item {
+  id          Int     @id @default(autoincrement())
+  description String
+  done        Boolean @default(false)
+}

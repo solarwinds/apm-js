@@ -61,7 +61,7 @@ module.exports = {
 | `insertTraceContextIntoLogs`    | `false`           | Whether to insert trace context information into logs        |
 | `insertTraceContextIntoQueries` | `false`           | Whether to insert trace context information into SQL queries |
 | `transactionSettings`           | None              | See [Transaction Settings](#transaction-settings)            |
-| `instrumentations`              | None              | Custom instrumentation configurations                        |
+| `instrumentations`              | None              | See [Instrumentations](#instrumentations)                    |
 | `metricViews`                   | None              | Custom metric views                                          |
 
 #### Transaction Settings
@@ -87,5 +87,23 @@ module.exports = {
       },
     },
   ],
+}
+```
+
+#### Instrumentations
+
+A default set of instrumentations are provided and configured by the library. However in many cases it may be desirable to manually configure the instrumentations or provide additional ones. The `instrumentations` configuration field accepts an object which in turn can contain two fields.
+
+- The `configs` field accepts an object with instrumentation package names mapping to their configuration.
+- The `extra` field accepts an array of additional [`Instrumentation`](https://open-telemetry.github.io/opentelemetry-js/interfaces/_opentelemetry_instrumentation.Instrumentation.html) instances to register.
+
+```js
+module.exports = {
+  instrumentations: {
+    configs: {
+      "@opentelemetry/instrumentation-pg": { requireParentSpan: true },
+    },
+    extra: [new CustomInstrumentation(customInstrumentationConfig)],
+  },
 }
 ```

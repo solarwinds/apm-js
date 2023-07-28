@@ -21,7 +21,7 @@ import { initMessage } from "../src/reporter"
 
 describe("initMessage", () => {
   it("has right basic properties", () => {
-    const message = initMessage(new Resource({}))
+    const message = initMessage(new Resource({}), "1.0.0")
 
     expect(message).toMatchObject({
       __Init: true,
@@ -37,7 +37,7 @@ describe("initMessage", () => {
       n: 2,
       b: true,
     }
-    const message = initMessage(new Resource(props))
+    const message = initMessage(new Resource(props), "1.0.0")
 
     expect(message).toMatchObject(props)
   })
@@ -45,6 +45,7 @@ describe("initMessage", () => {
   it("doesn't forward service name", () => {
     const message = initMessage(
       new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: "value" }),
+      "1.0.0",
     )
 
     expect(message).not.toContainKey(SemanticResourceAttributes.SERVICE_NAME)
@@ -56,6 +57,7 @@ describe("initMessage", () => {
         array: [],
         undefined: undefined,
       }),
+      "1.0.0",
     )
 
     expect(message).not.toContainAnyKeys(["array", "undefined"])
@@ -66,6 +68,7 @@ describe("initMessage", () => {
       new Resource({
         [SemanticResourceAttributes.PROCESS_COMMAND_ARGS]: ["node", "index.js"],
       }),
+      "1.0.0",
     )
 
     expect(message).toMatchObject({
@@ -83,6 +86,7 @@ describe("initMessage", () => {
         Layer: "python",
         Label: "multiple",
       }),
+      "1.0.0",
     )
 
     expect(message).toMatchObject({

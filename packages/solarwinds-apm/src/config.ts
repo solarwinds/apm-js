@@ -20,6 +20,7 @@ import * as process from "node:process"
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { type InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node"
+import { type Instrumentation } from "@opentelemetry/instrumentation"
 import { type View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
 import * as mc from "@solarwinds-apm/merged-config"
@@ -55,7 +56,7 @@ export interface ConfigFile {
   tracingMode?: TracingMode
   insertTraceContextIntoLogs?: boolean
   transactionSettings?: TransactionSetting[]
-  instrumentations?: InstrumentationConfigMap
+  instrumentations?: Instrumentations
   metricViews?: View[]
 }
 
@@ -79,10 +80,14 @@ type TransactionSetting = {
   | { regex: RegExp | string }
   | { matcher: (identifier: string) => boolean | undefined }
 )
+interface Instrumentations {
+  configs?: InstrumentationConfigMap
+  extra?: Instrumentation[]
+}
 
 export interface ExtendedSwoConfiguration extends SwoConfiguration {
-  instrumentations?: InstrumentationConfigMap
-  views?: View[]
+  instrumentations?: Instrumentations
+  metricViews?: View[]
 }
 
 export function readConfig(): ExtendedSwoConfiguration {
@@ -162,7 +167,7 @@ export function readConfig(): ExtendedSwoConfiguration {
       transactionSettings: { file: true, parser: parseTransactionSettings },
       instrumentations: {
         file: true,
-        parser: (v) => v as InstrumentationConfigMap,
+        parser: (v) => v as Instrumentations,
       },
       metricViews: { file: true, parser: (v) => v as View[] },
     },

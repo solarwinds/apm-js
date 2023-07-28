@@ -134,7 +134,8 @@ services:
     build:
       context: .
       dockerfile: 18-alpine.Dockerfile
-    command: [yarn node /solarwinds-apm/scripts/udpdump.js]
+    command: [yarn node udpdump.js]
+    working_dir: /solarwinds-apm/scripts
     volumes:
       - ..:/solarwinds-apm
     expose:

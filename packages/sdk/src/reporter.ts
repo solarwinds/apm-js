@@ -58,6 +58,7 @@ export function createReporter(config: SwoConfiguration): oboe.Reporter {
 
 export function initMessage(
   resource: Resource,
+  version: string,
 ): Record<string, string | number | boolean> {
   // eslint-disable-next-line ts/no-var-requires
   const packageJson = require("../package.json") as { version: string }
@@ -100,7 +101,8 @@ export function initMessage(
     Layer: "nodejs",
     Label: "single",
 
-    "APM.Version": packageJson.version,
+    // `<solarwinds-apm>+<@solarwinds-apm/sdk>`
+    "APM.Version": `${version}+${packageJson.version}`,
     "APM.Extension.Version": oboe.Config.getVersionString(),
   }
 }

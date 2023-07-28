@@ -1,0 +1,11 @@
+.list {
+  border-collapse: collapse;
+}
+
+.list td {
+  padding: 4px 8px;
+}
+
+.list tr:not(:first-child) td {
+  border-top: 1px solid grey;
+}

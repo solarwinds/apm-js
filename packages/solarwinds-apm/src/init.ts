@@ -47,8 +47,11 @@ import { type ExtendedSwoConfiguration, readConfig } from "./config"
 
 export function init() {
   /* eslint-disable-next-line ts/no-var-requires */
-  const pkg = require("../package.json") as { name: string; version: string }
-  const id = `${pkg.name}@${pkg.version}`
+  const packageJson = require("../package.json") as {
+    name: string
+    version: string
+  }
+  const id = `${packageJson.name}@${packageJson.version}`
   const initSymbol = Symbol.for(`${id}/init`)
 
   if (!(initSymbol in globalThis)) {
@@ -87,7 +90,7 @@ export function init() {
         }),
       )
 
-    initTracing(config, resource, initLogger)
+    initTracing(config, resource, packageJson.version, initLogger)
     switch (config.runtimeMetrics) {
       case true: {
         initMetrics(config, resource, initLogger)
@@ -102,6 +105,7 @@ export function init() {
 function initTracing(
   config: ExtendedSwoConfiguration,
   resource: Resource,
+  version: string,
   logger: DiagLogger,
 ) {
   if (sdk.OBOE_ERROR) {
@@ -128,7 +132,7 @@ function initTracing(
     }
   }, config.oboeLogLevel)
 
-  sdk.sendStatus(reporter, sdk.initMessage(resource))
+  sdk.sendStatus(reporter, sdk.initMessage(resource, version))
 
   const sampler = new sdk.SwoSampler(
     config,
@@ -158,12 +162,15 @@ function initTracing(
   const traceOptionsResponsePropagator =
     new sdk.SwoTraceOptionsResponsePropagator()
 
-  const instrumentations = getNodeAutoInstrumentations(
-    sdk.patch(config.instrumentations ?? {}, {
-      ...config,
-      responsePropagator: traceOptionsResponsePropagator,
-    }),
-  )
+  const instrumentations = [
+    ...getNodeAutoInstrumentations(
+      sdk.patch(config.instrumentations?.configs ?? {}, {
+        ...config,
+        responsePropagator: traceOptionsResponsePropagator,
+      }),
+    ),
+    ...(config.instrumentations?.extra ?? []),
+  ]
   registerInstrumentations({ instrumentations })
 
   const provider = new NodeTracerProvider({
@@ -202,7 +209,7 @@ function initMetrics(
 
   const provider = new MeterProvider({
     resource,
-    views: config.views,
+    views: config.metricViews,
   })
   provider.addMetricReader(reader)
   metrics.setGlobalMeterProvider(provider)
