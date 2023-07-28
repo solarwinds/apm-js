@@ -1,0 +1,15 @@
+{
+  "name": "@solarwinds-apm/example-fastify-postgres",
+  "private": true,
+  "scripts": {
+    "start": "node -r solarwinds-apm index.js"
+  },
+  "dependencies": {
+    "@fastify/postgres": "^5.2.0",
+    "@opentelemetry/api": "1.4.x",
+    "fastify": "^4.21.0",
+    "pg": "^8.11.1",
+    "pino": "^8.14.2",
+    "solarwinds-apm": "workspace:^"
+  }
+}

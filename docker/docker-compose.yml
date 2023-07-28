@@ -120,6 +120,18 @@ services:
       - apm-collector
       - otel-collector
 
+  example:
+    build:
+      context: .
+      dockerfile: 18-alpine.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+      - mysql
+      - postgres
+
   apm-collector:
     image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v2.0.0}
     volumes:
@@ -142,9 +154,22 @@ services:
       - 12225
 
   otel-collector:
-    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector-contrib:0.78.0}
+    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector:0.81.0}
     command: [--config=/solarwinds-apm/docker/otel-collector/config.yml]
     volumes:
       - ..:/solarwinds-apm
     expose:
       - 4317
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql

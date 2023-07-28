@@ -44,5 +44,5 @@ const dockerEnv = Object.entries(env)
   .map(([k, v]) => `-e ${k}=${v}`)
   .join(" ")
 exec(
-  `docker compose -f docker/docker-compose.yml run ${dockerEnv} -e PORT=8080 -p 8080:8080 --rm 18-alpine 'cd ./examples/${example} && yarn install && (yarn start || true)'; yarn install`,
+  `docker compose -f docker/docker-compose.yml run ${dockerEnv} -e PORT=8080 -p 8080:8080 --rm example 'cd ./examples/${example} && yarn install && (yarn start || true)'; yarn install`,
 )
