@@ -16,7 +16,9 @@ This project contains a few examples of how to use the library in the [`examples
 - [`hello`](./examples/hello) is a simple hello world HTTP server.
 - [`hello-distributed`](./examples/hello-distributed/) is a simple distributed example where the main HTTP server sends a request to a secondary one and uses the response as its own response.
 - [`hello-manual`](./examples/hello-manual/) is an example of how to use the OTel API for manually instrumenting code on top of `solarwinds-apm`.
-- [`next-prisma`](./examples/next-prisma/) is a fullstack todo-list application built on top of [Next.js](https://nextjs.org) and [Prisma](https://prisma.io).
+- [`express-mysql`](./examples/express-mysql/) is a simple todo-list API using `express` and `mysql2`.
+- [`fastify-postgres`](./examples/fastify-postgres/) is a simple todo-list API using `fastify` and `pg`.
+- [`next-prisma`](./examples/next-prisma/) is a fullstack todo-list application using [Next.js](https://nextjs.org) and [Prisma](https://prisma.io).
 
 ## Node.js Version Support
 
