@@ -29,6 +29,16 @@ class Cache {
     return this.spanCache.get(Cache.key(ctx))
   }
 
+  getOrInit(ctx: SpanContext, init: SpanCache = {}): SpanCache {
+    const k = Cache.key(ctx)
+    let c = this.spanCache.get(k)
+    if (!c) {
+      c = init
+      this.spanCache.set(k, c)
+    }
+    return c
+  }
+
   getRoot(ctx: SpanContext): SpanCache | undefined {
     for (;;) {
       const c = this.get(ctx)
@@ -37,33 +47,6 @@ class Cache {
       if (!c.parentId || c.parentRemote) return c
 
       ctx = { ...ctx, traceId: ctx.traceId, spanId: c.parentId }
-    }
-  }
-
-  setParentInfo(
-    ctx: SpanContext,
-    parentInfo: { id?: string; remote?: boolean },
-  ): void {
-    const cache = this.get(ctx)
-    if (cache) {
-      if (parentInfo.id !== undefined) cache.parentId = parentInfo.id
-      if (parentInfo.remote !== undefined)
-        cache.parentRemote = parentInfo.remote
-    } else {
-      this.spanCache.set(Cache.key(ctx), {
-        parentId: parentInfo.id,
-        parentRemote: parentInfo.remote,
-      })
-    }
-  }
-  setTxname(ctx: SpanContext, txname: string): boolean {
-    const cache = this.get(ctx)
-    if (cache) {
-      cache.txname = txname
-      return true
-    } else {
-      this.spanCache.set(Cache.key(ctx), { txname })
-      return false
     }
   }
 

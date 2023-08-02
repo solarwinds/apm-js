@@ -28,15 +28,14 @@ export class SwoParentInfoSpanProcessor extends NoopSpanProcessor {
     const spanContext = span.spanContext()
     const parentSpanContext = trace.getSpanContext(parentContext)
 
-    cache.setParentInfo(spanContext, {
-      id: parentSpanContext?.spanId,
-      remote: parentSpanContext?.isRemote,
-    })
+    const spanCache = cache.getOrInit(spanContext)
+    spanCache.parentId = parentSpanContext?.spanId
+    spanCache.parentRemote = parentSpanContext?.isRemote
   }
 
   onEnd(span: ReadableSpan): void {
     const spanContext = span.spanContext()
-    // clear hear unless sampled in which case the collector takes care of it
+    // clear here unless sampled in which case the exporter takes care of it
     if (!(spanContext.traceFlags & TraceFlags.SAMPLED)) {
       cache.clear(spanContext)
     }
