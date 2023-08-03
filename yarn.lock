@@ -2526,6 +2526,7 @@ __metadata:
     eslint-plugin-tsdoc: "npm:^0.2.17"
     globals: "npm:^13.20.0"
     prettier: "npm:^3.0.0"
+    typescript: "npm:^5.1.6"
   peerDependencies:
     eslint: ^8.23.0
     jest: "*"
