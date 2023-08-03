@@ -2722,10 +2722,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/solarwinds-apm@workspace:."
   dependencies:
-    eslint: "npm:^8.45.0"
     prettier: "npm:^3.0.0"
     turbo: "npm:^1.10.10"
-    typescript: "npm:^5.1.6"
   dependenciesMeta:
     prettier:
       unplugged: true
