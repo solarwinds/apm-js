@@ -154,6 +154,8 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      YARN_IGNORE_NODE: 1
 
     steps:
       - if: ${{ matrix.arch == 'arm64' && contains(matrix.image, 'alpine') }}

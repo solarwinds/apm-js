@@ -51,7 +51,8 @@ export class SwoInboundMetricsSpanProcessor extends NoopSpanProcessor {
     // TODO
     const domain = null
 
-    const transaction = cache.get(context)?.txname ?? defaultTransaction
+    const spanCache = cache.getOrInit(context)
+    const transaction = spanCache.txname ?? defaultTransaction
 
     let txname: string
     if (isHttp) {
@@ -72,7 +73,7 @@ export class SwoInboundMetricsSpanProcessor extends NoopSpanProcessor {
         has_error: hasError ? 1 : 0,
       })
     }
-    cache.setTxname(context, txname)
+    spanCache.txname = txname
   }
 
   private static httpSpanMeta(span: ReadableSpan):
