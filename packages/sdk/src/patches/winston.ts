@@ -16,7 +16,7 @@ limitations under the License.
 
 import { type WinstonInstrumentationConfig } from "@opentelemetry/instrumentation-winston"
 
-import { RESOURCE_SERVICE_NAME, type Patch } from "."
+import { type Patch, RESOURCE_SERVICE_NAME } from "."
 
 export const patch: Patch<WinstonInstrumentationConfig> = (
   config,

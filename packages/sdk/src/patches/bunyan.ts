@@ -16,7 +16,7 @@ limitations under the License.
 
 import { type BunyanInstrumentationConfig } from "@opentelemetry/instrumentation-bunyan"
 
-import { RESOURCE_SERVICE_NAME, type Patch } from "."
+import { type Patch, RESOURCE_SERVICE_NAME } from "."
 
 export const patch: Patch<BunyanInstrumentationConfig> = (config, options) => ({
   ...config,
