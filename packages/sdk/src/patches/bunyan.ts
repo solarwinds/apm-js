@@ -16,9 +16,13 @@ limitations under the License.
 
 import { type BunyanInstrumentationConfig } from "@opentelemetry/instrumentation-bunyan"
 
-import { type Patch } from "."
+import { type Patch, RESOURCE_SERVICE_NAME } from "."
 
 export const patch: Patch<BunyanInstrumentationConfig> = (config, options) => ({
   ...config,
   enabled: config.enabled ?? options.insertTraceContextIntoLogs,
+  logHook: (span, record) => {
+    record[RESOURCE_SERVICE_NAME] = options.serviceName
+    config.logHook?.(span, record)
+  },
 })

@@ -16,9 +16,13 @@ limitations under the License.
 
 import { type PinoInstrumentationConfig } from "@opentelemetry/instrumentation-pino"
 
-import { type Patch } from "."
+import { type Patch, RESOURCE_SERVICE_NAME } from "."
 
 export const patch: Patch<PinoInstrumentationConfig> = (config, options) => ({
   ...config,
   enabled: config.enabled ?? options.insertTraceContextIntoLogs,
+  logHook: (span, record, level) => {
+    record[RESOURCE_SERVICE_NAME] = options.serviceName
+    config.logHook?.(span, record, level)
+  },
 })

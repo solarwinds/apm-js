@@ -16,7 +16,7 @@ limitations under the License.
 
 import { type WinstonInstrumentationConfig } from "@opentelemetry/instrumentation-winston"
 
-import { type Patch } from "."
+import { type Patch, RESOURCE_SERVICE_NAME } from "."
 
 export const patch: Patch<WinstonInstrumentationConfig> = (
   config,
@@ -24,4 +24,8 @@ export const patch: Patch<WinstonInstrumentationConfig> = (
 ) => ({
   ...config,
   enabled: config.enabled ?? options.insertTraceContextIntoLogs,
+  logHook: (span, record) => {
+    record[RESOURCE_SERVICE_NAME] = options.serviceName
+    config.logHook?.(span, record)
+  },
 })
