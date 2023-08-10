@@ -44,6 +44,8 @@ export type Patch<Config extends InstrumentationConfig> = (
   options: SwoPatchesConfiguration,
 ) => Config
 
+export const RESOURCE_SERVICE_NAME = "resource.service.name" as const
+
 const patches = { bunyan, fs, http, mysql2, pg, pino, winston } as const
 type Patches = typeof patches
 type PatchableConfigs = {
