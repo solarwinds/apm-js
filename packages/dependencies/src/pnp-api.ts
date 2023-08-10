@@ -47,7 +47,7 @@ export function collectPnpApiDependencies(
 
     try {
       const packagePath = path.join(packageLocation, "package.json")
-      // eslint-disable-next-line ts/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { name, version } = require(packagePath) as Package
       dependencies.add(name, version)
     } catch {

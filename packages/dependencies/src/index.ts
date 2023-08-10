@@ -19,7 +19,7 @@ import { collectPnpApiDependencies, type PnpApi } from "./pnp-api"
 
 let pnpApi: PnpApi | undefined
 try {
-  // eslint-disable-next-line
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   pnpApi = require("pnpapi")
 } catch {
   pnpApi = undefined

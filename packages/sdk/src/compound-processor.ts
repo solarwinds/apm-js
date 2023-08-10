@@ -40,7 +40,7 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
   }
 
   onEnd(span: ReadableSpan): void {
-    /* eslint-disable-next-line ts/no-extra-semi */
+    // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;[...this.processors].reverse().forEach((p) => {
       p.onEnd(span)
     })

@@ -8,20 +8,20 @@
   },
   "dependencies": {
     "@opentelemetry/api": "1.4.x",
-    "@prisma/client": "5.0.0",
-    "@prisma/instrumentation": "^5.0.0",
-    "next": "^13.4.12",
+    "@prisma/client": "5.1.1",
+    "@prisma/instrumentation": "^5.1.1",
+    "next": "^13.4.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^16.0.0",
-    "@types/react": "^18.2.16",
+    "@types/react": "^18.2.20",
     "@yarnpkg/pnpify": "^4.0.0-rc.48",
-    "eslint": "^8.45.0",
-    "eslint-config-next": "13.4.12",
-    "prisma": "5.0.0",
+    "eslint": "^8.46.0",
+    "eslint-config-next": "13.4.13",
+    "prisma": "5.1.1",
     "typescript": "^5.1.6"
   }
 }

@@ -46,7 +46,7 @@ import * as sdk from "@solarwinds-apm/sdk"
 import { type ExtendedSwoConfiguration, readConfig } from "./config"
 
 export function init() {
-  /* eslint-disable-next-line ts/no-var-requires */
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const packageJson = require("../package.json") as {
     name: string
     version: string

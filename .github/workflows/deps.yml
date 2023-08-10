@@ -1,0 +1,29 @@
+on:
+  schedule:
+    - cron: "0 12 * * 1" # Every Monday at 12:00 UTC
+  workflow_dispatch:
+
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: yarn install
+      - run: yarn up -R '**'
+      - run: yarn dedupe
+
+      - name: PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: actions/lockfile
+          title: Update lockfile
+          commit-message: Update lockfile
+          body: |
+            **Automated lockfile update.**
+
+            All dependency ranges have been resolved to their latest available version
+            and all resolved versions have been deduplicated wherever possible.
