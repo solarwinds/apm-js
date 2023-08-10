@@ -32,8 +32,8 @@
     "@opentelemetry/sdk-metrics": "1.15.x",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",
-    "eslint": "^8.45.0",
-    "prettier": "^3.0.0",
+    "eslint": "^8.46.0",
+    "prettier": "^3.0.1",
     "typescript": "^5.1.6"
   },
   "engines": {

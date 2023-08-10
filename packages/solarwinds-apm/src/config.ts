@@ -31,7 +31,7 @@ import aoCert from "./appoptics.crt"
 
 let json: typeof import("json5") | typeof JSON
 try {
-  /* eslint-disable-next-line ts/no-unsafe-assignment */
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   json = require("json5")
 } catch {
   json = JSON
@@ -39,7 +39,7 @@ try {
 
 let tsNode: typeof import("ts-node") | undefined
 try {
-  /* eslint-disable-next-line ts/no-unsafe-assignment */
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   tsNode = require("ts-node")
 } catch {
   tsNode = undefined
@@ -242,7 +242,7 @@ function readJsonConfig(file: string) {
 }
 
 function readJsConfig(file: string) {
-  /* eslint-disable-next-line ts/no-var-requires */
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   return require(file) as ConfigFile
 }
 
@@ -255,7 +255,7 @@ function readTsConfig(file: string) {
   tsNodeService ??= tsNode.register({ compilerOptions: { module: "commonjs" } })
 
   tsNodeService.enabled(true)
-  /* eslint-disable-next-line ts/no-var-requires */
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const required = require(file) as
     | ConfigFile
     | { __esModule: true; default: ConfigFile }

@@ -52,13 +52,6 @@ const notice = noticeTemplate
   .replace("[yyyy]", year)
   .replace("[name of copyright owner]", holder)
 
-// we use the new ESLint config formats which lets us alias plugins
-// so it's useful to be able to also alias the rules provided in their recommended configs
-const mapRules = (rules, oldKey = "", newKey = "") =>
-  Object.fromEntries(
-    Object.entries(rules).map(([k, v]) => [k.replace(oldKey, newKey), v]),
-  )
-
 // don't count variables starting with an underscore as unused
 const unusedOptions = {
   vars: "all",
@@ -121,27 +114,19 @@ module.exports = [
     files: ["**/*.ts"],
     ignores: ["**/*.d.ts"],
     plugins: {
-      ts: typescriptPlugin,
+      "@typescript-eslint": typescriptPlugin,
       tsdoc: tsdocPlugin,
       imports: importsPlugin,
     },
     rules: {
       // extends from typescript strict config
-      ...mapRules(
-        typescriptPlugin.configs["strict-type-checked"].rules,
-        "@typescript-eslint",
-        "ts",
-      ),
+      ...typescriptPlugin.configs["strict-type-checked"].rules,
       // also use the typescript stylistic rules
-      ...mapRules(
-        typescriptPlugin.configs["stylistic-type-checked"].rules,
-        "@typescript-eslint",
-        "ts",
-      ),
+      ...typescriptPlugin.configs["stylistic-type-checked"].rules,
       // since we use "noUncheckedIndexedAccess" we need non-null assertions
-      "ts/no-non-null-assertion": "off",
-      "ts/no-unused-vars": ["warn", unusedOptions],
-      "ts/consistent-type-imports": [
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-unused-vars": ["warn", unusedOptions],
+      "@typescript-eslint/consistent-type-imports": [
         "warn",
         {
           prefer: "type-imports",
@@ -170,5 +155,5 @@ module.exports = [
     },
   },
   // disable rules that conflict with prettier
-  { rules: prettier.rules },
+  prettier,
 ]

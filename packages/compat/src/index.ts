@@ -23,7 +23,7 @@ import {
 } from "@opentelemetry/api"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 
-// eslint-disable-next-line ts/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require("../package.json") as { name: string; version: string }
 
 interface InstrumentOptions {

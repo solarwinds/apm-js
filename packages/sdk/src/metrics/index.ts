@@ -22,7 +22,7 @@ import * as eventLoop from "./event-loop"
 import * as gc from "./gc"
 import * as memory from "./memory"
 
-/* eslint-disable-next-line ts/no-var-requires */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require("../../package.json") as { name: string; version: string }
 
 export const meter = lazy(() => metrics.getMeter(pkg.name, pkg.version))
