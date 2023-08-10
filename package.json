@@ -31,9 +31,5 @@
     "prettier": {
       "unplugged": true
     }
-  },
-  "//": "TODO: remove this in the next OTel update",
-  "resolutions": {
-    "@opentelemetry/sdk-trace-base@npm:1.15.0": "^1.15.0"
   }
 }

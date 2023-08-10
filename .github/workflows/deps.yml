@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - run: yarn install
-      - run: yarn up -R '*'
+      - run: yarn up -R '**'
       - run: yarn dedupe
 
       - name: PR
