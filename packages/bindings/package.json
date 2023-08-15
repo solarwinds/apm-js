@@ -43,10 +43,10 @@
     "zig-build": "^0.2.1"
   },
   "optionalDependencies": {
-    "@solarwinds-apm/bindings-linux-arm64-gnu": "worspace:*",
-    "@solarwinds-apm/bindings-linux-arm64-musl": "worspace:*",
-    "@solarwinds-apm/bindings-linux-x64-gnu": "worspace:*",
-    "@solarwinds-apm/bindings-linux-x64-musl": "worspace:*"
+    "@solarwinds-apm/bindings-linux-arm64-gnu": "workspace:*",
+    "@solarwinds-apm/bindings-linux-arm64-musl": "workspace:*",
+    "@solarwinds-apm/bindings-linux-x64-gnu": "workspace:*",
+    "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
   },
   "engines": {
     "node": ">=16"

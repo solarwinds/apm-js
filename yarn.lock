@@ -2295,25 +2295,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solarwinds-apm/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu, @solarwinds-apm/bindings-linux-arm64-gnu@worspace:*":
+"@solarwinds-apm/bindings-linux-arm64-gnu@workspace:*, @solarwinds-apm/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu"
   languageName: unknown
   linkType: soft
 
-"@solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl, @solarwinds-apm/bindings-linux-arm64-musl@worspace:*":
+"@solarwinds-apm/bindings-linux-arm64-musl@workspace:*, @solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl"
   languageName: unknown
   linkType: soft
 
-"@solarwinds-apm/bindings-linux-x64-gnu@workspace:packages/bindings/npm/linux-x64-gnu, @solarwinds-apm/bindings-linux-x64-gnu@worspace:*":
+"@solarwinds-apm/bindings-linux-x64-gnu@workspace:*, @solarwinds-apm/bindings-linux-x64-gnu@workspace:packages/bindings/npm/linux-x64-gnu":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/bindings-linux-x64-gnu@workspace:packages/bindings/npm/linux-x64-gnu"
   languageName: unknown
   linkType: soft
 
-"@solarwinds-apm/bindings-linux-x64-musl@workspace:packages/bindings/npm/linux-x64-musl, @solarwinds-apm/bindings-linux-x64-musl@worspace:*":
+"@solarwinds-apm/bindings-linux-x64-musl@workspace:*, @solarwinds-apm/bindings-linux-x64-musl@workspace:packages/bindings/npm/linux-x64-musl":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/bindings-linux-x64-musl@workspace:packages/bindings/npm/linux-x64-musl"
   languageName: unknown
@@ -2323,10 +2323,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/bindings@workspace:packages/bindings"
   dependencies:
-    "@solarwinds-apm/bindings-linux-arm64-gnu": "worspace:*"
-    "@solarwinds-apm/bindings-linux-arm64-musl": "worspace:*"
-    "@solarwinds-apm/bindings-linux-x64-gnu": "worspace:*"
-    "@solarwinds-apm/bindings-linux-x64-musl": "worspace:*"
+    "@solarwinds-apm/bindings-linux-arm64-gnu": "workspace:*"
+    "@solarwinds-apm/bindings-linux-arm64-musl": "workspace:*"
+    "@solarwinds-apm/bindings-linux-x64-gnu": "workspace:*"
+    "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@types/jest": "npm:^29.5.3"
     "@types/node": "npm:^16.0.0"
