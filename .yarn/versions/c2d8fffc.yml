@@ -1,0 +1,10 @@
+releases:
+  "@solarwinds-apm/bindings": major
+  "@solarwinds-apm/compat": major
+  "@solarwinds-apm/dependencies": major
+  "@solarwinds-apm/eslint-config": major
+  "@solarwinds-apm/histogram": major
+  "@solarwinds-apm/lazy": major
+  "@solarwinds-apm/merged-config": major
+  "@solarwinds-apm/sdk": major
+  solarwinds-apm: major
