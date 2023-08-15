@@ -56,7 +56,7 @@ if (status.length > 0) {
 
 let command = "yarn version apply --all"
 if (process.argv[2] === "pre") {
-  command += " --prerelease pre.%d"
+  command += " --prerelease='pre.%d'"
 }
 
 exec(command)
