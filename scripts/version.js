@@ -56,7 +56,7 @@ if (status.length > 0) {
 
 let command = "yarn version apply --all"
 if (process.argv[2] === "pre") {
-  command += " --prerelease='pre.%d'"
+  command += " --prerelease='pre.%n'"
 }
 
 exec(command)
@@ -75,7 +75,7 @@ for (const n of bindingsNative) {
   writeJson(nPackagePath, nPackage)
 }
 
-exec("git add yarn.lock 'packages/**/package.json'")
+exec("git add yarn.lock .yarn 'packages/**/package.json'")
 
 const bumped = gitStatus()
   .filter(({ file }) => /packages\/[^/]+\/package.json/.test(file))
