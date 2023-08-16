@@ -17,7 +17,7 @@
     "lint": "prettier --check *.json *.md .github && turbo run lint",
     "lint:fix": "prettier --write *.json *.md .github && turbo run lint:fix",
     "plugins:upgrade": "yarn plugin import version && yarn plugin import interactive-tools",
-    "publish": "turbo run lint && turbo run build && turbo run publish",
+    "publish": "turbo run build && turbo run lint && turbo run publish",
     "test": "turbo run test",
     "version:stable": "node scripts/version.js",
     "version:pre": "node scripts/version.js pre",
