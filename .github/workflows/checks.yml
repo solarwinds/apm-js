@@ -45,7 +45,7 @@ jobs:
       # we can force it to be the root of the repo by including an empty file present at the root
       # see https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - run: touch .root
-      - if: github.event_name == 'pull_request' && !contains(github.head_ref, 'release')
+      - if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           name: build
@@ -58,7 +58,7 @@ jobs:
           retention-days: 1
 
   versions:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && !contains(github.head_ref, 'release')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
