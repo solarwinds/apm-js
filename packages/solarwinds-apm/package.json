@@ -51,6 +51,7 @@
     "@opentelemetry/sdk-metrics": "1.15.x",
     "@opentelemetry/sdk-trace-node": "1.15.x",
     "@opentelemetry/semantic-conventions": "1.15.x",
+    "@solarwinds-apm/bindings": "workspace:^",
     "@solarwinds-apm/merged-config": "workspace:^",
     "@solarwinds-apm/sdk": "workspace:^"
   },
@@ -72,7 +73,6 @@
   },
   "devDependencies": {
     "@opentelemetry/api": "1.4.x",
-    "@solarwinds-apm/bindings": "workspace:^",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/node": "^16.0.0",
     "eslint": "^8.47.0",
