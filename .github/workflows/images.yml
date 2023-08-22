@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         image:
-          - 16-alpine3.12
+          - 16-alpine3.15
           - 16-amazonlinux2
           - 16-debian10
           - 16-ubi8
