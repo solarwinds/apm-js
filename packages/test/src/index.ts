@@ -21,6 +21,8 @@ import * as test from "node:test"
 export { expect } from "chai"
 export { describe, it } from "node:test"
 
+// Node supports async functions in tests but not hooks for some reason,
+// so we add a little bit of code to make it possible
 export type Hook = (done: () => void) => void | Promise<void>
 const hook = (f: Hook) => (done: () => void) => {
   const result = f(done)
