@@ -21,6 +21,7 @@ import {
   type Span,
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
+import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { CompoundSpanProcessor } from "../src/compound-processor"
 import * as mock from "./mock"
@@ -58,8 +59,8 @@ describe("CompoundSpanProcessor", () => {
   describe("forceFlush", () => {
     it("flushes in any order", async () => {
       await processor.forceFlush()
-      expect(forceFlush).toContain(p1.id)
-      expect(forceFlush).toContain(p2.id)
+      expect(forceFlush).to.include(p1.id)
+      expect(forceFlush).to.include(p2.id)
     })
   })
 
@@ -69,7 +70,7 @@ describe("CompoundSpanProcessor", () => {
       const parentContext = ROOT_CONTEXT
 
       processor.onStart(span, parentContext)
-      expect(onStart).toEqual([
+      expect(onStart).to.deep.equal([
         [p1.id, span, parentContext],
         [p2.id, span, parentContext],
       ])
@@ -81,7 +82,7 @@ describe("CompoundSpanProcessor", () => {
       const span = mock.readableSpan()
 
       processor.onEnd(span)
-      expect(onEnd).toEqual([
+      expect(onEnd).to.deep.equal([
         [p2.id, span],
         [p1.id, span],
       ])
@@ -91,8 +92,8 @@ describe("CompoundSpanProcessor", () => {
   describe("shutdown", () => {
     it("shutdowns in any order", async () => {
       await processor.shutdown()
-      expect(shutdown).toContain(p1.id)
-      expect(shutdown).toContain(p2.id)
+      expect(shutdown).to.include(p1.id)
+      expect(shutdown).to.include(p2.id)
     })
   })
 })

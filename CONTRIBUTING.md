@@ -13,9 +13,6 @@
 git lfs pull
 # Install latest dependencies
 yarn install
-
-# Setup VSCode for the project (optional)
-yarn vscode
 ```
 
 The first two steps need to be repeated any time changes are made upstream that affect either the dependencies of any package or any of the files stored in LFS. It's a good habit to do it after any pull/checkout/merge/rebase.
@@ -69,7 +66,7 @@ OTel dependencies should not be upgraded using this command and the work should 
 
 Dependencies on other packages in the workspace never need to be updated as they should always use `workspace:^` ranges which ensures versions stay in sync.
 
-The Yarn version can be updated using `yarn set version latest` and the Yarn plugins can be updated using `yarn plugins:upgrade`.
+The Yarn version can be updated using `yarn set version latest`.
 
 After completing this process, it is often useful to also run `yarn dedupe` to reduce the number of duplicate versions for any given package in the dependency tree to the bare minimum.
 

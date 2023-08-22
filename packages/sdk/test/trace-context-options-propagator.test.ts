@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { describe, expect, it as test } from "@solarwinds-apm/test"
+
 import { type TraceOptions } from "../src/context"
 import { SwoTraceContextOptionsPropagator } from "../src/trace-context-options-propagator"
 import * as mock from "./mock"
@@ -26,7 +28,7 @@ describe(parseTraceOptions, () => {
     const header = "="
     const result = propagator[parseTraceOptions]("=")
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       custom: {},
       ignored: [],
@@ -37,7 +39,7 @@ describe(parseTraceOptions, () => {
     const header = "=value"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       custom: {},
       ignored: [],
@@ -48,7 +50,7 @@ describe(parseTraceOptions, () => {
     const header = "trigger-trace"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       triggerTrace: true,
       custom: {},
@@ -60,7 +62,7 @@ describe(parseTraceOptions, () => {
     const header = "trigger-trace=value"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       custom: {},
       ignored: [["trigger-trace", "value"]],
@@ -71,7 +73,7 @@ describe(parseTraceOptions, () => {
     const header = "sw-keys= name:value "
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       swKeys: "name:value",
       custom: {},
@@ -83,7 +85,7 @@ describe(parseTraceOptions, () => {
     const header = "sw-keys=check-id:check-1013,website-id;booking-demo"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       swKeys: "check-id:check-1013,website-id",
       custom: {},
@@ -95,7 +97,7 @@ describe(parseTraceOptions, () => {
     const header = "custom-key= value "
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       custom: {
         "custom-key": "value",
@@ -108,7 +110,7 @@ describe(parseTraceOptions, () => {
     const header = "custom-key"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       custom: {},
       ignored: [["custom-key", undefined]],
@@ -119,7 +121,7 @@ describe(parseTraceOptions, () => {
     const header = "custom-key=name=value"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       custom: {
         "custom-key": "name=value",
@@ -132,7 +134,7 @@ describe(parseTraceOptions, () => {
     const header = "custom- key=value;custom-ke y=value"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       custom: {},
       ignored: [
@@ -146,7 +148,7 @@ describe(parseTraceOptions, () => {
     const header = "ts = 1234567890 "
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       timestamp: 1234567890,
       custom: {},
@@ -158,7 +160,7 @@ describe(parseTraceOptions, () => {
     const header = "key=value"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       custom: {},
       ignored: [["key", "value"]],
@@ -170,7 +172,7 @@ describe(parseTraceOptions, () => {
     const signature = "signature123"
     const result = propagator[parseTraceOptions](header, signature)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       signature,
       custom: {},
@@ -183,7 +185,7 @@ describe(parseTraceOptions, () => {
       "trigger-trace ; custom-something=value; custom-OtherThing = other val ; sw-keys = 029734wr70:9wqj21,0d9j1 ; ts = 12345 ; foo = bar"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       triggerTrace: true,
       swKeys: "029734wr70:9wqj21,0d9j1",
@@ -201,7 +203,7 @@ describe(parseTraceOptions, () => {
       ";foo=bar;;;custom-something=value_thing;;sw-keys=02973r70:1b2a3;;;;custom-key=val;ts=12345;;;;;;;trigger-trace;;;"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       triggerTrace: true,
       swKeys: "02973r70:1b2a3",
@@ -218,7 +220,7 @@ describe(parseTraceOptions, () => {
     const header = "trigger-trace;custom-foo='bar;bar';custom-bar=foo"
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       triggerTrace: true,
       custom: {
@@ -234,7 +236,7 @@ describe(parseTraceOptions, () => {
       ";trigger-trace;custom-something=value_thing;sw-keys=02973r70:9wqj21,0d9j1;1;2;3;4;5;=custom-key=val?;="
     const result = propagator[parseTraceOptions](header)
 
-    expect(result).toEqual({
+    expect(result).to.loosely.deep.equal({
       header,
       triggerTrace: true,
       swKeys: "02973r70:9wqj21,0d9j1",

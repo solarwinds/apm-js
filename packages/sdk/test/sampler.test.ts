@@ -18,6 +18,7 @@ import { SpanKind } from "@opentelemetry/api"
 import { SamplingDecision } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
+import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { swValue } from "../src/context"
 import { SwoSampler } from "../src/sampler"
@@ -33,7 +34,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.SETTINGS_UNSET)
+      expect(result).to.equal(oboe.SETTINGS_UNSET)
     })
 
     it("is enabled when config is true and no transaction settings", () => {
@@ -43,7 +44,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.TRACE_ENABLED)
+      expect(result).to.equal(oboe.TRACE_ENABLED)
     })
 
     it("is disabled when config is false and no transaction settings", () => {
@@ -53,7 +54,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.TRACE_DISABLED)
+      expect(result).to.equal(oboe.TRACE_DISABLED)
     })
 
     it("is unset when no config no transaction setting matches", () => {
@@ -64,7 +65,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.SETTINGS_UNSET)
+      expect(result).to.equal(oboe.SETTINGS_UNSET)
     })
 
     it("is enabled when config is true and no transaction setting matches", () => {
@@ -75,7 +76,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.TRACE_ENABLED)
+      expect(result).to.equal(oboe.TRACE_ENABLED)
     })
 
     it("is disabled when config is false and no transaction setting matches", () => {
@@ -86,7 +87,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.TRACE_DISABLED)
+      expect(result).to.equal(oboe.TRACE_DISABLED)
     })
 
     it("is enabled if config is disabled but matching transaction setting is enabled", () => {
@@ -97,7 +98,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.TRACE_ENABLED)
+      expect(result).to.equal(oboe.TRACE_ENABLED)
     })
 
     it("is disabled if config is enabled but matching transaction setting is disabled", () => {
@@ -108,7 +109,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
-      expect(result).toBe(oboe.TRACE_DISABLED)
+      expect(result).to.equal(oboe.TRACE_DISABLED)
     })
 
     it("respects the first matching transaction setting for http spans", () => {
@@ -129,7 +130,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, attributes)
-      expect(result).toBe(oboe.TRACE_DISABLED)
+      expect(result).to.equal(oboe.TRACE_DISABLED)
     })
 
     it("respects the first matching transaction setting for non-http spans", () => {
@@ -148,7 +149,7 @@ describe("SwoSampler", () => {
       )
 
       const result = sampler[tracingMode](name, kind, {})
-      expect(result).toBe(oboe.TRACE_ENABLED)
+      expect(result).to.equal(oboe.TRACE_ENABLED)
     })
   })
 
@@ -158,7 +159,7 @@ describe("SwoSampler", () => {
       const decision = SwoSampler[otelSamplingDecisionFromOboe](
         mock.oboeDecisions({ do_sample: 1, do_metrics: 1 }),
       )
-      expect(decision).toEqual(SamplingDecision.RECORD_AND_SAMPLED)
+      expect(decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
     })
 
     it("records and samples if do_sample is set and do_metrics is not set", () => {
@@ -168,7 +169,7 @@ describe("SwoSampler", () => {
           do_metrics: 0,
         }),
       )
-      expect(decision).toEqual(SamplingDecision.RECORD_AND_SAMPLED)
+      expect(decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
     })
 
     it("only records if do_sample is not set and do_metrics is set", () => {
@@ -178,7 +179,7 @@ describe("SwoSampler", () => {
           do_metrics: 1,
         }),
       )
-      expect(decision).toEqual(SamplingDecision.RECORD)
+      expect(decision).to.equal(SamplingDecision.RECORD)
     })
 
     it("doesn't record or sample if do_sample and do_metrics are not set", () => {
@@ -188,7 +189,7 @@ describe("SwoSampler", () => {
           do_metrics: 0,
         }),
       )
-      expect(decision).toEqual(SamplingDecision.NOT_RECORD)
+      expect(decision).to.equal(SamplingDecision.NOT_RECORD)
     })
   })
 
@@ -201,7 +202,7 @@ describe("SwoSampler", () => {
 
       const result = SwoSampler[traceState](decisions, parentContext, undefined)
 
-      expect(result.get("key")).toBe("value")
+      expect(result.get("key")).to.equal("value")
     })
   })
 
@@ -219,7 +220,7 @@ describe("SwoSampler", () => {
         traceOptions,
       )
 
-      expect(updated.get("xtrace_options_response")).toEqual(
+      expect(updated.get("xtrace_options_response")).to.deep.equal(
         SwoSampler[traceOptionsResponse](decisions, undefined, traceOptions),
       )
     })
@@ -242,7 +243,7 @@ describe("SwoSampler", () => {
         traceOptions,
       )
 
-      expect(response).toInclude(`auth####${authMsg}`)
+      expect(response).to.include(`auth####${authMsg}`)
     })
 
     it("contains ignored value when trigger-trace ignored", () => {
@@ -263,7 +264,7 @@ describe("SwoSampler", () => {
         traceOptions,
       )
 
-      expect(response).toInclude("trigger-trace####ignored")
+      expect(response).to.include("trigger-trace####ignored")
     })
 
     it("contains status message when trigger-trace not ignored", () => {
@@ -282,7 +283,7 @@ describe("SwoSampler", () => {
         traceOptions,
       )
 
-      expect(response).toInclude(`trigger-trace####${statusMsg}`)
+      expect(response).to.include(`trigger-trace####${statusMsg}`)
     })
 
     it("contains not requested message when trigger-trace no requested", () => {
@@ -299,7 +300,7 @@ describe("SwoSampler", () => {
         traceOptions,
       )
 
-      expect(response).toInclude("trigger-trace####not-requested")
+      expect(response).to.include("trigger-trace####not-requested")
     })
 
     it("contains ignored trace options", () => {
@@ -319,7 +320,7 @@ describe("SwoSampler", () => {
         traceOptions,
       )
 
-      expect(response).toInclude(`ignored####${k1}....${k2}`)
+      expect(response).to.include(`ignored####${k1}....${k2}`)
     })
   })
 
@@ -337,8 +338,8 @@ describe("SwoSampler", () => {
         mock.traceState(),
       )
 
-      expect(attrs).toMatchObject(old)
-      expect(attrs).toBeFrozen()
+      expect(attrs).to.include(old)
+      expect(attrs).to.be.frozen
     })
 
     it("propagates sw keys and custom keys", () => {
@@ -355,7 +356,7 @@ describe("SwoSampler", () => {
         mock.traceState(),
       )
 
-      expect(attrs).toMatchObject({
+      expect(attrs).to.deep.include({
         SWKeys: swKeys,
         ...custom,
       })
@@ -382,7 +383,7 @@ describe("SwoSampler", () => {
         mock.traceState(),
       )
 
-      expect(attrs).toMatchObject({
+      expect(attrs).to.include({
         BucketCapacity: bucketCap,
         BucketRate: bucketRate,
         SampleRate: sampleRate,
@@ -410,7 +411,7 @@ describe("SwoSampler", () => {
         traceState,
       )
 
-      expect(attrs).toMatchObject({
+      expect(attrs).to.include({
         "sw.tracestate_parent_id": parentId,
       })
     })

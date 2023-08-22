@@ -1,6 +1,6 @@
 {
-  "name": "@solarwinds-apm/dependencies",
-  "version": "1.0.0-pre.1",
+  "name": "@solarwinds-apm/test",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -8,13 +8,16 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
-    "directory": "packages/dependencies"
+    "directory": "packages/test"
   },
   "bugs": {
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "swtest": "dist/bin.js"
+  },
   "files": [
     "dist/"
   ],
@@ -25,19 +28,22 @@
     "build": "tsc",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
-    "publish": "node ../../scripts/publish.js",
-    "test": "swtest -p test/tsconfig.json"
+    "publish": "node ../../scripts/publish.js"
+  },
+  "dependencies": {
+    "@types/chai": "^4.3.5",
+    "@types/node": ">=16.18 <17 || >=18.8 <19 || >=20",
+    "chai": "^4.3.7",
+    "globby": "^11.1.0",
+    "tsx": "^3.12.7"
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "@solarwinds-apm/test": "workspace:^",
-    "@types/node": "^16.0.0",
     "eslint": "^8.47.0",
     "prettier": "^3.0.2",
     "typescript": "^5.1.6"
   },
   "engines": {
-    "node": ">=16"
-  },
-  "stableVersion": "0.0.0"
+    "node": ">=16.18 <17 || >=18.8 <19 || >=20"
+  }
 }

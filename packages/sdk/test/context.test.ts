@@ -22,6 +22,7 @@ import {
   TraceFlags,
 } from "@opentelemetry/api"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
+import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { cache } from "../src/cache"
 import {
@@ -37,14 +38,14 @@ import * as mock from "./mock"
 
 describe("getTraceOptions", () => {
   it("returns undefined if no trace options are set", () => {
-    expect(getTraceOptions(ROOT_CONTEXT)).toBeUndefined()
+    expect(getTraceOptions(ROOT_CONTEXT)).to.be.undefined
   })
 
   it("returns the trace options if they are set", () => {
     const traceOptions = mock.traceOptions()
 
     const context = setTraceOptions(ROOT_CONTEXT, traceOptions)
-    expect(getTraceOptions(context)).toEqual(traceOptions)
+    expect(getTraceOptions(context)).to.loosely.deep.equal(traceOptions)
   })
 })
 
@@ -56,7 +57,7 @@ describe("swValue", () => {
       traceFlags: TraceFlags.NONE,
     })
 
-    expect(swValue(spanContext)).toBe(`${spanId}-00`)
+    expect(swValue(spanContext)).to.equal(`${spanId}-00`)
   })
 
   it("returns the right value for SAMPLED flags", () => {
@@ -66,7 +67,7 @@ describe("swValue", () => {
       traceFlags: TraceFlags.SAMPLED,
     })
 
-    expect(swValue(spanContext)).toBe(`${spanId}-01`)
+    expect(swValue(spanContext)).to.equal(`${spanId}-01`)
   })
 })
 
@@ -75,7 +76,7 @@ describe("traceParent", () => {
     const traceId = mock.traceId()
     const spanContext = mock.spanContext({ traceId })
 
-    expect(traceParent(spanContext)).toBe(
+    expect(traceParent(spanContext)).to.equal(
       `00-${traceId}-${swValue(spanContext)}`,
     )
   })
@@ -85,7 +86,7 @@ describe("parentSpanContext", () => {
   it("returns undefined for root spans", () => {
     const readableSpan = mock.readableSpan({ parentSpanId: undefined })
 
-    expect(parentSpanContext(readableSpan)).toBeUndefined()
+    expect(parentSpanContext(readableSpan)).to.be.undefined
   })
 
   it("returns the valid span context for spans with a parent", () => {
@@ -97,7 +98,7 @@ describe("parentSpanContext", () => {
       spanContext: () => spanContext,
     })
 
-    expect(parentSpanContext(readableSpan)).toEqual({
+    expect(parentSpanContext(readableSpan)).to.loosely.deep.equal({
       ...spanContext,
       spanId: parentSpanId,
     })
@@ -106,13 +107,12 @@ describe("parentSpanContext", () => {
 
 describe("setTransactionName", () => {
   it("returns false if there is no active span", () => {
-    expect(setTransactionName(ROOT_CONTEXT, "foo")).toBe(false)
+    expect(setTransactionName(ROOT_CONTEXT, "foo")).to.be.false
   })
 
   it("returns false if there is no cache entry", () => {
-    expect(
-      setTransactionName(trace.setSpan(ROOT_CONTEXT, mock.span()), "foo"),
-    ).toBe(false)
+    expect(setTransactionName(trace.setSpan(ROOT_CONTEXT, mock.span()), "foo"))
+      .to.be.false
   })
 
   it("returns true and sets the transaction name of the root span if there is a cache entry", () => {
@@ -129,7 +129,7 @@ describe("setTransactionName", () => {
       parent = s
 
       tracer.startActiveSpan("child", (s) => {
-        expect(setTransactionName(context.active(), txname)).toBe(true)
+        expect(setTransactionName(context.active(), txname)).to.be.true
 
         s.end()
       })
@@ -137,6 +137,6 @@ describe("setTransactionName", () => {
       s.end()
     })
 
-    expect(cache.get(parent!.spanContext())?.txname).toBe(txname)
+    expect(cache.get(parent!.spanContext())?.txname).to.equal(txname)
   })
 })

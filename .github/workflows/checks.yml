@@ -128,7 +128,7 @@ jobs:
     strategy:
       matrix:
         image:
-          - 16-alpine3.12
+          - 16-alpine3.15
           - 16-amazonlinux2
           - 16-debian10
           - 16-ubi8
@@ -147,7 +147,7 @@ jobs:
           - x64
           - arm64
         exclude:
-          - image: 16-alpine3.12
+          - image: 16-alpine3.15
             arch: arm64
       fail-fast: false
     container:

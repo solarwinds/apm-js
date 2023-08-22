@@ -16,6 +16,7 @@ limitations under the License.
 
 import { Resource } from "@opentelemetry/resources"
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
+import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { initMessage } from "../src/reporter"
 
@@ -23,12 +24,12 @@ describe("initMessage", () => {
   it("has right basic properties", () => {
     const message = initMessage(new Resource({}), "1.0.0")
 
-    expect(message).toMatchObject({
+    expect(message).to.include({
       __Init: true,
       Layer: "nodejs",
       Label: "single",
     })
-    expect(message).toContainKeys(["APM.Version", "APM.Extension.Version"])
+    expect(message).to.include.keys(["APM.Version", "APM.Extension.Version"])
   })
 
   it("forwards basic resource properties", () => {
@@ -39,7 +40,7 @@ describe("initMessage", () => {
     }
     const message = initMessage(new Resource(props), "1.0.0")
 
-    expect(message).toMatchObject(props)
+    expect(message).to.include(props)
   })
 
   it("doesn't forward service name", () => {
@@ -48,7 +49,7 @@ describe("initMessage", () => {
       "1.0.0",
     )
 
-    expect(message).not.toContainKey(SemanticResourceAttributes.SERVICE_NAME)
+    expect(message).not.to.have.key(SemanticResourceAttributes.SERVICE_NAME)
   })
 
   it("doesn't forward array or undefined resource properties", () => {
@@ -60,7 +61,7 @@ describe("initMessage", () => {
       "1.0.0",
     )
 
-    expect(message).not.toContainAnyKeys(["array", "undefined"])
+    expect(message).not.to.have.any.keys(["array", "undefined"])
   })
 
   it("converts process command args to command line", () => {
@@ -71,10 +72,10 @@ describe("initMessage", () => {
       "1.0.0",
     )
 
-    expect(message).toMatchObject({
+    expect(message).to.include({
       [SemanticResourceAttributes.PROCESS_COMMAND_LINE]: "node index.js",
     })
-    expect(message).not.toContainKey(
+    expect(message).not.to.have.key(
       SemanticResourceAttributes.PROCESS_COMMAND_ARGS,
     )
   })
@@ -89,7 +90,7 @@ describe("initMessage", () => {
       "1.0.0",
     )
 
-    expect(message).toMatchObject({
+    expect(message).to.include({
       __Init: true,
       Layer: "nodejs",
       Label: "single",

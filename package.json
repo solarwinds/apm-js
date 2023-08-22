@@ -11,25 +11,20 @@
     "scripts"
   ],
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --continue",
     "docker": "node scripts/docker.js",
     "example": "node scripts/example.js",
-    "lint": "prettier --check *.json *.md .github && turbo run lint",
-    "lint:fix": "prettier --write *.json *.md .github && turbo run lint:fix",
-    "plugins:upgrade": "yarn plugin import version && yarn plugin import interactive-tools",
+    "lint": "prettier --check *.json *.md .github && turbo run lint --continue",
+    "lint:fix": "prettier --write *.json *.md .github && turbo run lint:fix --continue",
     "publish": "turbo run build && turbo run lint && turbo run publish",
-    "test": "turbo run test",
+    "test": "turbo run test --continue",
     "version:stable": "node scripts/version.js",
-    "version:pre": "node scripts/version.js pre",
-    "vscode": "yarn dlx @yarnpkg/sdks vscode && node scripts/vscode.js && prettier --write .vscode"
+    "version:pre": "node scripts/version.js pre"
   },
   "devDependencies": {
+    "eslint": "^8.47.0",
     "prettier": "^3.0.2",
-    "turbo": "^1.10.12"
-  },
-  "dependenciesMeta": {
-    "prettier": {
-      "unplugged": true
-    }
+    "turbo": "^1.10.12",
+    "typescript": "^5.1.6"
   }
 }
