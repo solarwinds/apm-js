@@ -433,16 +433,6 @@ int oboe_init_reporter(const char *protocol, oboe_init_options_t *options);
 int oboe_init_options_set_defaults(oboe_init_options_t *options);
 
 /**
- * Disconnect or shut down the Oboe reporter, but allow it to be reconnect()ed.
- */
-void oboe_reporter_disconnect();    /* TODO: Need implementation. */
-
-/**
- * Reconnect or restart the Oboe reporter.
- */
-void oboe_reporter_reconnect();     /* TODO: Need implementation. */
-
-/**
  * tell reporter to flush all messages that are currently buffered
  */
 int oboe_reporter_flush();
@@ -711,8 +701,6 @@ void oboe_settings_set(int sample_rate, int tracing_mode, int trigger_mode);
 void oboe_settings_rate_set(int sample_rate);
 void oboe_settings_mode_set(int tracing_mode);
 void oboe_settings_trigger_set(int trigger_mode);
-
-int oboe_rand_get_value();
 
 /**
  * Convert a tracing mode to a printable string.
