@@ -83,7 +83,7 @@ argv = globby.sync(argv, { gitignore: true, expandDirectories: DEFAULTS })
 
 // Use the human readable reporter when available
 // TODO: Remove this once Node 16 support is dropped
-const reporter = semver.gte(process.versions.node, "18")
+const reporter = semver.gte(process.versions.node, "18.0.0")
   ? ["--test-reporter", "spec"]
   : []
 
