@@ -18,28 +18,40 @@ import "./plugin"
 
 import * as test from "node:test"
 
+import * as semver from "semver"
+
 export { expect } from "chai"
-export { describe, it } from "node:test"
+export { describe } from "node:test"
 
-// Node supports async functions in tests but not hooks for some reason,
-// so we add a little bit of code to make it possible
-export type Hook = (done: () => void) => void | Promise<void>
-const hook = (f: Hook) => (done: () => void) => {
-  const result = f(done)
-  if (typeof result === "object") {
-    result.then(done).catch(done)
-  }
+// Node 16 doesn't support async functions in tests
+// so we add a little bit of code to make it possible.
+// TODO: Remove this once Node 16 support is dropped
+export type Fn = () => void | Promise<void>
+const wrap = (f: Fn) =>
+  semver.gte(process.versions.node, "18.0.0")
+    ? f
+    : (done: () => void) => {
+        const result = f()
+        if (typeof result === "object") {
+          result.then(done).catch(done)
+        } else {
+          done()
+        }
+      }
+
+export function it(name: string, f: Fn): void {
+  test.it(name, wrap(f) as any)
 }
 
-export function after(f: Hook): void {
-  test.after(hook(f))
+export function after(f: Fn): void {
+  test.after(wrap(f))
 }
-export function afterEach(f: Hook): void {
-  test.afterEach(hook(f))
+export function afterEach(f: Fn): void {
+  test.afterEach(wrap(f))
 }
-export function before(f: Hook): void {
-  test.before(hook(f))
+export function before(f: Fn): void {
+  test.before(wrap(f))
 }
-export function beforeEach(f: Hook): void {
-  test.beforeEach(hook(f))
+export function beforeEach(f: Fn): void {
+  test.beforeEach(wrap(f))
 }
