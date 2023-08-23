@@ -99,6 +99,7 @@ jobs:
           action: launch
           github-token: ${{ secrets.CI_GITHUB_TOKEN }}
           matrix: |
+            16-alpine3.15
             16-amazonlinux2
             16-debian10
             16-ubi8

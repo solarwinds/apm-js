@@ -19,6 +19,7 @@ import * as process from "node:process"
 import { pathToFileURL } from "node:url"
 
 import globby from "globby"
+import semver from "semver"
 
 // Patterns recognised as test files by default
 const DEFAULTS = [
@@ -80,12 +81,16 @@ if (argv.length === 0) {
 // We are not going through a shell to start the process so glob extension is done manually
 argv = globby.sync(argv, { gitignore: true, expandDirectories: DEFAULTS })
 
+// Use the human readable reporter when available
+// TODO: Remove this once Node 16 support is dropped
+const reporter = semver.gte(process.versions.node, "18")
+  ? ["--test-reporter", "spec"]
+  : []
+
 argv = [
   // Launch Node in test runner mode
   "--test",
-  // Use the human readable reporter
-  "--test-reporter",
-  "spec",
+  ...reporter,
   // Register TSX loaders
   "--require",
   tsxRequirePath,

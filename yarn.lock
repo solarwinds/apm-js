@@ -2084,6 +2084,7 @@ __metadata:
     eslint: "npm:^8.47.0"
     globby: "npm:^11.1.0"
     prettier: "npm:^3.0.2"
+    semver: "npm:^7.5.4"
     tsx: "npm:^3.12.7"
     typescript: "npm:^5.1.6"
   bin:
