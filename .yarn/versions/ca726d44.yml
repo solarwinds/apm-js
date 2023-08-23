@@ -1,0 +1,11 @@
+releases:
+  "@solarwinds-apm/bindings": patch
+  "@solarwinds-apm/compat": patch
+  "@solarwinds-apm/dependencies": patch
+  "@solarwinds-apm/eslint-config": patch
+  "@solarwinds-apm/histogram": patch
+  "@solarwinds-apm/lazy": patch
+  "@solarwinds-apm/merged-config": patch
+  "@solarwinds-apm/sdk": patch
+  "@solarwinds-apm/test": patch
+  solarwinds-apm: patch
