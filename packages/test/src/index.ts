@@ -39,8 +39,8 @@ const wrap = (f: Fn) =>
         }
       }
 
-export function it(name: string, f: Fn): void {
-  test.it(name, wrap(f) as any)
+export function it(name: string, f: Fn): unknown {
+  return test.it(name, wrap(f) as () => void)
 }
 
 export function after(f: Fn): void {
