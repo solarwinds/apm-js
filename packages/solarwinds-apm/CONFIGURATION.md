@@ -6,15 +6,16 @@ All configuration options are optional except for the service key which is alway
 
 ## Environment Variables
 
-| Name                           | Default           | Description                                     |
-| ------------------------------ | ----------------- | ----------------------------------------------- |
-| **`SW_APM_SERVICE_KEY`**       |                   | **Service key**                                 |
-| `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled       |
-| `SW_APM_COLLECTOR`             | Default collector | Collector URL                                   |
-| `SW_APM_TRUSTED_PATH`          | None              | Path to the collector's SSL certificate         |
-| `SW_APM_LOG_LEVEL`             | `info`            | Logging level for the instrumentation libraries |
-| `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled       |
-| `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be enabled       |
+| Name                           | Default           | Description                                       |
+| ------------------------------ | ----------------- | ------------------------------------------------- |
+| **`SW_APM_SERVICE_KEY`**       |                   | **Service key**                                   |
+| `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled         |
+| `SW_APM_COLLECTOR`             | Default collector | Collector URL                                     |
+| `SW_APM_TRUSTED_PATH`          | None              | Path to the collector's SSL certificate           |
+| `SW_APM_PROXY`                 | None              | URL of a proxy to use to connect to the collector |
+| `SW_APM_LOG_LEVEL`             | `info`            | Logging level for the instrumentation libraries   |
+| `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled         |
+| `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be enabled         |
 
 ## Configuration File
 
@@ -54,6 +55,7 @@ module.exports = {
 | `enabled`                       | `true`            | Whether instrumentation should be enabled                    |
 | `collector`                     | Default collector | Collector URL                                                |
 | `trustedPath`                   | None              | Path to the collector's SSL certificate                      |
+| `proxy`                         | None              | URL of a proxy to use to connect to the collector            |
 | `logLevel`                      | `info`            | Logging level for the instrumentation libraries              |
 | `triggerTraceEnabled`           | `true`            | Whether trigger tracing should be enabled                    |
 | `runtimeMetrics`                | `true`            | Whether runtime metrics should be enabled                    |

@@ -126,6 +126,7 @@ export function readConfig(): ExtendedSwoConfiguration {
       },
       collector: { env: true, file: true, parser: String },
       trustedPath: { env: true, file: true, parser: String },
+      proxy: { env: true, file: true, parser: String },
       logLevel: {
         env: true,
         file: true,

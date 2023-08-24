@@ -22,6 +22,7 @@ export interface SwoConfiguration {
   enabled: boolean
   collector?: string
   certificate?: string
+  proxy?: string
   metricFormat?: number
   oboeLogLevel: number
   otelLogLevel: DiagLogLevel
