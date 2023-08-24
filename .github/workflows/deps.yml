@@ -1,3 +1,4 @@
+name: Dependencies
 on:
   schedule:
     - cron: "0 12 * * 1" # Every Monday at 12:00 UTC
@@ -21,13 +22,15 @@ jobs:
       - run: yarn dedupe
 
       - name: PR
-        uses: peter-evans/create-pull-request@v5
-        with:
-          branch: actions/lockfile
-          title: Update lockfile
-          commit-message: Update lockfile
-          body: |
-            **Automated lockfile update.**
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
 
-            All dependency ranges have been resolved to their latest available version
-            and all resolved versions have been deduplicated wherever possible.
+          git add yarn.lock
+          git checkout -b actions/lockfile
+          git commit -m "Update lockfile"
+          git push origin +actions/lockfile
+
+          gh pr create -B ${{ github.ref_name }} -t "Update lockfile" --body-file .github/resources/lockfile-pr-body.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
