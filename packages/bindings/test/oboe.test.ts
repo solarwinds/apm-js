@@ -16,12 +16,14 @@ limitations under the License.
 
 import * as fs from "node:fs/promises"
 
+import { before, describe, expect, it } from "@solarwinds-apm/test"
+
 import { oboe } from ".."
 
 const INIT_TIMEOUT = 10_000
 
 describe("Reporter", () => {
-  beforeAll(async () => {
+  before(async () => {
     if (process.env.TEST_TRUSTEDPATH) {
       const certificates = await fs.readFile(process.env.TEST_TRUSTEDPATH, {
         encoding: "utf8",
@@ -61,10 +63,10 @@ describe("Reporter", () => {
         stdout_clear_nonblocking: 0,
         metric_format: 0,
       })
-      expect(reporter.init_status).toBe(oboe.INIT_OK)
+      expect(reporter.init_status).to.equal(oboe.INIT_OK)
 
       const ready = oboe.Context.isReady(INIT_TIMEOUT)
-      expect(ready).toBe(oboe.SERVER_RESPONSE_OK)
+      expect(ready).to.equal(oboe.SERVER_RESPONSE_OK)
     },
     INIT_TIMEOUT,
   )

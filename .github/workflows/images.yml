@@ -13,18 +13,18 @@ jobs:
     strategy:
       matrix:
         image:
-          - 16-alpine3.12
+          - 16-alpine3.15
           - 16-amazonlinux2
           - 16-debian10
           - 16-ubi8
           - 16-ubuntu18.04
           - 18-alpine
-          # - 18-amazonlinux
+          # - 18-amazonlinux - https://github.com/amazonlinux/amazon-linux-2023/issues/365
           - 18-debian
           - 18-ubi
           - 18-ubuntu
           - 20-alpine
-          # - 20-amazonlinux
+          # - 20-amazonlinux - https://github.com/amazonlinux/amazon-linux-2023/issues/365
           - 20-debian
           - 20-ubi
           - 20-ubuntu

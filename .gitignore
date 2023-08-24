@@ -1,16 +1,14 @@
-# Ignore yarn cache except yarn itself and its plugins
+# Ignore yarn cache except version bump info
+node_modules/
 .yarn/*
 !.yarn/versions/
-.pnp.*
 
 # Turborepo cache
 .turbo/
-node_modules/
 
 # Common build outputs
 *.tsbuildinfo
 *.log
 
 # User-specific files
-.vscode/
 .env

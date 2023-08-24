@@ -20,7 +20,6 @@ const prettier = require("eslint-config-prettier")
 const typescriptParser = require("@typescript-eslint/parser")
 const typescriptPlugin = require("@typescript-eslint/eslint-plugin")
 const tsdocPlugin = require("eslint-plugin-tsdoc")
-const jestPlugin = require("eslint-plugin-jest")
 const importsPlugin = require("eslint-plugin-simple-import-sort")
 const headerPlugin = require("eslint-plugin-header")
 
@@ -94,19 +93,6 @@ module.exports = [
       // the typescript plugin provides an "eslint-recommended" config which disables eslint recommended rules
       // that conflict with typescript
       ...typescriptPlugin.configs["eslint-recommended"].overrides[0].rules,
-    },
-  },
-  // use jest plugin and recommended configs in tests
-  {
-    files: ["**/*.test.js", "**/*.test.ts"],
-    languageOptions: {
-      globals: globals.jest,
-    },
-    plugins: { jest: jestPlugin },
-    rules: {
-      ...jestPlugin.configs.recommended.rules,
-      ...jestPlugin.configs.style.rules,
-      "jest/valid-title": ["error", { ignoreTypeOfDescribeName: true }],
     },
   },
   // ts sources

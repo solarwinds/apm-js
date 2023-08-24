@@ -21,6 +21,7 @@ import {
 } from "@opentelemetry/sdk-trace-base"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
+import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { instrument, pInstrument } from "../src"
 
@@ -38,38 +39,38 @@ function inParent(f: () => void | Promise<void>) {
   })
 }
 
-beforeEach(() => {
-  exporter.reset()
-})
-
 describe("instrument", () => {
+  beforeEach(() => {
+    exporter.reset()
+  })
+
   it("doesn't instrument if there's no parent span", () => {
     const r = instrument("parent", () => "return")
-    expect(r).toBe("return")
+    expect(r).to.equal("return")
 
     const spans = exporter.getFinishedSpans()
-    expect(spans).toHaveLength(0)
+    expect(spans).to.be.empty
   })
 
   it("doesn't instrument if explicitly disabled", async () => {
     await inParent(() => {
       const r = instrument("child", () => "return", { enabled: false })
-      expect(r).toBe("return")
+      expect(r).to.equal("return")
     })
 
     const spans = exporter.getFinishedSpans()
-    expect(spans).toHaveLength(1)
-    expect(spans[0]?.name).toBe("parent")
+    expect(spans).to.have.length(1)
+    expect(spans[0]?.name).to.equal("parent")
   })
 
   it("instruments synchronous function", async () => {
     await inParent(() => {
       const r = instrument("child", () => "return")
-      expect(r).toBe("return")
+      expect(r).to.equal("return")
     })
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
+    expect(span?.name).to.equal("child")
   })
 
   it("supports custom attributes", async () => {
@@ -78,12 +79,12 @@ describe("instrument", () => {
         () => ({ name: "child", kvpairs: { key: "value" } }),
         () => "return",
       )
-      expect(r).toBe("return")
+      expect(r).to.equal("return")
     })
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
-    expect(span?.attributes).toMatchObject({ key: "value" })
+    expect(span?.name).to.equal("child")
+    expect(span?.attributes).to.have.property("key", "value")
   })
 
   it("captures errors", async () => {
@@ -96,18 +97,18 @@ describe("instrument", () => {
       } catch (e) {
         error = e
       }
-      expect(error).toBeInstanceOf(Error)
+      expect(error).to.be.an.instanceof(Error)
     })
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
-    expect(span?.status).toMatchObject({
+    expect(span?.name).to.equal("child")
+    expect(span?.status).to.include({
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(
-      span?.attributes[SemanticAttributes.EXCEPTION_STACKTRACE],
-    ).toBeDefined()
+    expect(span?.attributes).to.have.property(
+      SemanticAttributes.EXCEPTION_STACKTRACE,
+    )
   })
 
   it("doesn't collect backtraces if explicitly disabled", async () => {
@@ -124,18 +125,18 @@ describe("instrument", () => {
       } catch (e) {
         error = e
       }
-      expect(error).toBeInstanceOf(Error)
+      expect(error).to.be.an.instanceof(Error)
     })
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
-    expect(span?.status).toMatchObject({
+    expect(span?.name).to.equal("child")
+    expect(span?.status).to.include({
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(
-      span?.attributes[SemanticAttributes.EXCEPTION_STACKTRACE],
-    ).toBeUndefined()
+    expect(span?.attributes).not.to.have.property(
+      SemanticAttributes.EXCEPTION_STACKTRACE,
+    )
   })
 
   it("instruments callback code", async () => {
@@ -146,7 +147,7 @@ describe("instrument", () => {
             "child",
             (done) => setTimeout(() => done("done"), 10),
             (arg) => {
-              expect(arg).toBe("done")
+              expect(arg).to.equal("done")
               res()
             },
           ),
@@ -154,7 +155,7 @@ describe("instrument", () => {
     )
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
+    expect(span?.name).to.equal("child")
   })
 
   it("captures callback code errors", async () => {
@@ -165,7 +166,7 @@ describe("instrument", () => {
             "child",
             (done) => setTimeout(() => done(new Error("error")), 10),
             (arg) => {
-              expect(arg).toBeInstanceOf(Error)
+              expect(arg).to.be.an.instanceof(Error)
               res()
             },
           ),
@@ -173,14 +174,14 @@ describe("instrument", () => {
     )
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
-    expect(span?.status).toMatchObject({
+    expect(span?.name).to.equal("child")
+    expect(span?.status).to.include({
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(
-      span?.attributes[SemanticAttributes.EXCEPTION_STACKTRACE],
-    ).toBeDefined()
+    expect(span?.attributes).to.have.property(
+      SemanticAttributes.EXCEPTION_STACKTRACE,
+    )
   })
 
   it("instruments callback code with options", async () => {
@@ -192,7 +193,7 @@ describe("instrument", () => {
             (done) => setTimeout(() => done("done"), 10),
             {},
             (arg) => {
-              expect(arg).toBe("done")
+              expect(arg).to.equal("done")
               res()
             },
           ),
@@ -200,17 +201,21 @@ describe("instrument", () => {
     )
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
+    expect(span?.name).to.equal("child")
   })
 })
 
 describe("pInstrument", () => {
+  beforeEach(() => {
+    exporter.reset()
+  })
+
   it("doesn't instrument if there's no parent span", async () => {
     const r = await pInstrument("parent", () => Promise.resolve("return"))
-    expect(r).toBe("return")
+    expect(r).to.equal("return")
 
     const spans = exporter.getFinishedSpans()
-    expect(spans).toHaveLength(0)
+    expect(spans).to.be.empty
   })
 
   it("doesn't instrument if explicitly disabled", async () => {
@@ -218,22 +223,22 @@ describe("pInstrument", () => {
       const r = await pInstrument("child", () => Promise.resolve("return"), {
         enabled: false,
       })
-      expect(r).toBe("return")
+      expect(r).to.equal("return")
     })
 
     const spans = exporter.getFinishedSpans()
-    expect(spans).toHaveLength(1)
-    expect(spans[0]?.name).toBe("parent")
+    expect(spans).to.have.length(1)
+    expect(spans[0]?.name).to.equal("parent")
   })
 
   it("instruments async function", async () => {
     await inParent(async () => {
       const r = await pInstrument("child", () => Promise.resolve("return"))
-      expect(r).toBe("return")
+      expect(r).to.equal("return")
     })
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
+    expect(span?.name).to.equal("child")
   })
 
   it("supports custom attributes", async () => {
@@ -242,12 +247,12 @@ describe("pInstrument", () => {
         () => ({ name: "child", kvpairs: { key: "value" } }),
         () => Promise.resolve("return"),
       )
-      expect(r).toBe("return")
+      expect(r).to.equal("return")
     })
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
-    expect(span?.attributes).toMatchObject({ key: "value" })
+    expect(span?.name).to.equal("child")
+    expect(span?.attributes).to.have.property("key", "value")
   })
 
   it("captures errors", async () => {
@@ -261,18 +266,18 @@ describe("pInstrument", () => {
       } catch (e) {
         error = e
       }
-      expect(error).toBeInstanceOf(Error)
+      expect(error).to.be.an.instanceof(Error)
     })
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
-    expect(span?.status).toMatchObject({
+    expect(span?.name).to.equal("child")
+    expect(span?.status).to.include({
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(
-      span?.attributes[SemanticAttributes.EXCEPTION_STACKTRACE],
-    ).toBeDefined()
+    expect(span?.attributes).to.have.property(
+      SemanticAttributes.EXCEPTION_STACKTRACE,
+    )
   })
 
   it("doesn't collect backtraces if explicitly disabled", async () => {
@@ -290,17 +295,17 @@ describe("pInstrument", () => {
       } catch (e) {
         error = e
       }
-      expect(error).toBeInstanceOf(Error)
+      expect(error).to.be.an.instanceof(Error)
     })
 
     const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).toBe("child")
-    expect(span?.status).toMatchObject({
+    expect(span?.name).to.equal("child")
+    expect(span?.status).to.include({
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(
-      span?.attributes[SemanticAttributes.EXCEPTION_STACKTRACE],
-    ).toBeUndefined()
+    expect(span?.attributes).not.to.have.property(
+      SemanticAttributes.EXCEPTION_STACKTRACE,
+    )
   })
 })

@@ -14,17 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { dependencies } from "../src"
-import { type PnpApi } from "../src/pnp-api"
+import { expect, it } from "@solarwinds-apm/test"
 
-// eslint-disable-next-line
-const pnpApi = require("node:module").findPnpApi(__dirname) as PnpApi
-// eslint-disable-next-line
+import { dependencies } from "../src"
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../package.json") as {
   devDependencies: Record<string, string>
 }
 
-it.each(Object.keys(packageJson.devDependencies))("detects %s", (name) => {
-  const deps = dependencies(pnpApi)
-  expect(deps.has(name)).toBe(true)
-})
+for (const name of Object.keys(packageJson.devDependencies)) {
+  it(`detects ${name}`, () => {
+    const deps = dependencies()
+    expect(deps.has(name)).to.be.true
+  })
+}
