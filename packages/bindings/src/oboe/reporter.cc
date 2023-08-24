@@ -3,9 +3,6 @@
 #include "metadata.hh"
 
 Reporter* from_options(swo::Object const& options) {
-    auto defaults = oboe_init_options_t{.version = 15};
-    oboe_init_options_set_defaults(&defaults);
-
     auto hostname_alias = options.get<std::string>("hostname_alias");
     auto log_level = options.get<int>("log_level");
     auto log_file_path = options.get<std::string>("log_file_path");
