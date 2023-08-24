@@ -33,7 +33,7 @@
   "dependencies": {
     "@types/chai": "^4.3.5",
     "@types/node": ">=16.18 <17 || >=18.8 <19 || >=20",
-    "chai": "^4.3.7",
+    "chai": "^4.3.8",
     "globby": "^11.1.0",
     "semver": "^7.5.4",
     "tsx": "^3.12.7"
@@ -42,7 +42,7 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "eslint": "^8.47.0",
     "prettier": "^3.0.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   },
   "engines": {
     "node": ">=16.18 <17 || >=18.8 <19 || >=20"
