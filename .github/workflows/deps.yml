@@ -32,3 +32,5 @@ jobs:
           git push origin +actions/lockfile
 
           gh pr create -b ${{ github.ref_name }} -t "Update lockfile" --body-file .github/resources/lockfile-pr-body.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
