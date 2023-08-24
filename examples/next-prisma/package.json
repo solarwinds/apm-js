@@ -2,26 +2,25 @@
   "name": "@solarwinds-apm/example-next-prisma",
   "private": true,
   "scripts": {
-    "build": "pnpify prisma generate && next build",
+    "build": "prisma generate && next build",
     "lint": "next lint",
-    "start": "pnpify prisma generate && prisma migrate deploy && next start"
+    "start": "prisma generate && prisma migrate deploy && next start"
   },
   "dependencies": {
     "@opentelemetry/api": "1.4.x",
-    "@prisma/client": "5.1.1",
-    "@prisma/instrumentation": "^5.1.1",
-    "next": "^13.4.16",
+    "@prisma/client": "5.2.0",
+    "@prisma/instrumentation": "^5.2.0",
+    "next": "^13.4.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^16.0.0",
-    "@types/react": "^18.2.20",
-    "@yarnpkg/pnpify": "^4.0.0-rc.48",
+    "@types/react": "^18.2.21",
     "eslint": "^8.47.0",
-    "eslint-config-next": "13.4.16",
-    "prisma": "5.1.1",
-    "typescript": "^5.1.6"
+    "eslint-config-next": "13.4.19",
+    "prisma": "5.2.0",
+    "typescript": "^5.2.2"
   }
 }

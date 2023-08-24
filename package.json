@@ -18,13 +18,13 @@
     "lint:fix": "prettier --write *.json *.md .github && turbo run lint:fix --continue",
     "publish": "turbo run build && turbo run lint && turbo run publish",
     "test": "turbo run test --continue",
-    "version:stable": "node scripts/version.js",
-    "version:pre": "node scripts/version.js pre"
+    "version:latest": "node scripts/version.js",
+    "version:prerelease": "node scripts/version.js pre"
   },
   "devDependencies": {
     "eslint": "^8.47.0",
     "prettier": "^3.0.2",
-    "turbo": "^1.10.12",
-    "typescript": "^5.1.6"
+    "turbo": "^1.10.13",
+    "typescript": "^5.2.2"
   }
 }
