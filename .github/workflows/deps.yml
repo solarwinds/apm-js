@@ -21,6 +21,7 @@ jobs:
       - run: yarn up -R '**'
       - run: yarn dedupe
 
+        # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
       - name: PR
         run: |
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -32,5 +33,6 @@ jobs:
           git push origin +actions/lockfile
 
           gh pr create -B ${{ github.ref_name }} -t "Update lockfile" --body-file .github/resources/lockfile-pr-body.md
+          gh workflow run checks.yml -r actions/lockfile
         env:
           GITHUB_TOKEN: ${{ github.token }}
