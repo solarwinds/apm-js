@@ -1,0 +1,4 @@
+releases:
+  "@solarwinds-apm/bindings": patch
+  "@solarwinds-apm/sdk": major
+  solarwinds-apm: patch
