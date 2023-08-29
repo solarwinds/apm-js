@@ -43,7 +43,7 @@ import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import * as sdk from "@solarwinds-apm/sdk"
 
-import { type ExtendedSwoConfiguration, readConfig } from "./config"
+import { type ExtendedSwConfiguration, readConfig } from "./config"
 
 export function init() {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -65,7 +65,7 @@ export function init() {
     const config = readConfig()
 
     diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
-    const initLogger = diag.createComponentLogger({ namespace: "swo/init" })
+    const initLogger = diag.createComponentLogger({ namespace: "sw/init" })
 
     if (!config.enabled) {
       initLogger.info("Library disabled, application will not be instrumented")
@@ -103,7 +103,7 @@ export function init() {
 }
 
 function initTracing(
-  config: ExtendedSwoConfiguration,
+  config: ExtendedSwConfiguration,
   resource: Resource,
   version: string,
   logger: DiagLogger,
@@ -120,7 +120,7 @@ function initTracing(
 
   oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
     const logger = diag.createComponentLogger({
-      namespace: `swo/oboe/${module}`,
+      namespace: `sw/oboe/${module}`,
     })
     const log = oboeLevelToOtelLogger(level, logger)
 
@@ -134,33 +134,32 @@ function initTracing(
 
   sdk.sendStatus(reporter, sdk.initMessage(resource, version))
 
-  const sampler = new sdk.SwoSampler(
+  const sampler = new sdk.SwSampler(
     config,
-    diag.createComponentLogger({ namespace: "swo/sampler" }),
+    diag.createComponentLogger({ namespace: "sw/sampler" }),
   )
-  const exporter = new sdk.SwoExporter(
+  const exporter = new sdk.SwExporter(
     reporter,
-    diag.createComponentLogger({ namespace: "swo/exporter" }),
+    diag.createComponentLogger({ namespace: "sw/exporter" }),
   )
 
-  const parentInfoProcessor = new sdk.SwoParentInfoSpanProcessor()
-  const inboundMetricsProcessor = new sdk.SwoInboundMetricsSpanProcessor()
+  const parentInfoProcessor = new sdk.SwParentInfoSpanProcessor()
+  const inboundMetricsProcessor = new sdk.SwInboundMetricsSpanProcessor()
   const spanProcessor = new sdk.CompoundSpanProcessor(exporter, [
     parentInfoProcessor,
     inboundMetricsProcessor,
   ])
 
   const baggagePropagator = new W3CBaggagePropagator()
-  const traceContextOptionsPropagator =
-    new sdk.SwoTraceContextOptionsPropagator(
-      diag.createComponentLogger({ namespace: "swo/propagator" }),
-    )
+  const traceContextOptionsPropagator = new sdk.SwTraceContextOptionsPropagator(
+    diag.createComponentLogger({ namespace: "sw/propagator" }),
+  )
   const propagator = new CompositePropagator({
     propagators: [traceContextOptionsPropagator, baggagePropagator],
   })
 
   const traceOptionsResponsePropagator =
-    new sdk.SwoTraceOptionsResponsePropagator()
+    new sdk.SwTraceOptionsResponsePropagator()
 
   const instrumentations = [
     ...getNodeAutoInstrumentations(
@@ -186,7 +185,7 @@ function initTracing(
 }
 
 function initMetrics(
-  config: ExtendedSwoConfiguration,
+  config: ExtendedSwConfiguration,
   resource: Resource,
   logger: DiagLogger,
 ) {
@@ -198,8 +197,8 @@ function initMetrics(
     return
   }
 
-  const exporter = new sdk.SwoMetricsExporter(
-    diag.createComponentLogger({ namespace: "swo/metrics" }),
+  const exporter = new sdk.SwMetricsExporter(
+    diag.createComponentLogger({ namespace: "sw/metrics" }),
   )
 
   const reader = new PeriodicExportingMetricReader({

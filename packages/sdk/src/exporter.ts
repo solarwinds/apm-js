@@ -41,7 +41,7 @@ import { cache } from "./cache"
 import { parentSpanContext, traceParent } from "./context"
 import { OboeError } from "./error"
 
-export class SwoExporter implements SpanExporter {
+export class SwExporter implements SpanExporter {
   private error: Error | undefined = undefined
   constructor(
     private readonly reporter: oboe.Reporter,
@@ -57,9 +57,9 @@ export class SwoExporter implements SpanExporter {
       const parentContext = parentSpanContext(span)
 
       let evt: oboe.Event
-      const md = SwoExporter.metadata(context)
+      const md = SwExporter.metadata(context)
       if (parentContext && trace.isSpanContextValid(parentContext)) {
-        const parentMd = SwoExporter.metadata(parentContext)
+        const parentMd = SwExporter.metadata(parentContext)
         evt = oboe.Context.createEntry(
           md,
           hrTimeToMicroseconds(span.startTime),
@@ -67,11 +67,11 @@ export class SwoExporter implements SpanExporter {
         )
 
         if (parentContext.isRemote) {
-          SwoExporter.addTxname(context, evt)
+          SwExporter.addTxname(context, evt)
         }
       } else {
         evt = oboe.Context.createEntry(md, hrTimeToMicroseconds(span.startTime))
-        SwoExporter.addTxname(context, evt)
+        SwExporter.addTxname(context, evt)
       }
 
       const kind = SpanKind[span.kind]
@@ -107,7 +107,7 @@ export class SwoExporter implements SpanExporter {
       }
 
       for (const [key, value] of Object.entries(span.attributes)) {
-        evt.addInfo(key, SwoExporter.attributeValue(value))
+        evt.addInfo(key, SwExporter.attributeValue(value))
       }
 
       this.sendReport(evt)
@@ -160,19 +160,19 @@ export class SwoExporter implements SpanExporter {
 
     evt.addInfo(
       "ErrorClass",
-      SwoExporter.attributeValue(
+      SwExporter.attributeValue(
         event.attributes?.[SemanticAttributes.EXCEPTION_TYPE],
       ),
     )
     evt.addInfo(
       "ErrorMsg",
-      SwoExporter.attributeValue(
+      SwExporter.attributeValue(
         event.attributes?.[SemanticAttributes.EXCEPTION_MESSAGE],
       ),
     )
     evt.addInfo(
       "Backtrace",
-      SwoExporter.attributeValue(
+      SwExporter.attributeValue(
         event.attributes?.[SemanticAttributes.EXCEPTION_STACKTRACE],
       ),
     )
@@ -186,7 +186,7 @@ export class SwoExporter implements SpanExporter {
         ].includes(key),
     )
     for (const [key, value] of attributes) {
-      evt.addInfo(key, SwoExporter.attributeValue(value))
+      evt.addInfo(key, SwExporter.attributeValue(value))
     }
 
     this.sendReport(evt)
@@ -196,7 +196,7 @@ export class SwoExporter implements SpanExporter {
     const evt = oboe.Context.createEvent(hrTimeToMicroseconds(event.time))
     evt.addInfo("Label", "info")
     for (const [key, value] of Object.entries(event.attributes ?? {})) {
-      evt.addInfo(key, SwoExporter.attributeValue(value))
+      evt.addInfo(key, SwExporter.attributeValue(value))
     }
     this.sendReport(evt)
   }

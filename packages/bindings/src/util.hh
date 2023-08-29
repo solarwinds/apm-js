@@ -9,7 +9,7 @@
 
 #define UNUSED(X) static_cast<void>(X)
 
-namespace swo {
+namespace sw {
 
 namespace {
     // constexpr pow function
@@ -413,6 +413,6 @@ template <typename T> std::optional<T> CallbackInfo::arg_optional(size_t index) 
     return from_value<T>(arg);
 }
 
-} // namespace swo
+} // namespace sw
 
 #endif

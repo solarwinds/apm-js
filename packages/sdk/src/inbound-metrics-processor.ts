@@ -26,7 +26,7 @@ import { oboe } from "@solarwinds-apm/bindings"
 import { cache } from "./cache"
 import { parentSpanContext } from "./context"
 
-export class SwoInboundMetricsSpanProcessor extends NoopSpanProcessor {
+export class SwInboundMetricsSpanProcessor extends NoopSpanProcessor {
   onEnd(span: ReadableSpan): void {
     const context = span.spanContext()
     const parentContext = parentSpanContext(span)
@@ -45,7 +45,7 @@ export class SwoInboundMetricsSpanProcessor extends NoopSpanProcessor {
       method,
       status,
       url,
-    } = SwoInboundMetricsSpanProcessor.httpSpanMeta(span)
+    } = SwInboundMetricsSpanProcessor.httpSpanMeta(span)
     const hasError = span.status.code === SpanStatusCode.ERROR
     const duration = hrTimeToMicroseconds(span.duration)
     // TODO

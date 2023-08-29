@@ -33,7 +33,7 @@ import {
   swValue,
   traceParent,
 } from "../src/context"
-import { SwoParentInfoSpanProcessor } from "../src/parent-info-processor"
+import { SwParentInfoSpanProcessor } from "../src/parent-info-processor"
 import * as mock from "./mock"
 
 describe("getTraceOptions", () => {
@@ -119,7 +119,7 @@ describe("setTransactionName", () => {
     const txname = "foo"
 
     const provider = new NodeTracerProvider()
-    provider.addSpanProcessor(new SwoParentInfoSpanProcessor())
+    provider.addSpanProcessor(new SwParentInfoSpanProcessor())
     provider.register()
 
     const tracer = trace.getTracer("test")

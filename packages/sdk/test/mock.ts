@@ -39,7 +39,7 @@ import {
 } from "@opentelemetry/sdk-trace-base"
 import type { oboe } from "@solarwinds-apm/bindings"
 
-import { type SwoConfiguration } from "../src"
+import { type SwConfiguration } from "../src"
 import { type TraceOptions } from "../src/context"
 
 export function pick<T>(choices: T[]): T {
@@ -47,9 +47,9 @@ export function pick<T>(choices: T[]): T {
 }
 
 export function config(
-  override: Partial<SwoConfiguration> = {},
-): SwoConfiguration {
-  const base: SwoConfiguration = {
+  override: Partial<SwConfiguration> = {},
+): SwConfiguration {
+  const base: SwConfiguration = {
     token: "",
     serviceName: "",
     enabled: true,

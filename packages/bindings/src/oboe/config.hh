@@ -6,14 +6,14 @@
 
 #include "../util.hh"
 
-class JsConfig : public swo::Class<JsConfig, Config, swo::ClassType::Static> {
+class JsConfig : public sw::Class<JsConfig, Config, sw::ClassType::Static> {
   public:
-    JsConfig(swo::CallbackInfo const info);
+    JsConfig(sw::CallbackInfo const info);
     static Napi::Object init(Napi::Env env, Napi::Object exports);
 
-    static Napi::Value checkVersion(swo::CallbackInfo const info);
+    static Napi::Value checkVersion(sw::CallbackInfo const info);
 
-    static Napi::Value getVersionString(swo::CallbackInfo const info);
+    static Napi::Value getVersionString(sw::CallbackInfo const info);
 };
 
 #endif

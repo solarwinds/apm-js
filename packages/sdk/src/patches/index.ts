@@ -26,7 +26,7 @@ specific to the instrumentation being patched.
 import { type TextMapPropagator } from "@opentelemetry/api"
 import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
 
-import { type SwoConfiguration } from "../config"
+import { type SwConfiguration } from "../config"
 import * as bunyan from "./bunyan"
 import * as fs from "./fs"
 import * as http from "./http"
@@ -35,13 +35,13 @@ import * as pg from "./pg"
 import * as pino from "./pino"
 import * as winston from "./winston"
 
-export interface SwoPatchesConfiguration extends SwoConfiguration {
+export interface SwPatchesConfiguration extends SwConfiguration {
   responsePropagator: TextMapPropagator<unknown>
 }
 
 export type Patch<Config extends InstrumentationConfig> = (
   config: Config,
-  options: SwoPatchesConfiguration,
+  options: SwPatchesConfiguration,
 ) => Config
 
 export const RESOURCE_SERVICE_NAME = "resource.service.name" as const
@@ -58,7 +58,7 @@ type PatchableConfigs = {
 
 export function patch(
   configs: PatchableConfigs,
-  options: SwoPatchesConfiguration,
+  options: SwPatchesConfiguration,
 ): PatchableConfigs {
   const patched = { ...configs }
   for (const [name, { patch }] of Object.entries(patches)) {

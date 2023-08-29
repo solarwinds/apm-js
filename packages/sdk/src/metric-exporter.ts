@@ -37,7 +37,7 @@ import {
 import { oboe } from "@solarwinds-apm/bindings"
 import { OtelHistogram } from "@solarwinds-apm/histogram"
 
-export class SwoMetricsExporter implements PushMetricExporter {
+export class SwMetricsExporter implements PushMetricExporter {
   constructor(private readonly logger: DiagLogger) {}
 
   export(
@@ -45,20 +45,20 @@ export class SwoMetricsExporter implements PushMetricExporter {
     resultCallback: (result: ExportResult) => void,
   ): void {
     for (const scopeMetric of metrics.scopeMetrics) {
-      const scopeTags = SwoMetricsExporter.scopeTags(scopeMetric.scope)
+      const scopeTags = SwMetricsExporter.scopeTags(scopeMetric.scope)
 
       for (const metric of scopeMetric.metrics) {
         const name = `trace.node.${metric.descriptor.name}`
         const temporality = metric.aggregationTemporality
-        const descriptorTags = SwoMetricsExporter.descriptorTags(
+        const descriptorTags = SwMetricsExporter.descriptorTags(
           metric.descriptor,
         )
 
         for (const dataPoint of metric.dataPoints) {
-          const dataPointTags = SwoMetricsExporter.dataPointTags(
+          const dataPointTags = SwMetricsExporter.dataPointTags(
             dataPoint.attributes,
           )
-          const [tags, tagCount] = SwoMetricsExporter.oboeTags({
+          const [tags, tagCount] = SwMetricsExporter.oboeTags({
             ...scopeTags,
             ...descriptorTags,
             ...dataPointTags,

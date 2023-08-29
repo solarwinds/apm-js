@@ -3,7 +3,7 @@
 
 #include "../util.hh"
 
-swo::Object init_consts(swo::Object const exports) {
+sw::Object init_consts(sw::Object const exports) {
     exports.set("SETTINGS_VERSION", OBOE_SETTINGS_VERSION);
     exports.set("SETTINGS_MAGIC_NUMBER", OBOE_SETTINGS_MAGIC_NUMBER);
     exports.set("SETTINGS_TYPE_DEFAULT_SAMPLE_RATE", OBOE_SETTINGS_TYPE_DEFAULT_SAMPLE_RATE);

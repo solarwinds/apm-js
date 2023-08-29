@@ -16,7 +16,7 @@ limitations under the License.
 
 import { type DiagLogLevel } from "@opentelemetry/api"
 
-export interface SwoConfiguration {
+export interface SwConfiguration {
   token: string
   serviceName: string
   enabled: boolean

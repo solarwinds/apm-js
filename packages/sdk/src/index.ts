@@ -17,17 +17,17 @@ limitations under the License.
 import { metrics, oboe } from "@solarwinds-apm/bindings"
 
 import { CompoundSpanProcessor } from "./compound-processor"
-import { type SwoConfiguration } from "./config"
+import { type SwConfiguration } from "./config"
 import { setTransactionName, waitUntilAgentReady } from "./context"
-import { SwoExporter } from "./exporter"
-import { SwoInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
-import { SwoMetricsExporter } from "./metric-exporter"
-import { SwoParentInfoSpanProcessor } from "./parent-info-processor"
+import { SwExporter } from "./exporter"
+import { SwInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
+import { SwMetricsExporter } from "./metric-exporter"
+import { SwParentInfoSpanProcessor } from "./parent-info-processor"
 import { patch } from "./patches"
 import { createReporter, initMessage, sendStatus } from "./reporter"
-import { SwoSampler } from "./sampler"
-import { SwoTraceContextOptionsPropagator } from "./trace-context-options-propagator"
-import { SwoTraceOptionsResponsePropagator } from "./trace-options-response-propagator"
+import { SwSampler } from "./sampler"
+import { SwTraceContextOptionsPropagator } from "./trace-context-options-propagator"
+import { SwTraceOptionsResponsePropagator } from "./trace-options-response-propagator"
 
 export const OBOE_ERROR: Error | false = oboe instanceof Error ? oboe : false
 export const METRICS_ERROR: Error | false =
@@ -40,14 +40,14 @@ export {
   patch,
   sendStatus,
   setTransactionName,
-  SwoConfiguration,
-  SwoExporter,
-  SwoInboundMetricsSpanProcessor,
-  SwoMetricsExporter,
-  SwoParentInfoSpanProcessor,
-  SwoSampler,
-  SwoTraceContextOptionsPropagator,
-  SwoTraceOptionsResponsePropagator,
+  SwConfiguration,
+  SwExporter,
+  SwInboundMetricsSpanProcessor,
+  SwMetricsExporter,
+  SwParentInfoSpanProcessor,
+  SwSampler,
+  SwTraceContextOptionsPropagator,
+  SwTraceOptionsResponsePropagator,
   waitUntilAgentReady,
 }
 export * as metrics from "./metrics"

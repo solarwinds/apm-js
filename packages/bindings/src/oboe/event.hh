@@ -6,30 +6,30 @@
 
 #include "../util.hh"
 
-class JsEvent : public swo::Class<JsEvent, Event> {
+class JsEvent : public sw::Class<JsEvent, Event> {
   public:
-    JsEvent(swo::CallbackInfo const info);
+    JsEvent(sw::CallbackInfo const info);
     static Napi::Object init(Napi::Env env, Napi::Object exports);
 
-    Napi::Value addInfo(swo::CallbackInfo const info);
+    Napi::Value addInfo(sw::CallbackInfo const info);
 
-    Napi::Value addEdge(swo::CallbackInfo const info);
-    Napi::Value addContextOpId(swo::CallbackInfo const info);
+    Napi::Value addEdge(sw::CallbackInfo const info);
+    Napi::Value addContextOpId(sw::CallbackInfo const info);
 
-    Napi::Value addHostname(swo::CallbackInfo const info);
+    Napi::Value addHostname(sw::CallbackInfo const info);
 
-    Napi::Value getMetadata(swo::CallbackInfo const info);
-    Napi::Value metadataString(swo::CallbackInfo const info);
-    Napi::Value opIdString(swo::CallbackInfo const info);
+    Napi::Value getMetadata(sw::CallbackInfo const info);
+    Napi::Value metadataString(sw::CallbackInfo const info);
+    Napi::Value opIdString(sw::CallbackInfo const info);
 
-    Napi::Value send(swo::CallbackInfo const info);
+    Napi::Value send(sw::CallbackInfo const info);
 
-    Napi::Value sendProfiling(swo::CallbackInfo const info);
+    Napi::Value sendProfiling(sw::CallbackInfo const info);
 
-    Napi::Value addSpanRef(swo::CallbackInfo const info);
-    Napi::Value addProfileEdge(swo::CallbackInfo const info);
+    Napi::Value addSpanRef(sw::CallbackInfo const info);
+    Napi::Value addProfileEdge(sw::CallbackInfo const info);
 
-    static Napi::Value startTrace(swo::CallbackInfo const info);
+    static Napi::Value startTrace(sw::CallbackInfo const info);
 };
 
 #endif

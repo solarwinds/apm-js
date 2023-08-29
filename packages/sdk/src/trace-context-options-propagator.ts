@@ -44,7 +44,7 @@ const SW_KEYS_KEY = "sw-keys"
 
 const CUSTOM_KEY_REGEX = /^custom-[^\s]+$/
 
-export class SwoTraceContextOptionsPropagator
+export class SwTraceContextOptionsPropagator
   extends W3CTraceContextPropagator
   implements TextMapPropagator<unknown>
 {

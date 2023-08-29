@@ -24,7 +24,7 @@ import { type Instrumentation } from "@opentelemetry/instrumentation"
 import { type View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
 import * as mc from "@solarwinds-apm/merged-config"
-import { type SwoConfiguration } from "@solarwinds-apm/sdk"
+import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { type Service } from "ts-node"
 
 import aoCert from "./appoptics.crt"
@@ -85,12 +85,12 @@ interface Instrumentations {
   extra?: Instrumentation[]
 }
 
-export interface ExtendedSwoConfiguration extends SwoConfiguration {
+export interface ExtendedSwConfiguration extends SwConfiguration {
   instrumentations?: Instrumentations
   metricViews?: View[]
 }
 
-export function readConfig(): ExtendedSwoConfiguration {
+export function readConfig(): ExtendedSwConfiguration {
   const [path, type] = pathAndType()
   let configFile: ConfigFile
   switch (type) {
@@ -175,7 +175,7 @@ export function readConfig(): ExtendedSwoConfiguration {
     configFile as Record<string, unknown>,
     "SW_APM_",
   )
-  const config: ExtendedSwoConfiguration = {
+  const config: ExtendedSwConfiguration = {
     ...raw,
     token: raw.serviceKey.token,
     serviceName: raw.serviceKey.name,
@@ -368,7 +368,7 @@ function parseTracingMode(mode: unknown): boolean | undefined {
 }
 
 function parseTransactionSettings(settings: unknown) {
-  const result: SwoConfiguration["transactionSettings"] = []
+  const result: SwConfiguration["transactionSettings"] = []
 
   if (!Array.isArray(settings)) {
     console.warn(`invalid transaction settings`)

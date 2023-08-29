@@ -124,7 +124,7 @@ void on_check(uv_check_t* handle) {
     data->iteration_count = 0;
 }
 
-Napi::Value set_callback(swo::CallbackInfo const info) {
+Napi::Value set_callback(sw::CallbackInfo const info) {
     auto arg = info.arg<Napi::Value>(0);
 
     // if currently enabled, stop the callbacks and clean up the data
@@ -178,7 +178,7 @@ Napi::Value set_callback(swo::CallbackInfo const info) {
 } // namespace
 
 // module initialisation, defines the `setCallback` function
-swo::Object event_loop(swo::Object exports) {
+sw::Object event_loop(sw::Object exports) {
     exports.set("setCallback", set_callback);
     return exports;
 }

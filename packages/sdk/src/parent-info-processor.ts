@@ -23,7 +23,7 @@ import {
 
 import { cache } from "./cache"
 
-export class SwoParentInfoSpanProcessor extends NoopSpanProcessor {
+export class SwParentInfoSpanProcessor extends NoopSpanProcessor {
   onStart(span: Span, parentContext: Context): void {
     const spanContext = span.spanContext()
     const parentSpanContext = trace.getSpanContext(parentContext)
