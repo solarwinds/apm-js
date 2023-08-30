@@ -35,7 +35,7 @@ import {
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 
-import { type SwoConfiguration } from "./config"
+import { type SwConfiguration } from "./config"
 import {
   COMMA_W3C,
   EQUALS_W3C,
@@ -56,9 +56,9 @@ const TRACE_OPTIONS_RESPONSE_IGNORED = "ignored"
 const TRACE_OPTIONS_RESPONSE_TRIGGER_IGNORED = "ignored"
 const TRACE_OPTIONS_RESPONSE_TRIGGER_NOT_REQUESTED = "not-requested"
 
-export class SwoSampler implements Sampler {
+export class SwSampler implements Sampler {
   constructor(
-    private readonly config: SwoConfiguration,
+    private readonly config: SwConfiguration,
     private readonly logger: DiagLogger,
   ) {}
 
@@ -93,13 +93,13 @@ export class SwoSampler implements Sampler {
       return { decision: SamplingDecision.NOT_RECORD }
     }
 
-    const decision = SwoSampler.otelSamplingDecisionFromOboe(decisions)
-    const traceState = SwoSampler.traceState(
+    const decision = SwSampler.otelSamplingDecisionFromOboe(decisions)
+    const traceState = SwSampler.traceState(
       decisions,
       parentSpanContext,
       traceOptions,
     )
-    const newAttributes = SwoSampler.attributes(
+    const newAttributes = SwSampler.attributes(
       attributes,
       decisions,
       parentSpanContext,
@@ -110,7 +110,7 @@ export class SwoSampler implements Sampler {
   }
 
   toString(): string {
-    return `SwoSampler ${inspect(
+    return `SwSampler ${inspect(
       { triggerTraceEnabled: this.config.triggerTraceEnabled },
       { breakLength: Infinity, compact: true },
     )}`

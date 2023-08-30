@@ -6,17 +6,17 @@
 
 #include "../util.hh"
 
-class JsReporter : public swo::Class<JsReporter, Reporter> {
+class JsReporter : public sw::Class<JsReporter, Reporter> {
   public:
-    JsReporter(swo::CallbackInfo const info);
+    JsReporter(sw::CallbackInfo const info);
     static Napi::Object init(Napi::Env env, Napi::Object exports);
 
-    Napi::Value get__init_status(swo::CallbackInfo const info);
+    Napi::Value get__init_status(sw::CallbackInfo const info);
 
-    Napi::Value sendReport(swo::CallbackInfo const info);
-    Napi::Value sendStatus(swo::CallbackInfo const info);
-    Napi::Value flush(swo::CallbackInfo const info);
-    Napi::Value getType(swo::CallbackInfo const info);
+    Napi::Value sendReport(sw::CallbackInfo const info);
+    Napi::Value sendStatus(sw::CallbackInfo const info);
+    Napi::Value flush(sw::CallbackInfo const info);
+    Napi::Value getType(sw::CallbackInfo const info);
 };
 
 #endif

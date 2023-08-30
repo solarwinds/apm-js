@@ -33,7 +33,7 @@ const TRACE_PARENT_HEADER = "x-trace"
 const TRACE_OPTIONS_REPONSE_HEADER = "x-trace-options-response"
 const EXPOSE_HEADERS_HEADER = "Access-Control-Expose-Headers"
 
-export class SwoTraceOptionsResponsePropagator
+export class SwTraceOptionsResponsePropagator
   implements TextMapPropagator<unknown>
 {
   inject(

@@ -2,7 +2,7 @@
 #include "event.hh"
 #include "metadata.hh"
 
-Reporter* from_options(swo::Object const& options) {
+Reporter* from_options(sw::Object const& options) {
     auto hostname_alias = options.get<std::string>("hostname_alias");
     auto log_level = options.get<int>("log_level");
     auto log_file_path = options.get<std::string>("log_file_path");
@@ -38,8 +38,8 @@ Reporter* from_options(swo::Object const& options) {
     );
 }
 
-JsReporter::JsReporter(swo::CallbackInfo const info)
-    : swo::Class<JsReporter, Reporter>(from_options(info.arg<swo::Object>(0)), info) {}
+JsReporter::JsReporter(sw::CallbackInfo const info)
+    : sw::Class<JsReporter, Reporter>(from_options(info.arg<sw::Object>(0)), info) {}
 Napi::Object JsReporter::init(Napi::Env env, Napi::Object exports) {
     return define_class("Reporter")
         .field<&JsReporter::get__init_status>("init_status")
@@ -50,39 +50,37 @@ Napi::Object JsReporter::init(Napi::Env env, Napi::Object exports) {
         .register_class(env, exports);
 }
 
-Napi::Value JsReporter::get__init_status(swo::CallbackInfo const info) {
+Napi::Value JsReporter::get__init_status(sw::CallbackInfo const info) {
     return info.value(base->init_status);
 }
 
 // sendReport and sendStatus have the same signature so abstract over them
 // send2 and send3 are just pointer to the two separate overloads
 Napi::Value send(
-    swo::CallbackInfo const info, Reporter* const reporter, bool (Reporter::*send2)(Event*, bool),
+    sw::CallbackInfo const info, Reporter* const reporter, bool (Reporter::*send2)(Event*, bool),
     bool (Reporter::*send3)(Event*, oboe_metadata_t*, bool)
 ) {
     auto evt = JsEvent::Unwrap(info.arg<Napi::Object>(0));
     auto either = info.arg_optional<Napi::Value>(1).value_or(info.value(true));
     if (either.IsBoolean()) {
-        auto with_system_timestamp = swo::from_value<bool>(either);
+        auto with_system_timestamp = sw::from_value<bool>(either);
         return info.value((reporter->*send2)(evt->base, with_system_timestamp));
     } else {
-        auto md = JsMetadata::Unwrap(swo::from_value<Napi::Object>(either));
+        auto md = JsMetadata::Unwrap(sw::from_value<Napi::Object>(either));
         auto with_system_timestamp = info.arg_optional<bool>(2).value_or(true);
         return info.value((reporter->*send3)(evt->base, md->base->metadata(), with_system_timestamp)
         );
     }
 }
 
-Napi::Value JsReporter::sendReport(swo::CallbackInfo const info) {
+Napi::Value JsReporter::sendReport(sw::CallbackInfo const info) {
     return send(info, base, &Reporter::sendReport, &Reporter::sendReport);
 }
-Napi::Value JsReporter::sendStatus(swo::CallbackInfo const info) {
+Napi::Value JsReporter::sendStatus(sw::CallbackInfo const info) {
     return send(info, base, &Reporter::sendStatus, &Reporter::sendStatus);
 }
-Napi::Value JsReporter::flush(swo::CallbackInfo const info) {
+Napi::Value JsReporter::flush(sw::CallbackInfo const info) {
     base->flush();
     return info.undefined();
 }
-Napi::Value JsReporter::getType(swo::CallbackInfo const info) {
-    return info.value(base->getType());
-}
+Napi::Value JsReporter::getType(sw::CallbackInfo const info) { return info.value(base->getType()); }

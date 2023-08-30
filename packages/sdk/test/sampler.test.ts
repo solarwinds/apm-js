@@ -21,14 +21,14 @@ import { oboe } from "@solarwinds-apm/bindings"
 import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { swValue } from "../src/context"
-import { SwoSampler } from "../src/sampler"
+import { SwSampler } from "../src/sampler"
 import * as mock from "./mock"
 
-describe("SwoSampler", () => {
+describe("SwSampler", () => {
   const tracingMode = "tracingMode" as const
   describe(tracingMode, () => {
     it("is unset when no config or transaction settings", () => {
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ tracingMode: undefined, transactionSettings: undefined }),
         mock.logger(),
       )
@@ -38,7 +38,7 @@ describe("SwoSampler", () => {
     })
 
     it("is enabled when config is true and no transaction settings", () => {
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ tracingMode: true, transactionSettings: undefined }),
         mock.logger(),
       )
@@ -48,7 +48,7 @@ describe("SwoSampler", () => {
     })
 
     it("is disabled when config is false and no transaction settings", () => {
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ tracingMode: false, transactionSettings: undefined }),
         mock.logger(),
       )
@@ -59,7 +59,7 @@ describe("SwoSampler", () => {
 
     it("is unset when no config no transaction setting matches", () => {
       const settings = [{ tracing: false, matcher: () => false }]
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ tracingMode: undefined, transactionSettings: settings }),
         mock.logger(),
       )
@@ -70,7 +70,7 @@ describe("SwoSampler", () => {
 
     it("is enabled when config is true and no transaction setting matches", () => {
       const settings = [{ tracing: true, matcher: () => false }]
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ tracingMode: true, transactionSettings: settings }),
         mock.logger(),
       )
@@ -81,7 +81,7 @@ describe("SwoSampler", () => {
 
     it("is disabled when config is false and no transaction setting matches", () => {
       const settings = [{ tracing: false, matcher: () => true }]
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ tracingMode: false, transactionSettings: settings }),
         mock.logger(),
       )
@@ -92,7 +92,7 @@ describe("SwoSampler", () => {
 
     it("is enabled if config is disabled but matching transaction setting is enabled", () => {
       const settings = [{ tracing: true, matcher: () => true }]
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ tracingMode: false, transactionSettings: settings }),
         mock.logger(),
       )
@@ -103,7 +103,7 @@ describe("SwoSampler", () => {
 
     it("is disabled if config is enabled but matching transaction setting is disabled", () => {
       const settings = [{ tracing: false, matcher: () => true }]
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ tracingMode: true, transactionSettings: settings }),
         mock.logger(),
       )
@@ -124,7 +124,7 @@ describe("SwoSampler", () => {
         [SemanticAttributes.HTTP_TARGET]: target,
       }
 
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ transactionSettings: settings }),
         mock.logger(),
       )
@@ -143,7 +143,7 @@ describe("SwoSampler", () => {
         },
         { tracing: false, matcher: () => true },
       ]
-      const sampler = new SwoSampler(
+      const sampler = new SwSampler(
         mock.config({ transactionSettings: settings }),
         mock.logger(),
       )
@@ -156,14 +156,14 @@ describe("SwoSampler", () => {
   const otelSamplingDecisionFromOboe = "otelSamplingDecisionFromOboe" as const
   describe(otelSamplingDecisionFromOboe, () => {
     it("records and samples if do_sample and do_metrics are set", () => {
-      const decision = SwoSampler[otelSamplingDecisionFromOboe](
+      const decision = SwSampler[otelSamplingDecisionFromOboe](
         mock.oboeDecisions({ do_sample: 1, do_metrics: 1 }),
       )
       expect(decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
     })
 
     it("records and samples if do_sample is set and do_metrics is not set", () => {
-      const decision = SwoSampler[otelSamplingDecisionFromOboe](
+      const decision = SwSampler[otelSamplingDecisionFromOboe](
         mock.oboeDecisions({
           do_sample: 1,
           do_metrics: 0,
@@ -173,7 +173,7 @@ describe("SwoSampler", () => {
     })
 
     it("only records if do_sample is not set and do_metrics is set", () => {
-      const decision = SwoSampler[otelSamplingDecisionFromOboe](
+      const decision = SwSampler[otelSamplingDecisionFromOboe](
         mock.oboeDecisions({
           do_sample: 0,
           do_metrics: 1,
@@ -183,7 +183,7 @@ describe("SwoSampler", () => {
     })
 
     it("doesn't record or sample if do_sample and do_metrics are not set", () => {
-      const decision = SwoSampler[otelSamplingDecisionFromOboe](
+      const decision = SwSampler[otelSamplingDecisionFromOboe](
         mock.oboeDecisions({
           do_sample: 0,
           do_metrics: 0,
@@ -200,7 +200,7 @@ describe("SwoSampler", () => {
       const parentTraceState = mock.traceState("key=value")
       const parentContext = mock.spanContext({ traceState: parentTraceState })
 
-      const result = SwoSampler[traceState](decisions, parentContext, undefined)
+      const result = SwSampler[traceState](decisions, parentContext, undefined)
 
       expect(result.get("key")).to.equal("value")
     })
@@ -213,7 +213,7 @@ describe("SwoSampler", () => {
       const decisions = mock.oboeDecisions()
       const traceOptions = mock.traceOptions()
 
-      const updated = SwoSampler[updateTraceState](
+      const updated = SwSampler[updateTraceState](
         old,
         decisions,
         undefined,
@@ -221,7 +221,7 @@ describe("SwoSampler", () => {
       )
 
       expect(updated.get("xtrace_options_response")).to.deep.equal(
-        SwoSampler[traceOptionsResponse](decisions, undefined, traceOptions),
+        SwSampler[traceOptionsResponse](decisions, undefined, traceOptions),
       )
     })
   })
@@ -237,7 +237,7 @@ describe("SwoSampler", () => {
         signature: "signature",
       })
 
-      const response = SwoSampler[traceOptionsResponse](
+      const response = SwSampler[traceOptionsResponse](
         decisions,
         undefined,
         traceOptions,
@@ -258,7 +258,7 @@ describe("SwoSampler", () => {
         triggerTrace: true,
       })
 
-      const response = SwoSampler[traceOptionsResponse](
+      const response = SwSampler[traceOptionsResponse](
         decisions,
         parentContext,
         traceOptions,
@@ -277,7 +277,7 @@ describe("SwoSampler", () => {
         triggerTrace: true,
       })
 
-      const response = SwoSampler[traceOptionsResponse](
+      const response = SwSampler[traceOptionsResponse](
         decisions,
         undefined,
         traceOptions,
@@ -294,7 +294,7 @@ describe("SwoSampler", () => {
         triggerTrace: false,
       })
 
-      const response = SwoSampler[traceOptionsResponse](
+      const response = SwSampler[traceOptionsResponse](
         decisions,
         undefined,
         traceOptions,
@@ -314,7 +314,7 @@ describe("SwoSampler", () => {
         ],
       })
 
-      const response = SwoSampler[traceOptionsResponse](
+      const response = SwSampler[traceOptionsResponse](
         decisions,
         undefined,
         traceOptions,
@@ -330,7 +330,7 @@ describe("SwoSampler", () => {
       const old = { foo: "bar" }
       const decisions = mock.oboeDecisions({ do_sample: 1 })
 
-      const attrs = SwoSampler[attributes](
+      const attrs = SwSampler[attributes](
         old,
         decisions,
         undefined,
@@ -348,7 +348,7 @@ describe("SwoSampler", () => {
       const custom = { foo: "bar" }
       const traceOptions = mock.traceOptions({ swKeys, custom })
 
-      const attrs = SwoSampler[attributes](
+      const attrs = SwSampler[attributes](
         {},
         decisions,
         undefined,
@@ -375,7 +375,7 @@ describe("SwoSampler", () => {
         sample_source: sampleSource,
       })
 
-      const attrs = SwoSampler[attributes](
+      const attrs = SwSampler[attributes](
         {},
         decisions,
         undefined,
@@ -403,7 +403,7 @@ describe("SwoSampler", () => {
 
       const decisions = mock.oboeDecisions({ do_sample: 1 })
 
-      const attrs = SwoSampler[attributes](
+      const attrs = SwSampler[attributes](
         {},
         decisions,
         parentContext,

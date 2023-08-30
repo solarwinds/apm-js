@@ -6,14 +6,14 @@
 
 #include "../util.hh"
 
-class JsCustomMetrics : public swo::Class<JsCustomMetrics, CustomMetrics, swo::ClassType::Static> {
+class JsCustomMetrics : public sw::Class<JsCustomMetrics, CustomMetrics, sw::ClassType::Static> {
   public:
-    JsCustomMetrics(swo::CallbackInfo const info);
+    JsCustomMetrics(sw::CallbackInfo const info);
     static Napi::Object init(Napi::Env env, Napi::Object exports);
 
-    Napi::Value static summary(swo::CallbackInfo const info);
+    Napi::Value static summary(sw::CallbackInfo const info);
 
-    Napi::Value static increment(swo::CallbackInfo const info);
+    Napi::Value static increment(sw::CallbackInfo const info);
 };
 
 #endif

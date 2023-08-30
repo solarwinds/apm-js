@@ -17,10 +17,10 @@ limitations under the License.
 import { describe, expect, it as test } from "@solarwinds-apm/test"
 
 import { type TraceOptions } from "../src/context"
-import { SwoTraceContextOptionsPropagator } from "../src/trace-context-options-propagator"
+import { SwTraceContextOptionsPropagator } from "../src/trace-context-options-propagator"
 import * as mock from "./mock"
 
-const propagator = new SwoTraceContextOptionsPropagator(mock.logger())
+const propagator = new SwTraceContextOptionsPropagator(mock.logger())
 
 const parseTraceOptions = "parseTraceOptions" as const
 describe(parseTraceOptions, () => {

@@ -1,7 +1,7 @@
 #include "event.hh"
 #include "metadata.hh"
 
-JsEvent::JsEvent(swo::CallbackInfo const info) : swo::Class<JsEvent, Event>(info) {}
+JsEvent::JsEvent(sw::CallbackInfo const info) : sw::Class<JsEvent, Event>(info) {}
 Napi::Object JsEvent::init(Napi::Env env, Napi::Object exports) {
     return define_class("Event")
         .method<&JsEvent::addInfo>("addInfo")
@@ -19,70 +19,70 @@ Napi::Object JsEvent::init(Napi::Env env, Napi::Object exports) {
         .register_class(env, exports);
 }
 
-Napi::Value JsEvent::addInfo(swo::CallbackInfo const info) {
+Napi::Value JsEvent::addInfo(sw::CallbackInfo const info) {
     auto key = info.arg<std::string>(0);
     auto value = info.arg<Napi::Value>(1);
     if (value.IsString()) {
-        auto v = swo::from_value<std::string>(value);
+        auto v = sw::from_value<std::string>(value);
         return info.value(base->addInfo(key.data(), v));
     } else if (value.IsNumber()) {
-        auto d = swo::from_value<double>(value);
-        if (swo::is_integer(d)) {
-            auto i = swo::from_value<long>(value);
+        auto d = sw::from_value<double>(value);
+        if (sw::is_integer(d)) {
+            auto i = sw::from_value<long>(value);
             return info.value(base->addInfo(key.data(), i));
         } else {
             return info.value(base->addInfo(key.data(), d));
         }
     } else if (value.IsBoolean()) {
-        auto v = swo::from_value<bool>(value);
+        auto v = sw::from_value<bool>(value);
         return info.value(base->addInfo(key.data(), v));
     } else {
         return info.value(base->addInfo(key.data(), nullptr));
     }
 }
 
-Napi::Value JsEvent::addEdge(swo::CallbackInfo const info) {
+Napi::Value JsEvent::addEdge(sw::CallbackInfo const info) {
     auto md = JsMetadata::Unwrap(info.arg<Napi::Object>(0));
     return info.value(base->addEdge(md->base->metadata()));
 }
-Napi::Value JsEvent::addContextOpId(swo::CallbackInfo const info) {
+Napi::Value JsEvent::addContextOpId(sw::CallbackInfo const info) {
     auto md = JsMetadata::Unwrap(info.arg<Napi::Object>(0));
     return info.value(base->addContextOpId(md->base->metadata()));
 }
 
-Napi::Value JsEvent::addHostname(swo::CallbackInfo const info) {
+Napi::Value JsEvent::addHostname(sw::CallbackInfo const info) {
     return info.value(base->addHostname());
 }
 
-Napi::Value JsEvent::getMetadata(swo::CallbackInfo const info) {
+Napi::Value JsEvent::getMetadata(sw::CallbackInfo const info) {
     return JsMetadata::js_new(info, base->getMetadata());
 }
-Napi::Value JsEvent::metadataString(swo::CallbackInfo const info) {
+Napi::Value JsEvent::metadataString(sw::CallbackInfo const info) {
     return info.value(base->metadataString());
 }
-Napi::Value JsEvent::opIdString(swo::CallbackInfo const info) {
+Napi::Value JsEvent::opIdString(sw::CallbackInfo const info) {
     return info.value(base->opIdString());
 }
 
-Napi::Value JsEvent::send(swo::CallbackInfo const info) {
+Napi::Value JsEvent::send(sw::CallbackInfo const info) {
     auto with_system_timestamp = info.arg_optional<bool>(0).value_or(true);
     return info.value(base->send(with_system_timestamp));
 }
 
-Napi::Value JsEvent::sendProfiling(swo::CallbackInfo const info) {
+Napi::Value JsEvent::sendProfiling(sw::CallbackInfo const info) {
     return info.value(base->sendProfiling());
 }
 
-Napi::Value JsEvent::addSpanRef(swo::CallbackInfo const info) {
+Napi::Value JsEvent::addSpanRef(sw::CallbackInfo const info) {
     auto md = JsMetadata::Unwrap(info.arg<Napi::Object>(0));
     return info.value(base->addSpanRef(md->base->metadata()));
 }
-Napi::Value JsEvent::addProfileEdge(swo::CallbackInfo const info) {
+Napi::Value JsEvent::addProfileEdge(sw::CallbackInfo const info) {
     auto id = info.arg<std::string>(0);
     return info.value(base->addProfileEdge(id));
 }
 
-Napi::Value JsEvent::startTrace(swo::CallbackInfo const info) {
+Napi::Value JsEvent::startTrace(sw::CallbackInfo const info) {
     auto md = JsMetadata::Unwrap(info.arg<Napi::Object>(0));
     return JsEvent::js_new(info, Event::startTrace(md->base->metadata()));
 }

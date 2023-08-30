@@ -14,18 +14,18 @@ namespace {
 struct JsData {
     int module;
     int level;
-    swo::NullableString source_name;
+    sw::NullableString source_name;
     int source_lineno;
     std::string msg;
 };
 
 void call_js_callback(Napi::Env env, Napi::Function js_callback, std::nullopt_t*, JsData* data) {
     if (env != nullptr) {
-        auto module = swo::to_value(env, oboe_debug_module_name(data->module));
-        auto level = swo::to_value(env, data->level);
-        auto source_name = swo::to_value(env, data->source_name);
-        auto source_lineno = swo::to_value(env, data->source_lineno);
-        auto msg = swo::to_value(env, data->msg);
+        auto module = sw::to_value(env, oboe_debug_module_name(data->module));
+        auto level = sw::to_value(env, data->level);
+        auto source_name = sw::to_value(env, data->source_name);
+        auto source_lineno = sw::to_value(env, data->source_lineno);
+        auto msg = sw::to_value(env, data->msg);
 
         js_callback.Call({module, level, source_name, source_lineno, msg});
     }
@@ -47,7 +47,7 @@ void on_log(
     ctx->js_logger_scheduler.BlockingCall(data);
 }
 
-Napi::Value debug_log_add(swo::CallbackInfo const info) {
+Napi::Value debug_log_add(sw::CallbackInfo const info) {
     auto logger = info.arg<Napi::Function>(0);
     auto level = info.arg<int>(1);
 
@@ -69,7 +69,7 @@ Napi::Value debug_log_add(swo::CallbackInfo const info) {
 
 } // namespace
 
-swo::Object init_debug(swo::Object exports) {
+sw::Object init_debug(sw::Object exports) {
     exports.set("DEBUG_DISABLED", OBOE_DEBUG_DISABLED);
     exports.set("DEBUG_FATAL", OBOE_DEBUG_FATAL);
     exports.set("DEBUG_ERROR", OBOE_DEBUG_ERROR);

@@ -23,9 +23,9 @@ import { oboe } from "@solarwinds-apm/bindings"
 import { dependencies } from "@solarwinds-apm/dependencies"
 import * as semver from "semver"
 
-import { type SwoConfiguration } from "./config"
+import { type SwConfiguration } from "./config"
 
-export function createReporter(config: SwoConfiguration): oboe.Reporter {
+export function createReporter(config: SwConfiguration): oboe.Reporter {
   return new oboe.Reporter({
     service_key: `${config.token}:${config.serviceName}`,
     host: config.collector ?? "",

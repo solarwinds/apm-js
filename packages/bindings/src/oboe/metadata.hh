@@ -6,21 +6,21 @@
 
 #include "../util.hh"
 
-class JsMetadata : public swo::Class<JsMetadata, Metadata> {
+class JsMetadata : public sw::Class<JsMetadata, Metadata> {
   public:
-    JsMetadata(swo::CallbackInfo const info);
+    JsMetadata(sw::CallbackInfo const info);
     static Napi::Object init(Napi::Env env, Napi::Object exports);
 
-    Napi::Value createEvent(swo::CallbackInfo const info);
+    Napi::Value createEvent(sw::CallbackInfo const info);
 
-    Napi::Value copy(swo::CallbackInfo const info);
-    Napi::Value isValid(swo::CallbackInfo const info);
-    Napi::Value isSampled(swo::CallbackInfo const info);
+    Napi::Value copy(sw::CallbackInfo const info);
+    Napi::Value isValid(sw::CallbackInfo const info);
+    Napi::Value isSampled(sw::CallbackInfo const info);
 
-    static Napi::Value makeRandom(swo::CallbackInfo const info);
-    static Napi::Value fromString(swo::CallbackInfo const info);
+    static Napi::Value makeRandom(sw::CallbackInfo const info);
+    static Napi::Value fromString(sw::CallbackInfo const info);
 
-    Napi::Value toString(swo::CallbackInfo const info);
+    Napi::Value toString(sw::CallbackInfo const info);
 };
 
 #endif

@@ -6,12 +6,12 @@
 
 #include "../util.hh"
 
-class JsMetricTags : public swo::Class<JsMetricTags, MetricTags> {
+class JsMetricTags : public sw::Class<JsMetricTags, MetricTags> {
   public:
-    JsMetricTags(swo::CallbackInfo const info);
+    JsMetricTags(sw::CallbackInfo const info);
     static Napi::Object init(Napi::Env env, Napi::Object exports);
 
-    Napi::Value add(swo::CallbackInfo const info);
+    Napi::Value add(sw::CallbackInfo const info);
 };
 
 #endif
