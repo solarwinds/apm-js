@@ -9,6 +9,8 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "strict": true,
-    "noUncheckedIndexedAccess": true // not included in strict mode but useful
+    // not included in strict mode but useful
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true
   }
 }
