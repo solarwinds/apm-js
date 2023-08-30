@@ -27,7 +27,7 @@ import { cache } from "./cache"
 import { parentSpanContext } from "./context"
 
 export class SwInboundMetricsSpanProcessor extends NoopSpanProcessor {
-  onEnd(span: ReadableSpan): void {
+  override onEnd(span: ReadableSpan): void {
     const context = span.spanContext()
     const parentContext = parentSpanContext(span)
 

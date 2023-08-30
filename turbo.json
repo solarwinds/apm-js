@@ -30,7 +30,7 @@
       "outputs": []
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["@solarwinds-apm/test#build", "build"],
       "inputs": ["package.json", "tsconfig.json", "src/**", "test/**"],
       "env": ["TEST_SERVICE_KEY", "TEST_COLLECTOR"],
       "outputs": []

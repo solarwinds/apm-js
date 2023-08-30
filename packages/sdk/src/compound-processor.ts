@@ -32,14 +32,14 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
     this.processors = processors
   }
 
-  onStart(span: Span, parentContext: Context): void {
+  override onStart(span: Span, parentContext: Context): void {
     super.onStart(span, parentContext)
     this.processors.forEach((p) => {
       p.onStart(span, parentContext)
     })
   }
 
-  onEnd(span: ReadableSpan): void {
+  override onEnd(span: ReadableSpan): void {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;[...this.processors].reverse().forEach((p) => {
       p.onEnd(span)
@@ -47,12 +47,12 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
     super.onEnd(span)
   }
 
-  async forceFlush(): Promise<void> {
+  override async forceFlush(): Promise<void> {
     await Promise.all(this.processors.map((p) => p.forceFlush()))
     await super.forceFlush()
   }
 
-  async shutdown(): Promise<void> {
+  override async shutdown(): Promise<void> {
     await Promise.all(this.processors.map((p) => p.shutdown()))
     await super.shutdown()
   }

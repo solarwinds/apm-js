@@ -24,7 +24,7 @@ import {
 import { cache } from "./cache"
 
 export class SwParentInfoSpanProcessor extends NoopSpanProcessor {
-  onStart(span: Span, parentContext: Context): void {
+  override onStart(span: Span, parentContext: Context): void {
     const spanContext = span.spanContext()
     const parentSpanContext = trace.getSpanContext(parentContext)
 
@@ -33,7 +33,7 @@ export class SwParentInfoSpanProcessor extends NoopSpanProcessor {
     spanCache.parentRemote = parentSpanContext?.isRemote
   }
 
-  onEnd(span: ReadableSpan): void {
+  override onEnd(span: ReadableSpan): void {
     const spanContext = span.spanContext()
     // clear here unless sampled in which case the exporter takes care of it
     if (!(spanContext.traceFlags & TraceFlags.SAMPLED)) {

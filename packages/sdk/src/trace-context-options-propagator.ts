@@ -52,7 +52,7 @@ export class SwTraceContextOptionsPropagator
     super()
   }
 
-  inject(
+  override inject(
     context: Context,
     carrier: unknown,
     setter: TextMapSetter<unknown>,
@@ -93,7 +93,7 @@ export class SwTraceContextOptionsPropagator
     setter.set(carrier, TRACESTATE_HEADER, traceState.serialize())
   }
 
-  extract(
+  override extract(
     context: Context,
     carrier: unknown,
     getter: TextMapGetter<unknown>,
@@ -189,7 +189,7 @@ export class SwTraceContextOptionsPropagator
     return traceOptions
   }
 
-  fields(): string[] {
+  override fields(): string[] {
     return [
       ...super.fields(),
       TRACE_OPTIONS_HEADER,

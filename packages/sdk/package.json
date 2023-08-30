@@ -26,7 +26,7 @@
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js",
-    "test": "swtest -p test/tsconfig.json"
+    "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
     "@opentelemetry/core": "1.15.x",
