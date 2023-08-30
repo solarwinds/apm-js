@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 import { spawnSync } from "node:child_process"
-import * as process from "node:process"
 import * as path from "node:path"
+import * as process from "node:process"
 import { pathToFileURL } from "node:url"
 
 import globby from "globby"

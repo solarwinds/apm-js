@@ -27,7 +27,7 @@
     "lint": "prettier --check . && eslint . --max-warnings=0 && clang-format src/*.hh src/*/* -n --Werror",
     "lint:fix": "eslint --fix . && prettier --write . && clang-format src/*.hh src/*/* -i --Werror",
     "publish": "node ../../scripts/publish.js",
-    "test": "swtest -p test/tsconfig.json",
+    "test": "swtest",
     "oboe": "node oboe.js"
   },
   "devDependencies": {
