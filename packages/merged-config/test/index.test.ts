@@ -19,9 +19,8 @@ import { beforeEach, expect, it } from "@solarwinds-apm/test"
 import * as mc from "../src/index"
 
 beforeEach(() => {
-  for (const key in process.env) {
-    // eslint-disable-next-line
-    if (key.startsWith("TEST_")) delete process.env[key]
+  for (const key of Object.keys(process.env)) {
+    if (key.startsWith("TEST_")) Reflect.deleteProperty(process.env, key)
   }
 })
 

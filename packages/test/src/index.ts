@@ -27,7 +27,8 @@ export { describe } from "node:test"
 // so we add a little bit of code to make it possible.
 // TODO: Remove this once Node 16 support is dropped
 export type Fn = () => void | Promise<void>
-const wrap = (f: Fn) =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const wrap = (f: Fn): any =>
   semver.gte(process.versions.node, "18.0.0")
     ? f
     : (done: () => void) => {
@@ -40,18 +41,23 @@ const wrap = (f: Fn) =>
       }
 
 export function it(name: string, f: Fn): unknown {
-  return test.it(name, wrap(f) as () => void)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return test.it(name, wrap(f))
 }
 
 export function after(f: Fn): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   test.after(wrap(f))
 }
 export function afterEach(f: Fn): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   test.afterEach(wrap(f))
 }
 export function before(f: Fn): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   test.before(wrap(f))
 }
 export function beforeEach(f: Fn): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   test.beforeEach(wrap(f))
 }
