@@ -52,6 +52,21 @@ const boolean = z.union([
     .transform((b) => b === "true" || b === "1"),
 ])
 
+const regex = z.union([
+  z.instanceof(RegExp),
+  z.string().transform((s, ctx) => {
+    try {
+      return new RegExp(s)
+    } catch (err) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: (err as SyntaxError).message,
+      })
+      return z.NEVER
+    }
+  }),
+])
+
 const serviceKey = z
   .string()
   .includes(":")
@@ -100,20 +115,7 @@ const transactionSettings = z.array(
     .union([
       z.object({
         tracing: tracingMode,
-        regex: z.union([
-          z.instanceof(RegExp),
-          z.string().transform((s, ctx) => {
-            try {
-              return new RegExp(s)
-            } catch (err) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: (err as SyntaxError).message,
-              })
-              return z.NEVER
-            }
-          }),
-        ]),
+        regex,
       }),
       z.object({
         tracing: tracingMode,
@@ -234,7 +236,7 @@ export function printError(err: unknown) {
         : // `full.key[0].path`
           path
             .map((p) => (typeof p === "string" ? `.${p}` : `[${p}]`))
-            .join(".")
+            .join("")
             .slice(1)
 
     const formatIssue =
