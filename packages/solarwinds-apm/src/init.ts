@@ -74,10 +74,17 @@ export function init() {
     }
 
     diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
-    const initLogger = diag.createComponentLogger({ namespace: "sw/init" })
+    const logger = diag.createComponentLogger({ namespace: "sw/init" })
 
     if (!config.enabled) {
-      initLogger.info("Library disabled, application will not be instrumented")
+      logger.info("Library disabled, application will not be instrumented")
+      return
+    }
+    if (sdk.OBOE_ERROR) {
+      logger.warn(
+        "Unsupported platform, application will not be instrumented",
+        sdk.OBOE_ERROR,
+      )
       return
     }
 
@@ -93,8 +100,8 @@ export function init() {
         }),
       )
 
-    initTracing(config, resource, packageJson.version, initLogger)
-    initMetrics(config, resource, initLogger)
+    initTracing(config, resource, packageJson.version, logger)
+    initMetrics(config, resource, logger)
   }
 }
 
@@ -104,14 +111,6 @@ function initTracing(
   version: string,
   logger: DiagLogger,
 ) {
-  if (sdk.OBOE_ERROR) {
-    logger.warn(
-      "Unsupported platform, application will not be instrumented",
-      sdk.OBOE_ERROR,
-    )
-    return
-  }
-
   const reporter = sdk.createReporter(config)
 
   oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
@@ -185,14 +184,6 @@ function initMetrics(
   resource: Resource,
   logger: DiagLogger,
 ) {
-  if (sdk.OBOE_ERROR) {
-    logger.warn(
-      "Unsupported platform, metrics will not be collected",
-      sdk.OBOE_ERROR,
-    )
-    return
-  }
-
   const exporter = new sdk.SwMetricsExporter(
     diag.createComponentLogger({ namespace: "sw/metrics" }),
   )
