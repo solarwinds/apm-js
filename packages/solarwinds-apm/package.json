@@ -52,8 +52,8 @@
     "@opentelemetry/sdk-trace-node": "1.15.x",
     "@opentelemetry/semantic-conventions": "1.15.x",
     "@solarwinds-apm/bindings": "workspace:^",
-    "@solarwinds-apm/merged-config": "workspace:^",
-    "@solarwinds-apm/sdk": "workspace:^"
+    "@solarwinds-apm/sdk": "workspace:^",
+    "zod": "^3.22.2"
   },
   "peerDependencies": {
     "@opentelemetry/api": "1.4.x",

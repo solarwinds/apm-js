@@ -43,7 +43,7 @@ import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import * as sdk from "@solarwinds-apm/sdk"
 
-import { type ExtendedSwConfiguration, readConfig } from "./config"
+import { type ExtendedSwConfiguration, printError, readConfig } from "./config"
 
 export function init() {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -62,19 +62,22 @@ export function init() {
       configurable: false,
     })
 
-    const config = readConfig()
+    let config: ExtendedSwConfiguration
+    try {
+      config = readConfig()
+    } catch (err) {
+      console.warn(
+        "Invalid SolarWinds APM configuration, application will not be instrumented",
+      )
+      printError(err)
+      return
+    }
 
     diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
     const initLogger = diag.createComponentLogger({ namespace: "sw/init" })
 
     if (!config.enabled) {
       initLogger.info("Library disabled, application will not be instrumented")
-      return
-    }
-    if (!config.serviceName) {
-      initLogger.warn(
-        "Invalid service key, application will not be instrumented",
-      )
       return
     }
 
@@ -208,7 +211,7 @@ function initMetrics(
 
   const provider = new MeterProvider({
     resource,
-    views: config.metricViews,
+    views: config.metrics?.views,
   })
   provider.addMetricReader(reader)
   metrics.setGlobalMeterProvider(provider)

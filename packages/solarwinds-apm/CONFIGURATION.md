@@ -1,21 +1,8 @@
 # Configuration
 
-Configuration options are read from both then environment and an optional configuration file, with environment variables taking precedence over config file values.
+Configuration options are read from both the environment and an optional configuration file, with environment variables taking precedence over config file values.
 
 All configuration options are optional except for the service key which is always required.
-
-## Environment Variables
-
-| Name                           | Default           | Description                                       |
-| ------------------------------ | ----------------- | ------------------------------------------------- |
-| **`SW_APM_SERVICE_KEY`**       |                   | **Service key**                                   |
-| `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled         |
-| `SW_APM_COLLECTOR`             | Default collector | Collector URL                                     |
-| `SW_APM_TRUSTED_PATH`          | None              | Path to the collector's SSL certificate           |
-| `SW_APM_PROXY`                 | None              | URL of a proxy to use to connect to the collector |
-| `SW_APM_LOG_LEVEL`             | `info`            | Logging level for the instrumentation libraries   |
-| `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled         |
-| `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be enabled         |
 
 ## Configuration File
 
@@ -32,41 +19,41 @@ It's also possible to use a custom name for the configuration file using the `SW
 The package exports a type for the config file which can be used to type check it when using TypeScript or add a JSDoc type annotation when using JavaScript.
 
 ```ts
-import type { ConfigFile } from "solarwinds-apm"
+import type { Config } from "solarwinds-apm"
 
-const config: ConfigFile = {
+const config: Config = {
   // ...
 }
 export default config
 ```
 
 ```js
-/** @type {import('solarwinds-apm').ConfigFile} */
+/** @type {import('solarwinds-apm').Config} */
 module.exports = {
   // ...
 }
 ```
 
-### Specification
+## Specification
 
-| Key                             | Default           | Description                                                  |
-| ------------------------------- | ----------------- | ------------------------------------------------------------ |
-| **`serviceKey`**                |                   | **Service key**                                              |
-| `enabled`                       | `true`            | Whether instrumentation should be enabled                    |
-| `collector`                     | Default collector | Collector URL                                                |
-| `trustedPath`                   | None              | Path to the collector's SSL certificate                      |
-| `proxy`                         | None              | URL of a proxy to use to connect to the collector            |
-| `logLevel`                      | `info`            | Logging level for the instrumentation libraries              |
-| `triggerTraceEnabled`           | `true`            | Whether trigger tracing should be enabled                    |
-| `runtimeMetrics`                | `true`            | Whether runtime metrics should be enabled                    |
-| `tracingMode`                   | None              | Custom tracing mode                                          |
-| `insertTraceContextIntoLogs`    | `false`           | Whether to insert trace context information into logs        |
-| `insertTraceContextIntoQueries` | `false`           | Whether to insert trace context information into SQL queries |
-| `transactionSettings`           | None              | See [Transaction Settings](#transaction-settings)            |
-| `instrumentations`              | None              | See [Instrumentations](#instrumentations)                    |
-| `metricViews`                   | None              | Custom metric views                                          |
+| Key                             | Environment              | Default           | Description                                                  |
+| ------------------------------- | ------------------------ | ----------------- | ------------------------------------------------------------ |
+| **`serviceKey`**                | **`SW_APM_SERVICE_KEY`** |                   | **Service key**                                              |
+| `enabled`                       | `SW_APM_ENABLED`         | `true`            | Whether instrumentation should be enabled                    |
+| `collector`                     | `SW_APM_COLLECTOR`       | Default collector | Collector URL                                                |
+| `trustedPath`                   | `SW_APM_TRUSTED_PATH`    | None              | Path to the collector's SSL certificate                      |
+| `proxy`                         |                          | None              | URL of a proxy to use to connect to the collector            |
+| `logLevel`                      |                          | `info`            | Logging level for the instrumentation libraries              |
+| `triggerTraceEnabled`           |                          | `true`            | Whether trigger tracing should be enabled                    |
+| `runtimeMetrics`                |                          | `true`            | Whether runtime metrics should be enabled                    |
+| `tracingMode`                   |                          | None              | Custom tracing mode                                          |
+| `insertTraceContextIntoLogs`    |                          | `false`           | Whether to insert trace context information into logs        |
+| `insertTraceContextIntoQueries` |                          | `false`           | Whether to insert trace context information into SQL queries |
+| `transactionSettings`           |                          | None              | See [Transaction Settings](#transaction-settings)            |
+| `instrumentations`              |                          | None              | See [Instrumentations](#instrumentations)                    |
+| `metricViews`                   |                          | None              | Custom metric views                                          |
 
-#### Transaction Settings
+### Transaction Settings
 
 Transaction settings allow filtering out certain transactions, based on URL for web requests, and the type and name concatenated with a colon for everything else. This option should be set to an array of objects.
 
@@ -92,7 +79,7 @@ module.exports = {
 }
 ```
 
-#### Instrumentations
+### Instrumentations
 
 A default set of instrumentations are provided and configured by the library. However in many cases it may be desirable to manually configure the instrumentations or provide additional ones. The `instrumentations` configuration field accepts an object which in turn can contain two fields.
 
