@@ -94,14 +94,7 @@ export function init() {
       )
 
     initTracing(config, resource, packageJson.version, initLogger)
-    switch (config.runtimeMetrics) {
-      case true: {
-        initMetrics(config, resource, initLogger)
-        break
-      }
-      case false:
-        break
-    }
+    initMetrics(config, resource, initLogger)
   }
 }
 
@@ -192,10 +185,10 @@ function initMetrics(
   resource: Resource,
   logger: DiagLogger,
 ) {
-  if (sdk.METRICS_ERROR) {
+  if (sdk.OBOE_ERROR) {
     logger.warn(
       "Unsupported platform, metrics will not be collected",
-      sdk.METRICS_ERROR,
+      sdk.OBOE_ERROR,
     )
     return
   }
@@ -216,7 +209,17 @@ function initMetrics(
   provider.addMetricReader(reader)
   metrics.setGlobalMeterProvider(provider)
 
-  sdk.metrics.start()
+  if (config.runtimeMetrics) {
+    if (sdk.METRICS_ERROR) {
+      logger.warn(
+        "Unsupported platform, runtime metrics will not be collected",
+        sdk.METRICS_ERROR,
+      )
+      return
+    }
+
+    sdk.metrics.start()
+  }
 }
 
 export function oboeLevelToOtelLogger(

@@ -36,22 +36,22 @@ module.exports = {
 
 ## Specification
 
-| Key                             | Environment              | Default           | Description                                                  |
-| ------------------------------- | ------------------------ | ----------------- | ------------------------------------------------------------ |
-| **`serviceKey`**                | **`SW_APM_SERVICE_KEY`** |                   | **Service key**                                              |
-| `enabled`                       | `SW_APM_ENABLED`         | `true`            | Whether instrumentation should be enabled                    |
-| `collector`                     | `SW_APM_COLLECTOR`       | Default collector | Collector URL                                                |
-| `trustedPath`                   | `SW_APM_TRUSTED_PATH`    | None              | Path to the collector's SSL certificate                      |
-| `proxy`                         |                          | None              | URL of a proxy to use to connect to the collector            |
-| `logLevel`                      |                          | `info`            | Logging level for the instrumentation libraries              |
-| `triggerTraceEnabled`           |                          | `true`            | Whether trigger tracing should be enabled                    |
-| `runtimeMetrics`                |                          | `true`            | Whether runtime metrics should be enabled                    |
-| `tracingMode`                   |                          | None              | Custom tracing mode                                          |
-| `insertTraceContextIntoLogs`    |                          | `false`           | Whether to insert trace context information into logs        |
-| `insertTraceContextIntoQueries` |                          | `false`           | Whether to insert trace context information into SQL queries |
-| `transactionSettings`           |                          | None              | See [Transaction Settings](#transaction-settings)            |
-| `instrumentations`              |                          | None              | See [Instrumentations](#instrumentations)                    |
-| `metricViews`                   |                          | None              | Custom metric views                                          |
+| Key                             | Environment                    | Default           | Description                                                  |
+| ------------------------------- | ------------------------------ | ----------------- | ------------------------------------------------------------ |
+| **`serviceKey`**                | **`SW_APM_SERVICE_KEY`**       |                   | **Service key**                                              |
+| `enabled`                       | `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled                    |
+| `collector`                     | `SW_APM_COLLECTOR`             | Default collector | Collector URL                                                |
+| `trustedPath`                   | `SW_APM_TRUSTED_PATH`          | None              | Path to the collector's SSL certificate                      |
+| `proxy`                         | `SW_APM_PROXY`                 | None              | URL of a proxy to use to connect to the collector            |
+| `logLevel`                      | `SW_APM_LOG_LEVEL`             | `info`            | Logging level for the instrumentation libraries              |
+| `triggerTraceEnabled`           | `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled                    |
+| `runtimeMetrics`                | `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be enabled                    |
+| `tracingMode`                   | `SW_APM_TRACING_MODE`          | None              | Custom tracing mode                                          |
+| `insertTraceContextIntoLogs`    |                                | `false`           | Whether to insert trace context information into logs        |
+| `insertTraceContextIntoQueries` |                                | `false`           | Whether to insert trace context information into SQL queries |
+| `transactionSettings`           |                                | None              | See [Transaction Settings](#transaction-settings)            |
+| `instrumentations`              |                                | None              | See [Instrumentations](#instrumentations)                    |
+| `metricViews`                   |                                | None              | Custom metric views                                          |
 
 ### Transaction Settings
 
