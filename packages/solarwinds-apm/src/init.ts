@@ -100,7 +100,7 @@ export function init() {
         }),
       )
 
-    initTracing(config, resource, packageJson.version, logger)
+    initTracing(config, resource, packageJson.version)
     initMetrics(config, resource, logger)
   }
 }
@@ -109,7 +109,6 @@ function initTracing(
   config: ExtendedSwConfiguration,
   resource: Resource,
   version: string,
-  logger: DiagLogger,
 ) {
   const reporter = sdk.createReporter(config)
 
