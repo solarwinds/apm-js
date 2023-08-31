@@ -41,7 +41,8 @@
     "build": "tsc",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
-    "publish": "node ../../scripts/publish.js"
+    "publish": "node ../../scripts/publish.js",
+    "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
     "@opentelemetry/auto-instrumentations-node": "^0.39.0",
@@ -74,6 +75,7 @@
   "devDependencies": {
     "@opentelemetry/api": "1.4.x",
     "@solarwinds-apm/eslint-config": "workspace:^",
+    "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^16.0.0",
     "eslint": "^8.47.0",
     "json5": "^2.2.3",
