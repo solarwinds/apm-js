@@ -8,6 +8,5 @@ declined:
   - "@solarwinds-apm/dependencies"
   - "@solarwinds-apm/histogram"
   - "@solarwinds-apm/lazy"
-  - "@solarwinds-apm/merged-config"
   - "@solarwinds-apm/sdk"
   - solarwinds-apm
