@@ -43,7 +43,7 @@ import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import * as sdk from "@solarwinds-apm/sdk"
 
-import { type ExtendedSwConfiguration, readConfig } from "./config"
+import { type ExtendedSwConfiguration, printError, readConfig } from "./config"
 
 export function init() {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -62,18 +62,28 @@ export function init() {
       configurable: false,
     })
 
-    const config = readConfig()
-
-    diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
-    const initLogger = diag.createComponentLogger({ namespace: "sw/init" })
-
-    if (!config.enabled) {
-      initLogger.info("Library disabled, application will not be instrumented")
+    let config: ExtendedSwConfiguration
+    try {
+      config = readConfig()
+    } catch (err) {
+      console.warn(
+        "Invalid SolarWinds APM configuration, application will not be instrumented",
+      )
+      printError(err)
       return
     }
-    if (!config.serviceName) {
-      initLogger.warn(
-        "Invalid service key, application will not be instrumented",
+
+    diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
+    const logger = diag.createComponentLogger({ namespace: "sw/init" })
+
+    if (!config.enabled) {
+      logger.info("Library disabled, application will not be instrumented")
+      return
+    }
+    if (sdk.OBOE_ERROR) {
+      logger.warn(
+        "Unsupported platform, application will not be instrumented",
+        sdk.OBOE_ERROR,
       )
       return
     }
@@ -90,15 +100,8 @@ export function init() {
         }),
       )
 
-    initTracing(config, resource, packageJson.version, initLogger)
-    switch (config.runtimeMetrics) {
-      case true: {
-        initMetrics(config, resource, initLogger)
-        break
-      }
-      case false:
-        break
-    }
+    initTracing(config, resource, packageJson.version)
+    initMetrics(config, resource, logger)
   }
 }
 
@@ -106,16 +109,7 @@ function initTracing(
   config: ExtendedSwConfiguration,
   resource: Resource,
   version: string,
-  logger: DiagLogger,
 ) {
-  if (sdk.OBOE_ERROR) {
-    logger.warn(
-      "Unsupported platform, application will not be instrumented",
-      sdk.OBOE_ERROR,
-    )
-    return
-  }
-
   const reporter = sdk.createReporter(config)
 
   oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
@@ -189,14 +183,6 @@ function initMetrics(
   resource: Resource,
   logger: DiagLogger,
 ) {
-  if (sdk.METRICS_ERROR) {
-    logger.warn(
-      "Unsupported platform, metrics will not be collected",
-      sdk.METRICS_ERROR,
-    )
-    return
-  }
-
   const exporter = new sdk.SwMetricsExporter(
     diag.createComponentLogger({ namespace: "sw/metrics" }),
   )
@@ -208,12 +194,22 @@ function initMetrics(
 
   const provider = new MeterProvider({
     resource,
-    views: config.metricViews,
+    views: config.metrics?.views,
   })
   provider.addMetricReader(reader)
   metrics.setGlobalMeterProvider(provider)
 
-  sdk.metrics.start()
+  if (config.runtimeMetrics) {
+    if (sdk.METRICS_ERROR) {
+      logger.warn(
+        "Unsupported platform, runtime metrics will not be collected",
+        sdk.METRICS_ERROR,
+      )
+      return
+    }
+
+    sdk.metrics.start()
+  }
 }
 
 export function oboeLevelToOtelLogger(

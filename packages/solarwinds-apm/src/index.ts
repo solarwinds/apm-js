@@ -32,4 +32,4 @@ export function waitUntilAgentReady(timeout: number): number {
   return sdk.waitUntilAgentReady(timeout)
 }
 
-export { type ConfigFile } from "./config"
+export { type Config } from "./config"

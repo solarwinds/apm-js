@@ -1,6 +1,6 @@
 const { PrismaInstrumentation } = require("@prisma/instrumentation")
 
-/** @type {import("solarwinds-apm").ConfigFile} */
+/** @type {import("solarwinds-apm").Config} */
 module.exports = {
   instrumentations: {
     configs: {

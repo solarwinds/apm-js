@@ -1946,19 +1946,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@solarwinds-apm/merged-config@workspace:^, @solarwinds-apm/merged-config@workspace:packages/merged-config":
-  version: 0.0.0-use.local
-  resolution: "@solarwinds-apm/merged-config@workspace:packages/merged-config"
-  dependencies:
-    "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/test": "workspace:^"
-    "@types/node": "npm:^16.0.0"
-    eslint: "npm:^8.47.0"
-    prettier: "npm:^3.0.2"
-    typescript: "npm:^5.2.2"
-  languageName: unknown
-  linkType: soft
-
 "@solarwinds-apm/scripts@workspace:scripts":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/scripts@workspace:scripts"
@@ -7196,14 +7183,15 @@ __metadata:
     "@opentelemetry/semantic-conventions": "npm:1.15.x"
     "@solarwinds-apm/bindings": "workspace:^"
     "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/merged-config": "workspace:^"
     "@solarwinds-apm/sdk": "workspace:^"
+    "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^16.0.0"
     eslint: "npm:^8.47.0"
     json5: "npm:^2.2.3"
     prettier: "npm:^3.0.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:^5.2.2"
+    zod: "npm:^3.22.2"
   peerDependencies:
     "@opentelemetry/api": 1.4.x
     json5: ">=1.0.0"
@@ -8170,5 +8158,12 @@ __metadata:
   version: 3.21.4
   resolution: "zod@npm:3.21.4"
   checksum: 161e8cf7aea38a99244d65da4a9477d9d966f6a533e503feaa20ff7968a9691065c38c6f1eab5cbbdc8374142fff4a05c9cacb8479803ab50ab6a6ca80e5d624
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.22.2":
+  version: 3.22.2
+  resolution: "zod@npm:3.22.2"
+  checksum: 10afd994bcec3affb81776adc486871bfa6790037f57f0e45280e99baed8c3df5f46c5ab65a6d7921a00dffd9fab299e4492519dd6bb5d2eb3de9a67d3eb8051
   languageName: node
   linkType: hard
