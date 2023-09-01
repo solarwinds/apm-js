@@ -18,8 +18,8 @@ import { DiagLogLevel } from "@opentelemetry/api"
 import { oboe } from "@solarwinds-apm/bindings"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
-import { type ExtendedSwConfiguration, readConfig } from "../src/config"
 import aoCert from "../src/appoptics.crt"
+import { type ExtendedSwConfiguration, readConfig } from "../src/config"
 
 describe("readConfig", () => {
   beforeEach(() => {
