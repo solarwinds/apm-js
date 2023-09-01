@@ -2,7 +2,6 @@ releases:
   "@solarwinds-apm/bindings": patch
   "@solarwinds-apm/compat": patch
   "@solarwinds-apm/dependencies": patch
-  "@solarwinds-apm/merged-config": patch
   "@solarwinds-apm/sdk": patch
   "@solarwinds-apm/test": minor
 
