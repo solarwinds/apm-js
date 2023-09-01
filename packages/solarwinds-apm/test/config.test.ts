@@ -19,6 +19,7 @@ import { oboe } from "@solarwinds-apm/bindings"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { type ExtendedSwConfiguration, readConfig } from "../src/config"
+import aoCert from "../src/appoptics.crt"
 
 describe("readConfig", () => {
   beforeEach(() => {
@@ -42,7 +43,7 @@ describe("readConfig", () => {
       insertTraceContextIntoQueries: false,
     }
 
-    expect(config).to.deep.include(expected)
+    expect(config).to.include(expected)
   })
 
   it("parses booleans", () => {
@@ -90,5 +91,15 @@ describe("readConfig", () => {
     process.env.SW_APM_TRUSTED_PATH = "foo"
 
     expect(readConfig).to.throw()
+  })
+
+  it("uses the right defaults for AppOptics", () => {
+    process.env.SW_APM_COLLECTOR = "collector.appoptics.com"
+
+    const config = readConfig()
+    expect(config).to.include({
+      metricFormat: 1,
+      certificate: aoCert,
+    })
   })
 })
