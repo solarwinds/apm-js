@@ -1,0 +1,5 @@
+releases:
+  "@solarwinds-apm/sdk": patch
+
+declined:
+  - solarwinds-apm
