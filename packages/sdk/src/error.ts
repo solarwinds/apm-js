@@ -19,24 +19,14 @@ export class OboeError extends Error {
   method?: string
   status: number
 
-  constructor(klass: string, method: string, status: number)
-  constructor(klass: string, status: number)
-  constructor(
-    klass: string,
-    ...args: [method: string, status: number] | [status: number]
-  ) {
-    let method: string | undefined
-    let status: number
-    if (args.length === 2) {
-      method = args[0]
-      status = args[1]
-    } else {
-      method = undefined
-      status = args[0]
-    }
+  constructor(klass: string, method: string, status: number, message?: string) {
+    const path = `${klass}::${method}`
 
-    const name = method ? `${klass}.${method}` : `new ${klass}`
-    super(`'${name}' failed with status '${status}'`)
+    let m = `${path} failed with status ${status}`
+    if (message) {
+      m += `: ${message}`
+    }
+    super(m)
 
     this.name = "OboeError"
     this.klass = klass

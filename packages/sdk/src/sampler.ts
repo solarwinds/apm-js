@@ -83,14 +83,24 @@ export class SwSampler implements Sampler {
     if (decisions.status > oboe.TRACING_DECISIONS_OK) {
       this.logger.warn(
         "oboe decisions returned with an error status",
-        new OboeError("Context", "getDecisions", decisions.status),
-      )
-      this.logger.debug(
-        decisions.status_msg,
-        decisions.auth_msg,
-        decisions.status,
+        new OboeError(
+          "Context",
+          "getDecisions",
+          decisions.status,
+          decisions.status_msg,
+        ),
       )
       return { decision: SamplingDecision.NOT_RECORD }
+    } else if (decisions.auth > oboe.TRACING_DECISIONS_AUTH_OK) {
+      this.logger.debug(
+        "oboe decisions auth returned with an error status",
+        new OboeError(
+          "Context",
+          "getDecisions",
+          decisions.auth,
+          decisions.auth_msg,
+        ),
+      )
     }
 
     const decision = SwSampler.otelSamplingDecisionFromOboe(decisions)
