@@ -92,7 +92,7 @@ export class SwSampler implements Sampler {
       )
       return { decision: SamplingDecision.NOT_RECORD }
     } else if (decisions.auth > oboe.TRACING_DECISIONS_AUTH_OK) {
-      this.logger.warn(
+      this.logger.debug(
         "oboe decisions auth returned with an error status",
         new OboeError(
           "Context",
