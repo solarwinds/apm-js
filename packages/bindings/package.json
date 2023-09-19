@@ -33,10 +33,10 @@
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
-    "@types/node": "^16.0.0",
-    "eslint": "^8.47.0",
+    "@types/node": "^16.13.0",
+    "eslint": "^8.49.0",
     "node-addon-api": "^7.0.0",
-    "prettier": "^3.0.2",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "zig-build": "^0.2.1"
   },

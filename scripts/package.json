@@ -6,11 +6,11 @@
     "lint:fix": "eslint --fix . && prettier --write ."
   },
   "dependencies": {
-    "bson": "^5.4.0"
+    "bson": "^6.1.0"
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "eslint": "^8.47.0",
-    "prettier": "^3.0.2"
+    "eslint": "^8.49.0",
+    "prettier": "^3.0.3"
   }
 }

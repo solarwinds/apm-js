@@ -29,10 +29,10 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@opentelemetry/semantic-conventions": "1.15.x"
+    "@opentelemetry/semantic-conventions": "~1.17.0"
   },
   "peerDependencies": {
-    "@opentelemetry/api": "1.4.x"
+    "@opentelemetry/api": "^1.3.0"
   },
   "peerDependenciesMeta": {
     "@opentelemetry/api": {
@@ -40,14 +40,14 @@
     }
   },
   "devDependencies": {
-    "@opentelemetry/api": "1.4.x",
-    "@opentelemetry/sdk-trace-base": "1.15.x",
-    "@opentelemetry/sdk-trace-node": "1.15.x",
+    "@opentelemetry/api": "^1.3.0",
+    "@opentelemetry/sdk-trace-base": "~1.17.0",
+    "@opentelemetry/sdk-trace-node": "~1.17.0",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
-    "@types/node": "^16.0.0",
-    "eslint": "^8.47.0",
-    "prettier": "^3.0.2",
+    "@types/node": "^16.13.0",
+    "eslint": "^8.49.0",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },
   "engines": {
