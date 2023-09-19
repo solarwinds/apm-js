@@ -1,11 +1,11 @@
 # solarwinds-apm
 
-The new OpenTelemetry-based SolarWinds APM Node.js library. Currently following `@opentelemetry/api@^1.3.0` with support for Node.js 16, 18 and 20.
+The new OpenTelemetry-based SolarWinds APM Node.js library. Currently supports Node.js 16 LTS, 18 LTS and 20.
 
 ## Installation and Setup
 
 ```sh
-npm install --save solarwinds-apm @opentelemetry/api@^1.3.0
+npm install --save solarwinds-apm @opentelemetry/api
 ```
 
 Install using your package manager then follow the [configuration guide](./CONFIGURATION.md). Make sure to install the matching version of `@opentelmetry/api` as it is required for the library to work. The two packages should be updated at the same time and kept in sync.

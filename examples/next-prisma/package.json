@@ -16,7 +16,7 @@
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
-    "@types/node": "^16.0.0",
+    "@types/node": "^16.13.0",
     "@types/react": "^18.2.22",
     "eslint": "^8.49.0",
     "eslint-config-next": "13.5.1",
