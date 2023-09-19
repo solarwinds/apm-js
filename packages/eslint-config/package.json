@@ -26,9 +26,9 @@
     "publish": "node ../../scripts/publish.js"
   },
   "dependencies": {
-    "@eslint/js": "^8.47.0",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
+    "@eslint/js": "^8.49.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
@@ -43,8 +43,8 @@
     "typescript": "*"
   },
   "devDependencies": {
-    "eslint": "^8.47.0",
-    "prettier": "^3.0.2"
+    "eslint": "^8.49.0",
+    "prettier": "^3.0.3"
   },
   "peerDependenciesMeta": {
     "jest": {

@@ -7,20 +7,20 @@
     "start": "prisma generate && prisma migrate deploy && next start"
   },
   "dependencies": {
-    "@opentelemetry/api": "1.4.x",
-    "@prisma/client": "5.2.0",
-    "@prisma/instrumentation": "^5.2.0",
-    "next": "^13.4.19",
+    "@opentelemetry/api": "^1.3.0",
+    "@prisma/client": "5.3.1",
+    "@prisma/instrumentation": "^5.3.1",
+    "next": "^13.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^16.0.0",
-    "@types/react": "^18.2.21",
-    "eslint": "^8.47.0",
-    "eslint-config-next": "13.4.19",
-    "prisma": "5.2.0",
+    "@types/react": "^18.2.22",
+    "eslint": "^8.49.0",
+    "eslint-config-next": "13.5.1",
+    "prisma": "5.3.1",
     "typescript": "^5.2.2"
   }
 }
