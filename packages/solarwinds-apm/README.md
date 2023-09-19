@@ -21,8 +21,11 @@ export NODE_OPTIONS="-r solarwinds-apm"
 npm start
 ```
 
-```js
+```ts
+import "solarwinds-apm"
+// or
 require("solarwinds-apm")
+
 // ...
 ```
 
@@ -31,6 +34,33 @@ require("solarwinds-apm")
 Unlike previous non-OpenTelemetry version, all manual instrumentation and metrics collection are handled through the OpenTelemetry API using the `@opentelemetry/api` packages. The [OpenTelemetry JS documentation](https://opentelemetry.io/docs/instrumentation/js/manual/) for manual instrumentation provides instructions (note that `solarwinds-apm` takes care of the initial registration of all components), and the [SDK docs](https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_api.html) are available to see all that the API provides.
 
 An example of using manual instrumentation APIs in tandem with the library is available [in the main repository](../../examples/hello-manual).
+
+## Waiting at Startup
+
+The library needs to perform some initialisation work before it's able to collect traces. If startup time is not a concern, it's possible to wait for the library to be ready before doing anything else.
+
+```ts
+import { waitUntilReady } from "solarwinds-apm"
+// or
+const { waitUntilReady } = require("solarwinds-apm")
+
+// wait up to 10 seconds
+waitUntilReady(10_000)
+```
+
+## Custom Transaction Names
+
+Transaction names are automatically derived from various trace attributes by `solarwinds-apm`. However it is also possible to override the automatic name by calling `setTransactionName` from any code within the transaction.
+
+```ts
+import { setTransactionName } from "solarwinds-apm"
+// or
+const { setTransactionName } = require("solarwinds-apm")
+
+function calledFromWithinTransaction() {
+  setTransactionName("custom-transaction")
+}
+```
 
 ## Migrating from legacy versions
 

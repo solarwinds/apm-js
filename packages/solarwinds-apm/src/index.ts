@@ -28,8 +28,8 @@ try {
 export function setTransactionName(name: string): boolean {
   return sdk.setTransactionName(context.active(), name)
 }
-export function waitUntilAgentReady(timeout: number): number {
-  return sdk.waitUntilAgentReady(timeout)
+export function waitUntilReady(timeout: number): number {
+  return sdk.waitUntilReady(timeout)
 }
 
 export { type Config } from "./config"
