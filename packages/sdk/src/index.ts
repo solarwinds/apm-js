@@ -18,7 +18,7 @@ import { metrics, oboe } from "@solarwinds-apm/bindings"
 
 import { CompoundSpanProcessor } from "./compound-processor"
 import { type SwConfiguration } from "./config"
-import { setTransactionName, waitUntilAgentReady } from "./context"
+import { setTransactionName, waitUntilReady } from "./context"
 import { SwExporter } from "./exporter"
 import { SwInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
 import { SwMetricsExporter } from "./metric-exporter"
@@ -48,6 +48,6 @@ export {
   SwSampler,
   SwTraceContextOptionsPropagator,
   SwTraceOptionsResponsePropagator,
-  waitUntilAgentReady,
+  waitUntilReady,
 }
 export * as metrics from "./metrics"

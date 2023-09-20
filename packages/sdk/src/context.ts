@@ -100,6 +100,6 @@ export function setTransactionName(context: Context, name: string): boolean {
   return true
 }
 
-export function waitUntilAgentReady(timeout: number): number {
+export function waitUntilReady(timeout: number): number {
   return oboe.Context.isReady(timeout)
 }
