@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import * as grpc from "@grpc/grpc-js"
 import {
   diag,
   DiagConsoleLogger,
@@ -45,7 +46,6 @@ import {
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import * as sdk from "@solarwinds-apm/sdk"
-import * as grpc from "@grpc/grpc-js"
 
 import { type ExtendedSwConfiguration, printError, readConfig } from "./config"
 
@@ -161,12 +161,12 @@ function initTracing(
 
   const instrumentations = [
     ...getNodeAutoInstrumentations(
-      sdk.patch(config.instrumentations?.configs ?? {}, {
+      sdk.patch(config.instrumentations.configs ?? {}, {
         ...config,
         responsePropagator: traceOptionsResponsePropagator,
       }),
     ),
-    ...(config.instrumentations?.extra ?? []),
+    ...(config.instrumentations.extra ?? []),
   ]
   registerInstrumentations({ instrumentations })
 
@@ -180,7 +180,7 @@ function initTracing(
   })
   provider.addSpanProcessor(spanProcessor)
 
-  if (config.experimental?.otelCollector) {
+  if (config.experimental.otelCollector) {
     provider.addSpanProcessor(
       new BatchSpanProcessor(
         new OTLPTraceExporter({
@@ -214,7 +214,7 @@ function initMetrics(
   })
   provider.addMetricReader(reader)
 
-  if (config.experimental?.otelCollector) {
+  if (config.experimental.otelCollector) {
     provider.addMetricReader(
       new PeriodicExportingMetricReader({
         exporter: new OTLPMetricExporter({
