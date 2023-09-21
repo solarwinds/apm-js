@@ -136,6 +136,7 @@ interface Instrumentations {
 
 interface Metrics {
   views?: View[]
+  interval: number
 }
 
 const schema = z.object({
@@ -157,10 +158,19 @@ const schema = z.object({
       extra: z.array(z.instanceof(InstrumentationBase)).optional(),
     })
     .transform((i) => i as Instrumentations)
-    .optional(),
+    .default({}),
   metrics: z
-    .object({ views: z.array(z.instanceof(View)).optional() })
-    .optional(),
+    .object({
+      views: z.array(z.instanceof(View)).optional(),
+      interval: z.number().int().default(60_000),
+    })
+    .default({}),
+
+  experimental: z
+    .object({
+      otelCollector: z.string().optional(),
+    })
+    .default({}),
 })
 
 export interface Config extends Partial<z.input<typeof schema>> {
@@ -169,11 +179,16 @@ export interface Config extends Partial<z.input<typeof schema>> {
 }
 
 export interface ExtendedSwConfiguration extends SwConfiguration {
-  instrumentations?: Instrumentations
-  metrics?: Metrics
+  instrumentations: Instrumentations
+  metrics: Metrics
+
+  experimental: {
+    otelCollector?: string
+  }
 }
 
 const ENV_PREFIX = "SW_APM_"
+const ENV_PREFIX_EXPERIMENTAL = `${ENV_PREFIX}EXPERIMENTAL_`
 const DEFAULT_FILE_NAME = "solarwinds.apm.config"
 enum FileType {
   Json,
@@ -183,11 +198,8 @@ enum FileType {
 }
 
 export function readConfig(): ExtendedSwConfiguration {
-  const env = Object.fromEntries(
-    Object.entries(process.env)
-      .filter(([k]) => k.startsWith(ENV_PREFIX))
-      .map(([k, v]) => [fromEnvKey(k), v]),
-  )
+  const env = envObject()
+  const experimentalEnv = envObject(ENV_PREFIX_EXPERIMENTAL)
 
   let file: Record<string, unknown>
   const [path, type] = pathAndType()
@@ -207,8 +219,16 @@ export function readConfig(): ExtendedSwConfiguration {
     case FileType.None:
       file = {}
   }
+  const experimentalFile =
+    file.experimental && typeof file.experimental === "object"
+      ? file.experimental
+      : {}
 
-  const raw = schema.parse({ ...file, ...env })
+  const raw = schema.parse({
+    ...file,
+    ...env,
+    experimental: { ...experimentalFile, ...experimentalEnv },
+  })
 
   const config: ExtendedSwConfiguration = {
     ...raw,
@@ -266,15 +286,23 @@ export function printError(err: unknown) {
   }
 }
 
-function fromEnvKey(k: string) {
+function fromEnvKey(k: string, prefix = ENV_PREFIX) {
   return k
-    .slice(ENV_PREFIX.length)
+    .slice(prefix.length)
     .toLowerCase()
     .replace(/_[a-z]/g, (c) => c.slice(1).toUpperCase())
 }
 
-function toEnvKey(k: string) {
-  return `${ENV_PREFIX}${k.replace(/[A-Z]/g, (c) => `_${c}`).toUpperCase()}`
+function toEnvKey(k: string, prefix = ENV_PREFIX) {
+  return `${prefix}${k.replace(/[A-Z]/g, (c) => `_${c}`).toUpperCase()}`
+}
+
+function envObject(prefix = ENV_PREFIX) {
+  return Object.fromEntries(
+    Object.entries(process.env)
+      .filter(([k]) => k.startsWith(prefix))
+      .map(([k, v]) => [fromEnvKey(k, prefix), v]),
+  )
 }
 
 function pathAndType(): [path: string, type: FileType] {

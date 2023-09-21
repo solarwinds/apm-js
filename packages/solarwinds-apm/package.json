@@ -45,8 +45,11 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.9.3",
     "@opentelemetry/auto-instrumentations-node": "^0.39.2",
     "@opentelemetry/core": "~1.17.0",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "~0.43.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "~0.43.0",
     "@opentelemetry/instrumentation": "~0.43.0",
     "@opentelemetry/resources": "~1.17.0",
     "@opentelemetry/sdk-metrics": "~1.17.0",

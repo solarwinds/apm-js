@@ -40,7 +40,7 @@ export function createReporter(config: SwConfiguration): oboe.Reporter {
     events_flush_interval: -1,
     max_request_size_bytes: -1,
 
-    reporter: "",
+    reporter: "ssl",
 
     buffer_size: -1,
     trace_metrics: 1,

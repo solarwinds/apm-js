@@ -23,6 +23,8 @@ import {
 } from "@opentelemetry/api"
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-grpc"
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
 import {
   detectResourcesSync,
@@ -36,12 +38,14 @@ import {
   PeriodicExportingMetricReader,
 } from "@opentelemetry/sdk-metrics"
 import {
+  BatchSpanProcessor,
   NodeTracerProvider,
   ParentBasedSampler,
 } from "@opentelemetry/sdk-trace-node"
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import * as sdk from "@solarwinds-apm/sdk"
+import * as grpc from "@grpc/grpc-js"
 
 import { type ExtendedSwConfiguration, printError, readConfig } from "./config"
 
@@ -175,6 +179,18 @@ function initTracing(
     resource,
   })
   provider.addSpanProcessor(spanProcessor)
+
+  if (config.experimental?.otelCollector) {
+    provider.addSpanProcessor(
+      new BatchSpanProcessor(
+        new OTLPTraceExporter({
+          url: config.experimental.otelCollector,
+          metadata: grpcMetadata(config),
+        }),
+      ),
+    )
+  }
+
   provider.register({ propagator })
 }
 
@@ -189,14 +205,27 @@ function initMetrics(
 
   const reader = new PeriodicExportingMetricReader({
     exporter,
-    exportIntervalMillis: 60_000,
+    exportIntervalMillis: config.metrics.interval,
   })
 
   const provider = new MeterProvider({
     resource,
-    views: config.metrics?.views,
+    views: config.metrics.views,
   })
   provider.addMetricReader(reader)
+
+  if (config.experimental?.otelCollector) {
+    provider.addMetricReader(
+      new PeriodicExportingMetricReader({
+        exporter: new OTLPMetricExporter({
+          url: config.experimental.otelCollector,
+          metadata: grpcMetadata(config),
+        }),
+        exportIntervalMillis: config.metrics.interval,
+      }),
+    )
+  }
+
   metrics.setGlobalMeterProvider(provider)
 
   if (config.runtimeMetrics) {
@@ -228,4 +257,10 @@ export function oboeLevelToOtelLogger(
     default:
       return logger.verbose.bind(logger)
   }
+}
+
+function grpcMetadata(config: ExtendedSwConfiguration): grpc.Metadata {
+  const metadata = new grpc.Metadata()
+  metadata.set("authorization", `Bearer ${config.token}`)
+  return metadata
 }
