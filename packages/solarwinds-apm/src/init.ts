@@ -36,6 +36,7 @@ import {
   PeriodicExportingMetricReader,
 } from "@opentelemetry/sdk-metrics"
 import {
+  BatchSpanProcessor,
   NodeTracerProvider,
   ParentBasedSampler,
 } from "@opentelemetry/sdk-trace-node"
@@ -44,6 +45,10 @@ import { oboe } from "@solarwinds-apm/bindings"
 import * as sdk from "@solarwinds-apm/sdk"
 
 import { type ExtendedSwConfiguration, printError, readConfig } from "./config"
+import { requireOptional } from "./peers"
+
+const otlpMetric = requireOptional("@opentelemetry/exporter-metrics-otlp-grpc")
+const otlpTrace = requireOptional("@opentelemetry/exporter-trace-otlp-grpc")
 
 export function init() {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -157,12 +162,12 @@ function initTracing(
 
   const instrumentations = [
     ...getNodeAutoInstrumentations(
-      sdk.patch(config.instrumentations?.configs ?? {}, {
+      sdk.patch(config.instrumentations.configs ?? {}, {
         ...config,
         responsePropagator: traceOptionsResponsePropagator,
       }),
     ),
-    ...(config.instrumentations?.extra ?? []),
+    ...(config.instrumentations.extra ?? []),
   ]
   registerInstrumentations({ instrumentations })
 
@@ -175,6 +180,17 @@ function initTracing(
     resource,
   })
   provider.addSpanProcessor(spanProcessor)
+
+  if (config.experimental.otelCollector && otlpTrace) {
+    const { OTLPTraceExporter } = otlpTrace
+    provider.addSpanProcessor(
+      new BatchSpanProcessor(
+        // configurable through standard OTel environment
+        new OTLPTraceExporter(),
+      ),
+    )
+  }
+
   provider.register({ propagator })
 }
 
@@ -189,14 +205,26 @@ function initMetrics(
 
   const reader = new PeriodicExportingMetricReader({
     exporter,
-    exportIntervalMillis: 60_000,
+    exportIntervalMillis: config.metrics.interval,
   })
 
   const provider = new MeterProvider({
     resource,
-    views: config.metrics?.views,
+    views: config.metrics.views,
   })
   provider.addMetricReader(reader)
+
+  if (config.experimental.otelCollector && otlpMetric) {
+    const { OTLPMetricExporter } = otlpMetric
+    provider.addMetricReader(
+      new PeriodicExportingMetricReader({
+        // configurable through standard OTel environment
+        exporter: new OTLPMetricExporter(),
+        exportIntervalMillis: config.metrics.interval,
+      }),
+    )
+  }
+
   metrics.setGlobalMeterProvider(provider)
 
   if (config.runtimeMetrics) {

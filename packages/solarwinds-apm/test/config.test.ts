@@ -41,9 +41,12 @@ describe("readConfig", () => {
       runtimeMetrics: true,
       insertTraceContextIntoLogs: false,
       insertTraceContextIntoQueries: false,
+      instrumentations: {},
+      metrics: { interval: 60_000 },
+      experimental: { otelCollector: false },
     }
 
-    expect(config).to.include(expected)
+    expect(config).to.deep.include(expected)
   })
 
   it("parses booleans", () => {
@@ -73,6 +76,13 @@ describe("readConfig", () => {
     const config = readConfig()
     expect(config.transactionSettings).not.to.be.undefined
     expect(config.transactionSettings).to.have.length(3)
+  })
+
+  it("parses experimental env", () => {
+    process.env.SW_APM_EXPERIMENTAL_OTEL_COLLECTOR = "true"
+
+    const config = readConfig()
+    expect(config.experimental.otelCollector).to.be.true
   })
 
   it("throws on bad boolean", () => {
