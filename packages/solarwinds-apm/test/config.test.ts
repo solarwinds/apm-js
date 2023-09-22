@@ -43,7 +43,7 @@ describe("readConfig", () => {
       insertTraceContextIntoQueries: false,
       instrumentations: {},
       metrics: { interval: 60_000 },
-      experimental: {},
+      experimental: { otelCollector: false },
     }
 
     expect(config).to.deep.include(expected)
@@ -79,13 +79,10 @@ describe("readConfig", () => {
   })
 
   it("parses experimental env", () => {
-    process.env.SW_APM_EXPERIMENTAL_OTEL_COLLECTOR =
-      "http://otel-collector:4317"
+    process.env.SW_APM_EXPERIMENTAL_OTEL_COLLECTOR = "true"
 
     const config = readConfig()
-    expect(config.experimental.otelCollector).to.equal(
-      "http://otel-collector:4317",
-    )
+    expect(config.experimental.otelCollector).to.be.true
   })
 
   it("throws on bad boolean", () => {

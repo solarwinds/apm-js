@@ -156,7 +156,7 @@ const schema = z.object({
 
   experimental: z
     .object({
-      otelCollector: z.boolean().default(false),
+      otelCollector: boolean.default(false),
     })
     .default({}),
 })
