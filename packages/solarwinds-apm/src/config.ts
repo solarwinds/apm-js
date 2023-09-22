@@ -28,22 +28,10 @@ import { type Service } from "ts-node"
 import { z } from "zod"
 
 import aoCert from "./appoptics.crt"
+import { requireOptional } from "./peers"
 
-let json: typeof import("json5") | typeof JSON
-try {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  json = require("json5")
-} catch {
-  json = JSON
-}
-
-let tsNode: typeof import("ts-node") | undefined
-try {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  tsNode = require("ts-node")
-} catch {
-  tsNode = undefined
-}
+const json = requireOptional("json5", JSON)
+const tsNode = requireOptional("ts-node")
 
 const boolean = z.union([
   z.boolean(),
@@ -168,7 +156,7 @@ const schema = z.object({
 
   experimental: z
     .object({
-      otelCollector: z.string().optional(),
+      otelCollector: z.boolean().default(false),
     })
     .default({}),
 })
@@ -182,9 +170,7 @@ export interface ExtendedSwConfiguration extends SwConfiguration {
   instrumentations: Instrumentations
   metrics: Metrics
 
-  experimental: {
-    otelCollector?: string
-  }
+  experimental: z.infer<typeof schema>["experimental"]
 }
 
 const ENV_PREFIX = "SW_APM_"
