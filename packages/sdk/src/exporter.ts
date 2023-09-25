@@ -134,9 +134,13 @@ export class SwExporter implements SpanExporter {
     resultCallback(result)
   }
 
-  shutdown(): Promise<void> {
-    oboe.Context.shutdown()
+  forceFlush(): Promise<void> {
+    this.reporter.flush()
     return Promise.resolve()
+  }
+  async shutdown(): Promise<void> {
+    await this.forceFlush()
+    oboe.Context.shutdown()
   }
 
   private static metadata(span: SpanContext): oboe.Metadata {
