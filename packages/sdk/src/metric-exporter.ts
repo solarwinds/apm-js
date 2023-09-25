@@ -38,7 +38,10 @@ import { oboe } from "@solarwinds-apm/bindings"
 import { OtelHistogram } from "@solarwinds-apm/histogram"
 
 export class SwMetricsExporter implements PushMetricExporter {
-  constructor(private readonly logger: DiagLogger) {}
+  constructor(
+    private readonly reporter: oboe.Reporter,
+    private readonly logger: DiagLogger,
+  ) {}
 
   export(
     metrics: ResourceMetrics,
@@ -156,10 +159,12 @@ export class SwMetricsExporter implements PushMetricExporter {
   }
 
   forceFlush(): Promise<void> {
+    this.reporter.flush()
     return Promise.resolve()
   }
-  shutdown(): Promise<void> {
-    return Promise.resolve()
+  async shutdown(): Promise<void> {
+    await this.forceFlush()
+    oboe.Context.shutdown()
   }
 
   private exportCounter(

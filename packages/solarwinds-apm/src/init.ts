@@ -105,18 +105,18 @@ export function init() {
         }),
       )
 
-    initTracing(config, resource, packageJson.version)
-    initMetrics(config, resource, logger)
+    const reporter = sdk.createReporter(config)
+    initTracing(config, resource, reporter, packageJson.version)
+    initMetrics(config, resource, reporter, logger)
   }
 }
 
 function initTracing(
   config: ExtendedSwConfiguration,
   resource: Resource,
+  reporter: oboe.Reporter,
   version: string,
 ) {
-  const reporter = sdk.createReporter(config)
-
   oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
     const logger = diag.createComponentLogger({
       namespace: `sw/oboe/${module}`,
@@ -197,9 +197,11 @@ function initTracing(
 function initMetrics(
   config: ExtendedSwConfiguration,
   resource: Resource,
+  reporter: oboe.Reporter,
   logger: DiagLogger,
 ) {
   const exporter = new sdk.SwMetricsExporter(
+    reporter,
     diag.createComponentLogger({ namespace: "sw/metrics" }),
   )
 
