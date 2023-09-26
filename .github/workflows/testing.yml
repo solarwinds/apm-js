@@ -1,0 +1,40 @@
+name: Testing Packages
+on:
+  - workflow_dispatch
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: corepack enable
+
+      - uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.zig-build
+            ~/.cache/zig
+          key: zig-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            zig-
+
+      - run: yarn install --immutable
+      - run: yarn version:testing
+      - run: yarn publish
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ github.token }}
+          YARN_NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com
