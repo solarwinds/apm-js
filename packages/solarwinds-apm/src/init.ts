@@ -20,6 +20,7 @@ import {
   type DiagLogFunction,
   type DiagLogger,
   metrics,
+  type TracerProvider,
 } from "@opentelemetry/api"
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
@@ -106,8 +107,14 @@ export function init() {
       )
 
     const reporter = sdk.createReporter(config)
-    initTracing(config, resource, reporter, packageJson.version)
-    initMetrics(config, resource, reporter, logger)
+    const tracerProvider = initTracing(
+      config,
+      resource,
+      reporter,
+      packageJson.version,
+    )
+    const meterProvider = initMetrics(config, resource, reporter, logger)
+    initInstrumentations(config, tracerProvider, meterProvider)
   }
 }
 
@@ -157,20 +164,6 @@ function initTracing(
     propagators: [traceContextOptionsPropagator, baggagePropagator],
   })
 
-  const traceOptionsResponsePropagator =
-    new sdk.SwTraceOptionsResponsePropagator()
-
-  const instrumentations = [
-    ...getNodeAutoInstrumentations(
-      sdk.patch(config.instrumentations.configs ?? {}, {
-        ...config,
-        responsePropagator: traceOptionsResponsePropagator,
-      }),
-    ),
-    ...(config.instrumentations.extra ?? []),
-  ]
-  registerInstrumentations({ instrumentations })
-
   const provider = new NodeTracerProvider({
     sampler: new ParentBasedSampler({
       root: sampler,
@@ -192,6 +185,8 @@ function initTracing(
   }
 
   provider.register({ propagator })
+
+  return provider
 }
 
 function initMetrics(
@@ -235,11 +230,32 @@ function initMetrics(
         "Unsupported platform, runtime metrics will not be collected",
         sdk.METRICS_ERROR,
       )
-      return
+    } else {
+      sdk.metrics.start()
     }
-
-    sdk.metrics.start()
   }
+
+  return provider
+}
+
+function initInstrumentations(
+  config: ExtendedSwConfiguration,
+  tracerProvider: TracerProvider,
+  meterProvider: MeterProvider,
+) {
+  const traceOptionsResponsePropagator =
+    new sdk.SwTraceOptionsResponsePropagator()
+
+  const instrumentations = [
+    ...getNodeAutoInstrumentations(
+      sdk.patch(config.instrumentations.configs ?? {}, {
+        ...config,
+        responsePropagator: traceOptionsResponsePropagator,
+      }),
+    ),
+    ...(config.instrumentations.extra ?? []),
+  ]
+  registerInstrumentations({ instrumentations, tracerProvider, meterProvider })
 }
 
 export function oboeLevelToOtelLogger(
