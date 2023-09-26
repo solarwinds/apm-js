@@ -19,7 +19,8 @@
     "publish": "turbo run build && turbo run lint && turbo run publish",
     "test": "turbo run test --continue",
     "version:latest": "node scripts/version.js",
-    "version:prerelease": "node scripts/version.js pre"
+    "version:prerelease": "node scripts/version.js pre",
+    "version:testing": "node scripts/testing.js"
   },
   "devDependencies": {
     "eslint": "^8.49.0",
