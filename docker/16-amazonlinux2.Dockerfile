@@ -8,7 +8,7 @@ RUN amazon-linux-extras install -y epel && \
     tar \
     xz
 
-RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
+RUN yum install -y https://rpm.nodesource.com/pub_16.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm && \
     yum install -y nodejs && \
     yum clean all
 

@@ -1,16 +1,16 @@
-FROM registry.access.redhat.com/ubi8-minimal
+FROM registry.access.redhat.com/ubi8
 
-RUN microdnf install -y \
+RUN dnf install -y \
     curl \
     git \
     git-lfs \
     tar \
     xz
 
-RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
-    microdnf module disable -y nodejs && \
-    microdnf install -y nodejs && \
-    microdnf clean -y all
+RUN dnf module disable -y nodejs && \
+    dnf install -y https://rpm.nodesource.com/pub_16.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm && \
+    dnf install -y nodejs && \
+    dnf clean -y all
 
 RUN corepack enable
 
