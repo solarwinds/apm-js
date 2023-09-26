@@ -65,6 +65,15 @@ services:
     links:
       - apm-collector
       - otel-collector
+  18-amazonlinux:
+    build:
+      context: .
+      dockerfile: 18-amazonlinux.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
   18-debian:
     build:
       context: .
@@ -97,6 +106,15 @@ services:
     build:
       context: .
       dockerfile: 20-alpine.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  20-amazonlinux:
+    build:
+      context: .
+      dockerfile: 20-amazonlinux.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:

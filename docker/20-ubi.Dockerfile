@@ -7,8 +7,8 @@ RUN microdnf install -y \
     tar \
     xz
 
-RUN curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
-    microdnf module disable -y nodejs && \
+RUN microdnf module disable -y nodejs && \
+    microdnf install -y https://rpm.nodesource.com/pub_20.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm && \
     microdnf install -y nodejs && \
     microdnf clean -y all
 
