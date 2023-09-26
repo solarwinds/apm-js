@@ -1,16 +1,18 @@
-FROM registry.access.redhat.com/ubi9-minimal
+FROM registry.access.redhat.com/ubi9
 
-RUN microdnf install -y \
+RUN dnf install -y \
     curl-minimal \
     git \
     git-lfs \
     tar \
     xz
 
-RUN microdnf module disable -y nodejs && \
-    microdnf install -y https://rpm.nodesource.com/pub_20.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm && \
-    microdnf install -y nodejs && \
-    microdnf clean -y all
+RUN dnf module disable -y nodejs && \
+    dnf install -y https://rpm.nodesource.com/pub_20.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm && \
+    update-crypto-policies --set LEGACY && \
+    dnf install -y nodejs && \
+    update-crypto-policies --set DEFAULT && \
+    dnf clean -y all
 
 RUN corepack enable
 
