@@ -50,5 +50,3 @@ for (const p of packages) {
     }
   }
 }
-
-cproc.execSync("yarn install", { stdio: "inherit" })

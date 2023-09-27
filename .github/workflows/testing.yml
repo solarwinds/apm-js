@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
+    env:
+      YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
+      YARN_NPM_AUTH_TOKEN: ${{ github.token }}
+      YARN_NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com
 
     steps:
       - uses: actions/checkout@v3
@@ -32,9 +36,12 @@ jobs:
           restore-keys: |
             zig-
 
-      - run: yarn install --immutable
-      - run: yarn version:testing
+      - run: |
+          rm yarn.lock
+          git grep -lz '@solarwinds-apm/' | xargs -0 sed -ie 's:@solarwinds-apm/:@${{ github.repository_owner }}/solarwinds-apm-:g'
+          git grep -lz -G 'solarwinds-apm[^-]' | xargs -0 sed -rie 's:solarwinds-apm([^-]):@${{ github.repository_owner }}/solarwinds-apm\1:g'
+          yarn version:testing
+          yarn install
+          yarn lint:fix
+
       - run: yarn publish
-        env:
-          YARN_NPM_AUTH_TOKEN: ${{ github.token }}
-          YARN_NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com
