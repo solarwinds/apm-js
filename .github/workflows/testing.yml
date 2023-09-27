@@ -32,11 +32,12 @@ jobs:
           restore-keys: |
             zig-
 
-      - run: yarn install --immutable
-
       - run: |
           git grep -lz '@solarwinds-apm/' | xargs -0 sed -ie 's:@solarwinds-apm/:@${{ github.repository_owner }}/solarwinds-apm-:g'
           git grep -lz -G 'solarwinds-apm[^-]' | xargs -0 sed -rie 's:solarwinds-apm([^-]):@${{ github.repository_owner }}/solarwinds-apm\1:g'
+          rm yarn.lock
+          yarn install
+
       - run: yarn version:testing
       - run: yarn publish
         env:
