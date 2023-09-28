@@ -100,6 +100,6 @@ const configs = targets.flatMap(({ name, oboe, target, cpu, glibc }) => {
   ]
 })
 
-build(Object.fromEntries(configs), __dirname)
+build(Object.fromEntries(configs), __dirname, true)
   .then(() => process.exit(0))
   .catch(() => process.exit(1))

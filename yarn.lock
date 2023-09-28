@@ -1980,7 +1980,7 @@ __metadata:
     node-addon-api: "npm:^7.0.0"
     prettier: "npm:^3.0.3"
     typescript: "npm:^5.2.2"
-    zig-build: "npm:^0.2.1"
+    zig-build: "npm:^0.3.0"
   dependenciesMeta:
     "@solarwinds-apm/bindings-linux-arm64-gnu":
       optional: true
@@ -8430,9 +8430,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zig-build@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "zig-build@npm:0.2.1"
+"zig-build@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "zig-build@npm:0.3.0"
   dependencies:
     chalk: "npm:^4.1.2"
   peerDependencies:
@@ -8440,7 +8440,7 @@ __metadata:
   peerDependenciesMeta:
     node-addon-api:
       optional: true
-  checksum: e62daef2541eb53fec08684c4852d7364baa5e823a69379067b9b9e19891a80a074a6f786e427e123140d658f0cd630ce29144bae365c06b50785390a7855110
+  checksum: 1b743ebe95913967d9e373cf277a9b87e5dff7ffcda6d2f19aa694ae254429e7a30a8c4060bf664170a88d71dd742404791bbaf134ac7f33c261deabaf8cb6db
   languageName: node
   linkType: hard
 
