@@ -17,12 +17,14 @@ limitations under the License.
 import { type Dirent, promises as fs } from "node:fs"
 import * as path from "node:path"
 
+import { createRequire } from "@solarwinds-apm/require"
+
 import { type Dependencies, type Package } from "."
 
 export function collectNodeModulesDependencies(dependencies: Dependencies) {
   // node_modules is not a real package we just want all the paths looked up by
   // package resolution
-  const roots = require.resolve.paths("node_modules") ?? []
+  const roots = createRequire().resolve.paths("node_modules") ?? []
   const tasks = roots.map((root) => collectRoot(dependencies, root))
   return Promise.allSettled(tasks)
 }

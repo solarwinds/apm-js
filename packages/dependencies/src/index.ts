@@ -22,7 +22,7 @@ const PNP = "pnpapi"
 export class Dependencies {
   private readonly dependencies = new Map<string, Set<string>>()
 
-  add(name: string, version: string) {
+  add(name: string, version: string): void {
     const versions = this.dependencies.get(name)
     if (versions) {
       versions.add(version)
@@ -33,6 +33,10 @@ export class Dependencies {
 
   has(name: string): boolean {
     return this.dependencies.has(name)
+  }
+
+  names(): IterableIterator<string> {
+    return this.dependencies.keys()
   }
 
   versions(name: string): Set<string> | undefined {
