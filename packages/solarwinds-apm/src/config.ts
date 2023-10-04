@@ -295,7 +295,7 @@ function readConfigFile(path: string) {
   const required = r(path) as Record<string, unknown>
   if (
     "default" in required &&
-    ("__esModule" in required || Object.keys(require).length === 1)
+    (required.__esModule || Object.keys(required).length === 1)
   ) {
     return required.default as Record<string, unknown>
   } else {
