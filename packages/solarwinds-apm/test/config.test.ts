@@ -29,8 +29,8 @@ describe("readConfig", () => {
     process.env.SW_APM_SERVICE_KEY = "token:name"
   })
 
-  it("returns proper defaults", async () => {
-    const config = await readConfig()
+  it("returns proper defaults", () => {
+    const config = readConfig()
     const expected: ExtendedSwConfiguration = {
       token: "token",
       serviceName: "name",
@@ -49,64 +49,64 @@ describe("readConfig", () => {
     expect(config).to.deep.include(expected)
   })
 
-  it("parses booleans", async () => {
+  it("parses booleans", () => {
     process.env.SW_APM_ENABLED = "0"
 
-    const config = await readConfig()
+    const config = readConfig()
     expect(config).to.include({ enabled: false })
   })
 
-  it("parses tracing mode", async () => {
+  it("parses tracing mode", () => {
     process.env.SW_APM_TRACING_MODE = "enabled"
 
-    const config = await readConfig()
+    const config = readConfig()
     expect(config).to.include({ tracingMode: true })
   })
 
-  it("parses trusted path", async () => {
+  it("parses trusted path", () => {
     process.env.SW_APM_TRUSTED_PATH = "package.json"
 
-    const config = await readConfig()
+    const config = readConfig()
     expect(config.certificate).to.include("solarwinds-apm")
   })
 
-  it("parses transaction settings", async () => {
+  it("parses transaction settings", () => {
     process.env.SW_APM_CONFIG_FILE = "test/test.config.js"
 
-    const config = await readConfig()
+    const config = readConfig()
     expect(config.transactionSettings).not.to.be.undefined
     expect(config.transactionSettings).to.have.length(3)
   })
 
-  it("parses experimental env", async () => {
+  it("parses experimental env", () => {
     process.env.SW_APM_EXPERIMENTAL_OTEL_COLLECTOR = "true"
 
-    const config = await readConfig()
+    const config = readConfig()
     expect(config.experimental.otelCollector).to.be.true
   })
 
-  it("throws on bad boolean", async () => {
+  it("throws on bad boolean", () => {
     process.env.SW_APM_ENABLED = "foo"
 
-    await expect(readConfig()).to.be.rejected
+    expect(readConfig).to.throw()
   })
 
-  it("throws on bad tracing mode", async () => {
+  it("throws on bad tracing mode", () => {
     process.env.SW_APM_TRACING_MODE = "foo"
 
-    await expect(readConfig()).to.be.rejected
+    expect(readConfig).to.throw()
   })
 
-  it("throws on non-existent trusted path", async () => {
+  it("throws on non-existent trusted path", () => {
     process.env.SW_APM_TRUSTED_PATH = "foo"
 
-    await expect(readConfig()).to.be.rejected
+    expect(readConfig).to.throw()
   })
 
-  it("uses the right defaults for AppOptics", async () => {
+  it("uses the right defaults for AppOptics", () => {
     process.env.SW_APM_COLLECTOR = "collector.appoptics.com"
 
-    const config = await readConfig()
+    const config = readConfig()
     expect(config).to.include({
       metricFormat: 1,
       certificate: aoCert,

@@ -60,7 +60,7 @@ export async function init() {
 
     let config: ExtendedSwConfiguration
     try {
-      config = await readConfig()
+      config = readConfig()
     } catch (err) {
       console.warn(
         "Invalid SolarWinds APM configuration, application will not be instrumented",
@@ -68,6 +68,9 @@ export async function init() {
       printError(err)
       return
     }
+
+    // initialize instrumentations before any asynchronous code
+    const registerInstrumentations = initInstrumentations(config)
 
     diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
     const logger = diag.createComponentLogger({ namespace: "sw/init" })
@@ -116,7 +119,6 @@ export async function init() {
       await sdk.initMessage(resource, packageJson.version),
     )
 
-    const registerInstrumentations = initInstrumentations(config)
     const tracerProvider = await initTracing(config, resource, reporter)
     const meterProvider = await initMetrics(config, resource, reporter, logger)
     registerInstrumentations(tracerProvider, meterProvider)

@@ -14,18 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { createRequire } from "@solarwinds-apm/require"
-import { expect, it } from "@solarwinds-apm/test"
+const { createRequire: cr } = require("node:module")
 
-import { dependencies } from "../src"
+const caller = () => {
+  const prepareStackTrace = Error.prepareStackTrace
+  try {
+    const callsites = []
+    Error.prepareStackTrace = (_err, cs) => {
+      callsites.push(...cs)
+    }
+    void new Error().stack
 
-const packageJson = createRequire()("../package.json") as {
-  devDependencies: Record<string, string>
+    const current = callsites[0]
+    return callsites.find((cs) => cs.getFileName() !== current.getFileName())
+  } finally {
+    Error.prepareStackTrace = prepareStackTrace
+  }
 }
 
-for (const name of Object.keys(packageJson.devDependencies)) {
-  it(`detects ${name}`, async () => {
-    const deps = await dependencies()
-    expect(deps.has(name)).to.be.true
-  })
+module.exports.createRequire = function createRequire() {
+  return cr(caller().getFileName())
 }

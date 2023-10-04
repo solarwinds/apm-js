@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import * as fs from "node:fs/promises"
+import * as fs from "node:fs"
 import * as path from "node:path"
 import * as process from "node:process"
 
@@ -23,10 +23,13 @@ import { InstrumentationBase } from "@opentelemetry/instrumentation"
 import { View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
+import { createRequire } from "@solarwinds-apm/require"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { z } from "zod"
 
 import aoCert from "./appoptics.crt"
+
+const r = createRequire()
 
 const boolean = z.union([
   z.boolean(),
@@ -57,6 +60,18 @@ const serviceKey = z
     const [token, ...name] = k.split(":")
     return { token: token!, name: name.join(":") }
   })
+
+const trustedPath = z.string().transform((p, ctx) => {
+  try {
+    return fs.readFileSync(p, "utf-8")
+  } catch (err) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: (err as NodeJS.ErrnoException).message,
+    })
+    return z.NEVER
+  }
+})
 
 const tracingMode = z
   .enum(["enabled", "disabled"])
@@ -114,7 +129,7 @@ const schema = z.object({
   serviceKey,
   enabled: boolean.default(true),
   collector: z.string().optional(),
-  trustedPath: z.string().optional(),
+  trustedPath: trustedPath.optional(),
   proxy: z.string().optional(),
   logLevel: logLevel.default("info"),
   triggerTraceEnabled: boolean.default(true),
@@ -160,12 +175,12 @@ const ENV_PREFIX = "SW_APM_"
 const ENV_PREFIX_EXPERIMENTAL = `${ENV_PREFIX}EXPERIMENTAL_`
 const DEFAULT_FILE_NAME = "solarwinds.apm.config"
 
-export async function readConfig(): Promise<ExtendedSwConfiguration> {
+export function readConfig(): ExtendedSwConfiguration {
   const env = envObject()
   const experimentalEnv = envObject(ENV_PREFIX_EXPERIMENTAL)
 
-  const path = await filePath()
-  const file = path ? await readConfigFile(path) : {}
+  const path = filePath()
+  const file = path ? readConfigFile(path) : {}
 
   const experimentalFile =
     file.experimental && typeof file.experimental === "object"
@@ -182,14 +197,9 @@ export async function readConfig(): Promise<ExtendedSwConfiguration> {
     ...raw,
     token: raw.serviceKey.token,
     serviceName: raw.serviceKey.name,
+    certificate: raw.trustedPath,
     oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
     otelLogLevel: raw.logLevel,
-  }
-
-  if (raw.trustedPath) {
-    config.certificate = await fs.readFile(raw.trustedPath, {
-      encoding: "utf-8",
-    })
   }
 
   if (config.collector?.includes("appoptics.com")) {
@@ -258,7 +268,7 @@ function envObject(prefix = ENV_PREFIX) {
   )
 }
 
-async function filePath() {
+function filePath() {
   const cwd = process.cwd()
   let override = process.env.SW_APM_CONFIG_FILE
 
@@ -266,7 +276,7 @@ async function filePath() {
     if (!path.isAbsolute(override)) {
       override = path.join(cwd, override)
     }
-    if (!(await exists(override))) {
+    if (!fs.existsSync(override)) {
       console.warn(`couldn't read config file at ${override}`)
       return
     }
@@ -276,21 +286,21 @@ async function filePath() {
     const fullName = path.join(cwd, DEFAULT_FILE_NAME)
     const options = [`${fullName}.ts`, `${fullName}.js`, `${fullName}.json`]
     for (const option of options) {
-      if (await exists(option)) return option
+      if (fs.existsSync(option)) return option
     }
   }
 }
 
-function exists(path: string) {
-  return fs
-    .stat(path)
-    .then(() => true)
-    .catch(() => false)
-}
-
-async function readConfigFile(file: string) {
-  const imported = (await import(file)) as { default: Record<string, unknown> }
-  return imported.default
+function readConfigFile(path: string) {
+  const required = r(path) as Record<string, unknown>
+  if (
+    "default" in required &&
+    ("__esModule" in required || Object.keys(require).length === 1)
+  ) {
+    return required.default as Record<string, unknown>
+  } else {
+    return required
+  }
 }
 
 function otelLevelToOboeLevel(level?: DiagLogLevel): number {

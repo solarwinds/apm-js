@@ -67,12 +67,23 @@ module.exports = [
   { ignores: ["dist/**"] },
   // extend from eslint's recommendations as a baseline
   js.configs.recommended,
-  // js files assume node environment with es2021
+  // js and cjs files assume cjs node environment with es2021
   {
-    files: ["**/*.js"],
+    files: ["**/*.js", "**/*.cjs"],
     languageOptions: {
       ecmaVersion: 12,
       globals: { ...globals.es2021, ...globals.commonjs, ...globals.node },
+    },
+    rules: {
+      "no-unused-vars": ["warn", unusedOptions],
+    },
+  },
+  // mjs files assume esm node environment with es2021
+  {
+    files: ["**/*.mjs"],
+    languageOptions: {
+      ecmaVersion: 12,
+      globals: { ...globals.es2021, ...globals.node },
     },
     rules: {
       "no-unused-vars": ["warn", unusedOptions],
@@ -134,7 +145,7 @@ module.exports = [
   },
   // license notices
   {
-    files: ["**/*.js", "**/*.ts"],
+    files: ["**/*.js", "**/*.ts", "**/*.cjs", "**/*.mjs"],
     plugins: { header: headerPlugin },
     rules: {
       "header/header": ["error", "block", notice, 2],

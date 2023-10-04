@@ -261,9 +261,9 @@ __metadata:
   linkType: hard
 
 "@fastify/error@npm:^3.2.0":
-  version: 3.3.0
-  resolution: "@fastify/error@npm:3.3.0"
-  checksum: b9651ad1b25781880343514bd4dfcbdb55e2459830a78ada73c0ac3dbf217161ee80af7245c7c7bfa370775d0beb146845c7314da13f478ff67520c8128ec3f0
+  version: 3.4.0
+  resolution: "@fastify/error@npm:3.4.0"
+  checksum: 548216c10662a4c2f210c7c40f98195c530b646cf8d27ea35d18c0d513fe2f33b2ba2611a61619a1ec3163e8c0fefca05a671bc87a355df30476fee224bda3b3
   languageName: node
   linkType: hard
 
@@ -288,12 +288,12 @@ __metadata:
   linkType: hard
 
 "@grpc/grpc-js@npm:^1.7.1":
-  version: 1.9.4
-  resolution: "@grpc/grpc-js@npm:1.9.4"
+  version: 1.9.5
+  resolution: "@grpc/grpc-js@npm:1.9.5"
   dependencies:
     "@grpc/proto-loader": "npm:^0.7.8"
     "@types/node": "npm:>=12.12.47"
-  checksum: 2cfebb3d65f3795faf5780fcddbf1c19da7a5e469038c762aeeca35763b04d7d39cea99072808fabffaf63bbaa268a9c70fe2402e68c21e860249d89f7b01280
+  checksum: 639a29d4da49b04efb460b15cb7cb7485bf29901c149199dd3cd9f17226361b5d91d382300dd0742d163acf5f98dc65604bdb8fd52a665bca5e2e385a5bb13d5
   languageName: node
   linkType: hard
 
@@ -1636,6 +1636,7 @@ __metadata:
   resolution: "@solarwinds-apm/dependencies@workspace:packages/dependencies"
   dependencies:
     "@solarwinds-apm/eslint-config": "workspace:^"
+    "@solarwinds-apm/require": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^16.13.0"
     eslint: "npm:^8.50.0"
@@ -1694,7 +1695,7 @@ __metadata:
     "@opentelemetry/api": "npm:^1.3.0"
     fastify: "npm:^4.23.2"
     pg: "npm:^8.11.3"
-    pino: "npm:^8.15.4"
+    pino: "npm:^8.15.5"
     solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
@@ -1735,7 +1736,7 @@ __metadata:
     "@prisma/client": "npm:^5.4.0"
     "@prisma/instrumentation": "npm:^5.4.0"
     "@types/node": "npm:^16.13.0"
-    "@types/react": "npm:^18.2.24"
+    "@types/react": "npm:^18.2.25"
     eslint: "npm:^8.50.0"
     eslint-config-next: "npm:^13.5.4"
     next: "npm:^13.5.4"
@@ -1837,6 +1838,16 @@ __metadata:
     eslint: "npm:^8.50.0"
     prettier: "npm:^3.0.3"
     typescript: "npm:^5.2.2"
+  languageName: unknown
+  linkType: soft
+
+"@solarwinds-apm/require@workspace:^, @solarwinds-apm/require@workspace:packages/require":
+  version: 0.0.0-use.local
+  resolution: "@solarwinds-apm/require@workspace:packages/require"
+  dependencies:
+    "@solarwinds-apm/eslint-config": "workspace:^"
+    eslint: "npm:^8.50.0"
+    prettier: "npm:^3.0.3"
   languageName: unknown
   linkType: soft
 
@@ -2245,16 +2256,16 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:>=16.18 <17 || >=18.8 <19 || >=20":
-  version: 20.8.0
-  resolution: "@types/node@npm:20.8.0"
-  checksum: 9ee3b9116bdb85bf519fe373f0faafdec048b6e3e34b1d97c20a3331f3d3ae0a87b08696805758447694869620d6359c81c18fdee30751a8fb4231bffa8f5482
+  version: 20.8.2
+  resolution: "@types/node@npm:20.8.2"
+  checksum: e9952db222dd3e1cca1107d1b2aaec4e93b4af8b4fc32b42dd4fac3719f98c14edb8c591829c972d2f6e2b527bbb34af53608f6a7973f4a7dbd1d3bc929bbe8d
   languageName: node
   linkType: hard
 
 "@types/node@npm:^16.13.0":
-  version: 16.18.55
-  resolution: "@types/node@npm:16.18.55"
-  checksum: ba428f558a2097abd5f89726c34f83a67ec1acd29300cc3297f6ab01ff12c48847b12db8ac668d9c0e493155ec64bcf2c87e34135f325561f07654ad2c55463e
+  version: 16.18.57
+  resolution: "@types/node@npm:16.18.57"
+  checksum: 191cfb12fde8c882f1d982a07302f7b87cda7b93ec227b0607f908f3b3b11c5ff96bbed613f370818ea60a8a98140962b193324bdadff679bd5ca75d04407e60
   languageName: node
   linkType: hard
 
@@ -2310,14 +2321,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.2.24":
-  version: 18.2.24
-  resolution: "@types/react@npm:18.2.24"
+"@types/react@npm:^18.2.25":
+  version: 18.2.25
+  resolution: "@types/react@npm:18.2.25"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: a83c7ae0010b265012ef038e3e00e4708c27c523f0aa0631e44f934e9c5338a51b6db1901f91d8ba10d3dc292a3a200b2cb5e47430cde58fbf988969866fe75a
+  checksum: 17559ab8e9a3347b466eb782e21fe45f841e0e39d3f656e4711693cb6d193f948a9913c9e96b64bc4700eb24b34c47f15adbddcc39c596b4b3b79c99619b83bf
   languageName: node
   linkType: hard
 
@@ -3046,9 +3057,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001406":
-  version: 1.0.30001542
-  resolution: "caniuse-lite@npm:1.0.30001542"
-  checksum: b8e44af2165595e545dc2920da506bc17581fb98ccc884b6a430287ed79c9886f388edf9db1c7c8af7f02b45e7ee218e4a3272f7268dbae7e6ebb1340a6272f7
+  version: 1.0.30001543
+  resolution: "caniuse-lite@npm:1.0.30001543"
+  checksum: 3d80abff0c2c70167f2bbc8f5105370a6eb9f4c2b59c520eaa18b76082d45b27a292c39d2a5dcaeca253679cab5aca8ff89b569502839fadd7be8ae04fb41349
   languageName: node
   linkType: hard
 
@@ -3257,10 +3268,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"convert-source-map@npm:^1.6.0":
-  version: 1.9.0
-  resolution: "convert-source-map@npm:1.9.0"
-  checksum: 281da55454bf8126cbc6625385928c43479f2060984180c42f3a86c8b8c12720a24eac260624a7d1e090004028d2dee78602330578ceec1a08e27cb8bb0a8a5b
+"convert-source-map@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "convert-source-map@npm:2.0.0"
+  checksum: 8f2f7a27a1a011cc6cc88cc4da2d7d0cfa5ee0369508baae3d98c260bb3ac520691464e5bbe4ae7cdf09860c1d69ecc6f70c63c6e7c7f7e3f18ec08484dc7d9b
   languageName: node
   linkType: hard
 
@@ -4680,11 +4691,9 @@ __metadata:
   linkType: hard
 
 "has@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "has@npm:1.0.3"
-  dependencies:
-    function-bind: "npm:^1.1.1"
-  checksum: e1da0d2bd109f116b632f27782cf23182b42f14972ca9540e4c5aa7e52647407a0a4a76937334fddcb56befe94a3494825ec22b19b51f5e5507c3153fd1a5e1b
+  version: 1.0.4
+  resolution: "has@npm:1.0.4"
+  checksum: 82c1220573dc1f0a014a5d6189ae52a1f820f99dfdc00323c3a725b5002dcb7f04e44f460fea7af068474b2dd7c88cbe1846925c84017be9e31e1708936d305b
   languageName: node
   linkType: hard
 
@@ -5180,15 +5189,15 @@ __metadata:
   linkType: hard
 
 "joi@npm:^17.3.0":
-  version: 17.10.2
-  resolution: "joi@npm:17.10.2"
+  version: 17.11.0
+  resolution: "joi@npm:17.11.0"
   dependencies:
     "@hapi/hoek": "npm:^9.0.0"
     "@hapi/topo": "npm:^5.0.0"
     "@sideway/address": "npm:^4.1.3"
     "@sideway/formula": "npm:^3.0.1"
     "@sideway/pinpoint": "npm:^2.0.0"
-  checksum: 5999a68f38a24de0b98850e137bbf4134e6dd8de29faa5893d7836f3e3aeb76ed5b2dd4daf836b87d2681aa9dfb6a5531c586d4d361dca9721d9ad0567be6b48
+  checksum: c41c86fe772828b88fbdbcaef2e41235ccbb107c22523a377f9a2fd39829f203213f37a352589f49d9a9b38bf1c645846defede8b81d8c1f3123117c1a600010
   languageName: node
   linkType: hard
 
@@ -5931,9 +5940,9 @@ __metadata:
   linkType: hard
 
 "on-exit-leak-free@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "on-exit-leak-free@npm:2.1.0"
-  checksum: 66cf10b270ffd4df593efd75f9122a16980672cb583380440e44f96db1c41607c42b8986e96f1563c769daed3af270c240e1195fc6e6393da1da5c36233d848b
+  version: 2.1.2
+  resolution: "on-exit-leak-free@npm:2.1.2"
+  checksum: faea2e1c9d696ecee919026c32be8d6a633a7ac1240b3b87e944a380e8a11dc9c95c4a1f8fb0568de7ab8db3823e790f12bda45296b1d111e341aad3922a0570
   languageName: node
   linkType: hard
 
@@ -6223,9 +6232,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^8.12.0, pino@npm:^8.15.4":
-  version: 8.15.4
-  resolution: "pino@npm:8.15.4"
+"pino@npm:^8.12.0, pino@npm:^8.15.5":
+  version: 8.15.5
+  resolution: "pino@npm:8.15.5"
   dependencies:
     atomic-sleep: "npm:^1.0.0"
     fast-redact: "npm:^3.1.1"
@@ -6240,7 +6249,7 @@ __metadata:
     thread-stream: "npm:^2.0.0"
   bin:
     pino: bin.js
-  checksum: a0def93489498c03c654e27fe0994cd8a5e6f3e947785ac0d1c1232c170970f6ed9f09edfff326acdad7697d42dcb3489501af8ca08af6740eeea0d110b6f287
+  checksum: 294ff60765c8844466a12c8c8f33f1dd1802e7622597b3d9112058aae2fdbf714dc21de0fadabfb936a223e2d75e8be9077395b033b9e481a7cc035975e6a54f
   languageName: node
   linkType: hard
 
@@ -6998,6 +7007,7 @@ __metadata:
     "@solarwinds-apm/bindings": "workspace:^"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/instrumentations": "workspace:^"
+    "@solarwinds-apm/require": "workspace:^"
     "@solarwinds-apm/sdk": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^16.13.0"
@@ -7020,11 +7030,11 @@ __metadata:
   linkType: soft
 
 "sonic-boom@npm:^3.1.0":
-  version: 3.4.0
-  resolution: "sonic-boom@npm:3.4.0"
+  version: 3.5.0
+  resolution: "sonic-boom@npm:3.5.0"
   dependencies:
     atomic-sleep: "npm:^1.0.0"
-  checksum: da23a47faa7b9b225c7fdf16f9c6aeb58730708cf509297ab2fbbf3f92a470f13f89dbfed3cd1438d705146fec09e6a0702c8766f81b391f1e02c5ea708988d9
+  checksum: 0884b0bc64154c6c35175087bdcbbfa01066bc4007359825446767d0a2b9ea89d7db924728fe6c097fc0a5a087215365307cb770f29eff8e25dd17617c081f32
   languageName: node
   linkType: hard
 
@@ -7304,11 +7314,11 @@ __metadata:
   linkType: hard
 
 "thread-stream@npm:^2.0.0":
-  version: 2.4.0
-  resolution: "thread-stream@npm:2.4.0"
+  version: 2.4.1
+  resolution: "thread-stream@npm:2.4.1"
   dependencies:
     real-require: "npm:^0.2.0"
-  checksum: 7e0728bc6fc70e4a73dba0c0014a57840ceff0ce9c7b5e22e3ebba12a01448771eb212755f016722f9e4573faf11fc3220ae48e361e5b05ac0339a2449ca534f
+  checksum: ce29265810b9550ce896726301ff006ebfe96b90292728f07cfa4c379740585583046e2a8018afc53aca66b18fed12b33a84f3883e7ebc317185f6682898b8f8
   languageName: node
   linkType: hard
 
@@ -7322,9 +7332,9 @@ __metadata:
   linkType: hard
 
 "toad-cache@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "toad-cache@npm:3.2.0"
-  checksum: 48dc4ff92ea228426f05c3f0b04333253ac9a4b5e6b83c260469d1d0995ee39397af0cd3ca327d53ba52ae23cf10a704b90b8b70707376427765ad01ff065ac2
+  version: 3.3.0
+  resolution: "toad-cache@npm:3.3.0"
+  checksum: df2e7fef3991e238197796d3ddd548e1a6b8cb569de8ee053949dcebb689a5ffdbaf2c2642c035768c00d114eb5d4db96925247cc9ccec9d88a6e6d58c95c76a
   languageName: node
   linkType: hard
 
@@ -7635,13 +7645,13 @@ __metadata:
   linkType: hard
 
 "v8-to-istanbul@npm:^9.0.0":
-  version: 9.1.0
-  resolution: "v8-to-istanbul@npm:9.1.0"
+  version: 9.1.2
+  resolution: "v8-to-istanbul@npm:9.1.2"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.12"
     "@types/istanbul-lib-coverage": "npm:^2.0.1"
-    convert-source-map: "npm:^1.6.0"
-  checksum: 657ef7c52a514c1a0769663f96dd6f2cd11d2d3f6c8272d1035f4a543dca0b52c84b005beb7f0ca215eb98425c8bc4aa92a62826b1fc76abc1f7228d33ccbc60
+    convert-source-map: "npm:^2.0.0"
+  checksum: ceed817914e1ddbe88cbeaae37aff82effbbf67846810f24c551315dade629e65f65d8cd853ce0982eb30c8865eeeed2e0d3935e3b227cbcefb2c1607de04e82
   languageName: node
   linkType: hard
 
