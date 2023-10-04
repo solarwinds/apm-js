@@ -19,11 +19,7 @@ import * as sdk from "@solarwinds-apm/sdk"
 
 import { init } from "./init"
 
-try {
-  init()
-} catch (err) {
-  console.warn(err)
-}
+init().catch(console.warn)
 
 export function setTransactionName(name: string): boolean {
   return sdk.setTransactionName(context.active(), name)

@@ -22,16 +22,9 @@ import {
   metrics,
   type TracerProvider,
 } from "@opentelemetry/api"
-import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
-import {
-  detectResourcesSync,
-  hostDetectorSync,
-  osDetectorSync,
-  processDetectorSync,
-  Resource,
-} from "@opentelemetry/resources"
+import { Resource } from "@opentelemetry/resources"
 import {
   MeterProvider,
   PeriodicExportingMetricReader,
@@ -43,20 +36,17 @@ import {
 } from "@opentelemetry/sdk-trace-node"
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
+import {
+  getDetectedResource,
+  getInstrumentations,
+} from "@solarwinds-apm/instrumentations"
 import * as sdk from "@solarwinds-apm/sdk"
 
+import packageJson from "../package.json"
 import { type ExtendedSwConfiguration, printError, readConfig } from "./config"
-import { requireOptional } from "./peers"
+import { importOptional } from "./peers"
 
-const otlpMetric = requireOptional("@opentelemetry/exporter-metrics-otlp-grpc")
-const otlpTrace = requireOptional("@opentelemetry/exporter-trace-otlp-grpc")
-
-export function init() {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const packageJson = require("../package.json") as {
-    name: string
-    version: string
-  }
+export async function init() {
   const id = `${packageJson.name}@${packageJson.version}`
   const initSymbol = Symbol.for(`${id}/init`)
 
@@ -70,7 +60,7 @@ export function init() {
 
     let config: ExtendedSwConfiguration
     try {
-      config = readConfig()
+      config = await readConfig()
     } catch (err) {
       console.warn(
         "Invalid SolarWinds APM configuration, application will not be instrumented",
@@ -95,11 +85,7 @@ export function init() {
     }
 
     const resource = Resource.default()
-      .merge(
-        detectResourcesSync({
-          detectors: [hostDetectorSync, osDetectorSync, processDetectorSync],
-        }),
-      )
+      .merge(getDetectedResource())
       .merge(
         new Resource({
           [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
@@ -107,39 +93,41 @@ export function init() {
       )
 
     const reporter = sdk.createReporter(config)
-    const tracerProvider = initTracing(
-      config,
-      resource,
+
+    oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
+      const logger = diag.createComponentLogger({
+        namespace: `sw/oboe/${module}`,
+      })
+      const log = oboeLevelToOtelLogger(level, logger)
+
+      if (sourceName && level > oboe.DEBUG_INFO) {
+        const source = { source: sourceName, line: sourceLine }
+        log(message, source)
+      } else {
+        log(message)
+      }
+    }, config.oboeLogLevel)
+
+    if (resource.asyncAttributesPending) {
+      await resource.waitForAsyncAttributes?.()
+    }
+    sdk.sendStatus(
       reporter,
-      packageJson.version,
+      await sdk.initMessage(resource, packageJson.version),
     )
-    const meterProvider = initMetrics(config, resource, reporter, logger)
-    initInstrumentations(config, tracerProvider, meterProvider)
+
+    const registerInstrumentations = initInstrumentations(config)
+    const tracerProvider = await initTracing(config, resource, reporter)
+    const meterProvider = await initMetrics(config, resource, reporter, logger)
+    registerInstrumentations(tracerProvider, meterProvider)
   }
 }
 
-function initTracing(
+async function initTracing(
   config: ExtendedSwConfiguration,
   resource: Resource,
   reporter: oboe.Reporter,
-  version: string,
 ) {
-  oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
-    const logger = diag.createComponentLogger({
-      namespace: `sw/oboe/${module}`,
-    })
-    const log = oboeLevelToOtelLogger(level, logger)
-
-    if (sourceName && level > oboe.DEBUG_INFO) {
-      const source = { source: sourceName, line: sourceLine }
-      log(message, source)
-    } else {
-      log(message)
-    }
-  }, config.oboeLogLevel)
-
-  sdk.sendStatus(reporter, sdk.initMessage(resource, version))
-
   const sampler = new sdk.SwSampler(
     config,
     diag.createComponentLogger({ namespace: "sw/sampler" }),
@@ -174,14 +162,17 @@ function initTracing(
   })
   provider.addSpanProcessor(spanProcessor)
 
-  if (config.experimental.otelCollector && otlpTrace) {
-    const { OTLPTraceExporter } = otlpTrace
-    provider.addSpanProcessor(
-      new BatchSpanProcessor(
-        // configurable through standard OTel environment
-        new OTLPTraceExporter(),
-      ),
-    )
+  if (config.experimental.otelCollector) {
+    const otlp = await importOptional("@opentelemetry/exporter-trace-otlp-grpc")
+    if (otlp) {
+      const { OTLPTraceExporter } = otlp
+      provider.addSpanProcessor(
+        new BatchSpanProcessor(
+          // configurable through standard OTel environment
+          new OTLPTraceExporter(),
+        ),
+      )
+    }
   }
 
   provider.register({ propagator })
@@ -189,7 +180,7 @@ function initTracing(
   return provider
 }
 
-function initMetrics(
+async function initMetrics(
   config: ExtendedSwConfiguration,
   resource: Resource,
   reporter: oboe.Reporter,
@@ -211,15 +202,20 @@ function initMetrics(
   })
   provider.addMetricReader(reader)
 
-  if (config.experimental.otelCollector && otlpMetric) {
-    const { OTLPMetricExporter } = otlpMetric
-    provider.addMetricReader(
-      new PeriodicExportingMetricReader({
-        // configurable through standard OTel environment
-        exporter: new OTLPMetricExporter(),
-        exportIntervalMillis: config.metrics.interval,
-      }),
+  if (config.experimental.otelCollector) {
+    const otlp = await importOptional(
+      "@opentelemetry/exporter-metrics-otlp-grpc",
     )
+    if (otlp) {
+      const { OTLPMetricExporter } = otlp
+      provider.addMetricReader(
+        new PeriodicExportingMetricReader({
+          // configurable through standard OTel environment
+          exporter: new OTLPMetricExporter(),
+          exportIntervalMillis: config.metrics.interval,
+        }),
+      )
+    }
   }
 
   metrics.setGlobalMeterProvider(provider)
@@ -238,16 +234,12 @@ function initMetrics(
   return provider
 }
 
-function initInstrumentations(
-  config: ExtendedSwConfiguration,
-  tracerProvider: TracerProvider,
-  meterProvider: MeterProvider,
-) {
+function initInstrumentations(config: ExtendedSwConfiguration) {
   const traceOptionsResponsePropagator =
     new sdk.SwTraceOptionsResponsePropagator()
 
   const instrumentations = [
-    ...getNodeAutoInstrumentations(
+    ...getInstrumentations(
       sdk.patch(config.instrumentations.configs ?? {}, {
         ...config,
         responsePropagator: traceOptionsResponsePropagator,
@@ -255,7 +247,13 @@ function initInstrumentations(
     ),
     ...(config.instrumentations.extra ?? []),
   ]
-  registerInstrumentations({ instrumentations, tracerProvider, meterProvider })
+
+  return (tracerProvider: TracerProvider, meterProvider: MeterProvider) =>
+    registerInstrumentations({
+      instrumentations,
+      tracerProvider,
+      meterProvider,
+    })
 }
 
 export function oboeLevelToOtelLogger(

@@ -38,14 +38,13 @@
     "provenance": true
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p src",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js",
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@opentelemetry/auto-instrumentations-node": "^0.39.2",
     "@opentelemetry/core": "~1.17.0",
     "@opentelemetry/instrumentation": "~0.43.0",
     "@opentelemetry/resources": "~1.17.0",
@@ -53,15 +52,14 @@
     "@opentelemetry/sdk-trace-node": "~1.17.0",
     "@opentelemetry/semantic-conventions": "~1.17.0",
     "@solarwinds-apm/bindings": "workspace:^",
+    "@solarwinds-apm/instrumentations": "workspace:^",
     "@solarwinds-apm/sdk": "workspace:^",
-    "zod": "^3.22.2"
+    "zod": "^3.22.3"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.3.0",
-    "@opentelemetry/exporter-metrics-otlp-grpc": "~0.43.0",
-    "@opentelemetry/exporter-trace-otlp-grpc": "~0.43.0",
-    "json5": ">=1.0.0",
-    "ts-node": ">=9.0.0"
+    "@opentelemetry/exporter-metrics-otlp-grpc": ">=0.26.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": ">=0.26.0"
   },
   "peerDependenciesMeta": {
     "@opentelemetry/api": {
@@ -72,12 +70,6 @@
     },
     "@opentelemetry/exporter-trace-otlp-grpc": {
       "optional": true
-    },
-    "json5": {
-      "optional": true
-    },
-    "ts-node": {
-      "optional": true
     }
   },
   "devDependencies": {
@@ -87,10 +79,8 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^16.13.0",
-    "eslint": "^8.49.0",
-    "json5": "^2.2.3",
+    "eslint": "^8.50.0",
     "prettier": "^3.0.3",
-    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "engines": {

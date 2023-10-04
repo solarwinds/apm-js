@@ -34,14 +34,16 @@
     "@types/chai": "^4.3.6",
     "@types/node": ">=16.18 <17 || >=18.8 <19 || >=20",
     "c8": "^8.0.1",
-    "chai": "^4.3.8",
+    "chai": "^4.3.10",
+    "chai-as-promised": "^7.1.1",
     "globby": "^11.1.0",
     "semver": "^7.5.4",
-    "tsx": "^3.12.10"
+    "tsx": "^3.13.0"
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "eslint": "^8.49.0",
+    "@types/chai-as-promised": "^7.1.6",
+    "eslint": "^8.50.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },

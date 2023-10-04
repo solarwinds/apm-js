@@ -24,8 +24,8 @@ const packageJson = require("../package.json") as {
 }
 
 for (const name of Object.keys(packageJson.devDependencies)) {
-  it(`detects ${name}`, () => {
-    const deps = dependencies()
+  it(`detects ${name}`, async () => {
+    const deps = await dependencies()
     expect(deps.has(name)).to.be.true
   })
 }

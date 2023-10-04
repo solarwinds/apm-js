@@ -23,8 +23,7 @@ import {
 } from "@opentelemetry/api"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require("../package.json") as { name: string; version: string }
+import packageJson from "../package.json"
 
 interface InstrumentOptions {
   enabled?: boolean
@@ -44,7 +43,7 @@ function startActiveSpan<T>(span: SpanOptions, f: (span: Span) => T): T {
   const s = typeof span === "string" ? { name: span } : span()
   const last = trace.getActiveSpan()
 
-  const tracer = trace.getTracer(pkg.name, pkg.version)
+  const tracer = trace.getTracer(packageJson.name, packageJson.version)
   return tracer.startActiveSpan(s.name, { attributes: s.kvpairs }, (span) => {
     s.finalize?.(span, last)
     return f(span)

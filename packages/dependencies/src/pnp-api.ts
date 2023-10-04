@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import * as fs from "node:fs/promises"
 import * as path from "node:path"
 
 import { type Dependencies, type Package } from "."
@@ -42,16 +43,14 @@ export function collectPnpApiDependencies(
   dependencies: Dependencies,
   pnp: YarnPnpApi,
 ) {
-  for (const locator of pnp.getAllLocators()) {
+  const tasks = pnp.getAllLocators().map(async (locator) => {
     const { packageLocation } = pnp.getPackageInformation(locator)
 
-    try {
-      const packagePath = path.join(packageLocation, "package.json")
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { name, version } = require(packagePath) as Package
-      dependencies.add(name, version)
-    } catch {
-      continue
-    }
-  }
+    const packagePath = path.join(packageLocation, "package.json")
+    const packageJson = await fs.readFile(packagePath, { encoding: "utf-8" })
+    const { name, version } = JSON.parse(packageJson) as Package
+    dependencies.add(name, version)
+  })
+
+  return Promise.allSettled(tasks)
 }

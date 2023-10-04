@@ -23,6 +23,7 @@ import { oboe } from "@solarwinds-apm/bindings"
 import { dependencies } from "@solarwinds-apm/dependencies"
 import * as semver from "semver"
 
+import packageJson from "../package.json"
 import { type SwConfiguration } from "./config"
 
 export function createReporter(config: SwConfiguration): oboe.Reporter {
@@ -56,24 +57,24 @@ export function createReporter(config: SwConfiguration): oboe.Reporter {
   })
 }
 
-export function initMessage(
+export async function initMessage(
   resource: Resource,
   version: string,
-): Record<string, string | number | boolean> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const packageJson = require("../package.json") as { version: string }
-
+): Promise<Record<string, string | number | boolean>> {
   const libsVersions = Object.fromEntries(
     Object.entries(process.versions)
       .filter(([name]) => name !== "node")
       .map(([name, version]) => [`Node.${name}.Version`, version!]),
   )
+
+  const deps = await dependencies()
   const depsVersions = Object.fromEntries(
-    [...dependencies()].map(([name, versions]) => [
+    [...deps].map(([name, versions]) => [
       `Node.${name}.Version`,
       [...versions].sort(semver.compare).join(", "),
     ]),
   )
+
   const resourceAttributes = Object.fromEntries(
     Object.entries(resource.attributes)
       .map<[string, AttributeValue | undefined]>(([name, value]) =>

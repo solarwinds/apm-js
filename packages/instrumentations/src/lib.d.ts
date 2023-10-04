@@ -14,28 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { metrics } from "@opentelemetry/api"
-import { lazy } from "@solarwinds-apm/lazy"
-
-import packageJson from "../../package.json"
-import * as cpu from "./cpu"
-import * as eventLoop from "./event-loop"
-import * as gc from "./gc"
-import * as memory from "./memory"
-
-export const meter = lazy(() =>
-  metrics.getMeter(packageJson.name, packageJson.version),
-)
-
-export function start() {
-  cpu.start()
-  eventLoop.start()
-  gc.start()
-  memory.start()
-}
-export function stop() {
-  cpu.stop()
-  eventLoop.stop()
-  gc.stop()
-  memory.stop()
+interface ObjectConstructor {
+  // Object.entries but with very accurate types. The default typings for
+  // { name: "John", age: 30 } would make the return type
+  // [string, string | number][] while this typing makes it
+  // (["name", string] | ["age", number])[]
+  entries<const T extends Record<string, unknown>>(
+    object: T,
+  ): { [K in keyof T]: [K, T[K]] }[keyof T][]
 }

@@ -31,7 +31,9 @@ exec(`turbo run build --filter=./examples/${example}...`)
 
 // get env vars that will be passed to the container
 const env = Object.fromEntries(
-  Object.entries(process.env).filter(([key]) => key.startsWith("SW_APM_")),
+  Object.entries(process.env).filter(
+    ([key]) => key.startsWith("SW_APM_") || key.startsWith("OTEL_"),
+  ),
 )
 if (collector) {
   env.SW_APM_COLLECTOR = "apm-collector:12224"

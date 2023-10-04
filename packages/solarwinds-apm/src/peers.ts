@@ -17,25 +17,22 @@ limitations under the License.
 interface OptionalPeerDependencies {
   "@opentelemetry/exporter-metrics-otlp-grpc": typeof import("@opentelemetry/exporter-metrics-otlp-grpc")
   "@opentelemetry/exporter-trace-otlp-grpc": typeof import("@opentelemetry/exporter-trace-otlp-grpc")
-  json5: typeof import("json5")
-  "ts-node": typeof import("ts-node")
 }
 type OptionalPeerDependency = keyof OptionalPeerDependencies
 
-export function requireOptional<M extends OptionalPeerDependency, F>(
+export async function importOptional<M extends OptionalPeerDependency, F>(
   module: M,
   fallback: F,
-): OptionalPeerDependencies[M] | F
-export function requireOptional<M extends OptionalPeerDependency>(
+): Promise<OptionalPeerDependencies[M] | F>
+export async function importOptional<M extends OptionalPeerDependency>(
   module: M,
-): OptionalPeerDependencies[M] | undefined
-export function requireOptional<M extends OptionalPeerDependency, F>(
+): Promise<OptionalPeerDependencies[M] | undefined>
+export async function importOptional<M extends OptionalPeerDependency, F>(
   module: M,
   fallback?: F,
 ) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require(module) as OptionalPeerDependencies[M]
+    return (await import(module)) as OptionalPeerDependencies[M]
   } catch {
     return fallback
   }
