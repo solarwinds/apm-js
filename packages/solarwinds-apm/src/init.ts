@@ -44,7 +44,6 @@ import * as sdk from "@solarwinds-apm/sdk"
 
 import packageJson from "../package.json"
 import { type ExtendedSwConfiguration, printError, readConfig } from "./config"
-import { importOptional } from "./peers"
 
 export async function init() {
   const id = `${packageJson.name}@${packageJson.version}`
@@ -165,7 +164,9 @@ async function initTracing(
   provider.addSpanProcessor(spanProcessor)
 
   if (config.experimental.otelCollector) {
-    const otlp = await importOptional("@opentelemetry/exporter-trace-otlp-grpc")
+    const otlp = await import("@opentelemetry/exporter-trace-otlp-grpc").catch(
+      () => undefined,
+    )
     if (otlp) {
       const { OTLPTraceExporter } = otlp
       provider.addSpanProcessor(
@@ -205,9 +206,9 @@ async function initMetrics(
   provider.addMetricReader(reader)
 
   if (config.experimental.otelCollector) {
-    const otlp = await importOptional(
-      "@opentelemetry/exporter-metrics-otlp-grpc",
-    )
+    const otlp = await import(
+      "@opentelemetry/exporter-metrics-otlp-grpc"
+    ).catch(() => undefined)
     if (otlp) {
       const { OTLPMetricExporter } = otlp
       provider.addMetricReader(
