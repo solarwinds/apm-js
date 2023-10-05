@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import * as fs from "node:fs"
+import { createRequire } from "node:module"
 import * as path from "node:path"
 import * as process from "node:process"
 
@@ -23,13 +24,13 @@ import { InstrumentationBase } from "@opentelemetry/instrumentation"
 import { View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
-import { createRequire } from "@solarwinds-apm/module"
+import { callsite } from "@solarwinds-apm/module"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { z } from "zod"
 
 import aoCert from "./appoptics.crt"
 
-const r = createRequire()
+const r = createRequire(callsite().getFileName()!)
 
 const boolean = z.union([
   z.boolean(),

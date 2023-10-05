@@ -55,7 +55,7 @@
     "@solarwinds-apm/instrumentations": "workspace:^",
     "@solarwinds-apm/module": "workspace:^",
     "@solarwinds-apm/sdk": "workspace:^",
-    "zod": "^3.22.3"
+    "zod": "^3.22.4"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.3.0",

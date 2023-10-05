@@ -14,9 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { createRequire as cr } from "node:module"
-
-const caller = () => {
+export function callsite() {
   const prepareStackTrace = Error.prepareStackTrace
   try {
     const callsites = []
@@ -30,8 +28,4 @@ const caller = () => {
   } finally {
     Error.prepareStackTrace = prepareStackTrace
   }
-}
-
-export function createRequire() {
-  return cr(caller().getFileName())
 }
