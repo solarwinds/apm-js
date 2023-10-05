@@ -109,18 +109,35 @@ export async function init() {
       }
     }, config.oboeLogLevel)
 
-    if (resource.asyncAttributesPending) {
-      await resource.waitForAsyncAttributes?.()
-    }
-    sdk.sendStatus(
-      reporter,
-      await sdk.initMessage(resource, packageJson.version),
-    )
-
-    const tracerProvider = await initTracing(config, resource, reporter)
-    const meterProvider = await initMetrics(config, resource, reporter, logger)
+    const [tracerProvider, meterProvider] = await Promise.all([
+      initTracing(config, resource, reporter),
+      initMetrics(config, resource, reporter, logger),
+      initMessage(resource, reporter),
+    ])
     registerInstrumentations(tracerProvider, meterProvider)
   }
+}
+
+function initInstrumentations(config: ExtendedSwConfiguration) {
+  const traceOptionsResponsePropagator =
+    new sdk.SwTraceOptionsResponsePropagator()
+
+  const instrumentations = [
+    ...getInstrumentations(
+      sdk.patch(config.instrumentations.configs ?? {}, {
+        ...config,
+        responsePropagator: traceOptionsResponsePropagator,
+      }),
+    ),
+    ...(config.instrumentations.extra ?? []),
+  ]
+
+  return (tracerProvider: TracerProvider, meterProvider: MeterProvider) =>
+    registerInstrumentations({
+      instrumentations,
+      tracerProvider,
+      meterProvider,
+    })
 }
 
 async function initTracing(
@@ -236,26 +253,11 @@ async function initMetrics(
   return provider
 }
 
-function initInstrumentations(config: ExtendedSwConfiguration) {
-  const traceOptionsResponsePropagator =
-    new sdk.SwTraceOptionsResponsePropagator()
-
-  const instrumentations = [
-    ...getInstrumentations(
-      sdk.patch(config.instrumentations.configs ?? {}, {
-        ...config,
-        responsePropagator: traceOptionsResponsePropagator,
-      }),
-    ),
-    ...(config.instrumentations.extra ?? []),
-  ]
-
-  return (tracerProvider: TracerProvider, meterProvider: MeterProvider) =>
-    registerInstrumentations({
-      instrumentations,
-      tracerProvider,
-      meterProvider,
-    })
+async function initMessage(resource: Resource, reporter: oboe.Reporter) {
+  if (resource.asyncAttributesPending) {
+    await resource.waitForAsyncAttributes?.()
+  }
+  sdk.sendStatus(reporter, await sdk.initMessage(resource, packageJson.version))
 }
 
 export function oboeLevelToOtelLogger(
