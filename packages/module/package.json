@@ -13,8 +13,8 @@
   "bugs": {
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
   },
-  "main": "./cjs/index.js",
-  "types": "./cjs/index.d.ts",
+  "main": "cjs/index.js",
+  "types": "cjs/index.d.ts",
   "exports": {
     ".": {
       "require": {
@@ -28,8 +28,8 @@
     }
   },
   "files": [
-    "cjs",
-    "esm"
+    "cjs/",
+    "esm/"
   ],
   "publishConfig": {
     "provenance": true
