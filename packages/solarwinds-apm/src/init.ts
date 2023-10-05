@@ -68,9 +68,6 @@ export async function init() {
       return
     }
 
-    // initialize instrumentations before any asynchronous code
-    const registerInstrumentations = initInstrumentations(config)
-
     diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
     const logger = diag.createComponentLogger({ namespace: "sw/init" })
 
@@ -86,6 +83,9 @@ export async function init() {
       return
     }
 
+    // initialize instrumentations before any asynchronous code
+    const registerInstrumentations = initInstrumentations(config)
+
     const resource = Resource.default()
       .merge(getDetectedResource())
       .merge(
@@ -93,7 +93,6 @@ export async function init() {
           [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
         }),
       )
-
     const reporter = sdk.createReporter(config)
 
     oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
