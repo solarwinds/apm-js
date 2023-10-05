@@ -29,7 +29,7 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@solarwinds-apm/require": "workspace:^"
+    "@solarwinds-apm/module": "workspace:^"
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",

@@ -38,7 +38,7 @@
     "provenance": true
   },
   "scripts": {
-    "build": "tsc -p src",
+    "build": "tsc",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js",
@@ -53,7 +53,7 @@
     "@opentelemetry/semantic-conventions": "~1.17.0",
     "@solarwinds-apm/bindings": "workspace:^",
     "@solarwinds-apm/instrumentations": "workspace:^",
-    "@solarwinds-apm/require": "workspace:^",
+    "@solarwinds-apm/module": "workspace:^",
     "@solarwinds-apm/sdk": "workspace:^",
     "zod": "^3.22.3"
   },

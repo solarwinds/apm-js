@@ -23,7 +23,7 @@ import { InstrumentationBase } from "@opentelemetry/instrumentation"
 import { View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
-import { createRequire } from "@solarwinds-apm/require"
+import { createRequire } from "@solarwinds-apm/module"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { z } from "zod"
 

@@ -17,7 +17,7 @@ limitations under the License.
 import { type Dirent, promises as fs } from "node:fs"
 import * as path from "node:path"
 
-import { createRequire } from "@solarwinds-apm/require"
+import { createRequire } from "@solarwinds-apm/module"
 
 import { type Dependencies, type Package } from "."
 
