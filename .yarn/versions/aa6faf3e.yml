@@ -6,7 +6,7 @@ releases:
   "@solarwinds-apm/histogram": patch
   "@solarwinds-apm/instrumentations": major
   "@solarwinds-apm/lazy": patch
-  "@solarwinds-apm/require": major
+  "@solarwinds-apm/module": major
   "@solarwinds-apm/sdk": patch
   "@solarwinds-apm/test": minor
   solarwinds-apm: patch
