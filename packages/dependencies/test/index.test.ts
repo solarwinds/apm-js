@@ -14,16 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { createRequire } from "@solarwinds-apm/module"
 import { expect, it } from "@solarwinds-apm/test"
 
+import { devDependencies } from "../package.json"
 import { dependencies } from "../src"
 
-const packageJson = createRequire()("../package.json") as {
-  devDependencies: Record<string, string>
-}
-
-for (const name of Object.keys(packageJson.devDependencies)) {
+for (const name of Object.keys(devDependencies)) {
   it(`detects ${name}`, async () => {
     const deps = await dependencies()
     expect(deps.has(name)).to.be.true
