@@ -67,7 +67,7 @@ module.exports = [
   { ignores: ["dist/**"] },
   // extend from eslint's recommendations as a baseline
   js.configs.recommended,
-  // js and cjs files assume cjs node environment with es2021
+  // js files assume node environment with es2021
   {
     files: ["**/*.js"],
     languageOptions: {
