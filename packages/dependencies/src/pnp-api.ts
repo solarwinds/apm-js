@@ -45,12 +45,16 @@ export function collectPnpApiDependencies(
 ) {
   const tasks = pnp.getAllLocators().map(async (locator) => {
     const { packageLocation } = pnp.getPackageInformation(locator)
-
     const packagePath = path.join(packageLocation, "package.json")
-    const packageJson = await fs.readFile(packagePath, { encoding: "utf-8" })
-    const { name, version } = JSON.parse(packageJson) as Package
-    dependencies.add(name, version)
+
+    try {
+      const packageJson = await fs.readFile(packagePath, { encoding: "utf-8" })
+      const { name, version } = JSON.parse(packageJson) as Package
+      dependencies.add(name, version)
+    } catch {
+      return
+    }
   })
 
-  return Promise.allSettled(tasks)
+  return Promise.all(tasks)
 }

@@ -28,7 +28,7 @@ export function collectNodeModulesDependencies(dependencies: Dependencies) {
   const roots =
     createRequire(callsite().getFileName()!).resolve.paths("node_modules") ?? []
   const tasks = roots.map((root) => collectRoot(dependencies, root))
-  return Promise.allSettled(tasks)
+  return Promise.all(tasks)
 }
 
 async function collectRoot(dependencies: Dependencies, root: string) {
@@ -55,9 +55,14 @@ async function collectRoot(dependencies: Dependencies, root: string) {
     }
 
     const packagePath = path.join(entryPath, "package.json")
-    const packageJson = await fs.readFile(packagePath, { encoding: "utf-8" })
-    const { name, version } = JSON.parse(packageJson) as Package
-    dependencies.add(name, version)
+
+    try {
+      const packageJson = await fs.readFile(packagePath, { encoding: "utf-8" })
+      const { name, version } = JSON.parse(packageJson) as Package
+      dependencies.add(name, version)
+    } catch {
+      return
+    }
 
     // Packages may have a nested node_modules if they require a different
     // version of a dependency than the root package
