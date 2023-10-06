@@ -2,7 +2,7 @@
   "name": "@solarwinds-apm/solarwinds-apm",
   "private": true,
   "license": "Apache-2.0",
-  "packageManager": "yarn@4.0.0-rc.52",
+  "packageManager": "yarn@4.0.0-rc.53",
   "workspaces": [
     "examples",
     "examples/*",
