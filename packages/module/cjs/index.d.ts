@@ -14,24 +14,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { context } from "@opentelemetry/api"
-import * as sdk from "@solarwinds-apm/sdk"
-
-import { init } from "./init"
-
-try {
-  init().catch((err) => {
-    console.warn(err)
-  })
-} catch (err) {
-  console.warn(err)
-}
-
-export function setTransactionName(name: string): boolean {
-  return sdk.setTransactionName(context.active(), name)
-}
-export function waitUntilReady(timeout: number): number {
-  return sdk.waitUntilReady(timeout)
-}
-
-export { type Config } from "./config"
+export function callsite(): NodeJS.CallSite

@@ -1,6 +1,6 @@
 {
-  "name": "@solarwinds-apm/test",
-  "version": "1.0.0-pre.4",
+  "name": "@solarwinds-apm/module",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -8,47 +8,44 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
-    "directory": "packages/test"
+    "directory": "packages/require"
   },
   "bugs": {
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "swtest": "dist/bin.js"
+  "main": "cjs/index.js",
+  "types": "cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./cjs/index.d.ts",
+        "default": "./cjs/index.js"
+      },
+      "import": {
+        "types": "./esm/index.d.ts",
+        "default": "./esm/index.js"
+      }
+    }
   },
   "files": [
-    "dist/"
+    "cjs/",
+    "esm/"
   ],
   "publishConfig": {
     "provenance": true
   },
   "scripts": {
-    "build": "tsc",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js"
   },
-  "dependencies": {
-    "@types/chai": "^4.3.6",
-    "@types/node": ">=16.18 <17 || >=18.8 <19 || >=20",
-    "c8": "^8.0.1",
-    "chai": "^4.3.10",
-    "chai-as-promised": "^7.1.1",
-    "globby": "^11.1.0",
-    "semver": "^7.5.4",
-    "tsx": "^3.13.0"
-  },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "@types/chai-as-promised": "^7.1.6",
+    "@types/node": "^16.13.0",
     "eslint": "^8.50.0",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "prettier": "^3.0.3"
   },
   "engines": {
-    "node": ">=16.18 <17 || >=18.8 <19 || >=20"
-  },
-  "stableVersion": "0.0.0"
+    "node": ">=16"
+  }
 }

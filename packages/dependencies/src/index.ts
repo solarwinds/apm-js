@@ -17,18 +17,12 @@ limitations under the License.
 import { collectNodeModulesDependencies } from "./node-modules"
 import { collectPnpApiDependencies, type PnpApi } from "./pnp-api"
 
-let pnpApi: PnpApi | undefined
-try {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  pnpApi = require("pnpapi")
-} catch {
-  pnpApi = undefined
-}
+const PNP = "pnpapi"
 
 export class Dependencies {
   private readonly dependencies = new Map<string, Set<string>>()
 
-  add(name: string, version: string) {
+  add(name: string, version: string): void {
     const versions = this.dependencies.get(name)
     if (versions) {
       versions.add(version)
@@ -39,6 +33,10 @@ export class Dependencies {
 
   has(name: string): boolean {
     return this.dependencies.has(name)
+  }
+
+  names(): IterableIterator<string> {
+    return this.dependencies.keys()
   }
 
   versions(name: string): Set<string> | undefined {
@@ -55,15 +53,19 @@ export interface Package {
   version: string
 }
 
-export function dependencies(pnp: PnpApi | undefined = pnpApi): Dependencies {
+export async function dependencies(): Promise<Dependencies> {
+  const pnp = await import(PNP)
+    .then((pnp) => pnp as PnpApi)
+    .catch(() => undefined)
+
   const dependencies = new Dependencies()
 
   if (pnp && "getAllLocators" in pnp && pnp.VERSIONS.getAllLocators === 1) {
     // Yarn >= 2 PnP-based environment
-    collectPnpApiDependencies(dependencies, pnp)
+    await collectPnpApiDependencies(dependencies, pnp)
   } else {
     // Other node_modules-based environment
-    collectNodeModulesDependencies(dependencies)
+    await collectNodeModulesDependencies(dependencies)
   }
 
   return dependencies

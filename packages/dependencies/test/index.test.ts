@@ -16,16 +16,12 @@ limitations under the License.
 
 import { expect, it } from "@solarwinds-apm/test"
 
+import { devDependencies } from "../package.json"
 import { dependencies } from "../src"
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require("../package.json") as {
-  devDependencies: Record<string, string>
-}
-
-for (const name of Object.keys(packageJson.devDependencies)) {
-  it(`detects ${name}`, () => {
-    const deps = dependencies()
+for (const name of Object.keys(devDependencies)) {
+  it(`detects ${name}`, async () => {
+    const deps = await dependencies()
     expect(deps.has(name)).to.be.true
   })
 }

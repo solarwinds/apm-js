@@ -14,24 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { context } from "@opentelemetry/api"
-import * as sdk from "@solarwinds-apm/sdk"
-
-import { init } from "./init"
-
-try {
-  init().catch((err) => {
-    console.warn(err)
-  })
-} catch (err) {
-  console.warn(err)
+interface ObjectConstructor {
+  // Object.entries but with very accurate types. The default typings for
+  // { name: "John", age: 30 } would make the return type
+  // [string, string | number][] while this typing makes it
+  // (["name", string] | ["age", number])[]
+  entries<const T extends Record<string, unknown>>(
+    object: T,
+  ): { [K in keyof T]: [K, T[K]] }[keyof T][]
 }
-
-export function setTransactionName(name: string): boolean {
-  return sdk.setTransactionName(context.active(), name)
-}
-export function waitUntilReady(timeout: number): number {
-  return sdk.waitUntilReady(timeout)
-}
-
-export { type Config } from "./config"

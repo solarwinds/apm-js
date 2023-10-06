@@ -15,23 +15,22 @@ limitations under the License.
 */
 
 import * as fs from "node:fs"
+import { createRequire } from "node:module"
 import * as path from "node:path"
 import * as process from "node:process"
 
 import { DiagLogLevel } from "@opentelemetry/api"
-import { type InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node"
 import { InstrumentationBase } from "@opentelemetry/instrumentation"
 import { View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
+import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
+import { callsite } from "@solarwinds-apm/module"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
-import { type Service } from "ts-node"
 import { z } from "zod"
 
 import aoCert from "./appoptics.crt"
-import { requireOptional } from "./peers"
 
-const json = requireOptional("json5", JSON)
-const tsNode = requireOptional("ts-node")
+const r = createRequire(callsite().getFileName()!)
 
 const boolean = z.union([
   z.boolean(),
@@ -176,35 +175,14 @@ export interface ExtendedSwConfiguration extends SwConfiguration {
 const ENV_PREFIX = "SW_APM_"
 const ENV_PREFIX_EXPERIMENTAL = `${ENV_PREFIX}EXPERIMENTAL_`
 const DEFAULT_FILE_NAME = "solarwinds.apm.config"
-enum FileType {
-  Json,
-  Js,
-  Ts,
-  None,
-}
 
 export function readConfig(): ExtendedSwConfiguration {
   const env = envObject()
   const experimentalEnv = envObject(ENV_PREFIX_EXPERIMENTAL)
 
-  let file: Record<string, unknown>
-  const [path, type] = pathAndType()
-  switch (type) {
-    case FileType.Ts: {
-      file = readTsConfig(path)
-      break
-    }
-    case FileType.Js: {
-      file = readJsConfig(path)
-      break
-    }
-    case FileType.Json: {
-      file = readJsonConfig(path)
-      break
-    }
-    case FileType.None:
-      file = {}
-  }
+  const path = filePath()
+  const file = path ? readConfigFile(path) : {}
+
   const experimentalFile =
     file.experimental && typeof file.experimental === "object"
       ? file.experimental
@@ -291,7 +269,7 @@ function envObject(prefix = ENV_PREFIX) {
   )
 }
 
-function pathAndType(): [path: string, type: FileType] {
+function filePath() {
   const cwd = process.cwd()
   let override = process.env.SW_APM_CONFIG_FILE
 
@@ -301,64 +279,29 @@ function pathAndType(): [path: string, type: FileType] {
     }
     if (!fs.existsSync(override)) {
       console.warn(`couldn't read config file at ${override}`)
-      return [override, FileType.None]
+      return
     }
 
-    const ext = path.extname(override)
-    switch (ext) {
-      case ".ts":
-        return [override, FileType.Ts]
-      case ".js":
-        return [override, FileType.Js]
-      case ".json":
-        return [override, FileType.Json]
-      default: {
-        console.warn(`unknown config file extension for ${override}`)
-        return [override, FileType.None]
-      }
-    }
+    return override
   } else {
     const fullName = path.join(cwd, DEFAULT_FILE_NAME)
-    if (fs.existsSync(`${fullName}.ts`)) {
-      return [`${fullName}.ts`, FileType.Ts]
-    } else if (fs.existsSync(`${fullName}.js`)) {
-      return [`${fullName}.js`, FileType.Js]
-    } else if (fs.existsSync(`${fullName}.json`)) {
-      return [`${fullName}.json`, FileType.Json]
-    } else {
-      return [fullName, FileType.None]
+    const options = [`${fullName}.ts`, `${fullName}.js`, `${fullName}.json`]
+    for (const option of options) {
+      if (fs.existsSync(option)) return option
     }
   }
 }
 
-function readJsonConfig(file: string) {
-  const contents = fs.readFileSync(file, { encoding: "utf8" })
-  return json.parse(contents) as Record<string, unknown>
-}
-
-function readJsConfig(file: string) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  return require(file) as Record<string, unknown>
-}
-
-let tsNodeService: Service | undefined = undefined
-function readTsConfig(file: string) {
-  if (!tsNode) {
-    throw new Error("ts-node is required when using a .ts config file")
+function readConfigFile(path: string) {
+  const required = r(path) as Record<string, unknown>
+  if (
+    "default" in required &&
+    (required.__esModule || Object.keys(required).length === 1)
+  ) {
+    return required.default as Record<string, unknown>
+  } else {
+    return required
   }
-
-  tsNodeService ??= tsNode.register({ compilerOptions: { module: "commonjs" } })
-
-  tsNodeService.enabled(true)
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const required = require(file) as
-    | { __esModule: true; default: Record<string, unknown> }
-    | Record<string, unknown>
-  tsNodeService.enabled(false)
-
-  return "__esModule" in required
-    ? (required.default as Record<string, unknown>)
-    : required
 }
 
 function otelLevelToOboeLevel(level?: DiagLogLevel): number {

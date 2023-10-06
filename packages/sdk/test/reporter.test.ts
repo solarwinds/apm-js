@@ -21,8 +21,8 @@ import { describe, expect, it } from "@solarwinds-apm/test"
 import { initMessage } from "../src/reporter"
 
 describe("initMessage", () => {
-  it("has right basic properties", () => {
-    const message = initMessage(new Resource({}), "1.0.0")
+  it("has right basic properties", async () => {
+    const message = await initMessage(new Resource({}), "1.0.0")
 
     expect(message).to.include({
       __Init: true,
@@ -32,19 +32,19 @@ describe("initMessage", () => {
     expect(message).to.include.keys(["APM.Version", "APM.Extension.Version"])
   })
 
-  it("forwards basic resource properties", () => {
+  it("forwards basic resource properties", async () => {
     const props = {
       s: "string",
       n: 2,
       b: true,
     }
-    const message = initMessage(new Resource(props), "1.0.0")
+    const message = await initMessage(new Resource(props), "1.0.0")
 
     expect(message).to.include(props)
   })
 
-  it("doesn't forward service name", () => {
-    const message = initMessage(
+  it("doesn't forward service name", async () => {
+    const message = await initMessage(
       new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: "value" }),
       "1.0.0",
     )
@@ -52,8 +52,8 @@ describe("initMessage", () => {
     expect(message).not.to.have.key(SemanticResourceAttributes.SERVICE_NAME)
   })
 
-  it("doesn't forward array or undefined resource properties", () => {
-    const message = initMessage(
+  it("doesn't forward array or undefined resource properties", async () => {
+    const message = await initMessage(
       new Resource({
         array: [],
         undefined: undefined,
@@ -64,8 +64,8 @@ describe("initMessage", () => {
     expect(message).not.to.have.any.keys(["array", "undefined"])
   })
 
-  it("converts process command args to command line", () => {
-    const message = initMessage(
+  it("converts process command args to command line", async () => {
+    const message = await initMessage(
       new Resource({
         [SemanticResourceAttributes.PROCESS_COMMAND_ARGS]: ["node", "index.js"],
       }),
@@ -80,8 +80,8 @@ describe("initMessage", () => {
     )
   })
 
-  it("doesn't override base attributes with resource attributes", () => {
-    const message = initMessage(
+  it("doesn't override base attributes with resource attributes", async () => {
+    const message = await initMessage(
       new Resource({
         __Init: false,
         Layer: "python",

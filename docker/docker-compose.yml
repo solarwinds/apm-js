@@ -151,7 +151,7 @@ services:
   example:
     build:
       context: .
-      dockerfile: 18-alpine.Dockerfile
+      dockerfile: 18-ubuntu.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:

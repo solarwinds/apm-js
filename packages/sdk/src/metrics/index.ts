@@ -17,15 +17,15 @@ limitations under the License.
 import { metrics } from "@opentelemetry/api"
 import { lazy } from "@solarwinds-apm/lazy"
 
+import packageJson from "../../package.json"
 import * as cpu from "./cpu"
 import * as eventLoop from "./event-loop"
 import * as gc from "./gc"
 import * as memory from "./memory"
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require("../../package.json") as { name: string; version: string }
-
-export const meter = lazy(() => metrics.getMeter(pkg.name, pkg.version))
+export const meter = lazy(() =>
+  metrics.getMeter(packageJson.name, packageJson.version),
+)
 
 export function start() {
   cpu.start()

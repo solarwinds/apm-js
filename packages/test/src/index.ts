@@ -18,7 +18,11 @@ import "./plugin"
 
 import * as test from "node:test"
 
+import * as chai from "chai"
+import chaiAsPromised from "chai-as-promised"
 import * as semver from "semver"
+
+chai.use(chaiAsPromised)
 
 export { expect } from "chai"
 export { describe } from "node:test"

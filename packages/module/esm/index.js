@@ -14,24 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { context } from "@opentelemetry/api"
-import * as sdk from "@solarwinds-apm/sdk"
+export function callsite() {
+  const prepareStackTrace = Error.prepareStackTrace
+  try {
+    const callsites = []
+    Error.prepareStackTrace = (_err, cs) => {
+      callsites.push(...cs)
+    }
+    void new Error().stack
 
-import { init } from "./init"
-
-try {
-  init().catch((err) => {
-    console.warn(err)
-  })
-} catch (err) {
-  console.warn(err)
+    const current = callsites[0]
+    return callsites.find((cs) => cs.getFileName() !== current.getFileName())
+  } finally {
+    Error.prepareStackTrace = prepareStackTrace
+  }
 }
-
-export function setTransactionName(name: string): boolean {
-  return sdk.setTransactionName(context.active(), name)
-}
-export function waitUntilReady(timeout: number): number {
-  return sdk.waitUntilReady(timeout)
-}
-
-export { type Config } from "./config"

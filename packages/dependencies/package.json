@@ -28,11 +28,14 @@
     "publish": "node ../../scripts/publish.js",
     "test": "swtest -p test/tsconfig.json -c src"
   },
+  "dependencies": {
+    "@solarwinds-apm/module": "workspace:^"
+  },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^16.13.0",
-    "eslint": "^8.49.0",
+    "eslint": "^8.50.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },

@@ -26,14 +26,14 @@
     "publish": "node ../../scripts/publish.js"
   },
   "dependencies": {
-    "@eslint/js": "^8.49.0",
-    "@typescript-eslint/eslint-plugin": "^6.7.2",
-    "@typescript-eslint/parser": "^6.7.2",
+    "@eslint/js": "^8.51.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-tsdoc": "^0.2.17",
-    "globals": "^13.21.0",
+    "globals": "^13.23.0",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
@@ -43,7 +43,7 @@
     "typescript": "*"
   },
   "devDependencies": {
-    "eslint": "^8.49.0",
+    "eslint": "^8.50.0",
     "prettier": "^3.0.3"
   },
   "peerDependenciesMeta": {
