@@ -13,25 +13,34 @@
   "bugs": {
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "main": "./dist/cjs/index.js",
   "bin": {
-    "swtest": "dist/bin.js"
+    "swtest": "./dist/esm/bin.js"
   },
   "files": [
-    "dist/"
+    "./src/",
+    "./dist/"
   ],
   "publishConfig": {
     "provenance": true
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p ./tsconfig.cjs.json && node ../../scripts/cjs.js ./dist/cjs",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js"
   },
   "dependencies": {
+    "@solarwinds-apm/module": "workspace:^",
     "@types/chai": "^4.3.6",
+    "@types/chai-as-promised": "^7.1.6",
     "@types/node": ">=16.18 <17 || >=18.8 <19 || >=20",
     "c8": "^8.0.1",
     "chai": "^4.3.10",
@@ -42,7 +51,6 @@
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "@types/chai-as-promised": "^7.1.6",
     "eslint": "^8.50.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"

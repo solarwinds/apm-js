@@ -14,18 +14,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export function callsite() {
-  const prepareStackTrace = Error.prepareStackTrace
-  try {
-    const callsites = []
-    Error.prepareStackTrace = (_err, cs) => {
-      callsites.push(...cs)
-    }
-    void new Error().stack
-
-    const current = callsites[0]
-    return callsites.find((cs) => cs.getFileName() !== current.getFileName())
-  } finally {
-    Error.prepareStackTrace = prepareStackTrace
-  }
-}
+export * from "@opentelemetry/instrumentation/hook.mjs"

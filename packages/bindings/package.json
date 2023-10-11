@@ -13,11 +13,18 @@
   "bugs": {
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
   },
-  "main": "index.js",
-  "types": "types/index.d.ts",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "main": "./index.js",
+  "types": "./types/index.d.ts",
   "files": [
-    "index.js",
-    "types/"
+    "./index.js",
+    "./types/"
   ],
   "publishConfig": {
     "provenance": true

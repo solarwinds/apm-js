@@ -17,7 +17,7 @@ limitations under the License.
 import { expect, it } from "@solarwinds-apm/test"
 
 import { devDependencies } from "../package.json"
-import { dependencies } from "../src"
+import { dependencies } from "../src/index.js"
 
 for (const name of Object.keys(devDependencies)) {
   it(`detects ${name}`, async () => {

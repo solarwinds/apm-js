@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import "./plugin"
+import "./plugin.js"
 
 import * as test from "node:test"
 

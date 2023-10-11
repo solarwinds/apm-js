@@ -43,7 +43,11 @@ import {
 import * as sdk from "@solarwinds-apm/sdk"
 
 import packageJson from "../package.json"
-import { type ExtendedSwConfiguration, printError, readConfig } from "./config"
+import {
+  type ExtendedSwConfiguration,
+  printError,
+  readConfig,
+} from "./config.js"
 
 export async function init() {
   const id = `${packageJson.name}@${packageJson.version}`

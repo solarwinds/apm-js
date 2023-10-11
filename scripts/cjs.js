@@ -14,18 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-module.exports.callsite = function callsite() {
-  const prepareStackTrace = Error.prepareStackTrace
-  try {
-    const callsites = []
-    Error.prepareStackTrace = (_err, cs) => {
-      callsites.push(...cs)
-    }
-    void new Error().stack
+const { argv } = require("process")
+const { writeFileSync } = require("fs")
+const path = require("path")
 
-    const current = callsites[0]
-    return callsites.find((cs) => cs.getFileName() !== current.getFileName())
-  } finally {
-    Error.prepareStackTrace = prepareStackTrace
-  }
-}
+const file = path.join(argv[2], "package.json")
+writeFileSync(file, JSON.stringify({ type: "commonjs" }))

@@ -41,6 +41,8 @@
     ".prettierrc.json",
     ".yarnrc.yml",
     "tsconfig.base.json",
+    "tsconfig.base.cjs.json",
+    "tsconfig.base.test.json",
     "yarn.lock",
     "packages/eslint-config/index.js"
   ]

@@ -16,10 +16,12 @@ limitations under the License.
 */
 
 import { spawnSync } from "node:child_process"
+import { createRequire } from "node:module"
 import * as path from "node:path"
 import * as process from "node:process"
 import { pathToFileURL } from "node:url"
 
+import { callsite } from "@solarwinds-apm/module"
 import globby from "globby"
 import semver from "semver"
 
@@ -33,9 +35,11 @@ const DEFAULTS = [
   "*.test.mts",
 ]
 
+const resolve = createRequire(callsite().getFileName()!).resolve
+
 // TSX registers a custom loader that lets Node import TypeScript files
-const tsxLoaderPath = pathToFileURL(require.resolve("tsx")).toString()
-const tsxRequirePath = require.resolve("tsx/preflight")
+const tsxLoaderPath = pathToFileURL(resolve("tsx")).toString()
+const tsxRequirePath = resolve("tsx/preflight")
 
 // Skip Node executable and current script path
 let argv = process.argv.slice(2)
@@ -110,7 +114,7 @@ if (coverage) {
     ".coverage",
   )
 
-  const c8 = require.resolve("c8/bin/c8.js")
+  const c8 = resolve("c8/bin/c8.js")
   argv = [
     c8,
     // count all files in the coverage directory

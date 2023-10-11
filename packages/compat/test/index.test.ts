@@ -23,7 +23,7 @@ import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
-import { instrument, pInstrument } from "../src"
+import { instrument, pInstrument } from "../src/index.js"
 
 const exporter = new InMemorySpanExporter()
 const processor = new SimpleSpanProcessor(exporter)

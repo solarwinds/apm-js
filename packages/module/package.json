@@ -13,28 +13,23 @@
   "bugs": {
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
   },
-  "main": "cjs/index.js",
-  "types": "cjs/index.d.ts",
+  "type": "module",
   "exports": {
     ".": {
-      "require": {
-        "types": "./cjs/index.d.ts",
-        "default": "./cjs/index.js"
-      },
-      "import": {
-        "types": "./esm/index.d.ts",
-        "default": "./esm/index.js"
-      }
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
     }
   },
+  "main": "./dist/cjs/index.js",
   "files": [
-    "cjs/",
-    "esm/"
+    "./src/",
+    "./dist/"
   ],
   "publishConfig": {
     "provenance": true
   },
   "scripts": {
+    "build": "tsc && tsc -p ./tsconfig.cjs.json && node ../../scripts/cjs.js ./dist/cjs",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js"
@@ -43,7 +38,8 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@types/node": "^16.13.0",
     "eslint": "^8.50.0",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
   },
   "engines": {
     "node": ">=16"

@@ -17,7 +17,7 @@ limitations under the License.
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
 
-import { type Dependencies, type Package } from "."
+import { type Dependencies, type Package } from "./index.js"
 
 interface PackageLocator {
   name: string

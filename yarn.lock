@@ -1858,6 +1858,7 @@ __metadata:
     "@types/node": "npm:^16.13.0"
     eslint: "npm:^8.50.0"
     prettier: "npm:^3.0.3"
+    typescript: "npm:^5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -1927,6 +1928,7 @@ __metadata:
   resolution: "@solarwinds-apm/test@workspace:packages/test"
   dependencies:
     "@solarwinds-apm/eslint-config": "workspace:^"
+    "@solarwinds-apm/module": "workspace:^"
     "@types/chai": "npm:^4.3.6"
     "@types/chai-as-promised": "npm:^7.1.6"
     "@types/node": "npm:>=16.18 <17 || >=18.8 <19 || >=20"
@@ -1940,7 +1942,7 @@ __metadata:
     tsx: "npm:^3.13.0"
     typescript: "npm:^5.2.2"
   bin:
-    swtest: dist/bin.js
+    swtest: ./dist/esm/bin.js
   languageName: unknown
   linkType: soft
 

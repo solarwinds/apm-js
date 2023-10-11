@@ -20,7 +20,7 @@ import * as path from "node:path"
 
 import { callsite } from "@solarwinds-apm/module"
 
-import { type Dependencies, type Package } from "."
+import { type Dependencies, type Package } from "./index.js"
 
 export function collectNodeModulesDependencies(dependencies: Dependencies) {
   // node_modules is not a real package we just want all the paths looked up by

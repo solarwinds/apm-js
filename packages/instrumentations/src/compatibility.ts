@@ -24,7 +24,7 @@ import {
 import { format } from "prettier"
 import { type Comparator, compare, minVersion, Range } from "semver"
 
-import { getInstrumentations } from "."
+import { getInstrumentations } from "./index.js"
 
 const instrumentations = getInstrumentations() as InstrumentationBase[]
 

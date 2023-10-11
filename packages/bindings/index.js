@@ -28,15 +28,16 @@ function triple() {
   }
 }
 
-function nativeRequireAssign(name, exports) {
-  const t = triple()
-  try {
-    exports[name] = require(`@solarwinds-apm/bindings-${t}/${name}.node`)
-  } catch (cause) {
-    exports[name] = new Error(`unsupported platform ${t}`, { cause })
-  }
+const t = triple()
+
+try {
+  module.exports.oboe = require(`@solarwinds-apm/bindings-${t}/oboe.node`)
+} catch (cause) {
+  module.exports.oboe = new Error(`unsupported platform ${t}`, { cause })
 }
 
-const e = (module.exports = {})
-nativeRequireAssign("oboe", e)
-nativeRequireAssign("metrics", e)
+try {
+  module.exports.metrics = require(`@solarwinds-apm/bindings-${t}/metrics.node`)
+} catch (cause) {
+  module.exports.metrics = new Error(`unsupported platform ${t}`, { cause })
+}
