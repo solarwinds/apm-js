@@ -126,8 +126,12 @@ export function getInstrumentations(
   configs: InstrumentationConfigMap = {},
 ): Instrumentation[] {
   const instrumentations: Instrumentation[] = []
-  for (const [name, Class] of Object.entries(INSTRUMENTATIONS)) {
-    const config = configs[name] as InstrumentationConfig | undefined
+  const c: Record<string, InstrumentationConfig> = configs
+
+  for (const [name, Class] of Object.entries<
+    new (config?: InstrumentationConfig) => Instrumentation
+  >(INSTRUMENTATIONS)) {
+    const config = c[name]
     if (config?.enabled === false) continue
 
     instrumentations.push(new Class(config))
