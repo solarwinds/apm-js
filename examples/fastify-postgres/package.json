@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node -r solarwinds-apm --loader solarwinds-apm/loader index.js"
+    "start": "node --loader solarwinds-apm/loader index.js"
   },
   "dependencies": {
     "@fastify/postgres": "^5.2.0",

@@ -14,4 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { init } from "./init.js"
+
+try {
+  await init()
+} catch (err) {
+  console.warn(err)
+}
+
 export * from "@opentelemetry/instrumentation/hook.mjs"

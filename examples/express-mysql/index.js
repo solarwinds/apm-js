@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import process from "node:process"
+const process = require("node:process")
 
-import express from "express"
-import mysql from "mysql2"
-import winston from "winston"
+const express = require("express")
+const mysql = require("mysql2")
+const winston = require("winston")
 
 const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
