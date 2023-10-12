@@ -63,17 +63,6 @@ async function task(src, dist, format, sources) {
         },
       }),
       json(),
-
-      {
-        name: "exit",
-        closeBundle: {
-          order: "post",
-          sequential: true,
-          handler() {
-            process.exit()
-          },
-        },
-      },
     ],
     input,
     output,
