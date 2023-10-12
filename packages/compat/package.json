@@ -16,7 +16,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
+      "import": "./dist/es/index.js",
       "require": "./dist/cjs/index.js"
     }
   },
@@ -29,7 +29,7 @@
     "provenance": true
   },
   "scripts": {
-    "build": "tsc && tsc -p ./tsconfig.cjs.json && node ../../scripts/cjs.js ./dist/cjs",
+    "build": "rollup -c",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js",
@@ -51,10 +51,12 @@
     "@opentelemetry/sdk-trace-base": "~1.17.0",
     "@opentelemetry/sdk-trace-node": "~1.17.0",
     "@solarwinds-apm/eslint-config": "workspace:^",
+    "@solarwinds-apm/rollup-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^16.13.0",
     "eslint": "^8.50.0",
     "prettier": "^3.0.3",
+    "rollup": "^4.0.2",
     "typescript": "^5.2.2"
   },
   "engines": {

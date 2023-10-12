@@ -14,6 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import base from "@solarwinds-apm/eslint-config"
+import config from "@solarwinds-apm/rollup-config"
 
-export default [...base, { ignores: ["next-prisma/**"] }]
+export default config()

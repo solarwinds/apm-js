@@ -71,7 +71,7 @@ module.exports = [
   {
     files: ["**/*.js"],
     languageOptions: {
-      ecmaVersion: 12,
+      ecmaVersion: 13,
       globals: { ...globals.es2021, ...globals.node },
     },
     rules: {
@@ -101,7 +101,6 @@ module.exports = [
     plugins: {
       "@typescript-eslint": typescriptPlugin,
       tsdoc: tsdocPlugin,
-      imports: importsPlugin,
     },
     rules: {
       // extends from typescript strict config
@@ -120,15 +119,15 @@ module.exports = [
         },
       ],
       "tsdoc/syntax": "warn",
-      "imports/imports": "warn",
-      "imports/exports": "warn",
     },
   },
-  // license notices
+  // imports and license notices
   {
     files: ["**/*.js", "**/*.ts"],
-    plugins: { header: headerPlugin },
+    plugins: { imports: importsPlugin, header: headerPlugin },
     rules: {
+      "imports/imports": "warn",
+      "imports/exports": "warn",
       "header/header": ["error", "block", notice, 2],
     },
   },

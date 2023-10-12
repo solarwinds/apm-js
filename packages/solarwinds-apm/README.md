@@ -10,23 +10,15 @@ npm install --save solarwinds-apm @opentelemetry/api
 
 Install using your package manager then follow the [configuration guide](./CONFIGURATION.md). Make sure to install the matching version of `@opentelmetry/api` as it is required for the library to work. The two packages should be updated at the same time and kept in sync.
 
-The library can then be initialised either from the command line, the environment, or directly from code.
+The library can then be initialised either from the command line or the environment. The `--loader` flag isn't required when not using ES Modules, but we recommend always specifying it in case ESM code is transitively imported somewhere in the application.
 
 ```sh
-node -r solarwinds-apm script.js
+node -r solarwinds-apm --loader solarwinds-apm/loader script.js
 ```
 
 ```sh
-export NODE_OPTIONS="-r solarwinds-apm"
+export NODE_OPTIONS="-r solarwinds-apm --loader solarwinds-apm/loader"
 npm start
-```
-
-```ts
-import "solarwinds-apm"
-// or
-require("solarwinds-apm")
-
-// ...
 ```
 
 ## Custom Instrumentation and Metrics

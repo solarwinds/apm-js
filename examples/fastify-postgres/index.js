@@ -14,9 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const process = require("node:process")
-const fastify = require("fastify")
-const pg = require("@fastify/postgres")
+import { env } from "node:process"
+
+import pg from "@fastify/postgres"
+import fastify from "fastify"
 
 const schema = `
 CREATE TABLE IF NOT EXISTS items (
@@ -110,11 +111,6 @@ app.patch(
   },
 )
 
-const port = Number.parseInt(process.env.PORT) || 8080
-app
-  .listen({ port, host: "0.0.0.0" })
-  .then(() => app.pg.query(schema))
-  .catch((err) => {
-    app.log.error(err)
-    process.exit(1)
-  })
+const port = Number.parseInt(env.PORT) || 8080
+await app.listen({ port, host: "0.0.0.0" })
+await app.pg.query(schema)

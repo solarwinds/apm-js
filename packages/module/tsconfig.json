@@ -3,7 +3,7 @@
   "include": ["./src"],
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist/esm"
+    "outDir": "./dist"
   },
   "references": [{ "path": ".." }]
 }

@@ -16,4 +16,4 @@ limitations under the License.
 
 import base from "@solarwinds-apm/eslint-config"
 
-export default [...base, { ignores: ["next-prisma/**"] }]
+export default [...base]

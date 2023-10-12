@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const { argv } = require("process")
-const { writeFileSync } = require("fs")
-const path = require("path")
+import config from "@solarwinds-apm/rollup-config"
 
-const file = path.join(argv[2], "package.json")
-writeFileSync(file, JSON.stringify({ type: "commonjs" }))
+export default config()
