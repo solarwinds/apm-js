@@ -15,8 +15,7 @@
         "dist/**",
         "npm/*/*.node",
         "npm/*/liboboe.so",
-        "tsconfig.tsbuildinfo",
-        "node_modules/.cache/**"
+        "tsconfig.tsbuildinfo"
       ]
     },
     "lint": {
