@@ -16,7 +16,6 @@ limitations under the License.
 
 import {
   diag,
-  DiagConsoleLogger,
   type DiagLogFunction,
   type DiagLogger,
   metrics,
@@ -66,8 +65,8 @@ export async function init() {
     return
   }
 
-  diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
-  const logger = diag.createComponentLogger({ namespace: "sw/init" })
+  diag.setLogger(new sdk.SwDiagLogger(), config.otelLogLevel)
+  const logger = diag.createComponentLogger({ namespace: "[sw/init]" })
 
   if (!config.enabled) {
     logger.info("Library disabled, application will not be instrumented")
@@ -95,7 +94,7 @@ export async function init() {
 
   oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
     const logger = diag.createComponentLogger({
-      namespace: `sw/oboe/${module}`,
+      namespace: `[sw/oboe/${module}]`,
     })
     const log = oboeLevelToOtelLogger(level, logger)
 
@@ -144,11 +143,11 @@ async function initTracing(
 ) {
   const sampler = new sdk.SwSampler(
     config,
-    diag.createComponentLogger({ namespace: "sw/sampler" }),
+    diag.createComponentLogger({ namespace: "[sw/sampler]" }),
   )
   const exporter = new sdk.SwExporter(
     reporter,
-    diag.createComponentLogger({ namespace: "sw/exporter" }),
+    diag.createComponentLogger({ namespace: "[sw/exporter]" }),
   )
 
   const parentInfoProcessor = new sdk.SwParentInfoSpanProcessor()
@@ -160,7 +159,7 @@ async function initTracing(
 
   const baggagePropagator = new W3CBaggagePropagator()
   const traceContextOptionsPropagator = new sdk.SwTraceContextOptionsPropagator(
-    diag.createComponentLogger({ namespace: "sw/propagator" }),
+    diag.createComponentLogger({ namespace: "[sw/propagator]" }),
   )
   const propagator = new CompositePropagator({
     propagators: [traceContextOptionsPropagator, baggagePropagator],
@@ -204,7 +203,7 @@ async function initMetrics(
 ) {
   const exporter = new sdk.SwMetricsExporter(
     reporter,
-    diag.createComponentLogger({ namespace: "sw/metrics" }),
+    diag.createComponentLogger({ namespace: "[sw/metrics]" }),
   )
 
   const reader = new PeriodicExportingMetricReader({

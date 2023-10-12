@@ -56,14 +56,10 @@ import { SocketIoInstrumentation } from "@opentelemetry/instrumentation-socket.i
 import { TediousInstrumentation } from "@opentelemetry/instrumentation-tedious"
 import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston"
 import {
-  awsBeanstalkDetector,
   awsEc2Detector,
-  awsEcsDetector,
-  awsEksDetector,
   awsLambdaDetector,
 } from "@opentelemetry/resource-detector-aws"
 import { containerDetector } from "@opentelemetry/resource-detector-container"
-import { gcpDetector } from "@opentelemetry/resource-detector-gcp"
 import {
   detectResourcesSync,
   envDetectorSync,
@@ -143,12 +139,8 @@ export function getDetectedResource(): Resource {
   return detectResourcesSync({
     detectors: [
       containerDetector,
-      awsBeanstalkDetector,
       awsEc2Detector,
-      awsEcsDetector,
-      awsEksDetector,
       awsLambdaDetector,
-      gcpDetector,
       envDetectorSync,
       hostDetectorSync,
       osDetectorSync,
