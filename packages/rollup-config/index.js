@@ -52,7 +52,7 @@ async function task(src, dist, format, sources) {
     plugins: [
       nodeExternals({ deps: true, peerDeps: true, devDeps: true }),
       typescript({
-        outputToFilesystem: true,
+        outputToFilesystem: false,
         cacheDir: path.join("node_modules", ".cache", "rollup", format),
 
         compilerOptions: {
