@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const http = require("node:http")
-const { trace } = require("@opentelemetry/api")
+import http from "node:http"
+
+import { trace } from "@opentelemetry/api"
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`)

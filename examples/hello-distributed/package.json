@@ -1,6 +1,7 @@
 {
   "name": "@solarwinds-apm/example-hello-distributed",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "concurrently \"node -r --loader solarwinds-apm/loader solarwinds-apm external.js\" \"node -r --loader solarwinds-apm/loader solarwinds-apm internal.js\""
   },

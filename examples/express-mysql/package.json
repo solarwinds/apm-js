@@ -1,6 +1,7 @@
 {
   "name": "@solarwinds-apm/example-express-mysql",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node -r solarwinds-apm --loader solarwinds-apm/loader index.js"
   },

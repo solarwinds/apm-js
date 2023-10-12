@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const http = require("node:http")
+import http from "node:http"
 
 const server = http.createServer((_req, res) => {
   http.get("http://localhost:9090", (ires) => {

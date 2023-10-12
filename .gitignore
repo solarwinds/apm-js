@@ -10,7 +10,6 @@ node_modules/
 # Common build outputs
 *.tsbuildinfo
 *.log
-.rollup/
 
 # User-specific files
 .env
