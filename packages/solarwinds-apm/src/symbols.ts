@@ -14,20 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const fs = require("node:fs")
-const path = require("node:path")
+import { name, version } from "../package.json"
 
-const envPath = path.join(__dirname, "..", ".env")
+const ID = `${name}@${version}`
 
-if (fs.existsSync(envPath)) {
-  const contents = fs.readFileSync(envPath, "utf8")
-  const kvs = contents
-    .split("\n")
-    .filter((l) => !l.startsWith("#"))
-    .map((l) => {
-      const [k, ...v] = l.split("=")
-      return v.length && [k.trim(), v.join("=").trim()]
+export function setter(id: string): ((value?: unknown) => void) | false {
+  const symbol = Symbol.for(`${ID}/${id}`)
+  if (symbol in globalThis) return false
+
+  return (value = true) =>
+    Object.defineProperty(globalThis, symbol, {
+      value,
+      writable: false,
+      enumerable: false,
+      configurable: false,
     })
-    .filter((kv) => kv)
-  Object.assign(process.env, Object.fromEntries(kvs))
 }

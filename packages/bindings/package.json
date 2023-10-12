@@ -54,7 +54,7 @@
     "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=16.13.0"
   },
   "stableVersion": "0.0.0"
 }

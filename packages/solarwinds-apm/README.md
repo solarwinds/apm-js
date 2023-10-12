@@ -12,12 +12,21 @@ Install using your package manager then follow the [configuration guide](./CONFI
 
 The library can then be initialised either from the command line or the environment. The `--loader` flag isn't required when not using ES Modules, but we recommend always specifying it in case ESM code is transitively imported somewhere in the application.
 
+When using a recent Node versions (>=`20.8.0`) you can replace the `-r solarwinds-apm --loader solarwinds-apm/loader` flags with a single `--import solarwinds-apm` flag.
+
 ```sh
+# <20.8.0
 node -r solarwinds-apm --loader solarwinds-apm/loader script.js
+# >=20.8.0
+node --import solarwinds-apm script.js
 ```
 
 ```sh
+# <20.8.0
 export NODE_OPTIONS="-r solarwinds-apm --loader solarwinds-apm/loader"
+# >=20.8.0
+export NODE_OPTIONS="--import solarwinds-apm"
+
 npm start
 ```
 

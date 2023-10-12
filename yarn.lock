@@ -2442,10 +2442,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:>=16.18 <17 || >=18.8 <19 || >=20":
-  version: 20.8.3
-  resolution: "@types/node@npm:20.8.3"
-  checksum: 83511d7c310100f3fddbbf3a28f0049d60da6ffc4255231845b2e2189d7ff104727647d2b05d2a29b0af2ad61b529a4897056b3798e0cba027c629f3b13d7e82
+"@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:>=16.18 <17 || >=18.8 <19 || >=20, @types/node@npm:^20.8.0":
+  version: 20.8.4
+  resolution: "@types/node@npm:20.8.4"
+  dependencies:
+    undici-types: "npm:~5.25.1"
+  checksum: 8d1e03d5bb186e7706d2c336c81eebd82b21b76e48ad482b9f731e1a948ff1f30f42d63f2379e6f9d99b31215a7467052317187def21c07aa1128ad28b2c01f9
   languageName: node
   linkType: hard
 
@@ -7314,10 +7316,12 @@ __metadata:
     "@solarwinds-apm/rollup-config": "workspace:^"
     "@solarwinds-apm/sdk": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
-    "@types/node": "npm:^16.13.0"
+    "@types/node": "npm:^20.8.0"
+    "@types/semver": "npm:^7.5.3"
     eslint: "npm:^8.50.0"
     prettier: "npm:^3.0.3"
     rollup: "patch:rollup@npm%3A4.0.2#~/.yarn/patches/rollup-npm-4.0.2-c9dd2d43a6.patch"
+    semver: "npm:^7.5.4"
     typescript: "npm:^5.2.2"
     zod: "npm:^3.22.4"
   peerDependencies:
@@ -7898,6 +7902,13 @@ __metadata:
     has-symbols: "npm:^1.0.3"
     which-boxed-primitive: "npm:^1.0.2"
   checksum: 81ca2e81134167cc8f75fa79fbcc8a94379d6c61de67090986a2273850989dd3bae8440c163121b77434b68263e34787a675cbdcb34bb2f764c6b9c843a11b66
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.25.1":
+  version: 5.25.3
+  resolution: "undici-types@npm:5.25.3"
+  checksum: 60a47c6db451c00d27186d86a41fbd9677fa1f6d1a5350bff342c3985bd79fc3f5a638ebf56bbce21df46c701a687db43b3fbd588e1726e58047cea14d182fef
   languageName: node
   linkType: hard
 

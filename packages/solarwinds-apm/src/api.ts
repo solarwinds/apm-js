@@ -17,16 +17,6 @@ limitations under the License.
 import { context } from "@opentelemetry/api"
 import * as sdk from "@solarwinds-apm/sdk"
 
-import { init } from "./init.js"
-
-try {
-  init().catch((err) => {
-    console.warn(err)
-  })
-} catch (err) {
-  console.warn(err)
-}
-
 export function setTransactionName(name: string): boolean {
   return sdk.setTransactionName(context.active(), name)
 }

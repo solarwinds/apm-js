@@ -23,6 +23,8 @@ import typescript from "@rollup/plugin-typescript"
 import globby from "globby"
 import nodeExternals from "rollup-plugin-node-externals"
 
+const FORMATS = ["es", "cjs"]
+
 async function task(src, dist, format, sources) {
   const dir = path.join(dist, format)
 
@@ -35,11 +37,15 @@ async function task(src, dist, format, sources) {
   }
 
   const input = Object.fromEntries(
-    sources.map((file) => {
-      const name = path.relative(src, file).slice(0, -path.extname(file).length)
-      const full = path.join(process.cwd(), file)
-      return [name, full]
-    }),
+    sources
+      .map((file) => {
+        const name = path
+          .relative(src, file)
+          .slice(0, -path.extname(file).length)
+        const full = path.join(process.cwd(), file)
+        return [name, full]
+      })
+      .filter(([name]) => !(FORMATS.includes(name) && format !== name)),
   )
 
   const output = {
@@ -62,7 +68,7 @@ async function task(src, dist, format, sources) {
           moduleResolution: "node16",
         },
       }),
-      json(),
+      json({ preferConst: true }),
     ],
     input,
     output,
@@ -72,6 +78,6 @@ async function task(src, dist, format, sources) {
 export default async function config(src = "src", dist = "dist") {
   const sources = await globby(`${src}/**/*.{ts,js}`)
   return await Promise.all(
-    ["es", "cjs"].map((format) => task(src, dist, format, sources)),
+    FORMATS.map((format) => task(src, dist, format, sources)),
   )
 }

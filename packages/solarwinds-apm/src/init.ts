@@ -42,84 +42,77 @@ import {
 } from "@solarwinds-apm/instrumentations"
 import * as sdk from "@solarwinds-apm/sdk"
 
-import packageJson from "../package.json"
+import { version } from "../package.json"
 import {
   type ExtendedSwConfiguration,
   printError,
   readConfig,
 } from "./config.js"
+import { setter } from "./symbols.js"
 
 export async function init() {
-  const id = `${packageJson.name}@${packageJson.version}`
-  const initSymbol = Symbol.for(`${id}/init`)
+  const setInit = setter("init")
+  if (!setInit) return
+  setInit()
 
-  if (!(initSymbol in globalThis)) {
-    Object.defineProperty(globalThis, initSymbol, {
-      value: true,
-      writable: false,
-      enumerable: false,
-      configurable: false,
-    })
-
-    let config: ExtendedSwConfiguration
-    try {
-      config = readConfig()
-    } catch (err) {
-      console.warn(
-        "Invalid SolarWinds APM configuration, application will not be instrumented",
-      )
-      printError(err)
-      return
-    }
-
-    diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
-    const logger = diag.createComponentLogger({ namespace: "sw/init" })
-
-    if (!config.enabled) {
-      logger.info("Library disabled, application will not be instrumented")
-      return
-    }
-    if (sdk.OBOE_ERROR) {
-      logger.warn(
-        "Unsupported platform, application will not be instrumented",
-        sdk.OBOE_ERROR,
-      )
-      return
-    }
-
-    // initialize instrumentations before any asynchronous code
-    const registerInstrumentations = initInstrumentations(config)
-
-    const resource = Resource.default()
-      .merge(getDetectedResource())
-      .merge(
-        new Resource({
-          [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
-        }),
-      )
-    const reporter = sdk.createReporter(config)
-
-    oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
-      const logger = diag.createComponentLogger({
-        namespace: `sw/oboe/${module}`,
-      })
-      const log = oboeLevelToOtelLogger(level, logger)
-
-      if (sourceName && level > oboe.DEBUG_INFO) {
-        const source = { source: sourceName, line: sourceLine }
-        log(message, source)
-      } else {
-        log(message)
-      }
-    }, config.oboeLogLevel)
-
-    const [tracerProvider, meterProvider] = await Promise.all([
-      initTracing(config, resource, reporter),
-      initMetrics(config, resource, reporter, logger),
-      initMessage(resource, reporter),
-    ])
-    registerInstrumentations(tracerProvider, meterProvider)
+  let config: ExtendedSwConfiguration
+  try {
+    config = readConfig()
+  } catch (err) {
+    console.warn(
+      "Invalid SolarWinds APM configuration, application will not be instrumented",
+    )
+    printError(err)
+    return
   }
+
+  diag.setLogger(new DiagConsoleLogger(), config.otelLogLevel)
+  const logger = diag.createComponentLogger({ namespace: "sw/init" })
+
+  if (!config.enabled) {
+    logger.info("Library disabled, application will not be instrumented")
+    return
+  }
+  if (sdk.OBOE_ERROR) {
+    logger.warn(
+      "Unsupported platform, application will not be instrumented",
+      sdk.OBOE_ERROR,
+    )
+    return
+  }
+
+  // initialize instrumentations before any asynchronous code
+  const registerInstrumentations = initInstrumentations(config)
+
+  const resource = Resource.default()
+    .merge(getDetectedResource())
+    .merge(
+      new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
+      }),
+    )
+  const reporter = sdk.createReporter(config)
+
+  oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
+    const logger = diag.createComponentLogger({
+      namespace: `sw/oboe/${module}`,
+    })
+    const log = oboeLevelToOtelLogger(level, logger)
+
+    if (sourceName && level > oboe.DEBUG_INFO) {
+      const source = { source: sourceName, line: sourceLine }
+      log(message, source)
+    } else {
+      log(message)
+    }
+  }, config.oboeLogLevel)
+
+  const [tracerProvider, meterProvider] = await Promise.all([
+    initTracing(config, resource, reporter),
+    initMetrics(config, resource, reporter, logger),
+    initMessage(resource, reporter),
+  ])
+  registerInstrumentations(tracerProvider, meterProvider)
 }
 
 function initInstrumentations(config: ExtendedSwConfiguration) {
@@ -261,7 +254,7 @@ async function initMessage(resource: Resource, reporter: oboe.Reporter) {
   if (resource.asyncAttributesPending) {
     await resource.waitForAsyncAttributes?.()
   }
-  sdk.sendStatus(reporter, await sdk.initMessage(resource, packageJson.version))
+  sdk.sendStatus(reporter, await sdk.initMessage(resource, version))
 }
 
 export function oboeLevelToOtelLogger(

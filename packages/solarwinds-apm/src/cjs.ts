@@ -14,20 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const fs = require("node:fs")
-const path = require("node:path")
+import { init } from "./init.js"
 
-const envPath = path.join(__dirname, "..", ".env")
-
-if (fs.existsSync(envPath)) {
-  const contents = fs.readFileSync(envPath, "utf8")
-  const kvs = contents
-    .split("\n")
-    .filter((l) => !l.startsWith("#"))
-    .map((l) => {
-      const [k, ...v] = l.split("=")
-      return v.length && [k.trim(), v.join("=").trim()]
-    })
-    .filter((kv) => kv)
-  Object.assign(process.env, Object.fromEntries(kvs))
+try {
+  init().catch((err) => {
+    console.warn(err)
+  })
+} catch (err) {
+  console.warn(err)
 }
+
+export * from "./api.js"

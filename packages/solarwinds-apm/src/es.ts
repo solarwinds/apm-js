@@ -14,20 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const fs = require("node:fs")
-const path = require("node:path")
+import module from "node:module"
+import process from "node:process"
 
-const envPath = path.join(__dirname, "..", ".env")
+import semver from "semver"
 
-if (fs.existsSync(envPath)) {
-  const contents = fs.readFileSync(envPath, "utf8")
-  const kvs = contents
-    .split("\n")
-    .filter((l) => !l.startsWith("#"))
-    .map((l) => {
-      const [k, ...v] = l.split("=")
-      return v.length && [k.trim(), v.join("=").trim()]
-    })
-    .filter((kv) => kv)
-  Object.assign(process.env, Object.fromEntries(kvs))
+import { init } from "./init.js"
+import { setter } from "./symbols.js"
+
+try {
+  await init()
+} catch (err) {
+  console.warn(err)
 }
+
+const setRegister = setter("register")
+if (setRegister && semver.gte(process.versions.node, "20.8.0")) {
+  setRegister()
+  module.register("./hooks.js", import.meta.url)
+}
+
+export * from "./api.js"
