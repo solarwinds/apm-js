@@ -52,7 +52,7 @@ async function task(src, dist, format, sources) {
     plugins: [
       nodeExternals({ deps: true, peerDeps: true, devDeps: true }),
       typescript({
-        outputToFilesystem: false,
+        outputToFilesystem: true,
         cacheDir: path.join("node_modules", ".cache", "rollup", format),
 
         compilerOptions: {
@@ -63,6 +63,17 @@ async function task(src, dist, format, sources) {
         },
       }),
       json(),
+
+      {
+        name: "exit",
+        closeBundle: {
+          order: "post",
+          sequential: true,
+          handler() {
+            process.exit()
+          },
+        },
+      },
     ],
     input,
     output,
