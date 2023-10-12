@@ -11,12 +11,7 @@
         "src/**",
         "oboe/**"
       ],
-      "outputs": [
-        "dist/**",
-        "npm/*/*.node",
-        "npm/*/liboboe.so",
-        "tsconfig.tsbuildinfo"
-      ]
+      "outputs": ["dist/**", "npm/*/*.node", "npm/*/liboboe.so"]
     },
     "lint": {
       "dependsOn": ["^build"],
