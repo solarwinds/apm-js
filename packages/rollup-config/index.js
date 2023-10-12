@@ -45,7 +45,10 @@ async function task(src, dist, format, sources) {
         const full = path.join(process.cwd(), file)
         return [name, full]
       })
-      .filter(([name]) => !(FORMATS.includes(name) && format !== name)),
+      .filter(([name]) => {
+        const specifier = FORMATS.find((format) => name.endsWith(`.${format}`))
+        return specifier ? specifier === format : true
+      }),
   )
 
   const output = {

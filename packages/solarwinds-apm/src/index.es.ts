@@ -31,7 +31,7 @@ try {
 const setRegister = setter("register")
 if (setRegister && semver.gte(process.versions.node, "20.8.0")) {
   setRegister()
-  module.register("./hooks.js", import.meta.url)
+  module.register("./hooks.es.js", import.meta.url)
 }
 
 export * from "./api.js"
