@@ -18,6 +18,13 @@ import { name, version } from "../package.json"
 
 const ID = `${name}@${version}`
 
+/**
+ * Checks if a global flag is set. If it isn't returns a setter function for it,
+ * otherwise returns false.
+ *
+ * @param id - Unique ID to check and set
+ * @returns Setter function or false if already set
+ */
 export function setter(id: string): ((value?: unknown) => void) | false {
   const symbol = Symbol.for(`${ID}/${id}`)
   if (symbol in globalThis) return false

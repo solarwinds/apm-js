@@ -50,6 +50,7 @@ import {
 import { setter } from "./symbols.js"
 
 export async function init() {
+  // init only once
   const setInit = setter("init")
   if (!setInit) return
   setInit()

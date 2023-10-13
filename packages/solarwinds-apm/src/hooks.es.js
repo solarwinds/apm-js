@@ -16,6 +16,7 @@ limitations under the License.
 
 import { init } from "./init.js"
 
+// init in here too so that everything can be done through a single --loader flag
 try {
   await init()
 } catch (err) {

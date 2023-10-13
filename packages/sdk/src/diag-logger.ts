@@ -18,16 +18,7 @@ import * as process from "node:process"
 
 import { type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
 
-const STREAMS = {
-  stdout: {
-    log: console.log,
-    colours: process.stdout.hasColors(16),
-  },
-  stderr: {
-    log: console.error,
-    colours: process.stdout.hasColors(16),
-  },
-}
+const HAS_COLOURS = process.stdout.hasColors(16)
 const COLOURS = {
   red: "\x1b[1;31m",
   yellow: "\x1b[1;33m",
@@ -35,20 +26,17 @@ const COLOURS = {
 }
 
 export class SwDiagLogger implements DiagLogger {
-  readonly error = SwDiagLogger.makeLogger("error", "stderr", "red")
-  readonly warn = SwDiagLogger.makeLogger("warn", "stderr", "yellow")
-  readonly info = SwDiagLogger.makeLogger("info", "stdout", "cyan")
-  readonly debug = SwDiagLogger.makeLogger("debug", "stdout")
-  readonly verbose = SwDiagLogger.makeLogger("verbose", "stdout")
+  readonly error = SwDiagLogger.makeLogger("error", "red")
+  readonly warn = SwDiagLogger.makeLogger("warn", "yellow")
+  readonly info = SwDiagLogger.makeLogger("info", "cyan")
+  readonly debug = SwDiagLogger.makeLogger("debug")
+  readonly verbose = SwDiagLogger.makeLogger("verbose")
 
   private static makeLogger(
     level: string,
-    stream: keyof typeof STREAMS,
     colour?: keyof typeof COLOURS,
   ): DiagLogFunction {
-    const { log, colours: pretty } = STREAMS[stream]
-
-    if (pretty) {
+    if (HAS_COLOURS) {
       const colourCode = colour && COLOURS[colour]
 
       return (message, ...args) => {
@@ -64,11 +52,11 @@ export class SwDiagLogger implements DiagLogger {
 
         line += `) ${message}`
 
-        log(line, ...args)
+        console.log(line, ...args)
       }
     } else {
       return (message, ...args) => {
-        log(JSON.stringify({ time: new Date(), level, message, args }))
+        console.log(JSON.stringify({ time: new Date(), level, message, args }))
       }
     }
   }
