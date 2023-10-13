@@ -21,5 +21,5 @@ import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
 import { type Patch } from "."
 
 export const patch: Patch<InstrumentationConfig> = (config) => ({
-  enabled: config.enabled ?? "_HANDLER" in env,
+  enabled: config.enabled ?? "AWS_LAMBDA_FUNCTION_NAME" in env,
 })

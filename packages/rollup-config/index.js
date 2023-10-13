@@ -39,13 +39,17 @@ async function task(src, dist, format, sources) {
   const input = Object.fromEntries(
     sources
       .map((file) => {
+        // file name without directory or extension
         const name = path
           .relative(src, file)
           .slice(0, -path.extname(file).length)
+        // full file path
         const full = path.join(process.cwd(), file)
+
         return [name, full]
       })
       .filter(([name]) => {
+        // detect `.es`/`.cjs` and filter out if it doesn't match the current format
         const specifier = FORMATS.find((format) => name.endsWith(`.${format}`))
         return specifier ? specifier === format : true
       }),
@@ -67,6 +71,8 @@ async function task(src, dist, format, sources) {
         compilerOptions: {
           rootDir: src,
           outDir: dir,
+          // following required cause the plugin overrides tsconfig.json for some reason
+          // https://github.com/rollup/plugins/issues/1583
           module: "node16",
           moduleResolution: "node16",
         },
