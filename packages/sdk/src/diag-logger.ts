@@ -18,7 +18,7 @@ import * as process from "node:process"
 
 import { type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
 
-const HAS_COLOURS = process.stdout.hasColors(16)
+const HAS_COLOURS = process.stdout.isTTY && process.stdout.hasColors(16)
 const COLOURS = {
   red: "\x1b[1;31m",
   yellow: "\x1b[1;33m",
