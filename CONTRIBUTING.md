@@ -92,6 +92,16 @@ Running a command in one package should do the same thing as running it in anoth
 
 This is especially important given this repo uses Turborepo to run commands in all packages at once from the root by depending on this set of shared scripts existing. It is also used to run examples by ensuring any package an example depends on is built before running it.
 
+## ES Modules vs CommonJS
+
+We explicitly aim to support ESM
+
+Packages should optimally target both ESM and CJS unless they have a good reason not to, in which case they should target CJS only for compatibility. At the moment the two CJS-only packages are the SDK because it's internal and has a lot of stateful components, and the bindings because they are internal and `.node` files can't be imported from ESM.
+
+Dual targeting is made simple by the project's [Rollup configuration](./packages/rollup-config/), which should work without being extended pretty much all the time. Files ending in `.es.{ts, js}` will only be included for ESM `.cjs.{ts, js}` only for CJS. We don't use `.m{ts, js}` and `.c{ts, js}` because they have poor TypeScript support (and I, the original author, think they are Ugly and Bad). Projects should always specify `"type": "module"` when dual targeting (or an explicit `"commonjs"`) in their `package.json`.
+
+Internal code (like scripts and examples) should attempt to use ESM as much as possible unless they are meant to demonstrate usage of the library from CJS.
+
 ## Adding examples
 
 Examples should be standalone projects in the `examples/` directory. The structure here is a lot more lax than with the rest of the project since different examples might call for different structures, but the source is still required to adhere to the code style which is checked in CI. Example packages should have a simple and clear name. Their package name should be `@solarwinds-apm/example-<name>`, the package should be private and not have a version field. A brief description of the example should be added to the main README. A simple starting point is the [`hello`](./examples/hello/) example.

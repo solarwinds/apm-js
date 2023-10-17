@@ -1,0 +1,56 @@
+{
+  "name": "@solarwinds-apm/rollup-config",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "contributors": [
+    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
+    "directory": "packages/rollup-config"
+  },
+  "bugs": {
+    "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "main": "./index.js",
+  "files": [
+    "./index.js"
+  ],
+  "publishConfig": {
+    "provenance": true
+  },
+  "scripts": {
+    "lint": "prettier --check . && eslint . --max-warnings=0",
+    "lint:fix": "eslint --fix . && prettier --write .",
+    "publish": "node ../../scripts/publish.js"
+  },
+  "dependencies": {
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "globby": "^11.1.0",
+    "rollup-plugin-node-externals": "^6.1.2",
+    "tslib": "^2.6.2"
+  },
+  "peerDependencies": {
+    "rollup": "*",
+    "typescript": "*"
+  },
+  "peerDependenciesMeta": {
+    "rollup": {
+      "optional": false
+    },
+    "typescript": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@solarwinds-apm/eslint-config": "workspace:^",
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.3"
+  }
+}

@@ -28,7 +28,7 @@ import { callsite } from "@solarwinds-apm/module"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { z } from "zod"
 
-import aoCert from "./appoptics.crt"
+import aoCert from "./appoptics.crt.js"
 
 const r = createRequire(callsite().getFileName()!)
 

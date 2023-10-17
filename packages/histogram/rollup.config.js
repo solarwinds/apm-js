@@ -14,4 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export function callsite(): NodeJS.CallSite
+import config from "@solarwinds-apm/rollup-config"
+
+export default config()

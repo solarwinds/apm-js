@@ -30,6 +30,7 @@ import { type SwConfiguration } from "../config"
 import * as bunyan from "./bunyan"
 import * as fs from "./fs"
 import * as http from "./http"
+import * as lambda from "./lambda"
 import * as mysql2 from "./mysql2"
 import * as pg from "./pg"
 import * as pino from "./pino"
@@ -46,7 +47,16 @@ export type Patch<Config extends InstrumentationConfig> = (
 
 export const RESOURCE_SERVICE_NAME = "resource.service.name" as const
 
-const patches = { bunyan, fs, http, mysql2, pg, pino, winston } as const
+const patches = {
+  "aws-lambda": lambda,
+  bunyan,
+  fs,
+  http,
+  mysql2,
+  pg,
+  pino,
+  winston,
+} as const
 type Patches = typeof patches
 type PatchableConfigs = {
   [Module in keyof Patches as `@opentelemetry/instrumentation-${Module}`]?: Patches[Module] extends {
@@ -63,10 +73,7 @@ export function patch(
   const patched = { ...configs }
   for (const [name, { patch }] of Object.entries(patches)) {
     const prefixed = `@opentelemetry/instrumentation-${name}` as const
-    patched[prefixed] = patch(
-      (configs[prefixed] ?? {}) as InstrumentationConfig,
-      options,
-    ) as InstrumentationConfig
+    patched[prefixed] = patch(configs[prefixed] ?? {}, options)
   }
   return patched
 }

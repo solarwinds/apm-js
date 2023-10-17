@@ -1,8 +1,9 @@
 {
   "name": "@solarwinds-apm/example-hello-distributed",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "concurrently \"node -r solarwinds-apm external.js\" \"node -r solarwinds-apm internal.js\""
+    "start": "concurrently \"node --loader solarwinds-apm/loader external.js\" \"node --loader solarwinds-apm/loader internal.js\""
   },
   "dependencies": {
     "@opentelemetry/api": "^1.3.0",

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export namespace eventLoop {
+export declare namespace eventLoop {
   function setCallback(
     callback: (latency: number) => void,
     granularity: number,

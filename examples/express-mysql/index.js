@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 const process = require("node:process")
+
 const express = require("express")
 const mysql = require("mysql2")
 const winston = require("winston")

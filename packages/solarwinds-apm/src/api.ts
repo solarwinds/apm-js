@@ -14,8 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const TOKEN = "secret"
+import { context } from "@opentelemetry/api"
+import * as sdk from "@solarwinds-apm/sdk"
 
-module.exports = {
-  TOKEN,
+export function setTransactionName(name: string): boolean {
+  return sdk.setTransactionName(context.active(), name)
 }
+export function waitUntilReady(timeout: number): number {
+  return sdk.waitUntilReady(timeout)
+}
+
+export { type Config } from "./config.js"

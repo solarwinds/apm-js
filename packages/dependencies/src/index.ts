@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { collectNodeModulesDependencies } from "./node-modules"
-import { collectPnpApiDependencies, type PnpApi } from "./pnp-api"
+import { collectNodeModulesDependencies } from "./node-modules.js"
+import { collectPnpApiDependencies, type PnpApi } from "./pnp-api.js"
 
 const PNP = "pnpapi"
 

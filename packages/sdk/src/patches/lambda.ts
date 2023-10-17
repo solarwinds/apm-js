@@ -14,24 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { context } from "@opentelemetry/api"
-import * as sdk from "@solarwinds-apm/sdk"
+import { env } from "node:process"
 
-import { init } from "./init"
+import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
 
-try {
-  init().catch((err) => {
-    console.warn(err)
-  })
-} catch (err) {
-  console.warn(err)
-}
+import { type Patch } from "."
 
-export function setTransactionName(name: string): boolean {
-  return sdk.setTransactionName(context.active(), name)
-}
-export function waitUntilReady(timeout: number): number {
-  return sdk.waitUntilReady(timeout)
-}
-
-export { type Config } from "./config"
+export const patch: Patch<InstrumentationConfig> = (config) => ({
+  enabled: config.enabled ?? "AWS_LAMBDA_FUNCTION_NAME" in env,
+})

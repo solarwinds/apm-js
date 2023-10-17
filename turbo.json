@@ -7,11 +7,11 @@
         "build.js",
         "package.json",
         "tsconfig.json",
-        "tsconfig.build.json",
+        "rollup.config.json",
         "src/**",
         "oboe/**"
       ],
-      "outputs": ["dist/**", "npm/*/oboe.node", "npm/*/liboboe.so"]
+      "outputs": ["dist/**", "npm/*/*.node", "npm/*/liboboe.so"]
     },
     "lint": {
       "dependsOn": ["^build"],
@@ -32,7 +32,7 @@
     "test": {
       "dependsOn": ["@solarwinds-apm/test#build", "build"],
       "inputs": ["package.json", "tsconfig.json", "src/**", "test/**"],
-      "env": ["TEST_SERVICE_KEY", "TEST_COLLECTOR"],
+      "env": ["TEST_*", "SW_APM_*", "OTEL_*"],
       "outputs": []
     }
   },
@@ -41,7 +41,9 @@
     ".prettierrc.json",
     ".yarnrc.yml",
     "tsconfig.base.json",
+    "tsconfig.base.test.json",
     "yarn.lock",
-    "packages/eslint-config/index.js"
+    "packages/eslint-config/index.js",
+    "packages/rollup-config/index.js"
   ]
 }

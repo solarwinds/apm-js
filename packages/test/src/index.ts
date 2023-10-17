@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import "./plugin"
+import "./plugin.js"
 
 import * as test from "node:test"
 
@@ -25,7 +25,6 @@ import * as semver from "semver"
 chai.use(chaiAsPromised)
 
 export { expect } from "chai"
-export { describe } from "node:test"
 
 // Node 16 doesn't support async functions in tests
 // so we add a little bit of code to make it possible.
@@ -43,6 +42,10 @@ const wrap = (f: Fn): any =>
           done()
         }
       }
+
+export function describe(name: string, f: () => void): unknown {
+  return test.describe(name, f)
+}
 
 export function it(name: string, f: Fn): unknown {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

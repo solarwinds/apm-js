@@ -1,6 +1,7 @@
 {
   "name": "@solarwinds-apm/examples",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write ."

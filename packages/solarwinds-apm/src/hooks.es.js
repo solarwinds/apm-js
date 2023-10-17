@@ -14,18 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export function callsite() {
-  const prepareStackTrace = Error.prepareStackTrace
-  try {
-    const callsites = []
-    Error.prepareStackTrace = (_err, cs) => {
-      callsites.push(...cs)
-    }
-    void new Error().stack
+import { init } from "./init.js"
 
-    const current = callsites[0]
-    return callsites.find((cs) => cs.getFileName() !== current.getFileName())
-  } finally {
-    Error.prepareStackTrace = prepareStackTrace
-  }
+// init in here too so that everything can be done through a single --loader flag
+try {
+  await init()
+} catch (err) {
+  console.warn(err)
 }
+
+export * from "@opentelemetry/instrumentation/hook.mjs"

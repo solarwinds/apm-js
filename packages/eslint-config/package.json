@@ -13,9 +13,13 @@
   "bugs": {
     "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
   },
-  "main": "index.js",
+  "type": "commonjs",
+  "exports": {
+    ".": "./index.js"
+  },
+  "main": "./index.js",
   "files": [
-    "index.js"
+    "./index.js"
   ],
   "publishConfig": {
     "provenance": true
@@ -33,22 +37,16 @@
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-tsdoc": "^0.2.17",
-    "globals": "^13.23.0",
-    "typescript": "^5.2.2"
+    "globals": "^13.23.0"
   },
   "peerDependencies": {
     "eslint": "^8.23.0",
-    "jest": "*",
     "prettier": "*",
     "typescript": "*"
   },
-  "devDependencies": {
-    "eslint": "^8.50.0",
-    "prettier": "^3.0.3"
-  },
   "peerDependenciesMeta": {
-    "jest": {
-      "optional": true
+    "eslint": {
+      "optional": false
     },
     "prettier": {
       "optional": true
@@ -56,6 +54,10 @@
     "typescript": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.3"
   },
   "stableVersion": "0.0.0"
 }

@@ -127,7 +127,7 @@ export const DEBUG_LOW: number
 export const DEBUG_MEDIUM: number
 export const DEBUG_HIGH: number
 
-export function debug_log_add(
+export declare function debug_log_add(
   logger: (
     module: string,
     level: number,
@@ -138,7 +138,7 @@ export function debug_log_add(
   level: number,
 ): number
 
-export class Metadata {
+export declare class Metadata {
   private constructor()
 
   createEvent(): Event
@@ -153,7 +153,7 @@ export class Metadata {
   toString(): string
 }
 
-export namespace Context {
+export declare namespace Context {
   function setTracingMode(newMode: number): void
 
   function setTriggerMode(newMode: number): void
@@ -212,7 +212,7 @@ export namespace Context {
 
   function isLambda(): boolean
 
-  function createEvent(): Event
+  function createEvent(timestamp?: number | bigint): Event
   function startTrace(): Event
 
   function createEntry(
@@ -220,11 +220,10 @@ export namespace Context {
     timestamp: number | bigint,
     parent_md?: Metadata,
   ): Event
-  function createEvent(timestamp: number | bigint): Event
   function createExit(timestamp: number | bigint): Event
 }
 
-export class Event {
+export declare class Event {
   private constructor()
 
   addInfo(key: string, value: null | string | number | boolean): boolean
@@ -248,7 +247,7 @@ export class Event {
   static startTrace(md: Metadata): Event
 }
 
-export namespace Span {
+export declare namespace Span {
   interface SpanOptions {
     transaction: string | null
     domain: string | null
@@ -271,12 +270,12 @@ export namespace Span {
   function createHttpSpan(options: HttpSpanOptions): string
 }
 
-export class MetricTags {
+export declare class MetricTags {
   constructor(count: number)
   add(index: number, key: string, value: string): boolean
 }
 
-export namespace CustomMetrics {
+export declare namespace CustomMetrics {
   interface SummaryOptions {
     name: string
     value: number
@@ -326,7 +325,7 @@ export interface ReporterOptions {
   stdout_clear_nonblocking: number
   metric_format: number
 }
-export class Reporter {
+export declare class Reporter {
   constructor(options: ReporterOptions)
 
   get init_status(): number
@@ -339,7 +338,7 @@ export class Reporter {
   getType(): string
 }
 
-export namespace Config {
+export declare namespace Config {
   function checkVersion(version: number, revision: number): boolean
   function getVersionString(): string
 }

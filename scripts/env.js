@@ -24,7 +24,10 @@ if (fs.existsSync(envPath)) {
   const kvs = contents
     .split("\n")
     .filter((l) => !l.startsWith("#"))
-    .map((l) => l.split("=", 2).map((s) => s.trim()))
-    .filter((l) => l.length == 2)
+    .map((l) => {
+      const [k, ...v] = l.split("=")
+      return v.length && [k.trim(), v.join("=").trim()]
+    })
+    .filter((kv) => kv)
   Object.assign(process.env, Object.fromEntries(kvs))
 }
