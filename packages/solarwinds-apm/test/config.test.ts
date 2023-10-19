@@ -43,7 +43,12 @@ describe("readConfig", () => {
       insertTraceContextIntoQueries: false,
       instrumentations: {},
       metrics: { interval: 60_000 },
-      experimental: { otelCollector: false },
+      experimental: {
+        otlpTraces: false,
+        otlpMetrics: false,
+        swTraces: true,
+        swMetrics: true,
+      },
     }
 
     expect(config).to.deep.include(expected)
