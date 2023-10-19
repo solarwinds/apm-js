@@ -175,7 +175,7 @@ async function initTracing(
     resource,
   })
 
-  if (!config.experimental.disableSwTraces) {
+  if (config.experimental.swTraces) {
     provider.addSpanProcessor(spanProcessor)
   }
   if (config.experimental.otlpTraces) {
@@ -219,7 +219,7 @@ async function initMetrics(
     views: config.metrics.views,
   })
 
-  if (!config.experimental.disableSwMetrics) {
+  if (config.experimental.swMetrics) {
     provider.addMetricReader(reader)
   }
   if (config.experimental.otlpMetrics) {

@@ -157,8 +157,8 @@ const schema = z.object({
     .object({
       otlpTraces: boolean.default(false),
       otlpMetrics: boolean.default(false),
-      disableSwTraces: boolean.default(false),
-      disableSwMetrics: boolean.default(false),
+      swTraces: boolean.default(true),
+      swMetrics: boolean.default(true),
     })
     .default({}),
 })
