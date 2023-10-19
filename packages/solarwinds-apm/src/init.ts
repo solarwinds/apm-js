@@ -174,9 +174,11 @@ async function initTracing(
     }),
     resource,
   })
-  provider.addSpanProcessor(spanProcessor)
 
-  if (config.experimental.otelCollector) {
+  if (!config.experimental.disableSwTraces) {
+    provider.addSpanProcessor(spanProcessor)
+  }
+  if (config.experimental.otlpTraces) {
     const otlp = await import("@opentelemetry/exporter-trace-otlp-grpc").catch(
       () => undefined,
     )
@@ -216,9 +218,11 @@ async function initMetrics(
     resource,
     views: config.metrics.views,
   })
-  provider.addMetricReader(reader)
 
-  if (config.experimental.otelCollector) {
+  if (!config.experimental.disableSwMetrics) {
+    provider.addMetricReader(reader)
+  }
+  if (config.experimental.otlpMetrics) {
     const otlp = await import(
       "@opentelemetry/exporter-metrics-otlp-grpc"
     ).catch(() => undefined)
