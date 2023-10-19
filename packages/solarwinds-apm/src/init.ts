@@ -174,21 +174,20 @@ async function initTracing(
     }),
     resource,
   })
-  provider.addSpanProcessor(spanProcessor)
 
-  if (config.experimental.otelCollector) {
-    const otlp = await import("@opentelemetry/exporter-trace-otlp-grpc").catch(
-      () => undefined,
+  if (config.experimental.swTraces) {
+    provider.addSpanProcessor(spanProcessor)
+  }
+  if (config.experimental.otlpTraces) {
+    const { OTLPTraceExporter } = await import(
+      "@opentelemetry/exporter-trace-otlp-grpc"
     )
-    if (otlp) {
-      const { OTLPTraceExporter } = otlp
-      provider.addSpanProcessor(
-        new BatchSpanProcessor(
-          // configurable through standard OTel environment
-          new OTLPTraceExporter(),
-        ),
-      )
-    }
+    provider.addSpanProcessor(
+      new BatchSpanProcessor(
+        // configurable through standard OTel environment
+        new OTLPTraceExporter(),
+      ),
+    )
   }
 
   provider.register({ propagator })
@@ -216,22 +215,21 @@ async function initMetrics(
     resource,
     views: config.metrics.views,
   })
-  provider.addMetricReader(reader)
 
-  if (config.experimental.otelCollector) {
-    const otlp = await import(
+  if (config.experimental.swMetrics) {
+    provider.addMetricReader(reader)
+  }
+  if (config.experimental.otlpMetrics) {
+    const { OTLPMetricExporter } = await import(
       "@opentelemetry/exporter-metrics-otlp-grpc"
-    ).catch(() => undefined)
-    if (otlp) {
-      const { OTLPMetricExporter } = otlp
-      provider.addMetricReader(
-        new PeriodicExportingMetricReader({
-          // configurable through standard OTel environment
-          exporter: new OTLPMetricExporter(),
-          exportIntervalMillis: config.metrics.interval,
-        }),
-      )
-    }
+    )
+    provider.addMetricReader(
+      new PeriodicExportingMetricReader({
+        // configurable through standard OTel environment
+        exporter: new OTLPMetricExporter(),
+        exportIntervalMillis: config.metrics.interval,
+      }),
+    )
   }
 
   metrics.setGlobalMeterProvider(provider)

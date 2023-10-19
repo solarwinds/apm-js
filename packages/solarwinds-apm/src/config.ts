@@ -159,7 +159,10 @@ const schema = z.object({
 
   experimental: z
     .object({
-      otelCollector: boolean.default(false),
+      otlpTraces: boolean.default(false),
+      otlpMetrics: boolean.default(false),
+      swTraces: boolean.default(true),
+      swMetrics: boolean.default(true),
     })
     .default({}),
 })
