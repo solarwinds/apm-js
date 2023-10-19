@@ -13,7 +13,7 @@ jobs:
       YARN_NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           lfs: true
       - uses: actions/setup-node@v3
