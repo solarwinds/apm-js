@@ -1,0 +1,66 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    versioning-strategy: increase-if-necessary
+    ignore:
+      # should be updated manually only when required
+      - dependency-name: "@types/node"
+
+    groups:
+      otel-contrib:
+        patterns:
+          - "@opentelemetry/instrumentation-*"
+          - "@opentelemetry/resource-detector-*"
+        exclude-patterns:
+          # maintained as part of the sdk
+          - "@opentelemetry/instrumentation-http"
+          - "@opentelemetry/instrumentation-grpc"
+        update-types:
+          - minor
+          - patch
+
+      otel:
+        patterns:
+          - "@opentelemetry/*"
+        update-types:
+          - minor
+          - patch
+
+      build:
+        patterns:
+          - "turbo"
+          - "typescript"
+          - "tslib"
+          - "zig-build"
+          - "rollup"
+          - "@rollup/*"
+          - "rollup-*"
+        update-types:
+          - minor
+          - patch
+
+      lint:
+        patterns:
+          - "eslint"
+          - "prettier"
+          - "@eslint/*"
+          - "eslint-*"
+          - "@typescript-eslint/*"
+          - "globals"
+        update-types:
+          - minor
+          - patch
+
+      misc:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
