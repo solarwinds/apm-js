@@ -20,6 +20,7 @@ import * as path from "node:path"
 import * as process from "node:process"
 
 import { DiagLogLevel } from "@opentelemetry/api"
+import { getEnvWithoutDefaults } from "@opentelemetry/core"
 import { InstrumentationBase } from "@opentelemetry/instrumentation"
 import { View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
@@ -59,7 +60,10 @@ const serviceKey = z
   .includes(":")
   .transform((k) => {
     const [token, ...name] = k.split(":")
-    return { token: token!, name: name.join(":") }
+    return {
+      token: token!,
+      name: getEnvWithoutDefaults().OTEL_SERVICE_NAME ?? name.join(":"),
+    }
   })
 
 const trustedPath = z.string().transform((p, ctx) => {
