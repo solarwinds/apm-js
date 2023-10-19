@@ -179,18 +179,15 @@ async function initTracing(
     provider.addSpanProcessor(spanProcessor)
   }
   if (config.experimental.otlpTraces) {
-    const otlp = await import("@opentelemetry/exporter-trace-otlp-grpc").catch(
-      () => undefined,
+    const { OTLPTraceExporter } = await import(
+      "@opentelemetry/exporter-trace-otlp-grpc"
     )
-    if (otlp) {
-      const { OTLPTraceExporter } = otlp
-      provider.addSpanProcessor(
-        new BatchSpanProcessor(
-          // configurable through standard OTel environment
-          new OTLPTraceExporter(),
-        ),
-      )
-    }
+    provider.addSpanProcessor(
+      new BatchSpanProcessor(
+        // configurable through standard OTel environment
+        new OTLPTraceExporter(),
+      ),
+    )
   }
 
   provider.register({ propagator })
@@ -223,19 +220,16 @@ async function initMetrics(
     provider.addMetricReader(reader)
   }
   if (config.experimental.otlpMetrics) {
-    const otlp = await import(
+    const { OTLPMetricExporter } = await import(
       "@opentelemetry/exporter-metrics-otlp-grpc"
-    ).catch(() => undefined)
-    if (otlp) {
-      const { OTLPMetricExporter } = otlp
-      provider.addMetricReader(
-        new PeriodicExportingMetricReader({
-          // configurable through standard OTel environment
-          exporter: new OTLPMetricExporter(),
-          exportIntervalMillis: config.metrics.interval,
-        }),
-      )
-    }
+    )
+    provider.addMetricReader(
+      new PeriodicExportingMetricReader({
+        // configurable through standard OTel environment
+        exporter: new OTLPMetricExporter(),
+        exportIntervalMillis: config.metrics.interval,
+      }),
+    )
   }
 
   metrics.setGlobalMeterProvider(provider)
