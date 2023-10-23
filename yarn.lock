@@ -2041,7 +2041,7 @@ __metadata:
     "@rollup/plugin-typescript": "npm:^11.1.5"
     "@solarwinds-apm/eslint-config": "workspace:^"
     eslint: "npm:^8.50.0"
-    globby: "npm:^11.1.0"
+    globby: "npm:^12.2.0"
     prettier: "npm:^3.0.3"
     rollup-plugin-node-externals: "npm:^6.1.2"
     tslib: "npm:^2.6.2"
@@ -2124,7 +2124,7 @@ __metadata:
     chai: "npm:^4.3.10"
     chai-as-promised: "npm:^7.1.1"
     eslint: "npm:^8.50.0"
-    globby: "npm:^11.1.0"
+    globby: "npm:^12.2.0"
     prettier: "npm:^3.0.3"
     rollup: "patch:rollup@npm%3A4.0.2#~/.yarn/patches/rollup-npm-4.0.2-c9dd2d43a6.patch"
     semver: "npm:^7.5.4"
@@ -2922,6 +2922,13 @@ __metadata:
   version: 2.1.0
   resolution: "array-union@npm:2.1.0"
   checksum: 429897e68110374f39b771ec47a7161fc6a8fc33e196857c0a396dc75df0b5f65e4d046674db764330b6bb66b39ef48dd7c53b6a2ee75cfb0681e0c1a7033962
+  languageName: node
+  linkType: hard
+
+"array-union@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "array-union@npm:3.0.1"
+  checksum: b5271d7e5688d2d1932928b271796dbbddc422448557ab05ef6f34a9f84fb645eb855384feec6234bf59c226053a0e21b8a00b0e6cd588874b90a5c13dbeb64e
   languageName: node
   linkType: hard
 
@@ -4293,7 +4300,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.1":
+"fast-glob@npm:^3.2.7, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.1":
   version: 3.3.1
   resolution: "fast-glob@npm:3.3.1"
   dependencies:
@@ -4766,6 +4773,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"globby@npm:^12.2.0":
+  version: 12.2.0
+  resolution: "globby@npm:12.2.0"
+  dependencies:
+    array-union: "npm:^3.0.1"
+    dir-glob: "npm:^3.0.1"
+    fast-glob: "npm:^3.2.7"
+    ignore: "npm:^5.1.9"
+    merge2: "npm:^1.4.1"
+    slash: "npm:^4.0.0"
+  checksum: 121fee62bb9a43a35a32731cda9540241003ef578f9cee5ad87b27d3020b94857ff62f8d82cb99dbeedf6f26981c9fa62509d873392642ceb37674f3d6ec4e52
+  languageName: node
+  linkType: hard
+
 "gopd@npm:^1.0.1":
   version: 1.0.1
   resolution: "gopd@npm:1.0.1"
@@ -4931,7 +4952,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.2.0, ignore@npm:^5.2.4":
+"ignore@npm:^5.1.9, ignore@npm:^5.2.0, ignore@npm:^5.2.4":
   version: 5.2.4
   resolution: "ignore@npm:5.2.4"
   checksum: 7c7cd90edd9fea6e037f9b9da4b01bf0a86b198ce78345f9bbd983929d68ff14830be31111edc5d70c264921f4962404d75b7262b4d9cc3bc12381eccbd03096
@@ -7198,6 +7219,13 @@ __metadata:
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
   checksum: e18488c6a42bdfd4ac5be85b2ced3ccd0224773baae6ad42cfbb9ec74fc07f9fa8396bd35ee638084ead7a2a0818eb5e7151111544d4731ce843019dab4be47b
+  languageName: node
+  linkType: hard
+
+"slash@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "slash@npm:4.0.0"
+  checksum: b522ca75d80d107fd30d29df0549a7b2537c83c4c4ecd12cd7d4ea6c8aaca2ab17ada002e7a1d78a9d736a0261509f26ea5b489082ee443a3a810586ef8eff18
   languageName: node
   linkType: hard
 
