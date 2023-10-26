@@ -38,7 +38,7 @@ module.exports = {
 
 | Key                             | Environment                    | Default           | Description                                                  |
 | ------------------------------- | ------------------------------ | ----------------- | ------------------------------------------------------------ |
-| **`serviceKey`**                | **`SW_APM_SERVICE_KEY`**       |                   | **Service key**                                              |
+| **`serviceKey`**                | **`SW_APM_SERVICE_KEY`**       |                   | **Service key**. See [Service Name](#service-name)           |
 | `enabled`                       | `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled                    |
 | `collector`                     | `SW_APM_COLLECTOR`             | Default collector | Collector URL                                                |
 | `trustedPath`                   | `SW_APM_TRUSTED_PATH`          | None              | Path to the collector's SSL certificate                      |
@@ -52,6 +52,10 @@ module.exports = {
 | `transactionSettings`           |                                | None              | See [Transaction Settings](#transaction-settings)            |
 | `instrumentations`              |                                | None              | See [Instrumentations](#instrumentations)                    |
 | `metricViews`                   |                                | None              | Custom metric views                                          |
+
+### Service Name
+
+By default the service name portion of the service key is used, e.g. `my-service` if the service key is `SW_APM_SERVICE_KEY=api-token:my-service`. If the `OTEL_SERVICE_NAME` or `OTEL_RESOURCE_ATTRIBUTES` environment variable is used to specify a service name, it will take precedence over the default.
 
 ### Transaction Settings
 
