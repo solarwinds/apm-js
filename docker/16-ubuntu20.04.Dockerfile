@@ -1,9 +1,6 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
-RUN apt-get update && apt-get install -y software-properties-common
-
-RUN add-apt-repository ppa:git-core/ppa && \
-    apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     ca-certificates \
     curl \
     git \
