@@ -112,7 +112,6 @@ jobs:
             18-debian
             18-ubi
             18-ubuntu
-            20-alpine
             20-amazonlinux
             20-debian
             20-ubi
