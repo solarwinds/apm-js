@@ -1,0 +1,8 @@
+releases:
+  "@solarwinds-apm/test": minor
+
+declined:
+  - "@solarwinds-apm/compat"
+  - "@solarwinds-apm/dependencies"
+  - "@solarwinds-apm/sdk"
+  - solarwinds-apm
