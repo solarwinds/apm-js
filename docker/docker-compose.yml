@@ -3,7 +3,7 @@ services:
   16-alpine:
     build:
       context: .
-      dockerfile: 16-alpine3.15.Dockerfile
+      dockerfile: 16-alpine3.16.Dockerfile
     environment:
       YARN_IGNORE_NODE: 1
     volumes:
@@ -14,7 +14,7 @@ services:
   16-amazonlinux:
     build:
       context: .
-      dockerfile: 16-amazonlinux2.Dockerfile
+      dockerfile: 16-amazonlinux2023.Dockerfile
     environment:
       YARN_IGNORE_NODE: 1
     volumes:
@@ -47,7 +47,7 @@ services:
   16-ubuntu:
     build:
       context: .
-      dockerfile: 16-ubuntu18.04.Dockerfile
+      dockerfile: 16-ubuntu20.04.Dockerfile
     environment:
       YARN_IGNORE_NODE: 1
     volumes:
@@ -151,7 +151,7 @@ services:
   example:
     build:
       context: .
-      dockerfile: 18-ubuntu.Dockerfile
+      dockerfile: 20-ubuntu.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:
