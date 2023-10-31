@@ -38,8 +38,7 @@ const DEFAULTS = [
 const resolve = createRequire(callsite().getFileName()!).resolve
 
 // TSX registers a custom loader that lets Node import TypeScript files
-const tsxLoaderPath = pathToFileURL(resolve("tsx")).toString()
-const tsxRequirePath = resolve("tsx/preflight")
+const tsxPath = pathToFileURL(resolve("tsx")).toString()
 
 // Skip Node executable and current script path
 let argv = process.argv.slice(2)
@@ -90,15 +89,16 @@ const reporter = semver.gte(process.versions.node, "18.0.0")
   ? ["--test-reporter", "spec"]
   : []
 
+const loader = semver.gte(process.versions.node, "20.8.0")
+  ? ["--import", tsxPath]
+  : ["--loader", tsxPath]
+
 argv = [
   // Launch Node in test runner mode
   "--test",
   ...reporter,
   // Register TSX loaders
-  "--require",
-  tsxRequirePath,
-  "--loader",
-  tsxLoaderPath,
+  ...loader,
   // Forward the rest of our parameters
   ...process.execArgv,
   ...argv,
