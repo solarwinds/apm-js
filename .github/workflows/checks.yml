@@ -158,6 +158,8 @@ jobs:
             arch: arm64
           - image: 18-alpine
             arch: arm64
+          - image: 20-alpine
+            arch: arm64
       fail-fast: false
     container:
       image: ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
@@ -168,10 +170,6 @@ jobs:
       YARN_IGNORE_NODE: 1
 
     steps:
-      # https://github.com/actions/runner/issues/801
-      - if: matrix.arch == 'arm64' && contains(matrix.image, 'alpine')
-        run: sed -i "s/ID=alpine/ID=armpine/" /etc/os-release
-
       - uses: actions/checkout@v4
         with:
           lfs: true
