@@ -49,8 +49,10 @@
   },
   "optionalDependencies": {
     "@solarwinds-apm/bindings-linux-arm64-gnu": "workspace:*",
+    "@solarwinds-apm/bindings-linux-arm64-gnu-serverless": "workspace:*",
     "@solarwinds-apm/bindings-linux-arm64-musl": "workspace:*",
     "@solarwinds-apm/bindings-linux-x64-gnu": "workspace:*",
+    "@solarwinds-apm/bindings-linux-x64-gnu-serverless": "workspace:*",
     "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
   },
   "engines": {

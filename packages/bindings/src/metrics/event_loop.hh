@@ -43,7 +43,8 @@ struct JsData {
 
 // This is the native code that is put on a queue to be executed from a JS context, from here we are
 // able to create JS values and call the actual JS callback
-void call_js_callback(Napi::Env env, Napi::Function js_callback, std::nullopt_t*, JsData* data) {
+inline void
+call_js_callback(Napi::Env env, Napi::Function js_callback, std::nullopt_t*, JsData* data) {
     if (env != nullptr) {
         js_callback.Call({Napi::Number::New(env, data->latency)});
     }
@@ -72,12 +73,12 @@ struct EventLoopData {
     unsigned int iteration_count;
 };
 
-static uv_prepare_t prepare_handle{};
-static uv_check_t check_handle{};
+inline static uv_prepare_t prepare_handle{};
+inline static uv_check_t check_handle{};
 // are we currently measuring
-static bool set{false};
+inline static bool set{false};
 
-void on_prepare(uv_prepare_t* handle) {
+inline void on_prepare(uv_prepare_t* handle) {
     uint64_t prepare_time = uv_hrtime();
 
     auto data = static_cast<EventLoopData*>(handle->data);
@@ -87,7 +88,7 @@ void on_prepare(uv_prepare_t* handle) {
     data->poll_timeout = uv_backend_timeout(uv_default_loop());
 }
 
-void on_check(uv_check_t* handle) {
+inline void on_check(uv_check_t* handle) {
     uint64_t check_time = uv_hrtime();
 
     auto data = static_cast<EventLoopData*>(handle->data);
@@ -124,7 +125,7 @@ void on_check(uv_check_t* handle) {
     data->iteration_count = 0;
 }
 
-Napi::Value set_callback(sw::CallbackInfo const info) {
+inline Napi::Value set_callback(sw::CallbackInfo const info) {
     auto arg = info.arg<Napi::Value>(0);
 
     // if currently enabled, stop the callbacks and clean up the data
@@ -178,7 +179,7 @@ Napi::Value set_callback(sw::CallbackInfo const info) {
 } // namespace
 
 // module initialisation, defines the `setCallback` function
-sw::Object event_loop(sw::Object exports) {
+inline sw::Object event_loop(sw::Object exports) {
     exports.set("setCallback", set_callback);
     return exports;
 }

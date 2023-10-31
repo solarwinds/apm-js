@@ -102,7 +102,6 @@ class Context {
      * @param newMode One of
      * - OBOE_TRACE_DISABLED(0) to disable tracing,
      * - OBOE_TRACE_ENABLED(1) to start a new trace if needed, or
-     * - OBOE_TRACE_THROUGH(2) to only add to an existing trace.
      */
     static void setTracingMode(int newMode);
 
@@ -496,6 +495,121 @@ class Config {
      * @return The library's version string
      */
     static std::string getVersionString();
+};
+
+class OboeAPI {
+public:
+    OboeAPI();
+    ~OboeAPI();
+    /**
+     * Get tracing decision
+     * @param do_metrics
+     * @param do_sample
+     * @param sample_rate
+     * @param sample_source
+     * @param bucket_rate
+     * @param bucket_cap
+     * @param type
+     * @param auth
+     * @param status_msg
+     * @param auth_msg
+     * @param status
+     * @param in_xtrace
+     * @param tracestate
+     * @param custom_tracing_mode
+     * @param custom_sample_rate
+     * @param request_type
+     * @param custom_trigger_mode
+     * @param header_options
+     * @param header_signature
+     * @param header_timestamp
+     */
+    void getTracingDecision(
+            // SWIG output
+            int *do_metrics,
+            int *do_sample,
+            int *sample_rate,
+            int *sample_source,
+            double *bucket_rate,
+            double *bucket_cap,
+            int *type,
+            int *auth,
+            std::string *status_msg,
+            std::string *auth_msg,
+            int *status,
+            // SWIG input
+            const char *in_xtrace = NULL,
+            const char *tracestate = NULL,
+            int custom_tracing_mode = OBOE_SETTINGS_UNSET,
+            int custom_sample_rate = OBOE_SETTINGS_UNSET,
+            int request_type = 0,
+            int custom_trigger_mode = 0,
+            const char *header_options = NULL,
+            const char *header_signature = NULL,
+            long header_timestamp = 0);
+    /**
+     * Consume request count
+     * Check the return bool before using the counter, also consumeRequestCount will set the internal counter to 0 after referencing it
+     * @param counter
+     * @return bool
+     */
+    bool consumeRequestCount(unsigned int& counter);
+    /**
+     * Consume token bucket exhaustion count
+     * Check the return bool before using the counter, also consumeTokenBucketExhaustionCount will set the internal counter to 0 after referencing it
+     * @param counter
+     * @return bool
+     */
+    bool consumeTokenBucketExhaustionCount(unsigned int& counter);
+    /**
+     * Consume trace count
+     * Check the return bool before using the counter, also consumeTraceCount will set the internal counter to 0 after referencing it
+     * @param counter
+     * @return bool
+     */
+    bool consumeTraceCount(unsigned int& counter);
+    /**
+     * Consume sample count
+     * Check the return bool before using the counter, also consumeSampleCount will set the internal counter to 0 after referencing it
+     * @param counter
+     * @return bool
+     */
+    bool consumeSampleCount(unsigned int& counter);
+    /**
+     * Consume through ignored count
+     * Check the return bool before using the counter, also consumeThroughIgnoredCount will set the internal counter to 0 after referencing it
+     * @param counter
+     * @return bool
+     */
+    bool consumeThroughIgnoredCount(unsigned int& counter);
+    /**
+     * Consume through trace count
+     * Check the return bool before using the counter, also consumeThroughTraceCount will set the internal counter to 0 after referencing it
+     * @param counter
+     * @return bool
+     */
+    bool consumeThroughTraceCount(unsigned int& counter);
+    /**
+     * Consume triggered trace count
+     * Check the return bool before using the counter, also consumeTriggeredTraceCount will set the internal counter to 0 after referencing it
+     * @param counter
+     * @return bool
+     */
+    bool consumeTriggeredTraceCount(unsigned int& counter);
+    /**
+     * Get last used sample rate
+     * Check the return bool before using the rate
+     * @param rate
+     * @return bool
+     */
+    bool getLastUsedSampleRate(unsigned int& rate);
+    /**
+     * Get last used sample source
+     * Check the return bool before using the source
+     * @param source
+     * @return bool
+     */
+    bool getLastUsedSampleSource(unsigned int& source);
 };
 
 #endif  // OBOE_API_H

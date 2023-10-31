@@ -138,6 +138,31 @@ export declare function debug_log_add(
   level: number,
 ): number
 
+export interface DecisionOptions {
+  in_xtrace?: string | null
+  tracestate?: string | null
+  custom_tracing_mode?: number
+  custom_sample_rate?: number
+  request_type?: number
+  custom_trigger_mode?: number
+  header_options?: string | null
+  header_signature?: string | null
+  header_timestamp?: number | bigint
+}
+export interface DecisionResult {
+  do_metrics: number
+  do_sample: number
+  sample_rate: number
+  sample_source: number
+  bucket_rate: number
+  bucket_cap: number
+  type: number
+  auth: number
+  status_msg: string
+  auth_msg: string
+  status: number
+}
+
 export declare class Metadata {
   private constructor()
 
@@ -160,31 +185,7 @@ export declare namespace Context {
 
   function setDefaultSampleRate(newRate: number): void
 
-  interface DecisionsOptions {
-    in_xtrace?: string | null
-    tracestate?: string | null
-    custom_tracing_mode?: number
-    custom_sample_rate?: number
-    request_type?: number
-    custom_trigger_mode?: number
-    header_options?: string | null
-    header_signature?: string | null
-    header_timestamp?: number | bigint
-  }
-  interface DecisionsResult {
-    do_metrics: number
-    do_sample: number
-    sample_rate: number
-    sample_source: number
-    bucket_rate: number
-    bucket_cap: number
-    type: number
-    auth: number
-    status_msg: string
-    auth_msg: string
-    status: number
-  }
-  function getDecisions(options: DecisionsOptions): DecisionsResult
+  function getDecisions(options: DecisionOptions): DecisionResult
 
   function get(): Metadata
 
@@ -341,4 +342,20 @@ export declare class Reporter {
 export declare namespace Config {
   function checkVersion(version: number, revision: number): boolean
   function getVersionString(): string
+}
+
+export declare class OboeAPI {
+  constructor()
+
+  getTracingDecision(options: DecisionOptions): DecisionResult
+
+  consumeRequestCount(): number | false
+  consumeTokenBucketExhaustionCount(): number | false
+  consumeTraceCount(): number | false
+  consumeSampleCount(): number | false
+  consumeThroughIgnoredCount(): number | false
+  consumeThroughTraceCount(): number | false
+  consumeTriggeredTraceCount(): number | false
+  getLastUsedSampleRate(): number | false
+  getLastUsedSampleSource(): number | false
 }

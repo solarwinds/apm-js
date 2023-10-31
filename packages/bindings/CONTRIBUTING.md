@@ -16,6 +16,10 @@ Updating oboe is a fairly simple two-step process. First run `yarn oboe` which w
 
 In the event where `oboe_api.h` adds a new class, both a source file (`.cc`) and a header (`.hh`) for it should be created following the same general structure as every other class in [`src/oboe/`](./src/oboe/). The source file will also need to be added in the build script.
 
+### Mapping C++ to JS
+
+Most of the time when it is possible a 1-1 mapping of the C++ class to JS class should be created. If a method has too many parameters to be practical, they can be merged into an object following their declared names in C++. When a C++ method uses out parameters, they should be converted to a return value of either the parameter if there's a single one or an object following their declared names for multiple ones. If the method also has both out parameters and a return value, the best implementation is left to the judgement of the implementor.
+
 ### New or changed shared objects
 
 Shared objects patterns should all be specified in [`.gitattributes`](./.gitattributes) to use Git LFS. This avoids them making Git slow by taking up massive space in the history.

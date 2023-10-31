@@ -66,6 +66,7 @@ Napi::Value JsContext::getDecisions(sw::CallbackInfo const info) {
     Context::getDecisions(
         &do_metrics, &do_sample, &sample_rate, &sample_source, &bucket_rate, &bucket_cap, &type,
         &auth, &status_msg, &auth_msg, &status,
+
         options.get_optional<sw::NullableString>("in_xtrace").value_or(std::nullopt).data(),
         options.get_optional<sw::NullableString>("tracestate").value_or(std::nullopt).data(),
         options.get_optional<int>("custom_tracing_mode").value_or(OBOE_SETTINGS_UNSET),
