@@ -2,5 +2,5 @@
 # * @raphael-theriault-swi 
 
 # prepare for move to solarwinds
-@solarwinds/eng-pub-apm-instrumentation
+* @solarwinds/eng-pub-apm-instrumentation
 
