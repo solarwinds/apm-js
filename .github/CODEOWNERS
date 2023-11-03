@@ -1,2 +1,6 @@
 * @raphael-theriault-swi @solarwindscloud/eng-apm-instrumentation
-# * @raphael-theriault-swi @solarwinds/eng-apm-instrumentation
+# * @raphael-theriault-swi 
+
+# prepare for move to solarwinds
+* @solarwinds/eng-pub-apm-instrumentation
+
