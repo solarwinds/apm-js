@@ -29,7 +29,7 @@
     "provenance": true
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c --forceExit",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js",
@@ -45,7 +45,7 @@
     "@types/node": "^16.13.0",
     "eslint": "^8.50.0",
     "prettier": "^3.0.3",
-    "rollup": "patch:rollup@npm%3A4.0.2#~/.yarn/patches/rollup-npm-4.0.2-c9dd2d43a6.patch",
+    "rollup": "^4.3.0",
     "typescript": "^5.2.2"
   },
   "engines": {
