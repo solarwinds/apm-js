@@ -69,7 +69,7 @@ describe("readConfig", () => {
   })
 
   it("parses trusted path", () => {
-    process.env.SW_APM_TRUSTED_PATH = "package.json"
+    process.env.SW_APM_TRUSTEDPATH = "package.json"
 
     const config = readConfig()
     expect(config.certificate).to.include("solarwinds-apm")
@@ -105,7 +105,7 @@ describe("readConfig", () => {
   })
 
   it("throws on non-existent trusted path", () => {
-    process.env.SW_APM_TRUSTED_PATH = "foo"
+    process.env.SW_APM_TRUSTEDPATH = "foo"
 
     expect(readConfig).to.throw()
   })
