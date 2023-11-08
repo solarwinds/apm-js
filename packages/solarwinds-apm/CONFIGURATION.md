@@ -41,7 +41,7 @@ module.exports = {
 | **`serviceKey`**                | **`SW_APM_SERVICE_KEY`**       |                   | **Service key**. See [Service Name](#service-name)           |
 | `enabled`                       | `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled                    |
 | `collector`                     | `SW_APM_COLLECTOR`             | Default collector | Collector URL                                                |
-| `trustedPath`                   | `SW_APM_TRUSTED_PATH`          | None              | Path to the collector's SSL certificate                      |
+| `trustedpath`                   | `SW_APM_TRUSTEDPATH`           | None              | Path to the collector's SSL certificate                      |
 | `proxy`                         | `SW_APM_PROXY`                 | None              | URL of a proxy to use to connect to the collector            |
 | `logLevel`                      | `SW_APM_LOG_LEVEL`             | `info`            | Logging level for the instrumentation libraries              |
 | `triggerTraceEnabled`           | `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled                    |

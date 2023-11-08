@@ -66,7 +66,7 @@ const serviceKey = z
     }
   })
 
-const trustedPath = z.string().transform((p, ctx) => {
+const trustedpath = z.string().transform((p, ctx) => {
   try {
     return fs.readFileSync(p, "utf-8")
   } catch (err) {
@@ -134,7 +134,7 @@ const schema = z.object({
   serviceKey,
   enabled: boolean.default(true),
   collector: z.string().optional(),
-  trustedPath: trustedPath.optional(),
+  trustedpath: trustedpath.optional(),
   proxy: z.string().optional(),
   logLevel: logLevel.default("info"),
   triggerTraceEnabled: boolean.default(true),
@@ -205,7 +205,7 @@ export function readConfig(): ExtendedSwConfiguration {
     ...raw,
     token: raw.serviceKey.token,
     serviceName: raw.serviceKey.name,
-    certificate: raw.trustedPath,
+    certificate: raw.trustedpath,
     oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
     otelLogLevel: raw.logLevel,
   }
