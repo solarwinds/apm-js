@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
+    "url": "https://github.com/solarwinds/apm-js.git",
     "directory": "packages/bindings/npm/linux-arm64-gnu"
   },
   "scripts": {

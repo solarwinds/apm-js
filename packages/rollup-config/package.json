@@ -7,11 +7,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
+    "url": "https://github.com/solarwinds/apm-js.git",
     "directory": "packages/rollup-config"
   },
   "bugs": {
-    "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
+    "url": "https://github.com/solarwinds/apm-js/issues"
   },
   "type": "module",
   "exports": {

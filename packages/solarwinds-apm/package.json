@@ -8,11 +8,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/solarwindscloud/solarwinds-apm-js.git",
+    "url": "https://github.com/solarwinds/apm-js.git",
     "directory": "packages/solarwinds-apm"
   },
   "bugs": {
-    "url": "https://github.com/solarwindscloud/solarwinds-apm-js/issues"
+    "url": "https://github.com/solarwinds/apm-js/issues"
   },
   "keywords": [
     "tracing",
