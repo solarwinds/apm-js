@@ -10,7 +10,6 @@ Napi::Object JsOboeAPI::init(Napi::Env env, Napi::Object exports) {
         .method<&JsOboeAPI::consumeTokenBucketExhaustionCount>("consumeTokenBucketExhaustionCount")
         .method<&JsOboeAPI::consumeTraceCount>("consumeTraceCount")
         .method<&JsOboeAPI::consumeSampleCount>("consumeSampleCount")
-        .method<&JsOboeAPI::consumeThroughIgnoredCount>("consumeThroughIgnoredCount")
         .method<&JsOboeAPI::consumeThroughTraceCount>("consumeThroughTraceCount")
         .method<&JsOboeAPI::consumeTriggeredTraceCount>("consumeTriggeredTraceCount")
         .method<&JsOboeAPI::getLastUsedSampleRate>("getLastUsedSampleRate")
@@ -84,9 +83,6 @@ Napi::Value JsOboeAPI::consumeTraceCount(sw::CallbackInfo const info) {
 }
 Napi::Value JsOboeAPI::consumeSampleCount(sw::CallbackInfo const info) {
     return counter(info, base, &OboeAPI::consumeSampleCount);
-}
-Napi::Value JsOboeAPI::consumeThroughIgnoredCount(sw::CallbackInfo const info) {
-    return counter(info, base, &OboeAPI::consumeThroughIgnoredCount);
 }
 Napi::Value JsOboeAPI::consumeThroughTraceCount(sw::CallbackInfo const info) {
     return counter(info, base, &OboeAPI::consumeThroughTraceCount);

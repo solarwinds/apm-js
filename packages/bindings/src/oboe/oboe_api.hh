@@ -17,7 +17,6 @@ class JsOboeAPI : public sw::Class<JsOboeAPI, OboeAPI> {
     Napi::Value consumeTokenBucketExhaustionCount(sw::CallbackInfo const info);
     Napi::Value consumeTraceCount(sw::CallbackInfo const info);
     Napi::Value consumeSampleCount(sw::CallbackInfo const info);
-    Napi::Value consumeThroughIgnoredCount(sw::CallbackInfo const info);
     Napi::Value consumeThroughTraceCount(sw::CallbackInfo const info);
     Napi::Value consumeTriggeredTraceCount(sw::CallbackInfo const info);
 

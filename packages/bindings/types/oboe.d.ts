@@ -353,7 +353,6 @@ export declare class OboeAPI {
   consumeTokenBucketExhaustionCount(): number | false
   consumeTraceCount(): number | false
   consumeSampleCount(): number | false
-  consumeThroughIgnoredCount(): number | false
   consumeThroughTraceCount(): number | false
   consumeTriggeredTraceCount(): number | false
   getLastUsedSampleRate(): number | false
