@@ -1748,6 +1748,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solarwinds-apm/bindings-linux-arm64-gnu-serverless@workspace:*, @solarwinds-apm/bindings-linux-arm64-gnu-serverless@workspace:packages/bindings/npm/linux-arm64-gnu-serverless":
+  version: 0.0.0-use.local
+  resolution: "@solarwinds-apm/bindings-linux-arm64-gnu-serverless@workspace:packages/bindings/npm/linux-arm64-gnu-serverless"
+  languageName: unknown
+  linkType: soft
+
 "@solarwinds-apm/bindings-linux-arm64-gnu@workspace:*, @solarwinds-apm/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu"
@@ -1757,6 +1763,12 @@ __metadata:
 "@solarwinds-apm/bindings-linux-arm64-musl@workspace:*, @solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl"
+  languageName: unknown
+  linkType: soft
+
+"@solarwinds-apm/bindings-linux-x64-gnu-serverless@workspace:*, @solarwinds-apm/bindings-linux-x64-gnu-serverless@workspace:packages/bindings/npm/linux-x64-gnu-serverless":
+  version: 0.0.0-use.local
+  resolution: "@solarwinds-apm/bindings-linux-x64-gnu-serverless@workspace:packages/bindings/npm/linux-x64-gnu-serverless"
   languageName: unknown
   linkType: soft
 
@@ -1777,8 +1789,10 @@ __metadata:
   resolution: "@solarwinds-apm/bindings@workspace:packages/bindings"
   dependencies:
     "@solarwinds-apm/bindings-linux-arm64-gnu": "workspace:*"
+    "@solarwinds-apm/bindings-linux-arm64-gnu-serverless": "workspace:*"
     "@solarwinds-apm/bindings-linux-arm64-musl": "workspace:*"
     "@solarwinds-apm/bindings-linux-x64-gnu": "workspace:*"
+    "@solarwinds-apm/bindings-linux-x64-gnu-serverless": "workspace:*"
     "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
@@ -1791,9 +1805,13 @@ __metadata:
   dependenciesMeta:
     "@solarwinds-apm/bindings-linux-arm64-gnu":
       optional: true
+    "@solarwinds-apm/bindings-linux-arm64-gnu-serverless":
+      optional: true
     "@solarwinds-apm/bindings-linux-arm64-musl":
       optional: true
     "@solarwinds-apm/bindings-linux-x64-gnu":
+      optional: true
+    "@solarwinds-apm/bindings-linux-x64-gnu-serverless":
       optional: true
     "@solarwinds-apm/bindings-linux-x64-musl":
       optional: true

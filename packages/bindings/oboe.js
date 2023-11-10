@@ -19,13 +19,19 @@ const fs = require("node:fs/promises")
 const path = require("node:path")
 const crypto = require("node:crypto")
 
-const root =
-  "https://ssp-prod-global-agent-binaries.s3.amazonaws.com/apm/c-lib/latest/"
+// "prod" - https://agent-binaries.cloud.solarwinds.com/index.html?prefix=apm/c-lib/
+// "stage" - https://agent-binaries.global.st-ssp.solarwinds.com/index.html?prefix=apm/c-lib/
+const SOURCE = process.env.OBOE_SOURCE || "prod"
+const VERSION = process.env.OBOE_VERSION || "latest"
+
+const root = `https://ssp-${SOURCE}-global-agent-binaries.s3.amazonaws.com/apm/c-lib/${VERSION}/`
 const libs = [
   "liboboe-1.0-aarch64.so",
   "liboboe-1.0-alpine-aarch64.so",
+  "liboboe-1.0-lambda-aarch64.so",
   "liboboe-1.0-x86_64.so",
   "liboboe-1.0-alpine-x86_64.so",
+  "liboboe-1.0-lambda-x86_64.so",
 ]
 const files = [
   "VERSION",

@@ -101,7 +101,6 @@ extern "C" {
 #define OBOE_REPORTER_PROTOCOL_UDP "udp"
 #define OBOE_REPORTER_PROTOCOL_SSL "ssl"
 #define OBOE_REPORTER_PROTOCOL_NULL "null"
-#define OBOE_REPORTER_PROTOCOL_LAMBDA "lambda"
 
 /** Maximum reasonable length of an arguments string for configuring a reporter. */
 #define OBOE_REPORTER_ARGS_SIZE 4000
@@ -486,6 +485,13 @@ int oboe_raw_send(int channel, const char *data, size_t len);
  */
 void oboe_shutdown();
 
+/**
+ * Don't call *coming_impl function directly, they are temporary
+ */
+bool oboe_validate_tracing_decisions_in_t(oboe_tracing_decisions_in_t *in);
+int oboe_init_coming_impl(const char* json);
+int oboe_tracing_decisions_coming_impl(oboe_tracing_decisions_in_t *in, oboe_tracing_decisions_out_t *out);
+void oboe_shutdown_coming_impl();
 
 // Settings interface
 
@@ -577,6 +583,7 @@ const char* oboe_get_tracing_decisions_message(int code);
 #define OBOE_TRACING_DECISIONS_AUTH_NO_SIG_KEY 1
 #define OBOE_TRACING_DECISIONS_AUTH_INVALID_SIG 2
 #define OBOE_TRACING_DECISIONS_AUTH_BAD_TIMESTAMP 3
+#define OBOE_TRACING_DECISIONS_AUTH_INTERNAL_ERROR 4
 
 // convert above codes into const char* messages.
 const char* oboe_get_tracing_decisions_auth_message (int code);
@@ -875,6 +882,28 @@ void oboe_random_bytes(uint8_t bytes[], size_t sz);
 #define OBOE_DEBUG_LOG_HIGH(module, ...) OBOE_DEBUG_LOG_HIGH_EX(module, __VA_ARGS__)
 
 void oboe_init_once();
+
+/**
+ * Request Counts function
+ * If succeed, it can get the value and reset the value to 0
+ * @param value output value
+ * @return bool
+ */
+bool oboe_consume_request_count(unsigned int* value);
+bool oboe_consume_token_bucket_exhaustion_count(unsigned int* value);
+bool oboe_consume_trace_count(unsigned int* value);
+bool oboe_consume_sample_count(unsigned int* value);
+bool oboe_consume_through_ignored_count(unsigned int* value);
+bool oboe_consume_through_trace_count(unsigned int* value);
+bool oboe_consume_triggered_trace_count(unsigned int* value);
+/**
+ * Request Counts function
+ * If succeed, it can get the value
+ * @param value output value
+ * @return bool
+ */
+bool oboe_get_last_used_sample_rate(unsigned int* value);
+bool oboe_get_last_used_sample_source(unsigned int* value);
 
 #ifdef __cplusplus
 } // extern "C"

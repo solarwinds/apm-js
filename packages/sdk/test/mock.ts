@@ -173,9 +173,9 @@ export function readableSpan(
 }
 
 export function oboeDecisions(
-  override: Partial<oboe.Context.DecisionsResult> = {},
-): oboe.Context.DecisionsResult {
-  const base: oboe.Context.DecisionsResult = {
+  override: Partial<oboe.DecisionResult> = {},
+): oboe.DecisionResult {
+  const base: oboe.DecisionResult = {
     do_metrics: pick([0, 1]),
     do_sample: pick([0, 1]),
     sample_rate: 0,

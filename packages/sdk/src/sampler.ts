@@ -129,8 +129,8 @@ export class SwSampler implements Sampler {
   private oboeDecisions(
     parentSpanContext: SpanContext | undefined,
     traceOptions: TraceOptions | undefined,
-    tracingMode: oboe.Context.DecisionsOptions["custom_tracing_mode"],
-  ): oboe.Context.DecisionsResult {
+    tracingMode: oboe.DecisionOptions["custom_tracing_mode"],
+  ): oboe.DecisionResult {
     let traceparent: string | null = null
     if (
       parentSpanContext &&
@@ -161,7 +161,7 @@ export class SwSampler implements Sampler {
     spanName: string,
     spanKind: SpanKind,
     attributes: Attributes,
-  ): oboe.Context.DecisionsOptions["custom_tracing_mode"] {
+  ): oboe.DecisionOptions["custom_tracing_mode"] {
     let base = oboe.SETTINGS_UNSET
     if (this.config.tracingMode === true) {
       base = oboe.TRACE_ENABLED
@@ -201,7 +201,7 @@ export class SwSampler implements Sampler {
   }
 
   private static otelSamplingDecisionFromOboe(
-    decision: oboe.Context.DecisionsResult,
+    decision: oboe.DecisionResult,
   ): SamplingDecision {
     if (decision.do_sample) {
       return SamplingDecision.RECORD_AND_SAMPLED
@@ -213,7 +213,7 @@ export class SwSampler implements Sampler {
   }
 
   private static traceState(
-    decisions: oboe.Context.DecisionsResult,
+    decisions: oboe.DecisionResult,
     parentSpanContext: SpanContext | undefined,
     traceOptions: TraceOptions | undefined,
   ): TraceState {
@@ -237,7 +237,7 @@ export class SwSampler implements Sampler {
 
   private static updateTraceState(
     traceState: TraceState,
-    decisions: oboe.Context.DecisionsResult,
+    decisions: oboe.DecisionResult,
     parentSpanContext: SpanContext | undefined,
     traceOptions: TraceOptions | undefined,
   ): TraceState {
@@ -252,7 +252,7 @@ export class SwSampler implements Sampler {
   }
 
   private static traceOptionsResponse(
-    decisions: oboe.Context.DecisionsResult,
+    decisions: oboe.DecisionResult,
     parentSpanContext: SpanContext | undefined,
     traceOptions: TraceOptions,
   ): string {
@@ -299,7 +299,7 @@ export class SwSampler implements Sampler {
 
   private static attributes(
     attributes: Attributes,
-    decisions: oboe.Context.DecisionsResult,
+    decisions: oboe.DecisionResult,
     parentSpanContext: SpanContext | undefined,
     traceOptions: TraceOptions | undefined,
     traceState: TraceState,

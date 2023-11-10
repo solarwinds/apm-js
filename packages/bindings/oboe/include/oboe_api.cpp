@@ -690,3 +690,100 @@ bool Config::checkVersion(int version, int revision) {
 std::string Config::getVersionString() {
     return oboe_config_get_version_string();
 }
+
+// ===================================================================================================
+OboeAPI::OboeAPI() {
+    oboe_init(nullptr);
+}
+
+OboeAPI::~OboeAPI() {
+    oboe_shutdown();
+}
+
+void OboeAPI::getTracingDecision(
+        // output
+        int *do_metrics,
+        int *do_sample,
+        int *sample_rate,
+        int *sample_source,
+        double *bucket_rate,
+        double *bucket_cap,
+        int *type,
+        int *auth,
+        std::string *status_msg,
+        std::string *auth_msg,
+        int *status,
+        // input
+        const char *in_xtrace,
+        const char *tracestate,
+        int custom_tracing_mode,
+        int custom_sample_rate,
+        int request_type,
+        int custom_trigger_mode,
+        const char *header_options,
+        const char *header_signature,
+        long header_timestamp) {
+    oboe_tracing_decisions_in_t tdi;
+    memset(&tdi, 0, sizeof(tdi));
+    tdi.version = 3;
+
+    tdi.custom_tracing_mode = custom_tracing_mode;
+    tdi.custom_sample_rate = custom_sample_rate;
+    tdi.custom_trigger_mode = custom_trigger_mode;
+    tdi.request_type = request_type;
+
+    tdi.in_xtrace = in_xtrace;
+    tdi.tracestate = tracestate; // value of sw member in tracestate, ignored when not in w3c mode
+    tdi.header_options = header_options;
+    tdi.header_signature = header_signature;
+    tdi.header_timestamp = header_timestamp;
+
+    oboe_tracing_decisions_out_t tdo;
+    memset(&tdo, 0, sizeof(tdo));
+    tdo.version = 3;
+
+    *status = oboe_tracing_decisions(&tdi, &tdo);
+
+    *do_sample = tdo.do_sample;
+    *do_metrics = tdo.do_metrics;
+    *sample_rate = tdo.sample_rate;
+    *sample_source = tdo.sample_source;
+    *bucket_rate = tdo.token_bucket_rate;
+    *bucket_cap = tdo.token_bucket_capacity;
+    *type = tdo.request_provisioned;
+    if (tdo.status_message && tdo.status_message[0] != '\0') {
+        *status_msg = tdo.status_message;
+    }
+    *auth = tdo.auth_status;
+    if (tdo.auth_message && tdo.auth_message[0] != '\0') {
+        *auth_msg = tdo.auth_message;
+    }
+}
+
+bool OboeAPI::consumeRequestCount(unsigned int& counter) {
+    return oboe_consume_request_count(&counter);
+}
+bool OboeAPI::consumeTokenBucketExhaustionCount(unsigned int& counter) {
+    return oboe_consume_token_bucket_exhaustion_count(&counter);
+}
+bool OboeAPI::consumeTraceCount(unsigned int& counter) {
+    return oboe_consume_through_trace_count(&counter);
+}
+bool OboeAPI::consumeSampleCount(unsigned int& counter) {
+    return oboe_consume_sample_count(&counter);
+}
+bool OboeAPI::consumeThroughIgnoredCount(unsigned int& counter) {
+    return oboe_consume_through_ignored_count(&counter);
+}
+bool OboeAPI::consumeThroughTraceCount(unsigned int& counter) {
+    return oboe_consume_through_trace_count(&counter);
+}
+bool OboeAPI::consumeTriggeredTraceCount(unsigned int& counter) {
+    return oboe_consume_triggered_trace_count(&counter);
+}
+bool OboeAPI::getLastUsedSampleRate(unsigned int& rate) {
+    return oboe_get_last_used_sample_rate(&rate);
+}
+bool OboeAPI::getLastUsedSampleSource(unsigned int& source) {
+    return oboe_get_last_used_sample_source(&source);
+}

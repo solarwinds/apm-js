@@ -28,7 +28,17 @@ function triple() {
   }
 }
 
-const t = triple()
+function serverless() {
+  const isServerless = "AWS_LAMBDA_FUNCTION_NAME" in process.env
+
+  if (isServerless) {
+    return "-serverless"
+  } else {
+    return ""
+  }
+}
+
+const t = `${triple()}${serverless()}`
 
 try {
   module.exports.oboe = require(`@solarwinds-apm/bindings-${t}/oboe.node`)
