@@ -2168,7 +2168,7 @@ __metadata:
     prettier: "npm:^3.0.3"
     rollup: "npm:^4.3.0"
     semver: "npm:^7.5.4"
-    tsx: "npm:^3.13.0"
+    tsx: "npm:^4.1.1"
     typescript: "npm:^5.2.2"
   bin:
     swtest: ./dist/es/bin.js
@@ -7621,9 +7621,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^3.13.0":
-  version: 3.14.0
-  resolution: "tsx@npm:3.14.0"
+"tsx@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "tsx@npm:4.1.1"
   dependencies:
     esbuild: "npm:~0.18.20"
     fsevents: "npm:~2.3.3"
@@ -7634,7 +7634,7 @@ __metadata:
       optional: true
   bin:
     tsx: dist/cli.mjs
-  checksum: b6c938bdae9c656aef2aa0130ee6aa8f3487b5d411d5f7934b705c28ff44ab268db3dde123cf5237b4e5e2ab4441a0bad4b1a39e3ff2170d138538e44082f05d
+  checksum: a409d3316295ec4047be4afab568db331b5eb44940cf5a355469e1d767445acfd0c4e3a2c5e1862586423142511ff1233c25a8b9fc5045406209f61fecc72ccd
   languageName: node
   linkType: hard
 
