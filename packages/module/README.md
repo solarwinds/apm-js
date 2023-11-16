@@ -1,3 +1,3 @@
 # @solarwinds-apm/module
 
-Utilities for dealing with differences between CommonJS and ES Modules.
+Utilities for obtaining information about the current module.

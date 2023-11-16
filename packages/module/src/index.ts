@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { env } from "node:process"
+
 /**
  * Finds the current call site. Useful to replace `import.meta.url` or `__dirname`,
  * or to get more than just a file name.
@@ -35,3 +37,7 @@ export function callsite(): NodeJS.CallSite {
     Error.prepareStackTrace = prepareStackTrace
   }
 }
+
+export const IS_AWS_LAMBDA = "AWS_LAMBDA_FUNCTION_NAME" in env
+
+export const IS_SERVERLESS = IS_AWS_LAMBDA

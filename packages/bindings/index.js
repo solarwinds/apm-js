@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+const { IS_SERVERLESS } = require("@solarwinds-apm/module")
+
 function triple() {
   const platform = process.platform
   const arch = process.arch
@@ -29,9 +31,7 @@ function triple() {
 }
 
 function serverless() {
-  const isServerless = "AWS_LAMBDA_FUNCTION_NAME" in process.env
-
-  if (isServerless) {
+  if (IS_SERVERLESS) {
     return "-serverless"
   } else {
     return ""

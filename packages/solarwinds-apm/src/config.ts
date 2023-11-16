@@ -25,13 +25,15 @@ import { InstrumentationBase } from "@opentelemetry/instrumentation"
 import { View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
-import { callsite } from "@solarwinds-apm/module"
+import { callsite, IS_SERVERLESS } from "@solarwinds-apm/module"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { z } from "zod"
 
 import aoCert from "./appoptics.crt.js"
 
 const r = createRequire(callsite().getFileName()!)
+
+const otelEnv = getEnvWithoutDefaults()
 
 const boolean = z.union([
   z.boolean(),
@@ -62,7 +64,7 @@ const serviceKey = z
     const [token, ...name] = k.split(":")
     return {
       token: token!,
-      name: getEnvWithoutDefaults().OTEL_SERVICE_NAME ?? name.join(":"),
+      name: otelEnv.OTEL_SERVICE_NAME ?? name.join(":"),
     }
   })
 
@@ -83,9 +85,11 @@ const tracingMode = z
   .transform((m) => m === "enabled")
 
 const logLevel = z
-  .enum(["verbose", "debug", "info", "warn", "error", "none"])
+  .enum(["all", "verbose", "debug", "info", "warn", "error", "none"])
   .transform((l) => {
     switch (l) {
+      case "all":
+        return DiagLogLevel.ALL
       case "verbose":
         return DiagLogLevel.VERBOSE
       case "debug":
@@ -138,7 +142,7 @@ const schema = z.object({
   proxy: z.string().optional(),
   logLevel: logLevel.default("info"),
   triggerTraceEnabled: boolean.default(true),
-  runtimeMetrics: boolean.default(true),
+  runtimeMetrics: boolean.default(!IS_SERVERLESS),
   tracingMode: tracingMode.optional(),
   insertTraceContextIntoLogs: boolean.default(false),
   insertTraceContextIntoQueries: boolean.default(false),
@@ -157,12 +161,14 @@ const schema = z.object({
     })
     .default({}),
 
-  experimental: z
+  dev: z
     .object({
-      otlpTraces: boolean.default(false),
-      otlpMetrics: boolean.default(false),
-      swTraces: boolean.default(true),
-      swMetrics: boolean.default(true),
+      otlpTraces: boolean.default(IS_SERVERLESS),
+      otlpMetrics: boolean.default(IS_SERVERLESS),
+      swTraces: boolean.default(!IS_SERVERLESS),
+      swMetrics: boolean.default(!IS_SERVERLESS),
+      serverlessSampling: boolean.default(IS_SERVERLESS),
+      initMessage: boolean.default(!IS_SERVERLESS),
     })
     .default({}),
 })
@@ -176,29 +182,26 @@ export interface ExtendedSwConfiguration extends SwConfiguration {
   instrumentations: Instrumentations
   metrics: Metrics
 
-  experimental: z.infer<typeof schema>["experimental"]
+  dev: z.infer<typeof schema>["dev"]
 }
 
 const ENV_PREFIX = "SW_APM_"
-const ENV_PREFIX_EXPERIMENTAL = `${ENV_PREFIX}EXPERIMENTAL_`
+const ENV_PREFIX_DEV = `${ENV_PREFIX}DEV_`
 const DEFAULT_FILE_NAME = "solarwinds.apm.config"
 
 export function readConfig(): ExtendedSwConfiguration {
   const env = envObject()
-  const experimentalEnv = envObject(ENV_PREFIX_EXPERIMENTAL)
+  const devEnv = envObject(ENV_PREFIX_DEV)
 
   const path = filePath()
   const file = path ? readConfigFile(path) : {}
 
-  const experimentalFile =
-    file.experimental && typeof file.experimental === "object"
-      ? file.experimental
-      : {}
+  const devFile = file.dev && typeof file.dev === "object" ? file.dev : {}
 
   const raw = schema.parse({
     ...file,
     ...env,
-    experimental: { ...experimentalFile, ...experimentalEnv },
+    experimental: { ...devFile, ...devEnv },
   })
 
   const config: ExtendedSwConfiguration = {
@@ -207,7 +210,7 @@ export function readConfig(): ExtendedSwConfiguration {
     serviceName: raw.serviceKey.name,
     certificate: raw.trustedpath,
     oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
-    otelLogLevel: raw.logLevel,
+    otelLogLevel: otelEnv.OTEL_LOG_LEVEL ?? raw.logLevel,
   }
 
   if (config.collector?.includes("appoptics.com")) {
