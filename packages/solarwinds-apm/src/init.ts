@@ -41,7 +41,6 @@ import {
   getDetectedResource,
   getInstrumentations,
 } from "@solarwinds-apm/instrumentations"
-import { lazy } from "@solarwinds-apm/lazy"
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import * as sdk from "@solarwinds-apm/sdk"
 
@@ -95,7 +94,10 @@ export async function init() {
         [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
       }),
     )
-  const reporter = lazy(() => sdk.createReporter(config))
+
+  const [reporter, serverlessApi] = IS_SERVERLESS
+    ? [undefined, new oboe.OboeAPI()]
+    : [sdk.createReporter(config), undefined]
 
   oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
     const logger = diag.createComponentLogger({
@@ -112,8 +114,8 @@ export async function init() {
   }, config.oboeLogLevel)
 
   const [tracerProvider, meterProvider] = await Promise.all([
-    initTracing(config, resource, reporter),
-    initMetrics(config, resource, reporter, logger),
+    initTracing(config, resource, reporter, serverlessApi),
+    initMetrics(config, resource, logger, reporter),
     initMessage(config, resource, reporter),
   ])
   registerInstrumentations(tracerProvider, meterProvider)
@@ -144,10 +146,11 @@ function initInstrumentations(config: ExtendedSwConfiguration) {
 async function initTracing(
   config: ExtendedSwConfiguration,
   resource: Resource,
-  reporter: oboe.Reporter,
+  reporter: oboe.Reporter | undefined,
+  serverlessApi: oboe.OboeAPI | undefined,
 ) {
   const provider = new NodeTracerProvider({
-    sampler: sampler(config),
+    sampler: sampler(config, serverlessApi),
     resource,
   })
 
@@ -164,8 +167,8 @@ async function initTracing(
 async function initMetrics(
   config: ExtendedSwConfiguration,
   resource: Resource,
-  reporter: oboe.Reporter,
   logger: DiagLogger,
+  reporter: oboe.Reporter | undefined,
 ) {
   const provider = new MeterProvider({
     resource,
@@ -196,9 +199,9 @@ async function initMetrics(
 async function initMessage(
   config: ExtendedSwConfiguration,
   resource: Resource,
-  reporter: oboe.Reporter,
+  reporter: oboe.Reporter | undefined,
 ) {
-  if (!config.dev.initMessage) return
+  if (!config.dev.initMessage || !reporter) return
 
   if (resource.asyncAttributesPending) {
     await resource.waitForAsyncAttributes?.()
@@ -206,11 +209,14 @@ async function initMessage(
   sdk.sendStatus(reporter, await sdk.initMessage(resource, version))
 }
 
-function sampler(config: ExtendedSwConfiguration): Sampler {
+function sampler(
+  config: ExtendedSwConfiguration,
+  serverlessApi: oboe.OboeAPI | undefined,
+): Sampler {
   const sampler = new sdk.SwSampler(
     config,
     diag.createComponentLogger({ namespace: "[sw/sampler]" }),
-    IS_SERVERLESS ? new oboe.OboeAPI() : undefined,
+    serverlessApi,
   )
   return new ParentBasedSampler({
     root: sampler,
@@ -231,7 +237,7 @@ function propagator(): TextMapPropagator<unknown> {
 
 async function spanProcessors(
   config: ExtendedSwConfiguration,
-  reporter: oboe.Reporter,
+  reporter: oboe.Reporter | undefined,
 ): Promise<SpanProcessor[]> {
   const processors: SpanProcessor[] = []
 
@@ -240,7 +246,7 @@ async function spanProcessors(
 
   if (config.dev.swTraces) {
     const exporter = new sdk.SwExporter(
-      reporter,
+      reporter!,
       diag.createComponentLogger({ namespace: "[sw/exporter]" }),
     )
     processors.push(
@@ -265,13 +271,13 @@ async function spanProcessors(
 
 async function metricReaders(
   config: ExtendedSwConfiguration,
-  reporter: oboe.Reporter,
+  reporter: oboe.Reporter | undefined,
 ): Promise<MetricReader[]> {
   const readers: MetricReader[] = []
 
   if (config.dev.swMetrics) {
     const exporter = new sdk.SwMetricsExporter(
-      reporter,
+      reporter!,
       diag.createComponentLogger({ namespace: "[sw/metrics]" }),
     )
     readers.push(

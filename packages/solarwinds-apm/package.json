@@ -65,7 +65,6 @@
     "@opentelemetry/semantic-conventions": "~1.18.1",
     "@solarwinds-apm/bindings": "workspace:^",
     "@solarwinds-apm/instrumentations": "workspace:^",
-    "@solarwinds-apm/lazy": "workspace:^",
     "@solarwinds-apm/module": "workspace:^",
     "@solarwinds-apm/sdk": "workspace:^",
     "semver": "^7.5.4",

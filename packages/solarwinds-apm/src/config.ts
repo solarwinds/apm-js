@@ -167,7 +167,6 @@ const schema = z.object({
       otlpMetrics: boolean.default(IS_SERVERLESS),
       swTraces: boolean.default(!IS_SERVERLESS),
       swMetrics: boolean.default(!IS_SERVERLESS),
-      serverlessSampling: boolean.default(IS_SERVERLESS),
       initMessage: boolean.default(!IS_SERVERLESS),
     })
     .default({}),

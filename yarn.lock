@@ -7241,7 +7241,6 @@ __metadata:
     "@solarwinds-apm/bindings": "workspace:^"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/instrumentations": "workspace:^"
-    "@solarwinds-apm/lazy": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/rollup-config": "workspace:^"
     "@solarwinds-apm/sdk": "workspace:^"
