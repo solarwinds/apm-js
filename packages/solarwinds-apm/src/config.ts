@@ -200,7 +200,7 @@ export function readConfig(): ExtendedSwConfiguration {
   const raw = schema.parse({
     ...file,
     ...env,
-    experimental: { ...devFile, ...devEnv },
+    dev: { ...devFile, ...devEnv },
   })
 
   const config: ExtendedSwConfiguration = {
