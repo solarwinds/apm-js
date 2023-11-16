@@ -255,6 +255,7 @@ async function spanProcessors(
     const { SwOtlpExporter } = await import("@solarwinds-apm/sdk/otlp-exporter")
     const exporter = new SwOtlpExporter()
     processors.push(
+      // TODO: inboundMetricsProcessor replacement ? is it even necessary here ?
       new sdk.CompoundSpanProcessor(exporter, [parentInfoProcessor]),
     )
   }
