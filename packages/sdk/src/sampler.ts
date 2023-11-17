@@ -46,6 +46,7 @@ import {
   TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
 } from "./context"
 import { OboeError } from "./error"
+import { recordServerlessMetrics } from "./metrics/serverless"
 
 const ATTRIBUTES_SW_KEYS_KEY = "SWKeys"
 const ATTRIBUTES_TRACESTATE_CAPTURE_KEY = "sw.w3c.tracestate"
@@ -57,10 +58,29 @@ const TRACE_OPTIONS_RESPONSE_TRIGGER_IGNORED = "ignored"
 const TRACE_OPTIONS_RESPONSE_TRIGGER_NOT_REQUESTED = "not-requested"
 
 export class SwSampler implements Sampler {
+  private readonly oboeDecisionFunction: (
+    options: oboe.DecisionOptions,
+  ) => oboe.DecisionResult
+  private readonly recordMetricsFunction: () => void
+
   constructor(
     private readonly config: SwConfiguration,
     private readonly logger: DiagLogger,
-  ) {}
+    serverlessApi: oboe.OboeAPI | undefined,
+  ) {
+    if (serverlessApi) {
+      this.oboeDecisionFunction =
+        serverlessApi.getTracingDecision.bind(serverlessApi)
+      this.recordMetricsFunction = () => {
+        recordServerlessMetrics(serverlessApi)
+      }
+    } else {
+      this.oboeDecisionFunction = oboe.Context.getDecisions
+      this.recordMetricsFunction = () => {
+        // noop
+      }
+    }
+  }
 
   shouldSample(
     parentContext: Context,
@@ -116,6 +136,8 @@ export class SwSampler implements Sampler {
       traceOptions,
       traceState,
     )
+
+    this.recordMetricsFunction()
     return { decision, traceState, attributes: newAttributes }
   }
 
@@ -140,7 +162,7 @@ export class SwSampler implements Sampler {
       traceparent = traceParent(parentSpanContext)
     }
 
-    return oboe.Context.getDecisions({
+    return this.oboeDecisionFunction({
       in_xtrace: traceparent,
       custom_sample_rate: oboe.SETTINGS_UNSET,
       custom_tracing_mode: tracingMode,

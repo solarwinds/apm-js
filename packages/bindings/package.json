@@ -37,6 +37,17 @@
     "test": "swtest",
     "oboe": "node oboe.js"
   },
+  "dependencies": {
+    "@solarwinds-apm/module": "workspace:^"
+  },
+  "optionalDependencies": {
+    "@solarwinds-apm/bindings-linux-arm64-gnu": "workspace:*",
+    "@solarwinds-apm/bindings-linux-arm64-gnu-serverless": "workspace:*",
+    "@solarwinds-apm/bindings-linux-arm64-musl": "workspace:*",
+    "@solarwinds-apm/bindings-linux-x64-gnu": "workspace:*",
+    "@solarwinds-apm/bindings-linux-x64-gnu-serverless": "workspace:*",
+    "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
+  },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
@@ -46,14 +57,6 @@
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "zig-build": "^0.3.0"
-  },
-  "optionalDependencies": {
-    "@solarwinds-apm/bindings-linux-arm64-gnu": "workspace:*",
-    "@solarwinds-apm/bindings-linux-arm64-gnu-serverless": "workspace:*",
-    "@solarwinds-apm/bindings-linux-arm64-musl": "workspace:*",
-    "@solarwinds-apm/bindings-linux-x64-gnu": "workspace:*",
-    "@solarwinds-apm/bindings-linux-x64-gnu-serverless": "workspace:*",
-    "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
   },
   "engines": {
     "node": ">=16.13.0"

@@ -43,11 +43,12 @@ describe("readConfig", () => {
       insertTraceContextIntoQueries: false,
       instrumentations: {},
       metrics: { interval: 60_000 },
-      experimental: {
+      dev: {
         otlpTraces: false,
         otlpMetrics: false,
         swTraces: true,
         swMetrics: true,
+        initMessage: true,
       },
     }
 
@@ -83,13 +84,13 @@ describe("readConfig", () => {
     expect(config.transactionSettings).to.have.length(3)
   })
 
-  it("parses experimental env", () => {
-    process.env.SW_APM_EXPERIMENTAL_OTLP_TRACES = "true"
-    process.env.SW_APM_EXPERIMENTAL_SW_METRICS = "0"
+  it("parses dev env", () => {
+    process.env.SW_APM_DEV_OTLP_TRACES = "true"
+    process.env.SW_APM_DEV_SW_METRICS = "0"
 
     const config = readConfig()
-    expect(config.experimental.otlpTraces).to.be.true
-    expect(config.experimental.swMetrics).to.be.false
+    expect(config.dev.otlpTraces).to.be.true
+    expect(config.dev.swMetrics).to.be.false
   })
 
   it("throws on bad boolean", () => {

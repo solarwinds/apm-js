@@ -14,12 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { env } from "node:process"
-
 import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
+import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
 import { type Patch } from "."
 
 export const patch: Patch<InstrumentationConfig> = (config) => ({
-  enabled: config.enabled ?? "AWS_LAMBDA_FUNCTION_NAME" in env,
+  enabled: config.enabled ?? IS_AWS_LAMBDA,
 })
