@@ -164,7 +164,6 @@ export class SwSampler implements Sampler {
 
     return this.oboeDecisionFunction({
       in_xtrace: traceparent,
-      custom_sample_rate: oboe.SETTINGS_UNSET,
       custom_tracing_mode: tracingMode,
       custom_trigger_mode: this.config.triggerTraceEnabled
         ? oboe.TRIGGER_ENABLED
