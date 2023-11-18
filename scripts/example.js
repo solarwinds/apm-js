@@ -32,13 +32,18 @@ exec(`turbo run build --filter=./examples/${example}...`)
 // get env vars that will be passed to the container
 const env = Object.fromEntries(
   Object.entries(process.env).filter(
-    ([key]) => key.startsWith("SW_APM_") || key.startsWith("OTEL_"),
+    ([key]) =>
+      key.startsWith("SW_APM_") ||
+      key.startsWith("OTEL_") ||
+      key.startsWith("AWS_LAMBDA_"),
   ),
 )
 if (collector) {
   env.SW_APM_COLLECTOR = "apm-collector:12224"
   env.SW_APM_TRUSTED_PATH =
     "/solarwinds-apm/docker/apm-collector/server-grpc.crt"
+  env.OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
+  env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 }
 
 // run example inside container

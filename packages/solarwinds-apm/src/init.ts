@@ -92,6 +92,7 @@ export async function init() {
     .merge(
       new Resource({
         [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
+        "sw.data.module": "apm",
       }),
     )
 
@@ -289,10 +290,10 @@ async function metricReaders(
   }
 
   if (config.dev.otlpMetrics) {
-    const { OTLPMetricExporter } = await import(
-      "@opentelemetry/exporter-metrics-otlp-grpc"
+    const { SwOtlpMetricsExporter } = await import(
+      "@solarwinds-apm/sdk/otlp-metrics-exporter"
     )
-    const exporter = new OTLPMetricExporter()
+    const exporter = new SwOtlpMetricsExporter()
     readers.push(
       new PeriodicExportingMetricReader({
         exporter,
