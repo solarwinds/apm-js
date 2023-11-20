@@ -21,13 +21,11 @@ import {
   SpanStatusCode,
   trace,
 } from "@opentelemetry/api"
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 
 import packageJson from "../package.json"
 
 interface InstrumentOptions {
   enabled?: boolean
-  collectBacktraces?: boolean
 }
 
 interface SpanInfo {
@@ -50,25 +48,24 @@ function startActiveSpan<T>(span: SpanOptions, f: (span: Span) => T): T {
   })
 }
 
-function setError(span: Span, options: InstrumentOptions, err: unknown) {
+function setError(span: Span, err: unknown) {
   const status: SpanStatus = { code: SpanStatusCode.ERROR }
   if (err instanceof Error) {
+    span.recordException(err)
     status.message = err.message
-    if (options.collectBacktraces !== false && err.stack) {
-      span.setAttribute(SemanticAttributes.EXCEPTION_STACKTRACE, err.stack)
-    }
+  } else {
+    span.recordException(String(err))
   }
   span.setStatus(status)
 }
 
 function makeDone<T, P extends unknown[]>(
   span: Span,
-  options: InstrumentOptions,
   cb: AsyncCallback<T, P>,
 ): AsyncCallback<T, P> {
   return (...args) => {
     if (args[0] instanceof Error) {
-      setError(span, options, args[0])
+      setError(span, args[0])
     }
 
     const r = cb(...args)
@@ -114,11 +111,11 @@ export function instrument<T>(
   }
 
   return startActiveSpan(span, (span) => {
-    const done = makeDone(span, o, cb)
+    const done = makeDone(span, cb)
     try {
       return run(done)
     } catch (err) {
-      setError(span, o, err)
+      setError(span, err)
       throw err
     } finally {
       if (run.length === 0) {
@@ -141,7 +138,7 @@ export function pInstrument<T>(
     try {
       return await run()
     } catch (err) {
-      setError(span, options ?? {}, err)
+      setError(span, err)
       throw err
     } finally {
       span.end()
