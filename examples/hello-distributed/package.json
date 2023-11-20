@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "concurrently \"node --loader solarwinds-apm/loader external.js\" \"node --loader solarwinds-apm/loader internal.js\""
+    "start": "concurrently \"node --import solarwinds-apm external.js\" \"node --import solarwinds-apm internal.js\""
   },
   "dependencies": {
     "@opentelemetry/api": "^1.3.0",

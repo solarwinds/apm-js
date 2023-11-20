@@ -162,9 +162,8 @@ export class SwSampler implements Sampler {
       traceparent = traceParent(parentSpanContext)
     }
 
-    return this.oboeDecisionFunction({
+    const input: oboe.DecisionOptions = {
       in_xtrace: traceparent,
-      custom_sample_rate: oboe.SETTINGS_UNSET,
       custom_tracing_mode: tracingMode,
       custom_trigger_mode: this.config.triggerTraceEnabled
         ? oboe.TRIGGER_ENABLED
@@ -176,7 +175,11 @@ export class SwSampler implements Sampler {
       header_signature: traceOptions?.signature,
       header_timestamp: traceOptions?.timestamp,
       tracestate: parentSpanContext?.traceState?.get(TRACESTATE_SW_KEY),
-    })
+    }
+    this.logger.debug("tracing decision input", input)
+    const output = this.oboeDecisionFunction(input)
+    this.logger.debug("tracing decision output", output)
+    return output
   }
 
   private tracingMode(

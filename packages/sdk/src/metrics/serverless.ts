@@ -14,24 +14,42 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { metrics } from "@opentelemetry/api"
+import { metrics, ValueType } from "@opentelemetry/api"
 import { type oboe } from "@solarwinds-apm/bindings"
 import { lazy } from "@solarwinds-apm/lazy"
 
-const meter = metrics.getMeter("sw.apm.sampling.metrics")
+const meter = lazy(() => metrics.getMeter("sw.apm.sampling.metrics"))
 
 const counters = {
-  RequestCount: lazy(() => meter.createCounter("trace.service.request_count")),
-  TokenBucketExhaustionCount: lazy(() =>
-    meter.createCounter("trace.service.tokenbucket_exhaustion_count"),
+  RequestCount: lazy(() =>
+    meter.createCounter("trace.service.request_count", {
+      valueType: ValueType.INT,
+    }),
   ),
-  TraceCount: lazy(() => meter.createCounter("trace.service.tracecount")),
-  SampleCount: lazy(() => meter.createCounter("trace.service.samplecount")),
+  TokenBucketExhaustionCount: lazy(() =>
+    meter.createCounter("trace.service.tokenbucket_exhaustion_count", {
+      valueType: ValueType.INT,
+    }),
+  ),
+  TraceCount: lazy(() =>
+    meter.createCounter("trace.service.tracecount", {
+      valueType: ValueType.INT,
+    }),
+  ),
+  SampleCount: lazy(() =>
+    meter.createCounter("trace.service.samplecount", {
+      valueType: ValueType.INT,
+    }),
+  ),
   ThroughTraceCount: lazy(() =>
-    meter.createCounter("trace.service.through_trace_count"),
+    meter.createCounter("trace.service.through_trace_count", {
+      valueType: ValueType.INT,
+    }),
   ),
   TriggeredTraceCount: lazy(() =>
-    meter.createCounter("trace.service.triggered_trace_count"),
+    meter.createCounter("trace.service.triggered_trace_count", {
+      valueType: ValueType.INT,
+    }),
   ),
 }
 

@@ -64,7 +64,11 @@ const configs = targets.flatMap(({ name, oboe, target, cpu, glibc }) => {
 
   // only build serverless api for serverless
   const oboeSources = name.includes("serverless")
-    ? ["src/oboe/oboe.serverless.cc", "src/oboe/oboe_api.cc"]
+    ? [
+        "src/oboe/oboe.serverless.cc",
+        "src/oboe/oboe_api.cc",
+        "oboe/include/oboe_api.cpp",
+      ]
     : [
         "src/oboe/oboe.cc",
         "src/oboe/config.cc",
