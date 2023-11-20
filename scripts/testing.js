@@ -40,6 +40,8 @@ const setVersion = (packageJsonPath) => {
 const packages = fs.readdirSync("packages")
 for (const p of packages) {
   const packagePath = path.join("packages", p)
+  if (!fs.statSync(packagePath).isDirectory()) continue
+
   setVersion(path.join(packagePath, "package.json"))
 
   const npmPath = path.join(packagePath, "npm")
