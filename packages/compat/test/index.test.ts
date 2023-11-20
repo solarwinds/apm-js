@@ -106,7 +106,10 @@ describe("instrument", () => {
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(span?.attributes).to.have.property(
+    expect(span?.events[0]!.attributes).to.include({
+      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
+    })
+    expect(span?.events[0]!.attributes).to.have.property(
       SemanticAttributes.EXCEPTION_STACKTRACE,
     )
   })
@@ -151,7 +154,10 @@ describe("instrument", () => {
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(span?.attributes).to.have.property(
+    expect(span?.events[0]!.attributes).to.include({
+      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
+    })
+    expect(span?.events[0]!.attributes).to.have.property(
       SemanticAttributes.EXCEPTION_STACKTRACE,
     )
   })
@@ -247,7 +253,10 @@ describe("pInstrument", () => {
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(span?.attributes).to.have.property(
+    expect(span?.events[0]!.attributes).to.include({
+      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
+    })
+    expect(span?.events[0]!.attributes).to.have.property(
       SemanticAttributes.EXCEPTION_STACKTRACE,
     )
   })
