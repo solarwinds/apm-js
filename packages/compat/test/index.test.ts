@@ -106,35 +106,10 @@ describe("instrument", () => {
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(span?.attributes).to.have.property(
-      SemanticAttributes.EXCEPTION_STACKTRACE,
-    )
-  })
-
-  it("doesn't collect backtraces if explicitly disabled", async () => {
-    await inParent(() => {
-      let error: unknown = undefined
-      try {
-        instrument(
-          "child",
-          () => {
-            throw new Error("error")
-          },
-          { collectBacktraces: false },
-        )
-      } catch (e) {
-        error = e
-      }
-      expect(error).to.be.an.instanceof(Error)
+    expect(span?.events[0]!.attributes).to.include({
+      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
     })
-
-    const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).to.equal("child")
-    expect(span?.status).to.include({
-      code: SpanStatusCode.ERROR,
-      message: "error",
-    })
-    expect(span?.attributes).not.to.have.property(
+    expect(span?.events[0]!.attributes).to.have.property(
       SemanticAttributes.EXCEPTION_STACKTRACE,
     )
   })
@@ -179,7 +154,10 @@ describe("instrument", () => {
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(span?.attributes).to.have.property(
+    expect(span?.events[0]!.attributes).to.include({
+      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
+    })
+    expect(span?.events[0]!.attributes).to.have.property(
       SemanticAttributes.EXCEPTION_STACKTRACE,
     )
   })
@@ -275,36 +253,10 @@ describe("pInstrument", () => {
       code: SpanStatusCode.ERROR,
       message: "error",
     })
-    expect(span?.attributes).to.have.property(
-      SemanticAttributes.EXCEPTION_STACKTRACE,
-    )
-  })
-
-  it("doesn't collect backtraces if explicitly disabled", async () => {
-    await inParent(async () => {
-      let error: unknown = undefined
-      try {
-        await pInstrument(
-          "child",
-          async () => {
-            await Promise.resolve()
-            throw new Error("error")
-          },
-          { collectBacktraces: false },
-        )
-      } catch (e) {
-        error = e
-      }
-      expect(error).to.be.an.instanceof(Error)
+    expect(span?.events[0]!.attributes).to.include({
+      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
     })
-
-    const span = exporter.getFinishedSpans()[0]
-    expect(span?.name).to.equal("child")
-    expect(span?.status).to.include({
-      code: SpanStatusCode.ERROR,
-      message: "error",
-    })
-    expect(span?.attributes).not.to.have.property(
+    expect(span?.events[0]!.attributes).to.have.property(
       SemanticAttributes.EXCEPTION_STACKTRACE,
     )
   })
