@@ -20,11 +20,11 @@ const cproc = require("node:child_process")
 
 const now = new Date()
 const parts = {
-  year: now.getUTCFullYear().toString().padStart(4, "0"),
-  month: now.getUTCMonth().toString().padStart(2, "0"),
-  day: now.getUTCDate().toString().padStart(2, "0"),
-  hours: now.getUTCHours().toString().padStart(2, "0"),
-  minutes: now.getUTCMinutes().toString().padStart(2, "0"),
+  year: now.getUTCFullYear().toString(),
+  month: now.getUTCMonth().toString(),
+  day: now.getUTCDate().toString(),
+  hours: now.getUTCHours().toString(),
+  minutes: now.getUTCMinutes().toString(),
 }
 const version = `${parts.year}.${parts.month}.${parts.day}-t.${parts.hours}.${parts.minutes}`
 
