@@ -9,6 +9,8 @@ updates:
     ignore:
       # should be updated manually only when required
       - dependency-name: "@types/node"
+    # no limit
+    open-pull-requests-limit: 0
 
     groups:
       otel-contrib:
