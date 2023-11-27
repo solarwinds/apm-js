@@ -87,14 +87,15 @@ export async function init() {
   // initialize instrumentations before any asynchronous code or imports
   const registerInstrumentations = initInstrumentations(config)
 
-  const resource = Resource.default()
-    .merge(getDetectedResource())
-    .merge(
-      new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
-        "sw.data.module": "apm",
-      }),
-    )
+  let resource = Resource.default().merge(
+    new Resource({
+      [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
+      "sw.data.module": "apm",
+    }),
+  )
+  if (config.dev.resourceDetection) {
+    resource = resource.merge(getDetectedResource())
+  }
 
   const [reporter, serverlessApi] = IS_SERVERLESS
     ? [undefined, new oboe.OboeAPI()]
