@@ -34,7 +34,7 @@ export class SwOtlpMetricsExporter
     metrics: ResourceMetrics,
     resultCallback: (result: ExportResult) => void,
   ): void {
-    diag.debug("metrics export start")
+    diag.debug("metrics export start", metrics)
     super.export(metrics, (result) => {
       resultCallback(result)
       diag.debug("metrics export end")

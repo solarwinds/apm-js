@@ -26,7 +26,7 @@ export class SwOtlpExporter extends OTLPTraceExporter {
     spans: ReadableSpan[],
     resultCallback: (result: ExportResult) => void,
   ): void {
-    diag.debug("traces export start")
+    diag.debug("traces export start", spans)
 
     for (const span of spans) {
       const context = span.spanContext()
