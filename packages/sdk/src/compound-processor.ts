@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type Context } from "@opentelemetry/api"
+import { type Context, diag } from "@opentelemetry/api"
 import {
   BatchSpanProcessor,
   type ReadableSpan,
@@ -48,6 +48,7 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
   }
 
   override async forceFlush(): Promise<void> {
+    diag.debug("span processor flush")
     await Promise.all(this.processors.map((p) => p.forceFlush()))
     await super.forceFlush()
   }

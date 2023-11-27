@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { diag } from "@opentelemetry/api"
 import { type ExportResult } from "@opentelemetry/core"
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
@@ -25,6 +26,8 @@ export class SwOtlpExporter extends OTLPTraceExporter {
     spans: ReadableSpan[],
     resultCallback: (result: ExportResult) => void,
   ): void {
+    diag.debug("traces export start")
+
     for (const span of spans) {
       const context = span.spanContext()
 
@@ -36,6 +39,9 @@ export class SwOtlpExporter extends OTLPTraceExporter {
       cache.clear(context)
     }
 
-    super.export(spans, resultCallback)
+    super.export(spans, (result) => {
+      resultCallback(result)
+      diag.debug("traces export end")
+    })
   }
 }

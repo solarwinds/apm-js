@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { diag } from "@opentelemetry/api"
+import { type ExportResult } from "@opentelemetry/core"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-grpc"
 import {
   Aggregation,
@@ -21,12 +23,24 @@ import {
   ExponentialHistogramAggregation,
   InstrumentType,
   type PushMetricExporter,
+  type ResourceMetrics,
 } from "@opentelemetry/sdk-metrics"
 
 export class SwOtlpMetricsExporter
   extends OTLPMetricExporter
   implements PushMetricExporter
 {
+  override export(
+    metrics: ResourceMetrics,
+    resultCallback: (result: ExportResult) => void,
+  ): void {
+    diag.debug("metrics export start")
+    super.export(metrics, (result) => {
+      resultCallback(result)
+      diag.debug("metrics export end")
+    })
+  }
+
   override selectAggregationTemporality(
     instrumentType: InstrumentType,
   ): AggregationTemporality {

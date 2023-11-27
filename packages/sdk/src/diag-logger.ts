@@ -51,6 +51,9 @@ export class SwDiagLogger implements DiagLogger {
         }
 
         line += `) ${message}`
+        while (typeof args[0] === "string") {
+          line += ` ${args.shift() as string}`
+        }
 
         console.log(line, ...args)
       }
