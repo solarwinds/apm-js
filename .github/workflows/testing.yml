@@ -36,7 +36,8 @@ jobs:
           restore-keys: |
             zig-
 
-      - run: |
+      - name: Prepare to publish
+        run: |
           rm yarn.lock
           git grep -Ilz '@solarwinds-apm/' | xargs -0 sed -ie 's:@solarwinds-apm/:@${{ github.repository_owner }}/solarwinds-apm-:g'
           git grep -Ilz -G 'solarwinds-apm[^-]' | xargs -0 sed -rie 's:solarwinds-apm([^-]):@${{ github.repository_owner }}/solarwinds-apm\1:g'
