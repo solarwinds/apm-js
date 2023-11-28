@@ -14,13 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { isMainThread } from "node:worker_threads"
+
 import { init } from "./init.js"
 
 // init in here too so that everything can be done through a single --loader flag
-try {
-  await init()
-} catch (err) {
-  console.warn(err)
+if (isMainThread) {
+  try {
+    await init()
+  } catch (err) {
+    console.warn(err)
+  }
 }
 
 export * from "@opentelemetry/instrumentation/hook.mjs"
