@@ -90,6 +90,8 @@ export class SwSampler implements Sampler {
     attributes: Attributes,
     _links: Link[],
   ): SamplingResult {
+    this.logger.debug("sampling", spanName, SpanKind[spanKind])
+
     const parentSpanContext = trace.getSpanContext(parentContext)
     const traceOptions = getTraceOptions(parentContext)
 
