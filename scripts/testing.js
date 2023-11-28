@@ -20,13 +20,13 @@ const cproc = require("node:child_process")
 
 const now = new Date()
 const parts = {
-  year: now.getUTCFullYear().toString(),
-  month: now.getUTCMonth().toString(),
-  day: now.getUTCDate().toString(),
-  hours: now.getUTCHours().toString(),
-  minutes: now.getUTCMinutes().toString(),
+  year: now.getUTCFullYear(),
+  month: now.getUTCMonth(),
+  day: now.getUTCDate(),
+  hours: now.getUTCHours(),
+  minutes: now.getUTCMinutes(),
 }
-const version = `${parts.year}.${parts.month}.${parts.day}-t.${parts.hours}.${parts.minutes}`
+const version = `${parts.year}.${parts.month}.${parts.day}-t.h${parts.hours}.m${parts.minutes}`
 
 const setVersion = (packageJsonPath) => {
   const packageJson = JSON.parse(
