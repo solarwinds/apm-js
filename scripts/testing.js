@@ -26,7 +26,7 @@ const parts = {
   hours: now.getUTCHours(),
   minutes: now.getUTCMinutes(),
 }
-const version = `${parts.year}.${parts.month}.${parts.day}-t.h${parts.hours}.m${parts.minutes}`
+const version = `${parts.year}.${parts.month}.${parts.day}-t.${parts.hours}.${parts.minutes}`
 
 const setVersion = (packageJsonPath) => {
   const packageJson = JSON.parse(
