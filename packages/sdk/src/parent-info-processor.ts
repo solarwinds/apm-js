@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type Context, trace, TraceFlags } from "@opentelemetry/api"
+import { type Context, diag, trace, TraceFlags } from "@opentelemetry/api"
 import {
   NoopSpanProcessor,
   type ReadableSpan,
@@ -25,6 +25,8 @@ import { cache } from "./cache"
 
 export class SwParentInfoSpanProcessor extends NoopSpanProcessor {
   override onStart(span: Span, parentContext: Context): void {
+    diag.debug("span start", span)
+
     const spanContext = span.spanContext()
     const parentSpanContext = trace.getSpanContext(parentContext)
 
@@ -34,6 +36,8 @@ export class SwParentInfoSpanProcessor extends NoopSpanProcessor {
   }
 
   override onEnd(span: ReadableSpan): void {
+    diag.debug("span end", span)
+
     const spanContext = span.spanContext()
     // clear here unless sampled in which case the exporter takes care of it
     if (!(spanContext.traceFlags & TraceFlags.SAMPLED)) {
