@@ -49,8 +49,13 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
 
   override async forceFlush(): Promise<void> {
     diag.debug("span processor flush")
-    await Promise.all(this.processors.map((p) => p.forceFlush()))
-    await super.forceFlush()
+    try {
+      await Promise.all(this.processors.map((p) => p.forceFlush()))
+      await super.forceFlush()
+    } catch (error) {
+      diag.error("span processor flush failed", error)
+      throw error
+    }
   }
 
   override async shutdown(): Promise<void> {
