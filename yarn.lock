@@ -2107,9 +2107,11 @@ __metadata:
     "@solarwinds-apm/lazy": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
+    "@types/json-stringify-safe": "npm:^5.0.3"
     "@types/node": "npm:^16.13.0"
     "@types/semver": "npm:^7.5.3"
     eslint: "npm:^8.50.0"
+    json-stringify-safe: "npm:^5.0.1"
     prettier: "npm:^3.0.3"
     semver: "npm:^7.5.4"
     typescript: "npm:^5.2.2"
@@ -2364,6 +2366,13 @@ __metadata:
   version: 7.0.13
   resolution: "@types/json-schema@npm:7.0.13"
   checksum: 446fe6722899333ff647b5853fdcc9f039156d56abe517166154d3578d641841cc869f61e8b7822c24a1daeb7dfbd4fdcea84bf07c0858e2f9cca415e2ca8dd4
+  languageName: node
+  linkType: hard
+
+"@types/json-stringify-safe@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "@types/json-stringify-safe@npm:5.0.3"
+  checksum: 5c94cb5476aca6b3dc97f67b581f1bb10c3941bdb8bec652eb836c5f1682b3c25d640a7f73f3829bfecc48358ca05a447f4884936ee1ee3ad6f97944d1cac7ad
   languageName: node
   linkType: hard
 
@@ -5417,6 +5426,13 @@ __metadata:
   version: 1.0.1
   resolution: "json-stable-stringify-without-jsonify@npm:1.0.1"
   checksum: cb168b61fd4de83e58d09aaa6425ef71001bae30d260e2c57e7d09a5fd82223e2f22a042dedaab8db23b7d9ae46854b08bb1f91675a8be11c5cffebef5fb66a5
+  languageName: node
+  linkType: hard
+
+"json-stringify-safe@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "json-stringify-safe@npm:5.0.1"
+  checksum: 7dbf35cd0411d1d648dceb6d59ce5857ec939e52e4afc37601aa3da611f0987d5cee5b38d58329ceddf3ed48bd7215229c8d52059ab01f2444a338bf24ed0f37
   languageName: node
   linkType: hard
 

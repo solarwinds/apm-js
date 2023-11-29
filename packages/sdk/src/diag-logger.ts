@@ -17,6 +17,7 @@ limitations under the License.
 import * as process from "node:process"
 
 import { type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
+import stringify from "json-stringify-safe"
 
 const HAS_COLOURS = process.stdout.isTTY && process.stdout.hasColors(16)
 const COLOURS = {
@@ -60,7 +61,7 @@ export class SwDiagLogger implements DiagLogger {
           message += ` ${args.shift() as string}`
         }
 
-        console.log(JSON.stringify({ time: new Date(), level, message, args }))
+        console.log(stringify({ time: new Date(), level, message, args }))
       }
     }
   }
