@@ -29,7 +29,6 @@ import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
 import { type SwConfiguration } from "../config"
 import * as bunyan from "./bunyan"
 import * as fs from "./fs"
-import * as grpc from "./grpc"
 import * as http from "./http"
 import * as lambda from "./lambda"
 import * as mysql2 from "./mysql2"
@@ -52,7 +51,6 @@ const patches = {
   "aws-lambda": lambda,
   bunyan,
   fs,
-  grpc,
   http,
   mysql2,
   pg,
