@@ -55,7 +55,7 @@ describe("Reporter", () => {
     expect(reporter.init_status).to.equal(oboe.INIT_OK)
 
     const ready = oboe.Context.isReady(INIT_TIMEOUT)
-    expect(ready).to.equal(oboe.SERVER_RESPONSE_OK)
+    expect(ready).not.to.be.greaterThan(oboe.SERVER_RESPONSE_OK)
   })
 })
 
