@@ -85,7 +85,7 @@ const tracingMode = z
   .transform((m) => m === "enabled")
 
 const logLevel = z
-  .enum(["all", "verbose", "debug", "info", "warn", "error", "none"])
+  .enum(["all", "verbose", "debug", "info", "warn", "error"])
   .transform((l) => {
     switch (l) {
       case "all":
@@ -100,8 +100,6 @@ const logLevel = z
         return DiagLogLevel.WARN
       case "error":
         return DiagLogLevel.ERROR
-      case "none":
-        return DiagLogLevel.NONE
     }
   })
 
@@ -168,7 +166,7 @@ const schema = z.object({
       swTraces: boolean.default(!IS_SERVERLESS),
       swMetrics: boolean.default(!IS_SERVERLESS),
       initMessage: boolean.default(!IS_SERVERLESS),
-      resourceDetection: boolean.default(!IS_SERVERLESS),
+      resourceDetection: boolean.default(true),
     })
     .default({}),
 })
@@ -316,21 +314,17 @@ function readConfigFile(path: string) {
 
 function otelLevelToOboeLevel(level?: DiagLogLevel): number {
   switch (level) {
-    case DiagLogLevel.NONE:
-      return oboe.DEBUG_DISABLED
     case DiagLogLevel.ERROR:
-      return oboe.DEBUG_ERROR
+      return oboe.INIT_LOG_LEVEL_ERROR
     case DiagLogLevel.WARN:
-      return oboe.DEBUG_WARNING
+      return oboe.INIT_LOG_LEVEL_WARNING
     case DiagLogLevel.INFO:
-      return oboe.DEBUG_INFO
+      return oboe.INIT_LOG_LEVEL_INFO
     case DiagLogLevel.DEBUG:
-      return oboe.DEBUG_LOW
+      return oboe.INIT_LOG_LEVEL_DEBUG
     case DiagLogLevel.VERBOSE:
-      return oboe.DEBUG_MEDIUM
     case DiagLogLevel.ALL:
-      return oboe.DEBUG_HIGH
     default:
-      return oboe.DEBUG_INFO
+      return oboe.INIT_LOG_LEVEL_TRACE
   }
 }

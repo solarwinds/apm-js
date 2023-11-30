@@ -447,9 +447,6 @@ bool Event::sendProfiling() {
     size_t len = (size_t)(this->bbuf.cur - this->bbuf.buf);
     retval = oboe_raw_send(OBOE_SEND_PROFILING, this->bb_str, len);
 
-    if (retval < 0)
-        OBOE_DEBUG_LOG_ERROR(OBOE_MODULE_LIBOBOE, "Raw send failed - reporter returned %d", retval);
-
     return (retval >= 0);
 }
 
@@ -589,11 +586,12 @@ Reporter::Reporter(
     std::string grpc_proxy,         // HTTP proxy address and port to be used for the gRPC connection
     int stdout_clear_nonblocking,   // flag indicating if the O_NONBLOCK flag on stdout should be cleared,
                                     // only used in lambda reporter (off=0, on=1, default off)
-    int metric_format               // flag indicating the format of metric (0 = Both; 1 = TransactionResponseTime only; 2 = ResponseTime only; default = 0)
+    int metric_format,              // flag indicating the format of metric (0 = Both; 1 = TransactionResponseTime only; 2 = ResponseTime only; default = 0)
+    int log_type                    // log type (0 = stderr; 1 = stdout; 2 = file; 3 = null; 4 = disabled; default = 0)
 ) {
     oboe_init_options_t options;
     memset(&options, 0, sizeof(options));
-    options.version = 15;
+    options.version = 16;
     oboe_init_options_set_defaults(&options);
 
     if (hostname_alias != "") {
@@ -629,11 +627,12 @@ Reporter::Reporter(
     }
     options.stdout_clear_nonblocking = stdout_clear_nonblocking;
     options.metric_format = metric_format;
+    options.log_type = log_type;
     init_status = oboe_init(&options);
 }
 
 Reporter::~Reporter() {
-    oboe_reporter_destroy(this);
+    oboe_shutdown();
 }
 
 bool Reporter::sendReport(Event *evt, bool with_system_timestamp) {
@@ -692,8 +691,14 @@ std::string Config::getVersionString() {
 }
 
 // ===================================================================================================
-OboeAPI::OboeAPI() {
-    oboe_init(nullptr);
+OboeAPI::OboeAPI(const OboeAPIOptions& options) {
+    oboe_init_options_t oboe_options;
+    memset(&oboe_options, 0, sizeof(oboe_options));
+    oboe_options.version = 16;
+    oboe_init_options_set_defaults(&oboe_options);
+    oboe_options.log_level = options.logging_options.level;
+    oboe_options.log_type = options.logging_options.type;
+    oboe_init(&oboe_options);
 }
 
 OboeAPI::~OboeAPI() {
@@ -771,9 +776,6 @@ bool OboeAPI::consumeTraceCount(unsigned int& counter) {
 }
 bool OboeAPI::consumeSampleCount(unsigned int& counter) {
     return oboe_consume_sample_count(&counter);
-}
-bool OboeAPI::consumeThroughIgnoredCount(unsigned int& counter) {
-    return oboe_consume_through_ignored_count(&counter);
 }
 bool OboeAPI::consumeThroughTraceCount(unsigned int& counter) {
     return oboe_consume_through_trace_count(&counter);

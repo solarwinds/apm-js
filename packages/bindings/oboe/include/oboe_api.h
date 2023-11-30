@@ -462,7 +462,8 @@ class Reporter : private oboe_reporter_t {
         std::string grpc_proxy,         // HTTP proxy address and port to be used for the gRPC connection
         int stdout_clear_nonblocking,   // flag indicating if the O_NONBLOCK flag on stdout should be cleared,
                                         // only used in lambda reporter (off=0, on=1, default off)
-        int metric_format               // flag indicating the format of metric (0 = Both; 1 = TransactionResponseTime only; 2 = ResponseTime only; default = 0)
+        int metric_format,              // flag indicating the format of metric (0 = Both; 1 = TransactionResponseTime only; 2 = ResponseTime only; default = 0)
+        int log_type                    // log type (0 = stderr; 1 = stdout; 2 = file; 3 = null; 4 = disabled; default = 0)
     );
 
     ~Reporter();
@@ -497,9 +498,20 @@ class Config {
     static std::string getVersionString();
 };
 
+struct LoggingOptions {
+    LoggingOptions() : level(2), type(0) {
+    }
+    int level;
+    int type;
+};
+
+struct OboeAPIOptions {
+    LoggingOptions logging_options;
+};
+
 class OboeAPI {
 public:
-    OboeAPI();
+    OboeAPI(const OboeAPIOptions& options = OboeAPIOptions());
     ~OboeAPI();
     /**
      * Get tracing decision
@@ -575,13 +587,6 @@ public:
      * @return bool
      */
     bool consumeSampleCount(unsigned int& counter);
-    /**
-     * Consume through ignored count
-     * Check the return bool before using the counter, also consumeThroughIgnoredCount will set the internal counter to 0 after referencing it
-     * @param counter
-     * @return bool
-     */
-    bool consumeThroughIgnoredCount(unsigned int& counter);
     /**
      * Consume through trace count
      * Check the return bool before using the counter, also consumeThroughTraceCount will set the internal counter to 0 after referencing it

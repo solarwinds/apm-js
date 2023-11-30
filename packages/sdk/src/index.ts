@@ -25,7 +25,12 @@ import { SwInboundMetricsSpanProcessor } from "./inbound-metrics-processor"
 import { SwMetricsExporter } from "./metric-exporter"
 import { SwParentInfoSpanProcessor } from "./parent-info-processor"
 import { patch } from "./patches"
-import { createReporter, initMessage, sendStatus } from "./reporter"
+import {
+  createReporter,
+  createServerlessApi,
+  initMessage,
+  sendStatus,
+} from "./reporter"
 import { SwSampler } from "./sampler"
 import { SwTraceContextOptionsPropagator } from "./trace-context-options-propagator"
 import { SwTraceOptionsResponsePropagator } from "./trace-options-response-propagator"
@@ -37,6 +42,7 @@ export const METRICS_ERROR: Error | false =
 export {
   CompoundSpanProcessor,
   createReporter,
+  createServerlessApi,
   initMessage,
   patch,
   sendStatus,

@@ -54,6 +54,17 @@ export function createReporter(config: SwConfiguration): oboe.Reporter {
     grpc_proxy: config.proxy ?? "",
     stdout_clear_nonblocking: 0,
     metric_format: config.metricFormat ?? 2,
+
+    log_type: oboe.INIT_LOG_TYPE_NULL,
+  })
+}
+
+export function createServerlessApi(config: SwConfiguration): oboe.OboeAPI {
+  return new oboe.OboeAPI({
+    logging_options: {
+      level: config.oboeLogLevel,
+      type: oboe.INIT_LOG_TYPE_NULL,
+    },
   })
 }
 

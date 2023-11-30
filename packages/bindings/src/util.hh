@@ -4,6 +4,9 @@
 #include <cmath>
 #include <cstdint>
 #include <optional>
+#include <typeindex>
+#include <typeinfo>
+#include <unordered_map>
 
 #include <napi.h>
 
@@ -62,11 +65,34 @@ class Env {
     inline Napi::Value undefined() const { return env.Undefined(); }
     inline Object object() const { return Object(Napi::Object::New(env)); }
 
+    // Constructors are stored as a map of class types to function references
+    // in instance data. Previously they were stored as class statics but this causes
+    // issues when the library is initialised in multiple threads (which creates multiple instances)
+    // since the statics point to function references belonging to the first initialised instance
+    // which won't be valid in other instances.
+    template <typename T> Napi::FunctionReference* ctor() const {
+        auto map = env.GetInstanceData<CtorMap>();
+        auto ctor = map->at(std::type_index(typeid(T)));
+        return ctor;
+    }
+    template <typename T> void set_ctor(Napi::FunctionReference&& ctor) const {
+        auto map = env.GetInstanceData<CtorMap>();
+        if (map == nullptr) {
+            map = new CtorMap();
+            env.SetInstanceData(map);
+        }
+
+        auto ptr = new Napi::FunctionReference(std::move(ctor));
+        map->insert({std::type_index(typeid(T)), ptr});
+    }
+
     // depends on conversion utilities
     template <typename T> Napi::Value value(T value) const;
 
   private:
     Napi::Env const env;
+    // Stores native class constructors
+    using CtorMap = std::unordered_map<std::type_index, Napi::FunctionReference*>;
 };
 
 // Napi::CallbackInfo wrapper
@@ -127,19 +153,18 @@ class Class : public Napi::ObjectWrap<T> {
     // So we simply pass the provided pointer to the function.
     static Napi::Object js_new(Env const env, B* const base) {
         static_assert(ty != ClassType::Static, "cannot instantiate a static class");
-        return ctor->New({env.value(static_cast<void*>(base))});
+        return env.ctor<T>()->New({env.value(static_cast<void*>(base))});
     }
 
     // Stored pointer to the base class
     B* const base;
 
-  protected:
-    // Stored reference to the JS constructor function
-    inline static Napi::FunctionReference* ctor = new Napi::FunctionReference();
-
   private:
     // Function signature for JS methods using our wrappers
     using MethodCallback = Napi::Value (T::*)(CallbackInfo const);
+    // Function signature for JS static method callbacks
+    using StaticMethodCallback = Napi::Value (*)(CallbackInfo const);
+
     // Since we use wrapper types, the signatures of methods we want to wrap
     // are not the same as what node-addon-api expects.
     // So we need to have a method with the right signature to wrap them.
@@ -151,6 +176,10 @@ class Class : public Napi::ObjectWrap<T> {
         // Since T is the wrapper class inheriting from the current one
         // casting the this pointer to T* is a noop and perfectly safe.
         return (static_cast<T*>(this)->*cb)(info);
+    }
+    template <StaticMethodCallback cb>
+    static Napi::Value static_method_callback_wrapper(Napi::CallbackInfo const& info) {
+        return cb(info);
     }
 
     template <typename CT, ClassType cty> friend class ClassDefinition;
@@ -173,10 +202,10 @@ template <typename T, ClassType ty> class ClassDefinition {
         if constexpr (ty != ClassType::Static) {
             // If the class isn't static we define an actual JS class
             // First define the constructor using the method provided by Napi::ObjectWrap<T>
-            // Then store the constructor in the wrapper class itself for later use
+            // Then store the constructor in the environment for later use
             // Finally expose the class to JS in the exports object
             auto f = T::DefineClass(env, name.data(), members);
-            *T::ctor = Napi::Persistent(f);
+            Env(env).set_ctor<T>(Napi::Persistent(f));
             exports.Set(name.data(), f);
             return exports;
         } else {
@@ -210,8 +239,9 @@ template <typename T, ClassType ty> class ClassDefinition {
     // Define a JS static method with the callback provided as a template argument
     template <StaticMethodCallback cb>
     ClassDefinition<T, ty>& static_method(std::string_view name) {
-        auto wrap = [](Napi::CallbackInfo const& info) { return cb(CallbackInfo(info)); };
-        members.push_back(T::StaticMethod(name.data(), wrap));
+        members.push_back(
+            T::StaticMethod(name.data(), &T::template static_method_callback_wrapper<cb>)
+        );
         return *this;
     }
 

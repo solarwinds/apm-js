@@ -16,11 +16,10 @@ limitations under the License.
 
 import { isMainThread } from "node:worker_threads"
 
-import { init } from "./init.js"
-
 // init in here too so that everything can be done through a single --loader flag
 if (isMainThread) {
   try {
+    const { init } = await import("./init.js")
     await init()
   } catch (err) {
     console.warn(err)

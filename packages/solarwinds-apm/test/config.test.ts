@@ -36,7 +36,7 @@ describe("readConfig", () => {
       serviceName: "name",
       enabled: true,
       otelLogLevel: DiagLogLevel.INFO,
-      oboeLogLevel: oboe.DEBUG_INFO,
+      oboeLogLevel: oboe.INIT_LOG_LEVEL_INFO,
       triggerTraceEnabled: true,
       runtimeMetrics: true,
       insertTraceContextIntoLogs: false,

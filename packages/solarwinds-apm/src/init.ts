@@ -98,16 +98,16 @@ export async function init() {
   }
 
   const [reporter, serverlessApi] = IS_SERVERLESS
-    ? [undefined, new oboe.OboeAPI()]
+    ? [undefined, sdk.createServerlessApi(config)]
     : [sdk.createReporter(config), undefined]
 
-  oboe.debug_log_add((module, level, sourceName, sourceLine, message) => {
+  oboe.debug_log_add((level, sourceName, sourceLine, message) => {
     const logger = diag.createComponentLogger({
-      namespace: `[sw/oboe/${module}]`,
+      namespace: `[sw/oboe]`,
     })
     const log = oboeLevelToOtelLogger(level, logger)
 
-    if (sourceName && level > oboe.DEBUG_INFO) {
+    if (sourceName && level > oboe.INIT_LOG_LEVEL_INFO) {
       const source = { source: sourceName, line: sourceLine }
       log(message, source)
     } else {
@@ -242,6 +242,7 @@ async function spanProcessors(
   reporter: oboe.Reporter | undefined,
 ): Promise<SpanProcessor[]> {
   const processors: SpanProcessor[] = []
+  const logger = diag.createComponentLogger({ namespace: "[sw/processor]" })
 
   const parentInfoProcessor = new sdk.SwParentInfoSpanProcessor()
   const inboundMetricsProcessor = new sdk.SwInboundMetricsSpanProcessor()
@@ -252,10 +253,11 @@ async function spanProcessors(
       diag.createComponentLogger({ namespace: "[sw/exporter]" }),
     )
     processors.push(
-      new sdk.CompoundSpanProcessor(exporter, [
-        parentInfoProcessor,
-        inboundMetricsProcessor,
-      ]),
+      new sdk.CompoundSpanProcessor(
+        exporter,
+        [parentInfoProcessor, inboundMetricsProcessor],
+        logger,
+      ),
     )
   }
 
@@ -264,7 +266,7 @@ async function spanProcessors(
     const exporter = new SwOtlpExporter()
     processors.push(
       // TODO: inboundMetricsProcessor replacement ? is it even necessary here ?
-      new sdk.CompoundSpanProcessor(exporter, [parentInfoProcessor]),
+      new sdk.CompoundSpanProcessor(exporter, [parentInfoProcessor], logger),
     )
   }
 
@@ -306,20 +308,23 @@ async function metricReaders(
   return readers
 }
 
+// https://github.com/boostorg/log/blob/boost-1.82.0/include/boost/log/trivial.hpp#L42-L50
 export function oboeLevelToOtelLogger(
   level: number,
   logger: DiagLogger,
 ): DiagLogFunction {
   switch (level) {
-    case oboe.DEBUG_ERROR:
-      return logger.error.bind(logger)
-    case oboe.DEBUG_WARNING:
-      return logger.warn.bind(logger)
-    case oboe.DEBUG_INFO:
-      return logger.info.bind(logger)
-    case oboe.DEBUG_LOW:
-      return logger.debug.bind(logger)
-    default:
+    case 0:
       return logger.verbose.bind(logger)
+    case 1:
+      return logger.debug.bind(logger)
+    case 2:
+      return logger.info.bind(logger)
+    case 3:
+      return logger.warn.bind(logger)
+    case 4:
+    case 5:
+    default:
+      return logger.error.bind(logger)
   }
 }
