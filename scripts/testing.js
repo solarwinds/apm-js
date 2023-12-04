@@ -20,11 +20,11 @@ const cproc = require("node:child_process")
 
 const now = new Date()
 const parts = {
-  year: now.getUTCFullYear().toString().padStart(4, "0"),
-  month: now.getUTCMonth().toString().padStart(2, "0"),
-  day: now.getUTCDate().toString().padStart(2, "0"),
-  hours: now.getUTCHours().toString().padStart(2, "0"),
-  minutes: now.getUTCMinutes().toString().padStart(2, "0"),
+  year: now.getUTCFullYear(),
+  month: now.getUTCMonth(),
+  day: now.getUTCDate(),
+  hours: now.getUTCHours(),
+  minutes: now.getUTCMinutes(),
 }
 const version = `${parts.year}.${parts.month}.${parts.day}-t.${parts.hours}.${parts.minutes}`
 
@@ -40,6 +40,8 @@ const setVersion = (packageJsonPath) => {
 const packages = fs.readdirSync("packages")
 for (const p of packages) {
   const packagePath = path.join("packages", p)
+  if (!fs.statSync(packagePath).isDirectory()) continue
+
   setVersion(path.join(packagePath, "package.json"))
 
   const npmPath = path.join(packagePath, "npm")

@@ -27,7 +27,6 @@ extern "C" {
     #include <unistd.h> // On Windows ssize_t definition was put in this header.
 #endif
 #include "bson/bson.h"
-#include "oboe_debug.h"
 
 /**
  * Default configuration settings update interval in seconds.
@@ -162,7 +161,7 @@ typedef struct oboe_metric_tag {
 } oboe_metric_tag_t;
 
 typedef struct oboe_init_options {
-    int version;                            // the version of this structure (currently on version 15)
+    int version;                            // the version of this structure (currently on version 16)
     const char *hostname_alias;             // optional hostname alias
     int log_level;                          // level at which log messages will be written to log file (0-6)
                                             // use LOGLEVEL_DEFAULT for default log level
@@ -188,6 +187,7 @@ typedef struct oboe_init_options {
     int stdout_clear_nonblocking;           // flag indicating if the O_NONBLOCK flag on stdout should be cleared,
                                             // only used in lambda reporter (off=0, on=1, default off)
     int metric_format;                      // flag indicating the format of metric (0 = Both; 1 = TransactionResponseTime only; 2 = ResponseTime only; default = 0)
+    int log_type;                           // log type (0 = stderr; 1 = stdout; 2 = file; 3 = null; 4 = disabled; default = 0)
 } oboe_init_options_t;
 
 typedef struct oboe_span_params {
@@ -631,6 +631,20 @@ const char* oboe_get_tracing_decisions_auth_message (int code);
 #define OBOE_REPORTER_FLUSH_NO_REPORTER 3
 #define OBOE_REPORTER_FLUSH_REPORTER_NOT_READY 4
 
+#define OBOE_INIT_LOG_LEVEL_FATAL 0
+#define OBOE_INIT_LOG_LEVEL_ERROR 1
+#define OBOE_INIT_LOG_LEVEL_WARNING 2
+#define OBOE_INIT_LOG_LEVEL_INFO 3
+#define OBOE_INIT_LOG_LEVEL_DEBUG 4
+#define OBOE_INIT_LOG_LEVEL_PREVIOUS_MEDIUM 5
+#define OBOE_INIT_LOG_LEVEL_TRACE 6
+
+#define OBOE_INIT_LOG_TYPE_STDERR 0
+#define OBOE_INIT_LOG_TYPE_STDOUT 1
+#define OBOE_INIT_LOG_TYPE_FILE 2
+#define OBOE_INIT_LOG_TYPE_NULL 3               // NULL means no output
+#define OBOE_INIT_LOG_TYPE_DISABLE 4            // Explicit disable logging
+
 // token buckets
 enum TOKEN_BUCKETS {
   TOKEN_BUCKET_SAMPLING,    // for normal requests
@@ -871,15 +885,15 @@ oboe_internal_stats_t* oboe_get_internal_stats();
 // Random
 void oboe_random_bytes(uint8_t bytes[], size_t sz);
 
-// oboe logging macro
-#define OBOE_DEBUG_LOG_CONFIG(module, app_name, trace_mode, sample_rate, reporter_type, reporter_args, extra) OBOE_DEBUG_LOG_CONFIG_EX(module, app_name, trace_mode, sample_rate, reporter_type, reporter_args, extra)
-#define OBOE_DEBUG_LOG_FATAL(module, ...) OBOE_DEBUG_LOG_FATAL_EX(module, __VA_ARGS__)
-#define OBOE_DEBUG_LOG_ERROR(module, ...) OBOE_DEBUG_LOG_ERROR_EX(module, __VA_ARGS__)
-#define OBOE_DEBUG_LOG_WARNING(module, ...) OBOE_DEBUG_LOG_WARNING_EX(module, __VA_ARGS__)
-#define OBOE_DEBUG_LOG_INFO(module, ...) OBOE_DEBUG_LOG_INFO_EX(module, __VA_ARGS__)
-#define OBOE_DEBUG_LOG_LOW(module, ...) OBOE_DEBUG_LOG_LOW_EX(module, __VA_ARGS__)
-#define OBOE_DEBUG_LOG_MEDIUM(module, ...) OBOE_DEBUG_LOG_MEDIUM_EX(module, __VA_ARGS__)
-#define OBOE_DEBUG_LOG_HIGH(module, ...) OBOE_DEBUG_LOG_HIGH_EX(module, __VA_ARGS__)
+// oboe logging macro (Phasing out marco)
+#define OBOE_DEBUG_LOG_CONFIG(module, app_name, trace_mode, sample_rate, reporter_type, reporter_args, extra) do {} while(0)
+#define OBOE_DEBUG_LOG_FATAL(module, ...) do {} while(0)
+#define OBOE_DEBUG_LOG_ERROR(module, ...) do {} while(0)
+#define OBOE_DEBUG_LOG_WARNING(module, ...) do {} while(0)
+#define OBOE_DEBUG_LOG_INFO(module, ...) do {} while(0)
+#define OBOE_DEBUG_LOG_LOW(module, ...) do {} while(0)
+#define OBOE_DEBUG_LOG_MEDIUM(module, ...) do {} while(0)
+#define OBOE_DEBUG_LOG_HIGH(module, ...) do {} while(0)
 
 void oboe_init_once();
 

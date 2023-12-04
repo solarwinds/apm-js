@@ -1,8 +1,18 @@
 #include "oboe_api.hh"
 #include "oboe_api.h"
 
+OboeAPI* from_options(sw::Object const& options) {
+    OboeAPIOptions o{};
+
+    auto logging_options = options.get<sw::Object>("logging_options");
+    o.logging_options.level = logging_options.get<int>("level");
+    o.logging_options.type = logging_options.get<int>("type");
+
+    return new OboeAPI(o);
+}
+
 JsOboeAPI::JsOboeAPI(sw::CallbackInfo const info)
-    : sw::Class<JsOboeAPI, OboeAPI>(new OboeAPI(), info) {}
+    : sw::Class<JsOboeAPI, OboeAPI>(from_options(info.arg<sw::Object>(0)), info) {}
 Napi::Object JsOboeAPI::init(Napi::Env env, Napi::Object exports) {
     return define_class("OboeAPI")
         .method<&JsOboeAPI::getTracingDecision>("getTracingDecision")

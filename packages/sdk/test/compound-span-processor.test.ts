@@ -53,7 +53,7 @@ const p1 = new TestSpanProcessor(Symbol("p1"))
 const p2 = new TestSpanProcessor(Symbol("p2"))
 
 const exporter = new InMemorySpanExporter()
-const processor = new CompoundSpanProcessor(exporter, [p1, p2])
+const processor = new CompoundSpanProcessor(exporter, [p1, p2], mock.logger())
 
 describe("CompoundSpanProcessor", () => {
   describe("forceFlush", () => {

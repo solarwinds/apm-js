@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type Context } from "@opentelemetry/api"
+import { type Context, type DiagLogger } from "@opentelemetry/api"
 import {
   BatchSpanProcessor,
   type ReadableSpan,
@@ -27,12 +27,13 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
   constructor(
     exporter: SpanExporter,
     private readonly processors: SpanProcessor[],
+    private readonly logger: DiagLogger,
   ) {
     super(exporter)
-    this.processors = processors
   }
 
   override onStart(span: Span, parentContext: Context): void {
+    this.logger.verbose("span start", span, parentContext)
     super.onStart(span, parentContext)
     this.processors.forEach((p) => {
       p.onStart(span, parentContext)
@@ -40,7 +41,7 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
   }
 
   override onEnd(span: ReadableSpan): void {
-    // eslint-disable-next-line @typescript-eslint/no-extra-semi
+    this.logger.verbose("span end", span)
     ;[...this.processors].reverse().forEach((p) => {
       p.onEnd(span)
     })
@@ -48,8 +49,14 @@ export class CompoundSpanProcessor extends BatchSpanProcessor {
   }
 
   override async forceFlush(): Promise<void> {
-    await Promise.all(this.processors.map((p) => p.forceFlush()))
-    await super.forceFlush()
+    this.logger.debug("flush")
+    try {
+      await Promise.all(this.processors.map((p) => p.forceFlush()))
+      await super.forceFlush()
+    } catch (error) {
+      this.logger.error("flush error", error)
+      throw error
+    }
   }
 
   override async shutdown(): Promise<void> {

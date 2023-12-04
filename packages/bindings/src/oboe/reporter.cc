@@ -29,12 +29,14 @@ Reporter* from_options(sw::Object const& options) {
     auto stdout_clear_nonblocking = options.get<int>("stdout_clear_nonblocking");
 
     auto metric_format = options.get<int>("metric_format");
+    auto log_type = options.get<int>("log_type");
 
     return new Reporter(
         hostname_alias, log_level, log_file_path, max_transactions, max_flush_wait_time,
         events_flush_interval, max_request_size_bytes, reporter, host, service_key, certificates,
         buffer_size, trace_metrics, histogram_precision, token_bucket_capacity, token_bucket_rate,
-        file_single, ec2_metadata_timeout, grpc_proxy, stdout_clear_nonblocking, metric_format
+        file_single, ec2_metadata_timeout, grpc_proxy, stdout_clear_nonblocking, metric_format,
+        log_type
     );
 }
 
