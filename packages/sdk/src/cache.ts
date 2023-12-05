@@ -18,6 +18,7 @@ import { type SpanContext } from "@opentelemetry/api"
 
 export interface SpanCache {
   txname?: string
+  txnameCustom?: string
   parentId?: string
   parentRemote?: boolean
 }
@@ -39,7 +40,7 @@ class Cache {
     return c
   }
 
-  getRoot(ctx: SpanContext): SpanCache | undefined {
+  getEntry(ctx: SpanContext): SpanCache | undefined {
     for (;;) {
       const c = this.get(ctx)
 

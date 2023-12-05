@@ -93,10 +93,10 @@ export function setTransactionName(context: Context, name: string): boolean {
   const spanContext = trace.getSpanContext(context)
   if (!spanContext) return false
 
-  const rootCache = cache.getRoot(spanContext)
+  const rootCache = cache.getEntry(spanContext)
   if (!rootCache) return false
 
-  rootCache.txname = name
+  rootCache.txnameCustom = name
   return true
 }
 

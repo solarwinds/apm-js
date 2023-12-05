@@ -248,6 +248,7 @@ async function spanProcessors(
 
   if (config.dev.swTraces) {
     const exporter = new sdk.SwExporter(
+      config,
       reporter!,
       diag.createComponentLogger({ namespace: "[sw/exporter]" }),
     )
@@ -263,7 +264,7 @@ async function spanProcessors(
 
   if (config.dev.otlpTraces) {
     const { SwOtlpExporter } = await import("@solarwinds-apm/sdk/otlp-exporter")
-    const exporter = new SwOtlpExporter()
+    const exporter = new SwOtlpExporter(config)
     const transactionNameProcessor = new sdk.SwTransactionNameProcessor()
     processors.push(
       new sdk.CompoundSpanProcessor(

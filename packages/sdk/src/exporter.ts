@@ -37,6 +37,7 @@ import {
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 
+import { type SwConfiguration } from "."
 import { cache } from "./cache"
 import { parentSpanContext, traceParent } from "./context"
 import { OboeError } from "./error"
@@ -44,6 +45,7 @@ import { OboeError } from "./error"
 export class SwExporter implements SpanExporter {
   private error: Error | undefined = undefined
   constructor(
+    private readonly config: SwConfiguration,
     private readonly reporter: oboe.Reporter,
     private readonly logger: DiagLogger,
   ) {}
@@ -65,13 +67,10 @@ export class SwExporter implements SpanExporter {
           hrTimeToMicroseconds(span.startTime),
           parentMd,
         )
-
-        if (parentContext.isRemote) {
-          SwExporter.addTxname(context, evt)
-        }
+        this.addTxname(context, evt)
       } else {
         evt = oboe.Context.createEntry(md, hrTimeToMicroseconds(span.startTime))
-        SwExporter.addTxname(context, evt)
+        this.addTxname(context, evt)
       }
 
       const kind = SpanKind[span.kind]
@@ -148,8 +147,13 @@ export class SwExporter implements SpanExporter {
     return oboe.Metadata.fromString(traceparent)
   }
 
-  private static addTxname(ctx: SpanContext, evt: oboe.Event) {
-    const txname = cache.get(ctx)?.txname
+  private addTxname(ctx: SpanContext, evt: oboe.Event) {
+    const spanCache = cache.get(ctx)
+    const txname =
+      spanCache?.txnameCustom ??
+      this.config.transactionName ??
+      spanCache?.txname
+
     if (!txname) {
       return
     }

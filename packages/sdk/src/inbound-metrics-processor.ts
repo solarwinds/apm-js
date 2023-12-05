@@ -52,7 +52,7 @@ export class SwInboundMetricsSpanProcessor extends NoopSpanProcessor {
     const domain = null
 
     const spanCache = cache.getOrInit(context)
-    const transaction = spanCache.txname ?? defaultTransaction
+    const transaction = spanCache.txnameCustom ?? defaultTransaction
 
     let txname: string
     if (isHttp) {

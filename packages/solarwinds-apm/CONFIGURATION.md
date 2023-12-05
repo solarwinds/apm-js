@@ -47,6 +47,7 @@ module.exports = {
 | `triggerTraceEnabled`           | `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled                    |
 | `runtimeMetrics`                | `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be collected                  |
 | `tracingMode`                   | `SW_APM_TRACING_MODE`          | None              | Custom tracing mode                                          |
+| `transactionName`               | `SW_APM_TRANSACTION_NAME`      | None              | Custom transaction name for all spans                        |
 | `insertTraceContextIntoLogs`    |                                | `false`           | Whether to insert trace context information into logs        |
 | `insertTraceContextIntoQueries` |                                | `false`           | Whether to insert trace context information into SQL queries |
 | `transactionSettings`           |                                | None              | See [Transaction Settings](#transaction-settings)            |

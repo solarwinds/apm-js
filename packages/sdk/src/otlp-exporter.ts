@@ -18,9 +18,14 @@ import { type ExportResult } from "@opentelemetry/core"
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 
+import { type SwConfiguration } from "."
 import { cache } from "./cache"
 
 export class SwOtlpExporter extends OTLPTraceExporter {
+  constructor(private readonly config: SwConfiguration) {
+    super()
+  }
+
   override export(
     spans: ReadableSpan[],
     resultCallback: (result: ExportResult) => void,
@@ -28,7 +33,12 @@ export class SwOtlpExporter extends OTLPTraceExporter {
     for (const span of spans) {
       const context = span.spanContext()
 
-      const txname = cache.get(context)?.txname
+      const spanCache = cache.get(context)
+      const txname =
+        spanCache?.txnameCustom ??
+        this.config.transactionName ??
+        spanCache?.txname
+
       if (txname) {
         span.attributes["sw.transaction"] = txname
       }
