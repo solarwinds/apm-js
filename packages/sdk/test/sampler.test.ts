@@ -31,6 +31,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ tracingMode: undefined, transactionSettings: undefined }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
@@ -41,6 +42,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ tracingMode: true, transactionSettings: undefined }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
@@ -51,6 +53,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ tracingMode: false, transactionSettings: undefined }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
@@ -62,6 +65,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ tracingMode: undefined, transactionSettings: settings }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
@@ -73,6 +77,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ tracingMode: true, transactionSettings: settings }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
@@ -84,6 +89,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ tracingMode: false, transactionSettings: settings }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
@@ -95,6 +101,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ tracingMode: false, transactionSettings: settings }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
@@ -106,6 +113,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ tracingMode: true, transactionSettings: settings }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, {})
@@ -127,6 +135,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ transactionSettings: settings }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode]("name", SpanKind.SERVER, attributes)
@@ -146,6 +155,7 @@ describe("SwSampler", () => {
       const sampler = new SwSampler(
         mock.config({ transactionSettings: settings }),
         mock.logger(),
+        undefined,
       )
 
       const result = sampler[tracingMode](name, kind, {})
