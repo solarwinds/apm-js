@@ -148,12 +148,7 @@ export class SwExporter implements SpanExporter {
   }
 
   private addTxname(ctx: SpanContext, evt: oboe.Event) {
-    const spanCache = cache.get(ctx)
-    const txname =
-      spanCache?.txnameCustom ??
-      this.config.transactionName ??
-      spanCache?.txname
-
+    const txname = cache.getTxname(ctx, this.config)
     if (!txname) {
       return
     }

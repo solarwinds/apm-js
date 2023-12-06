@@ -33,12 +33,7 @@ export class SwOtlpExporter extends OTLPTraceExporter {
     for (const span of spans) {
       const context = span.spanContext()
 
-      const spanCache = cache.get(context)
-      const txname =
-        spanCache?.txnameCustom ??
-        this.config.transactionName ??
-        spanCache?.txname
-
+      const txname = cache.getTxname(context, this.config)
       if (txname) {
         span.attributes["sw.transaction"] = txname
       }
