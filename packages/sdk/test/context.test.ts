@@ -137,6 +137,6 @@ describe("setTransactionName", () => {
       s.end()
     })
 
-    expect(cache.get(parent!.spanContext())?.txname).to.equal(txname)
+    expect(cache.get(parent!.spanContext())?.txnameCustom).to.equal(txname)
   })
 })
