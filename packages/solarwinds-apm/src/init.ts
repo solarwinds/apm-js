@@ -67,7 +67,7 @@ export async function init() {
   }
   if (nodeVersion < 18) {
     console.warn(
-      "The current Node.js version has reached End Of Life at the time this code was published, which means it no longer receives security updates.",
+      "The current Node.js version has reached End Of Life at the time the library was published, which means it no longer receives security updates.",
       "SolarWinds STRONGLY RECOMMENDS upgrading to a supported Node.js version and staying up to date with its support policy at https://nodejs.org/about/previous-releases",
     )
   }
