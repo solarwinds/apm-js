@@ -16,8 +16,11 @@ limitations under the License.
 
 import { type SpanContext } from "@opentelemetry/api"
 
+import { type SwConfiguration } from "."
+
 export interface SpanCache {
   txname?: string
+  txnameCustom?: string
   parentId?: string
   parentRemote?: boolean
 }
@@ -39,7 +42,7 @@ class Cache {
     return c
   }
 
-  getRoot(ctx: SpanContext): SpanCache | undefined {
+  getEntry(ctx: SpanContext): SpanCache | undefined {
     for (;;) {
       const c = this.get(ctx)
 
@@ -48,6 +51,11 @@ class Cache {
 
       ctx = { ...ctx, traceId: ctx.traceId, spanId: c.parentId }
     }
+  }
+
+  getTxname(ctx: SpanContext, config: SwConfiguration): string | undefined {
+    const c = this.get(ctx)
+    return c?.txnameCustom ?? config.transactionName ?? c?.txname
   }
 
   clear(ctx: SpanContext): void {

@@ -259,13 +259,14 @@ async function spanProcessors(
   const logger = diag.createComponentLogger({ namespace: "[sw/processor]" })
 
   const parentInfoProcessor = new sdk.SwParentInfoSpanProcessor()
-  const inboundMetricsProcessor = new sdk.SwInboundMetricsSpanProcessor()
 
   if (config.dev.swTraces) {
     const exporter = new sdk.SwExporter(
+      config,
       reporter!,
       diag.createComponentLogger({ namespace: "[sw/exporter]" }),
     )
+    const inboundMetricsProcessor = new sdk.SwInboundMetricsSpanProcessor()
     processors.push(
       new sdk.CompoundSpanProcessor(
         exporter,
@@ -277,10 +278,14 @@ async function spanProcessors(
 
   if (config.dev.otlpTraces) {
     const { SwOtlpExporter } = await import("@solarwinds-apm/sdk/otlp-exporter")
-    const exporter = new SwOtlpExporter()
+    const exporter = new SwOtlpExporter(config)
+    const transactionNameProcessor = new sdk.SwTransactionNameProcessor()
     processors.push(
-      // TODO: inboundMetricsProcessor replacement ? is it even necessary here ?
-      new sdk.CompoundSpanProcessor(exporter, [parentInfoProcessor], logger),
+      new sdk.CompoundSpanProcessor(
+        exporter,
+        [parentInfoProcessor, transactionNameProcessor],
+        logger,
+      ),
     )
   }
 

@@ -142,6 +142,7 @@ const schema = z.object({
   triggerTraceEnabled: boolean.default(true),
   runtimeMetrics: boolean.default(!IS_SERVERLESS),
   tracingMode: tracingMode.optional(),
+  transactionName: z.string().optional(),
   insertTraceContextIntoLogs: boolean.default(false),
   insertTraceContextIntoQueries: boolean.default(false),
   transactionSettings: transactionSettings.optional(),

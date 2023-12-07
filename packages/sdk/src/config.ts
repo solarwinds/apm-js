@@ -29,6 +29,7 @@ export interface SwConfiguration {
   triggerTraceEnabled: boolean
   runtimeMetrics: boolean
   tracingMode?: boolean
+  transactionName?: string
   insertTraceContextIntoLogs: boolean
   insertTraceContextIntoQueries: boolean
   transactionSettings?: TransactionSetting[]
