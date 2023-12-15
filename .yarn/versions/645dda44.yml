@@ -1,0 +1,6 @@
+releases:
+  "@solarwinds-apm/bindings": patch
+  solarwinds-apm: patch
+
+declined:
+  - "@solarwinds-apm/sdk"
