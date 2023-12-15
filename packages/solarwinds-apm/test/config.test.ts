@@ -29,8 +29,8 @@ describe("readConfig", () => {
     process.env.SW_APM_SERVICE_KEY = "token:name"
   })
 
-  it("returns proper defaults", () => {
-    const config = readConfig()
+  it("returns proper defaults", async () => {
+    const config = await readConfig()
     const expected: ExtendedSwConfiguration = {
       token: "token",
       serviceName: "name",
@@ -56,40 +56,40 @@ describe("readConfig", () => {
     expect(config).to.deep.include(expected)
   })
 
-  it("parses booleans", () => {
+  it("parses booleans", async () => {
     process.env.SW_APM_ENABLED = "0"
 
-    const config = readConfig()
+    const config = await readConfig()
     expect(config).to.include({ enabled: false })
   })
 
-  it("parses tracing mode", () => {
+  it("parses tracing mode", async () => {
     process.env.SW_APM_TRACING_MODE = "enabled"
 
-    const config = readConfig()
+    const config = await readConfig()
     expect(config).to.include({ tracingMode: true })
   })
 
-  it("parses trusted path", () => {
+  it("parses trusted path", async () => {
     process.env.SW_APM_TRUSTEDPATH = "package.json"
 
-    const config = readConfig()
+    const config = await readConfig()
     expect(config.certificate).to.include("solarwinds-apm")
   })
 
-  it("parses transaction settings", () => {
+  it("parses transaction settings", async () => {
     process.env.SW_APM_CONFIG_FILE = "test/test.config.js"
 
-    const config = readConfig()
+    const config = await readConfig()
     expect(config.transactionSettings).not.to.be.undefined
     expect(config.transactionSettings).to.have.length(3)
   })
 
-  it("parses dev env", () => {
+  it("parses dev env", async () => {
     process.env.SW_APM_DEV_OTLP_TRACES = "true"
     process.env.SW_APM_DEV_SW_METRICS = "0"
 
-    const config = readConfig()
+    const config = await readConfig()
     expect(config.dev.otlpTraces).to.be.true
     expect(config.dev.swMetrics).to.be.false
   })
@@ -112,13 +112,21 @@ describe("readConfig", () => {
     expect(readConfig).to.throw()
   })
 
-  it("uses the right defaults for AppOptics", () => {
+  it("uses the right defaults for AppOptics", async () => {
     process.env.SW_APM_COLLECTOR = "collector.appoptics.com"
 
-    const config = readConfig()
+    const config = await readConfig()
     expect(config).to.include({
       metricFormat: 1,
       certificate: aoCert,
     })
+  })
+
+  it("supports cjs configs", async () => {
+    process.env.SW_APM_CONFIG_FILE = "test/test.config.cjs"
+
+    const config = await readConfig()
+    expect(config.transactionName).not.to.be.undefined
+    expect(config.transactionName).to.equal("cjs")
   })
 })

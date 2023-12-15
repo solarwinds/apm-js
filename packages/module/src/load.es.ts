@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export default {
-  transactionSettings: [
-    { tracing: "enabled", regex: /^hello$/ },
-    { tracing: "disabled", regex: "[A-Z]" },
-    { tracing: "enabled", matcher: (ident) => ident.startsWith("foo") },
-  ],
+export async function load(file: string): Promise<unknown> {
+  const imported = (await import(file)) as object
+  if ("default" in imported) return imported.default
+  else return imported
 }

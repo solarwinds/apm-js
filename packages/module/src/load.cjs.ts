@@ -14,10 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export default {
-  transactionSettings: [
-    { tracing: "enabled", regex: /^hello$/ },
-    { tracing: "disabled", regex: "[A-Z]" },
-    { tracing: "enabled", matcher: (ident) => ident.startsWith("foo") },
-  ],
+export function load(file: string): unknown {
+  /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+  const required: unknown = require(file)
+
+  const fakeEsmDefaultExport =
+    typeof required === "object" &&
+    required !== null &&
+    "default" in required &&
+    Object.keys(required).length === 1
+
+  if (fakeEsmDefaultExport) return required.default
+  else return required
 }

@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/** @type {import("solarwinds-apm").Config} */
 export default {
-  transactionSettings: [
-    { tracing: "enabled", regex: /^hello$/ },
-    { tracing: "disabled", regex: "[A-Z]" },
-    { tracing: "enabled", matcher: (ident) => ident.startsWith("foo") },
-  ],
+  insertTraceContextIntoQueries: true,
+  insertTraceContextIntoLogs: true,
 }

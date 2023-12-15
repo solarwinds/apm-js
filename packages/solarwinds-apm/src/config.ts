@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 import * as fs from "node:fs"
-import { createRequire } from "node:module"
 import * as path from "node:path"
 import * as process from "node:process"
 
@@ -25,13 +24,12 @@ import { InstrumentationBase } from "@opentelemetry/instrumentation"
 import { View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
-import { callsite, IS_SERVERLESS } from "@solarwinds-apm/module"
+import { IS_SERVERLESS } from "@solarwinds-apm/module"
+import { load } from "@solarwinds-apm/module/load"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { z } from "zod"
 
 import aoCert from "./appoptics.crt.js"
-
-const r = createRequire(callsite().getFileName()!)
 
 const otelEnv = getEnvWithoutDefaults()
 
@@ -188,36 +186,46 @@ const ENV_PREFIX = "SW_APM_"
 const ENV_PREFIX_DEV = `${ENV_PREFIX}DEV_`
 const DEFAULT_FILE_NAME = "solarwinds.apm.config"
 
-export function readConfig(): ExtendedSwConfiguration {
+export function readConfig():
+  | ExtendedSwConfiguration
+  | Promise<ExtendedSwConfiguration> {
   const env = envObject()
   const devEnv = envObject(ENV_PREFIX_DEV)
+
+  const processFile = (file: object): ExtendedSwConfiguration => {
+    const devFile =
+      "dev" in file && typeof file.dev === "object" && file.dev !== null
+        ? file.dev
+        : {}
+
+    const raw = schema.parse({
+      ...file,
+      ...env,
+      dev: { ...devFile, ...devEnv },
+    })
+
+    const config: ExtendedSwConfiguration = {
+      ...raw,
+      token: raw.serviceKey.token,
+      serviceName: raw.serviceKey.name,
+      certificate: raw.trustedpath,
+      oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
+      otelLogLevel: otelEnv.OTEL_LOG_LEVEL ?? raw.logLevel,
+    }
+
+    if (config.collector?.includes("appoptics.com")) {
+      config.metricFormat ??= 1
+      config.certificate ??= aoCert
+    }
+
+    return config
+  }
 
   const path = filePath()
   const file = path ? readConfigFile(path) : {}
 
-  const devFile = file.dev && typeof file.dev === "object" ? file.dev : {}
-
-  const raw = schema.parse({
-    ...file,
-    ...env,
-    dev: { ...devFile, ...devEnv },
-  })
-
-  const config: ExtendedSwConfiguration = {
-    ...raw,
-    token: raw.serviceKey.token,
-    serviceName: raw.serviceKey.name,
-    certificate: raw.trustedpath,
-    oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
-    otelLogLevel: otelEnv.OTEL_LOG_LEVEL ?? raw.logLevel,
-  }
-
-  if (config.collector?.includes("appoptics.com")) {
-    config.metricFormat ??= 1
-    config.certificate ??= aoCert
-  }
-
-  return config
+  if (file instanceof Promise) return file.then(processFile)
+  else return processFile(file)
 }
 
 export function printError(err: unknown) {
@@ -294,23 +302,25 @@ function filePath() {
     return override
   } else {
     const fullName = path.join(cwd, DEFAULT_FILE_NAME)
-    const options = [`${fullName}.ts`, `${fullName}.js`, `${fullName}.json`]
+    const options = [
+      `${fullName}.ts`,
+      `${fullName}.cjs`,
+      `${fullName}.js`,
+      `${fullName}.json`,
+    ]
     for (const option of options) {
       if (fs.existsSync(option)) return option
     }
   }
 }
 
-function readConfigFile(path: string) {
-  const required = r(path) as Record<string, unknown>
-  if (
-    "default" in required &&
-    (required.__esModule || Object.keys(required).length === 1)
-  ) {
-    return required.default as Record<string, unknown>
-  } else {
-    return required
+function readConfigFile(path: string): object | Promise<object> {
+  if (path.endsWith(".json")) {
+    const contents = fs.readFileSync(path, { encoding: "utf-8" })
+    return JSON.parse(contents) as object
   }
+
+  return load(path) as object | Promise<object>
 }
 
 function otelLevelToOboeLevel(level?: DiagLogLevel): number {
