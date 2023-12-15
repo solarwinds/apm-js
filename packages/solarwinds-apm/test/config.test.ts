@@ -121,4 +121,12 @@ describe("readConfig", () => {
       certificate: aoCert,
     })
   })
+
+  it("supports cjs configs", async () => {
+    process.env.SW_APM_CONFIG_FILE = "test/test.config.cjs"
+
+    const config = await readConfig()
+    expect(config.transactionName).not.to.be.undefined
+    expect(config.transactionName).to.equal("cjs")
+  })
 })
