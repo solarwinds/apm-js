@@ -74,7 +74,9 @@ export async function init() {
 
   let config: ExtendedSwConfiguration
   try {
-    config = readConfig()
+    const configOrPromise = readConfig()
+    if (configOrPromise instanceof Promise) config = await configOrPromise
+    else config = configOrPromise
   } catch (err) {
     console.warn(
       "Invalid SolarWinds APM configuration, application will not be instrumented",
