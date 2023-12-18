@@ -47,7 +47,7 @@ jobs:
       # see https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - run: touch .root
       - if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: |
