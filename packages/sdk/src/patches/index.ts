@@ -73,7 +73,10 @@ export function patch(
   const patched = { ...configs }
   for (const [name, { patch }] of Object.entries(patches)) {
     const prefixed = `@opentelemetry/instrumentation-${name}` as const
-    patched[prefixed] = patch(configs[prefixed] ?? {}, options)
+    patched[prefixed] = (patch as Patch<InstrumentationConfig>)(
+      configs[prefixed] ?? {},
+      options,
+    )
   }
   return patched
 }
