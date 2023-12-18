@@ -2527,13 +2527,13 @@ __metadata:
   linkType: hard
 
 "@types/react@npm:^18.2.25":
-  version: 18.2.43
-  resolution: "@types/react@npm:18.2.43"
+  version: 18.2.45
+  resolution: "@types/react@npm:18.2.45"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10477a50fbd3c0cc5b8a2ade679f442717f68fb27c8460b2aa1d3256cd18c48f742bbe5b9ee37a8c4c5f832ffa37b3a23c09fd96dd880a8e3182d8929c05e803
+  checksum: 4cc650c47ffb88baac29fb7a74e842e4af4a55f437086ef70250fdc75f0a5f2fcf8adc272d05ab2e00b1de6e14613296881271caee037dadf9130fdeb498c59e
   languageName: node
   linkType: hard
 
@@ -4390,8 +4390,8 @@ __metadata:
   linkType: hard
 
 "fastify@npm:^4.23.2":
-  version: 4.24.3
-  resolution: "fastify@npm:4.24.3"
+  version: 4.25.1
+  resolution: "fastify@npm:4.25.1"
   dependencies:
     "@fastify/ajv-compiler": "npm:^3.5.0"
     "@fastify/error": "npm:^3.4.0"
@@ -4402,14 +4402,14 @@ __metadata:
     fast-json-stringify: "npm:^5.8.0"
     find-my-way: "npm:^7.7.0"
     light-my-request: "npm:^5.11.0"
-    pino: "npm:^8.16.0"
-    process-warning: "npm:^2.2.0"
+    pino: "npm:^8.17.0"
+    process-warning: "npm:^3.0.0"
     proxy-addr: "npm:^2.0.7"
     rfdc: "npm:^1.3.0"
     secure-json-parse: "npm:^2.7.0"
     semver: "npm:^7.5.4"
     toad-cache: "npm:^3.3.0"
-  checksum: 36018767b25cde307942f52172eedfc7c1ce186162222334e19caa607e3d29fe3de04cff2c08f21096d45fa4b071cd58a319392a6dbb5b5dbdf8230b38405c3e
+  checksum: a5afe8abf33ce8cee35c1993a21a3fb56f097ed30c12d8d2cb8bdd54b31c9f41e1e241a77343fea6159f5f528f65745456f901a685dc11b07b3fecb0393dd973
   languageName: node
   linkType: hard
 
@@ -6394,9 +6394,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^8.15.6, pino@npm:^8.16.0":
-  version: 8.16.2
-  resolution: "pino@npm:8.16.2"
+"pino@npm:^8.15.6, pino@npm:^8.17.0":
+  version: 8.17.1
+  resolution: "pino@npm:8.17.1"
   dependencies:
     atomic-sleep: "npm:^1.0.0"
     fast-redact: "npm:^3.1.1"
@@ -6411,7 +6411,7 @@ __metadata:
     thread-stream: "npm:^2.0.0"
   bin:
     pino: bin.js
-  checksum: ea1b2f426985a442b65566a75e3f20eed47c1f51f3aea9a10fc16a452feb339cde4d5439d724c822408fce6a8bfcf6d24f61421547f4cc718f44a6eb47921293
+  checksum: eab640886ae13b92466ebe3d255faf4c3d8012d8b7609dee3cafd8c8d403241ab336ef15283319fc2078f21ad944e1ee8f9cf154bc695c61a583302c40d2045a
   languageName: node
   linkType: hard
 
@@ -6520,10 +6520,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"process-warning@npm:^2.0.0, process-warning@npm:^2.2.0":
+"process-warning@npm:^2.0.0":
   version: 2.2.0
   resolution: "process-warning@npm:2.2.0"
   checksum: 22b252ca6c1edf7fe3c6ab30c39f9a2fa240dc5af46fd0f94c4dcbc577e7570dcccfc1cbfb4510db4759906b9170cb8b18c519d581cdf2ea649e5ac6bb9a0e60
+  languageName: node
+  linkType: hard
+
+"process-warning@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "process-warning@npm:3.0.0"
+  checksum: 60f3c8ddee586f0706c1e6cb5aa9c86df05774b9330d792d7c8851cf0031afd759d665404d07037e0b4901b55c44a423f07bdc465c63de07d8d23196bb403622
   languageName: node
   linkType: hard
 
