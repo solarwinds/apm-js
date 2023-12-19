@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
+import { type AwsLambdaInstrumentationConfig } from "@opentelemetry/instrumentation-aws-lambda"
 import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
 import { type Patch } from "."
 
-export const patch: Patch<InstrumentationConfig> = (config) => ({
+export const patch: Patch<AwsLambdaInstrumentationConfig> = (config) => ({
+  ...config,
   enabled: config.enabled ?? IS_AWS_LAMBDA,
+  disableAwsContextPropagation: config.disableAwsContextPropagation ?? true,
 })
