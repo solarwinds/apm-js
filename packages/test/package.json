@@ -43,7 +43,7 @@
     "@types/chai-as-promised": "^7.1.6",
     "@types/node": ">=16.18 <17 || >=18.8 <19 || >=20",
     "c8": "^8.0.1",
-    "chai": "^4.3.10",
+    "chai": "^5.0.0",
     "chai-as-promised": "^7.1.1",
     "globby": "^11.1.0",
     "semver": "^7.5.4",
