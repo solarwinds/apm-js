@@ -25,6 +25,7 @@ export interface SwConfiguration {
   proxy?: string
   metricFormat?: number
   oboeLogLevel: number
+  oboeLogType: number
   otelLogLevel: DiagLogLevel
   triggerTraceEnabled: boolean
   runtimeMetrics: boolean
