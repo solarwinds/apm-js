@@ -31,8 +31,6 @@ import { z } from "zod"
 
 import aoCert from "./appoptics.crt.js"
 
-const otelEnv = getEnvWithoutDefaults()
-
 const boolean = z.union([
   z.boolean(),
   z
@@ -62,7 +60,7 @@ const serviceKey = z
     const [token, ...name] = k.split(":")
     return {
       token: token!,
-      name: otelEnv.OTEL_SERVICE_NAME ?? name.join(":"),
+      name: getEnvWithoutDefaults().OTEL_SERVICE_NAME ?? name.join(":"),
     }
   })
 
@@ -83,7 +81,7 @@ const tracingMode = z
   .transform((m) => m === "enabled")
 
 const logLevel = z
-  .enum(["all", "verbose", "debug", "info", "warn", "error"])
+  .enum(["all", "verbose", "debug", "info", "warn", "error", "none"])
   .transform((l) => {
     switch (l) {
       case "all":
@@ -98,6 +96,8 @@ const logLevel = z
         return DiagLogLevel.WARN
       case "error":
         return DiagLogLevel.ERROR
+      case "none":
+        return DiagLogLevel.NONE
     }
   })
 
@@ -210,7 +210,8 @@ export function readConfig():
       serviceName: raw.serviceKey.name,
       certificate: raw.trustedpath,
       oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
-      otelLogLevel: otelEnv.OTEL_LOG_LEVEL ?? raw.logLevel,
+      oboeLogType: otelLevelToOboeType(raw.logLevel),
+      otelLogLevel: getEnvWithoutDefaults().OTEL_LOG_LEVEL ?? raw.logLevel,
     }
 
     if (config.collector?.includes("appoptics.com")) {
@@ -323,8 +324,10 @@ function readConfigFile(path: string): object | Promise<object> {
   return load(path) as object | Promise<object>
 }
 
-function otelLevelToOboeLevel(level?: DiagLogLevel): number {
+function otelLevelToOboeLevel(level: DiagLogLevel): number {
   switch (level) {
+    case DiagLogLevel.NONE:
+      return oboe.INIT_LOG_LEVEL_FATAL
     case DiagLogLevel.ERROR:
       return oboe.INIT_LOG_LEVEL_ERROR
     case DiagLogLevel.WARN:
@@ -338,4 +341,9 @@ function otelLevelToOboeLevel(level?: DiagLogLevel): number {
     default:
       return oboe.INIT_LOG_LEVEL_TRACE
   }
+}
+
+function otelLevelToOboeType(level: DiagLogLevel): number {
+  if (level === DiagLogLevel.NONE) return oboe.INIT_LOG_TYPE_DISABLE
+  else return oboe.INIT_LOG_TYPE_NULL
 }
