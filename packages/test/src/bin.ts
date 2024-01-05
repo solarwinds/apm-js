@@ -89,7 +89,7 @@ const reporter = semver.gte(process.versions.node, "18.0.0")
   ? ["--test-reporter", "spec"]
   : []
 
-const loader = semver.gte(process.versions.node, "20.8.0")
+const loader = semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
   ? ["--import", tsxPath]
   : ["--loader", tsxPath]
 
@@ -104,8 +104,8 @@ argv = [
   ...argv,
 ]
 
-// ESBK_TSCONFIG_PATH is used by TSX to look for a tsconfig.json
-const env = { ESBK_TSCONFIG_PATH: project, ...process.env }
+// TSX_TSCONFIG_PATH is used by TSX to look for a tsconfig.json
+const env = { TSX_TSCONFIG_PATH: project, ...process.env }
 
 if (coverage) {
   const coverageOutputPath = path.join(

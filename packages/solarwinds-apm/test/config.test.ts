@@ -24,7 +24,9 @@ import { type ExtendedSwConfiguration, readConfig } from "../src/config.js"
 describe("readConfig", () => {
   beforeEach(() => {
     for (const key of Object.keys(process.env)) {
-      if (key.startsWith("SW_APM_")) Reflect.deleteProperty(process.env, key)
+      if (key.startsWith("SW_APM_") || key.startsWith("OTEL_")) {
+        Reflect.deleteProperty(process.env, key)
+      }
     }
     process.env.SW_APM_SERVICE_KEY = "token:name"
   })
@@ -37,6 +39,7 @@ describe("readConfig", () => {
       enabled: true,
       otelLogLevel: DiagLogLevel.INFO,
       oboeLogLevel: oboe.INIT_LOG_LEVEL_INFO,
+      oboeLogType: oboe.INIT_LOG_TYPE_NULL,
       triggerTraceEnabled: true,
       runtimeMetrics: true,
       insertTraceContextIntoLogs: false,
@@ -92,6 +95,21 @@ describe("readConfig", () => {
     const config = await readConfig()
     expect(config.dev.otlpTraces).to.be.true
     expect(config.dev.swMetrics).to.be.false
+  })
+
+  it("parses otel service name", async () => {
+    process.env.OTEL_SERVICE_NAME = "otel-name"
+
+    const config = await readConfig()
+    expect(config.serviceName).to.equal("otel-name")
+  })
+
+  it("properly disables logging", async () => {
+    process.env.SW_APM_LOG_LEVEL = "none"
+
+    const config = await readConfig()
+    expect(config.otelLogLevel).to.equal(DiagLogLevel.NONE)
+    expect(config.oboeLogType).to.equal(oboe.INIT_LOG_TYPE_DISABLE)
   })
 
   it("throws on bad boolean", () => {

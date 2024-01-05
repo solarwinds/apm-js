@@ -24,7 +24,10 @@ import { setter } from "./symbols.js"
 
 // register only once
 const setRegister = setter("register")
-if (setRegister && semver.gte(process.versions.node, "20.8.0")) {
+if (
+  setRegister &&
+  semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
+) {
   setRegister()
   module.register("./hooks.es.js", import.meta.url)
 }
