@@ -104,8 +104,8 @@ argv = [
   ...argv,
 ]
 
-// ESBK_TSCONFIG_PATH is used by TSX to look for a tsconfig.json
-const env = { ESBK_TSCONFIG_PATH: project, ...process.env }
+// TSX_TSCONFIG_PATH is used by TSX to look for a tsconfig.json
+const env = { TSX_TSCONFIG_PATH: project, ...process.env }
 
 if (coverage) {
   const coverageOutputPath = path.join(
