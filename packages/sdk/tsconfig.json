@@ -3,7 +3,7 @@
   "include": ["./src", "./lib.d.ts"],
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
   },
-  "references": [{ "path": ".." }]
+  "references": [{ "path": ".." }],
 }
