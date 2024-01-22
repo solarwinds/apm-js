@@ -1,11 +1,11 @@
-declined:
-  - "@solarwinds-apm/bindings"
-  - "@solarwinds-apm/compat"
-  - "@solarwinds-apm/dependencies"
-  - "@solarwinds-apm/histogram"
-  - "@solarwinds-apm/instrumentations"
-  - "@solarwinds-apm/lazy"
-  - "@solarwinds-apm/module"
-  - "@solarwinds-apm/sdk"
-  - solarwinds-apm
-  - "@solarwinds-apm/test"
+releases:
+  "@solarwinds-apm/bindings": patch
+  "@solarwinds-apm/compat": patch
+  "@solarwinds-apm/dependencies": patch
+  "@solarwinds-apm/histogram": patch
+  "@solarwinds-apm/instrumentations": patch
+  "@solarwinds-apm/lazy": patch
+  "@solarwinds-apm/module": patch
+  "@solarwinds-apm/sdk": minor
+  "@solarwinds-apm/test": patch
+  solarwinds-apm: minor
