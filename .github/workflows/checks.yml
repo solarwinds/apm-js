@@ -17,13 +17,13 @@ jobs:
           node-version: 20
       - run: corepack enable
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: .yarn/cache
           key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             yarn-
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.zig-build
@@ -70,7 +70,7 @@ jobs:
           node-version: 20
       - run: corepack enable
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: .yarn/cache
           key: yarn-${{ hashFiles('yarn.lock') }}
@@ -177,7 +177,7 @@ jobs:
           name: build
           path: ./
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: .yarn/cache
           key: yarn-${{ hashFiles('yarn.lock') }}
