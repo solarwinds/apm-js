@@ -31,6 +31,7 @@ import {
   initMessage,
   sendStatus,
 } from "./reporter"
+import { SwResponseTimeProcessor } from "./response-time-processor"
 import { SwSampler } from "./sampler"
 import { SwTraceContextOptionsPropagator } from "./trace-context-options-propagator"
 import { SwTraceOptionsResponsePropagator } from "./trace-options-response-propagator"
@@ -54,6 +55,7 @@ export {
   SwInboundMetricsSpanProcessor,
   SwMetricsExporter,
   SwParentInfoSpanProcessor,
+  SwResponseTimeProcessor,
   SwSampler,
   SwTraceContextOptionsPropagator,
   SwTraceOptionsResponsePropagator,

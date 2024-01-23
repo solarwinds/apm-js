@@ -46,7 +46,7 @@ import {
   TRACESTATE_TRACE_OPTIONS_RESPONSE_KEY,
 } from "./context"
 import { OboeError } from "./error"
-import { recordServerlessMetrics } from "./metrics/serverless"
+import { recordServerlessCounters } from "./metrics/serverless"
 
 const ATTRIBUTES_SW_KEYS_KEY = "SWKeys"
 const ATTRIBUTES_TRACESTATE_CAPTURE_KEY = "sw.w3c.tracestate"
@@ -72,7 +72,7 @@ export class SwSampler implements Sampler {
       this.oboeDecisionFunction =
         serverlessApi.getTracingDecision.bind(serverlessApi)
       this.recordMetricsFunction = () => {
-        recordServerlessMetrics(serverlessApi)
+        recordServerlessCounters(serverlessApi)
       }
     } else {
       this.oboeDecisionFunction = oboe.Context.getDecisions

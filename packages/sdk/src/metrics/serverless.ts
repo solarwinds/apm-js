@@ -14,49 +14,78 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { metrics, ValueType } from "@opentelemetry/api"
+import { metrics, SpanStatusCode, ValueType } from "@opentelemetry/api"
+import { hrTimeToMilliseconds } from "@opentelemetry/core"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
+import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import { type oboe } from "@solarwinds-apm/bindings"
 import { lazy } from "@solarwinds-apm/lazy"
 
-const meter = lazy(() => metrics.getMeter("sw.apm.sampling.metrics"))
+const samplingMeter = lazy(() => metrics.getMeter("sw.apm.sampling.metrics"))
+const requestMeter = lazy(() => metrics.getMeter("sw.apm.request.metrics"))
 
 const counters = {
   RequestCount: lazy(() =>
-    meter.createCounter("trace.service.request_count", {
+    samplingMeter.createCounter("trace.service.request_count", {
       valueType: ValueType.INT,
     }),
   ),
   TokenBucketExhaustionCount: lazy(() =>
-    meter.createCounter("trace.service.tokenbucket_exhaustion_count", {
+    samplingMeter.createCounter("trace.service.tokenbucket_exhaustion_count", {
       valueType: ValueType.INT,
     }),
   ),
   TraceCount: lazy(() =>
-    meter.createCounter("trace.service.tracecount", {
+    samplingMeter.createCounter("trace.service.tracecount", {
       valueType: ValueType.INT,
     }),
   ),
   SampleCount: lazy(() =>
-    meter.createCounter("trace.service.samplecount", {
+    samplingMeter.createCounter("trace.service.samplecount", {
       valueType: ValueType.INT,
     }),
   ),
   ThroughTraceCount: lazy(() =>
-    meter.createCounter("trace.service.through_trace_count", {
+    samplingMeter.createCounter("trace.service.through_trace_count", {
       valueType: ValueType.INT,
     }),
   ),
   TriggeredTraceCount: lazy(() =>
-    meter.createCounter("trace.service.triggered_trace_count", {
+    samplingMeter.createCounter("trace.service.triggered_trace_count", {
       valueType: ValueType.INT,
     }),
   ),
 }
 
-export function recordServerlessMetrics(serverlessApi: oboe.OboeAPI) {
+const responseTime = lazy(() =>
+  requestMeter.createHistogram("trace.service.response_time", {
+    valueType: ValueType.DOUBLE,
+    unit: "ms",
+  }),
+)
+
+export function recordServerlessCounters(serverlessApi: oboe.OboeAPI) {
   for (const [name, counter] of Object.entries(counters)) {
     const method = `consume${name}` as const
     const value = serverlessApi[method]()
     if (value !== false) counter.add(value)
   }
+}
+
+export function recordServerlessResponseTime(
+  span: ReadableSpan,
+  transaction: string | undefined,
+) {
+  const method = span.attributes[SemanticAttributes.HTTP_METHOD]
+  const statusCode = span.attributes[SemanticAttributes.HTTP_STATUS_CODE]
+  const isError = span.status.code === SpanStatusCode.ERROR
+
+  const time = hrTimeToMilliseconds(span.duration)
+
+  responseTime.record(time, {
+    [SemanticAttributes.HTTP_METHOD]: method,
+    [SemanticAttributes.HTTP_STATUS_CODE]: statusCode,
+    "sw.is_error": isError,
+    "sw.transaction": transaction ?? "unknown",
+  })
 }
