@@ -164,7 +164,7 @@ typedef struct oboe_init_options {
     int version;                            // the version of this structure (currently on version 16)
     const char *hostname_alias;             // optional hostname alias
     int log_level;                          // level at which log messages will be written to log file (0-6)
-                                            // use LOGLEVEL_DEFAULT for default log level
+                                            // use OBOE_INIT_LOG_LEVEL_INFO(3) for default log level
     const char *log_file_path;              // file name including path for log file
     int max_transactions;                   // maximum number of transaction names to track
     int max_flush_wait_time;                // maximum wait time for flushing data before terminating in milli seconds
