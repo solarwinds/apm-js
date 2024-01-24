@@ -772,7 +772,7 @@ bool OboeAPI::consumeTokenBucketExhaustionCount(unsigned int& counter) {
     return oboe_consume_token_bucket_exhaustion_count(&counter);
 }
 bool OboeAPI::consumeTraceCount(unsigned int& counter) {
-    return oboe_consume_through_trace_count(&counter);
+    return oboe_consume_trace_count(&counter);
 }
 bool OboeAPI::consumeSampleCount(unsigned int& counter) {
     return oboe_consume_sample_count(&counter);
