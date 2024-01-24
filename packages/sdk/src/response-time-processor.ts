@@ -14,30 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { env } from "node:process"
-
 import {
   NoopSpanProcessor,
   type ReadableSpan,
 } from "@opentelemetry/sdk-trace-base"
-import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
+import { type SwConfiguration } from "."
 import { cache } from "./cache"
 import { isEntrySpan } from "./context"
+import { recordServerlessResponseTime } from "./metrics/serverless"
 
-export class SwTransactionNameProcessor extends NoopSpanProcessor {
+export class SwResponseTimeProcessor extends NoopSpanProcessor {
+  constructor(private readonly config: SwConfiguration) {
+    super()
+  }
+
   override onEnd(span: ReadableSpan): void {
     if (!isEntrySpan(span)) return
 
-    const spanCache = cache.getOrInit(span.spanContext())
-    spanCache.txname = SwTransactionNameProcessor.txname(span)
-  }
-
-  private static txname(span: ReadableSpan): string {
-    if (IS_AWS_LAMBDA) {
-      return env.AWS_LAMBDA_FUNCTION_NAME!
-    } else {
-      return span.name
-    }
+    const txname = cache.getTxname(span.spanContext(), this.config)
+    recordServerlessResponseTime(span, txname)
   }
 }

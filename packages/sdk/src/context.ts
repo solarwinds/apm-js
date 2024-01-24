@@ -17,6 +17,7 @@ limitations under the License.
 import {
   type Context,
   createContextKey,
+  isSpanContextValid,
   type SpanContext,
   trace,
 } from "@opentelemetry/api"
@@ -85,6 +86,15 @@ export function parentSpanContext(span: ReadableSpan): SpanContext | undefined {
     spanId: parentId,
     isRemote: cache.get(spanContext)?.parentRemote,
   }
+}
+
+export function isEntrySpan(span: ReadableSpan): boolean {
+  const parentContext = parentSpanContext(span)
+
+  return (
+    !parentContext ||
+    (isSpanContextValid(parentContext) && (parentContext.isRemote ?? false))
+  )
 }
 
 export function setTransactionName(context: Context, name: string): boolean {

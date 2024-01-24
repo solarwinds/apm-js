@@ -281,11 +281,14 @@ async function spanProcessors(
   if (config.dev.otlpTraces) {
     const { SwOtlpExporter } = await import("@solarwinds-apm/sdk/otlp-exporter")
     const exporter = new SwOtlpExporter(config)
+
+    const responseTimeProcessor = new sdk.SwResponseTimeProcessor(config)
     const transactionNameProcessor = new sdk.SwTransactionNameProcessor()
+
     processors.push(
       new sdk.CompoundSpanProcessor(
         exporter,
-        [parentInfoProcessor, transactionNameProcessor],
+        [parentInfoProcessor, responseTimeProcessor, transactionNameProcessor],
         logger,
       ),
     )

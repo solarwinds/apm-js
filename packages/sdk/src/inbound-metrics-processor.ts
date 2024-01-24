@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api"
+import { SpanKind, SpanStatusCode } from "@opentelemetry/api"
 import { hrTimeToMicroseconds } from "@opentelemetry/core"
 import {
   NoopSpanProcessor,
@@ -24,20 +24,11 @@ import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 
 import { cache } from "./cache"
-import { parentSpanContext } from "./context"
+import { isEntrySpan } from "./context"
 
 export class SwInboundMetricsSpanProcessor extends NoopSpanProcessor {
   override onEnd(span: ReadableSpan): void {
-    const context = span.spanContext()
-    const parentContext = parentSpanContext(span)
-
-    if (
-      parentContext &&
-      trace.isSpanContextValid(parentContext) &&
-      !parentContext.isRemote
-    ) {
-      return
-    }
+    if (!isEntrySpan(span)) return
 
     const {
       isHttp,
@@ -51,7 +42,7 @@ export class SwInboundMetricsSpanProcessor extends NoopSpanProcessor {
     // TODO
     const domain = null
 
-    const spanCache = cache.getOrInit(context)
+    const spanCache = cache.getOrInit(span.spanContext())
     const transaction = spanCache.txnameCustom ?? defaultTransaction
 
     let txname: string
