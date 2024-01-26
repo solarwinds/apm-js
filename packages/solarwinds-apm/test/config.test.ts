@@ -53,6 +53,7 @@ describe("readConfig", () => {
         swMetrics: true,
         initMessage: true,
         resourceDetection: true,
+        instrumentationsDefaultDisabled: false,
       },
     }
 
