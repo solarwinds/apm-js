@@ -16,6 +16,7 @@ limitations under the License.
 
 import { metrics, oboe } from "@solarwinds-apm/bindings"
 
+import { version } from "../package.json"
 import { CompoundSpanProcessor } from "./compound-processor"
 import { type SwConfiguration } from "./config"
 import { setTransactionName, waitUntilReady } from "./context"
@@ -36,6 +37,8 @@ import { SwSampler } from "./sampler"
 import { SwTraceContextOptionsPropagator } from "./trace-context-options-propagator"
 import { SwTraceOptionsResponsePropagator } from "./trace-options-response-propagator"
 import { SwTransactionNameProcessor } from "./transaction-name-processor"
+
+export const VERSION = version
 
 export const OBOE_ERROR: Error | false = oboe instanceof Error ? oboe : false
 export const METRICS_ERROR: Error | false =

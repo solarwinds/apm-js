@@ -43,7 +43,6 @@ import {
 } from "@solarwinds-apm/instrumentations"
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import * as sdk from "@solarwinds-apm/sdk"
-import * as semver from "semver"
 
 import { version } from "../package.json"
 import {
@@ -51,28 +50,8 @@ import {
   printError,
   readConfig,
 } from "./config.js"
-import { setter } from "./symbols.js"
 
 export async function init() {
-  // init only once
-  const setInit = setter("init")
-  if (!setInit) return
-  setInit()
-
-  const nodeVersion = semver.parse(process.versions.node)!.major
-  if (nodeVersion < 16) {
-    console.warn(
-      `The current Node.js version (${nodeVersion}) is not supported, the instrumentation library will be disabled. The minimum supported version is 16.`,
-    )
-    return
-  }
-  if (nodeVersion < 18) {
-    console.warn(
-      "The current Node.js version has reached End Of Life at the time the library was published, which means it no longer receives security updates.",
-      "SolarWinds STRONGLY RECOMMENDS upgrading to a supported Node.js version and staying up to date with its support policy at https://nodejs.org/about/previous-releases",
-    )
-  }
-
   let config: ExtendedSwConfiguration
   try {
     const configOrPromise = readConfig()
