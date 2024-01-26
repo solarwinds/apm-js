@@ -21,21 +21,28 @@ import semver from "semver"
 
 import { init } from "./init.js"
 import { setter } from "./symbols.js"
+import { versionCheck } from "./version.js"
 
-// register only once
-const setRegister = setter("register")
-if (
-  setRegister &&
-  semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
-) {
-  setRegister()
-  module.register("./hooks.es.js", import.meta.url)
-}
+// init only once
+const setInit = setter("init")
+if (setInit && versionCheck()) {
+  setInit()
 
-try {
-  await init()
-} catch (err) {
-  console.warn(err)
+  // register only once
+  const setRegister = setter("register")
+  if (
+    setRegister &&
+    semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
+  ) {
+    setRegister()
+    module.register("./hooks.es.js", import.meta.url)
+  }
+
+  try {
+    await init()
+  } catch (err) {
+    console.warn(err)
+  }
 }
 
 export * from "./api.js"

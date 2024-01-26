@@ -15,13 +15,21 @@ limitations under the License.
 */
 
 import { init } from "./init.js"
+import { setter } from "./symbols.js"
+import { versionCheck } from "./version.js"
 
-try {
-  init().catch((err) => {
+// init only once
+const setInit = setter("init")
+if (setInit && versionCheck()) {
+  setInit()
+
+  try {
+    init().catch((err) => {
+      console.warn(err)
+    })
+  } catch (err) {
     console.warn(err)
-  })
-} catch (err) {
-  console.warn(err)
+  }
 }
 
 export * from "./api.js"
