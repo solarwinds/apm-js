@@ -1,2 +1,3 @@
 releases:
+  "@solarwinds-apm/sdk": minor
   solarwinds-apm: patch
