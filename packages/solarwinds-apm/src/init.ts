@@ -62,8 +62,9 @@ export async function init() {
   const nodeVersion = semver.parse(process.versions.node)!.major
   if (nodeVersion < 16) {
     console.warn(
-      "The current Node.js version is not supported, the instrumentation library may not work as expected.",
+      `The current Node.js version (${nodeVersion}) is not supported, the instrumentation library will be disabled. The minimum supported version is 16.`,
     )
+    return
   }
   if (nodeVersion < 18) {
     console.warn(
