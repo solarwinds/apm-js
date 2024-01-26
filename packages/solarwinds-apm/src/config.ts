@@ -166,6 +166,7 @@ const schema = z.object({
       swMetrics: boolean.default(!IS_SERVERLESS),
       initMessage: boolean.default(!IS_SERVERLESS),
       resourceDetection: boolean.default(true),
+      instrumentationsDefaultDisabled: boolean.default(IS_SERVERLESS),
     })
     .default({}),
 })
