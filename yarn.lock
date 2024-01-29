@@ -2105,7 +2105,7 @@ __metadata:
     eslint: "npm:^8.50.0"
     globby: "npm:^11.1.0"
     prettier: "npm:^3.0.3"
-    rollup-plugin-node-externals: "npm:^6.1.2"
+    rollup-plugin-node-externals: "npm:^7.0.0"
     tslib: "npm:^2.6.2"
   peerDependencies:
     rollup: "*"
@@ -6901,12 +6901,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup-plugin-node-externals@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "rollup-plugin-node-externals@npm:6.1.2"
+"rollup-plugin-node-externals@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "rollup-plugin-node-externals@npm:7.0.0"
   peerDependencies:
     rollup: ^3.0.0 || ^4.0.0
-  checksum: 69482117b33fae4c197905f0bfcba6c472e78c97db1dd171603e1dd208265259d22f9a8157e22c8e9fff384fc881c07c76a4a0bd4ce34e811d8507a29f9cb253
+  checksum: 3b5f6b0485653d9b137b2e4942c549dcd13e8bb3e97ee02e66ecf9518bcc4f60fa9f309bae0fa9d5e9c1bfb8ae9ba0c879d62266276581eb3cd544b2419d7bcd
   languageName: node
   linkType: hard
 
