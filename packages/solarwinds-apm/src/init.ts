@@ -168,15 +168,13 @@ async function initMetrics(
   logger: DiagLogger,
   reporter: oboe.Reporter | undefined,
 ) {
+  const readers = await metricReaders(config, reporter)
+
   const provider = new MeterProvider({
     resource,
+    readers,
     views: config.metrics.views,
   })
-
-  const readers = await metricReaders(config, reporter)
-  for (const reader of readers) {
-    provider.addMetricReader(reader)
-  }
 
   metrics.setGlobalMeterProvider(provider)
 
