@@ -33,7 +33,7 @@
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-typescript": "^11.1.5",
     "globby": "^11.1.0",
-    "rollup-plugin-node-externals": "^6.1.2",
+    "rollup-plugin-node-externals": "^7.0.0",
     "tslib": "^2.6.2"
   },
   "peerDependencies": {
