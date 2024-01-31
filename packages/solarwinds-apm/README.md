@@ -5,7 +5,7 @@ The new OpenTelemetry-based SolarWinds APM Node.js library. Currently supports N
 ## Installation and Setup
 
 ```sh
-npm install --save solarwinds-apm @opentelemetry/api
+npm install --save "solarwinds-apm@prerelease" "@opentelemetry/api@^1.3.0"
 ```
 
 Install using your package manager then follow the [configuration guide](./CONFIGURATION.md). Make sure to install the matching version of `@opentelmetry/api` as it is required for the library to work. The two packages should be updated at the same time and kept in sync.
@@ -69,3 +69,7 @@ When migrating from older versions not built on top of OTel, `@opentelemetry/api
 - const { instrument, pInstrument } = require("solarwinds-apm")
 + const { instrument, pInstrument } = require("@solarwinds-apm/compat")
 ```
+
+## Diagnostic script
+
+[A script](../../scripts/diagnostic.js) that checks for common issues and prints a full report is available in this repository. Simply copy [its contents](../../scripts/diagnostic.js) to a JavaScript file in the same directory as the instrumented application and run it from the same place as the application. The printed report can be very large so it can be useful to pipe the output to a file. For instance, `node diagnostic.js > report`. It is also possible to require the script directly from within an instrumented application to ensure it runs it the same environment. For instance, adding the line `require("./diagnostic.js")`.
