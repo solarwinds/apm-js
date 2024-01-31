@@ -93,42 +93,40 @@ if (majorNodeVersion <= 14) {
   )
 }
 
-if (!installed) {
-  process.exit(1)
-}
+if (installed) {
+  const version = packages["solarwinds-apm"].version
+  const majorVersion = Number.parseInt(version.split(".")[0])
+  const otelBased = majorVersion >= 14
 
-const version = packages["solarwinds-apm"].version
-const majorVersion = Number.parseInt(version.split(".")[0])
-const otelBased = majorVersion >= 14
+  if (otelBased) {
+    if (!["debug", "trace"].includes(process.env.SW_APM_LOG_LEVEL)) {
+      console.warn(
+        "The 'SW_APM_LOG_LEVEL' environment variable can be set to 'debug' to help with debugging issues.",
+      )
+    }
 
-if (otelBased) {
-  if (!["debug", "trace"].includes(process.env.SW_APM_LOG_LEVEL)) {
-    console.warn(
-      "The 'SW_APM_LOG_LEVEL' environment variable can be set to 'debug' to help with debugging issues.",
-    )
-  }
+    if (packages["@opentelemetry/api"] == null) {
+      console.warn(
+        "The '@opentelemetry/api' package could not be found.",
+        "Versions 14 and up of 'solarwinds-apm' require this package to be installed alongside them.",
+      )
+    }
+  } else {
+    if (
+      !process.env.SW_APM_LOG_SETTINGS ||
+      process.env.SW_APM_LOG_SETTINGS.indexOf("debug") === -1
+    ) {
+      console.warn(
+        "The 'SW_APM_LOG_SETTINGS' environment variable can be set to 'error,warn,info,debug' to help with debugging issues.",
+      )
+    }
 
-  if (packages["@opentelemetry/api"] == null) {
-    console.warn(
-      "The '@opentelemetry/api' package could not be found.",
-      "Versions 14 and up of 'solarwinds-apm' require this package to be installed alongside them.",
-    )
-  }
-} else {
-  if (
-    !process.env.SW_APM_LOG_SETTINGS ||
-    process.env.SW_APM_LOG_SETTINGS.indexOf("debug") === -1
-  ) {
-    console.warn(
-      "The 'SW_APM_LOG_SETTINGS' environment variable can be set to 'error,warn,info,debug' to help with debugging issues.",
-    )
-  }
-
-  if (packages["@opentelemetry/api"] != null) {
-    console.warn(
-      "The '@opentelemetry/api' package was detected.",
-      `Only versions 14 and up of 'solarwinds-apm' support OpenTelemetry, but the currently installed version is ${version}.`,
-    )
+    if (packages["@opentelemetry/api"] != null) {
+      console.warn(
+        "The '@opentelemetry/api' package was detected.",
+        `Only versions 14 and up of 'solarwinds-apm' support OpenTelemetry, but the currently installed version is ${version}.`,
+      )
+    }
   }
 }
 
