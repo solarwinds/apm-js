@@ -19,10 +19,24 @@ const fs = require("fs")
 
 function packageJson(id) {
   try {
-    const directory = require.resolve(id)
-    const file = path.join(directory, "package.json")
-    const contents = fs.readFileSync(file, { encoding: "utf-8" })
-    return JSON.parse(contents)
+    const entry = require.resolve(id)
+    let directory = path.dirname(entry)
+
+    for (;;) {
+      try {
+        const file = path.join(directory, "package.json")
+        const contents = fs.readFileSync(file, { encoding: "utf-8" })
+        const json = JSON.parse(contents)
+
+        if ("name" in json && "version" in json) {
+          return json
+        }
+      } catch {
+        // try again
+      }
+
+      directory = path.dirname(directory)
+    }
   } catch {
     return null
   }
