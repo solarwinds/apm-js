@@ -38,8 +38,10 @@ function packageJson(id) {
       directory = path.dirname(directory)
     }
   } catch {
-    return null
+    // no matching package
   }
+
+  return null
 }
 
 function print(...vals) {
