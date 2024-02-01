@@ -38,7 +38,7 @@ export function versionCheck(): boolean {
   try {
     let supported = true
     if (semver.lt(NODE_VERSION, MINIMUM_SUPPORTED)) {
-      console.warn(
+      console.error(
         "The current Node.js version is not supported and the instrumentation library will be disabled.",
         `The minimum supported version is ${MINIMUM_SUPPORTED}`,
       )
@@ -50,6 +50,18 @@ export function versionCheck(): boolean {
         "SolarWinds STRONGLY RECOMMENDS upgrading to a supported Node.js version and staying up to date with its support policy at https://nodejs.org/about/previous-releases",
       )
     }
+
+    if (
+      process.versions.ares &&
+      semver.satisfies(process.versions.ares, "1.20.x") &&
+      process.env.GRPC_DNS_RESOLVER !== "native"
+    ) {
+      console.error(
+        "The current Node.js version is incompatible with the default DNS resolver used by the instrumentation library.",
+        "This can be fixed by setting the 'GRPC_DNS_RESOLVER' environment variable to 'native'.",
+      )
+    }
+
     return supported
   } catch {
     return false
