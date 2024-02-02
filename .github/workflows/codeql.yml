@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: CodeQL
 
 on:
   push:
@@ -10,9 +10,7 @@ on:
 
 jobs:
   analyze:
-    name: Analyze
     runs-on: ubuntu-latest
-    timeout-minutes: 360
     permissions:
       security-events: write
 
@@ -21,7 +19,7 @@ jobs:
       matrix:
         language:
           - javascript-typescript
-          - c-cpp
+          # - c-cpp # Compilation method not supported at the moment
 
     steps:
       - uses: actions/checkout@v4
