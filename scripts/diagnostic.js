@@ -109,6 +109,17 @@ if (majorNodeVersion <= 14) {
   )
 }
 
+if (
+  process.versions.ares &&
+  process.versions.ares.startsWith("1.20.") &&
+  process.env.GRPC_DNS_RESOLVER !== "native"
+) {
+  console.warn(
+    `The current Node.js version (${process.version}) is incompatible with the default DNS resolver used by 'solarwinds-apm'.`,
+    "This can be fixed by setting the 'GRPC_DNS_RESOLVER' environment variable to 'native'.",
+  )
+}
+
 if (installed) {
   const version = packages["solarwinds-apm"].version
   const majorVersion = Number.parseInt(version.split(".")[0])

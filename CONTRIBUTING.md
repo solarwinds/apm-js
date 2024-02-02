@@ -9,8 +9,10 @@
 ## Project setup
 
 ```sh
-# Pull latest LFS objects
-git lfs pull
+# Enable corepack
+corepack enable
+# Enable git lfs
+git lfs install
 # Install latest dependencies
 yarn install
 ```
