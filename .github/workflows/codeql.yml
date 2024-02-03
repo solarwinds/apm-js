@@ -33,6 +33,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
+          config-file: ./.github/codeql.yml
           languages: ${{ matrix.language }}
 
       - uses: actions/cache@v4
