@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/bindings-linux-x64-musl",
-  "version": "1.0.0-pre.9",
+  "version": "1.0.0-pre.10",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/histogram",
-  "version": "1.0.0-pre.9",
+  "version": "1.0.0-pre.10",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
