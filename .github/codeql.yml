@@ -1,0 +1,4 @@
+paths-ignore:
+  - examples
+  - "**/*.test.ts"
+  - "**/*.test.js"
