@@ -194,44 +194,42 @@ export function readConfig():
   const env = envObject()
   const devEnv = envObject(ENV_PREFIX_DEV)
 
-  const processFile =
-    (source: string | undefined) =>
-    (file: object): ExtendedSwConfiguration => {
-      const devFile =
-        "dev" in file && typeof file.dev === "object" && file.dev !== null
-          ? file.dev
-          : {}
-
-      const raw = schema.parse({
-        ...file,
-        ...env,
-        dev: { ...devFile, ...devEnv },
-      })
-
-      const config: ExtendedSwConfiguration = {
-        ...raw,
-        token: raw.serviceKey.token,
-        serviceName: raw.serviceKey.name,
-        certificate: raw.trustedpath,
-        oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
-        oboeLogType: otelLevelToOboeType(raw.logLevel),
-        otelLogLevel: getEnvWithoutDefaults().OTEL_LOG_LEVEL ?? raw.logLevel,
-        source,
-      }
-
-      if (config.collector?.includes("appoptics.com")) {
-        config.metricFormat ??= 1
-        config.certificate ??= aoCert
-      }
-
-      return config
-    }
-
   const path = filePath()
   const file = path ? readConfigFile(path) : {}
 
-  if (file instanceof Promise) return file.then(processFile(path))
-  else return processFile(path)(file)
+  const processFile = (file: object): ExtendedSwConfiguration => {
+    const devFile =
+      "dev" in file && typeof file.dev === "object" && file.dev !== null
+        ? file.dev
+        : {}
+
+    const raw = schema.parse({
+      ...file,
+      ...env,
+      dev: { ...devFile, ...devEnv },
+    })
+
+    const config: ExtendedSwConfiguration = {
+      ...raw,
+      token: raw.serviceKey.token,
+      serviceName: raw.serviceKey.name,
+      certificate: raw.trustedpath,
+      oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
+      oboeLogType: otelLevelToOboeType(raw.logLevel),
+      otelLogLevel: getEnvWithoutDefaults().OTEL_LOG_LEVEL ?? raw.logLevel,
+      source: path,
+    }
+
+    if (config.collector?.includes("appoptics.com")) {
+      config.metricFormat ??= 1
+      config.certificate ??= aoCert
+    }
+
+    return config
+  }
+
+  if (file instanceof Promise) return file.then(processFile)
+  else return processFile(file)
 }
 
 export function printError(err: unknown) {
