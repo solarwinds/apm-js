@@ -43,6 +43,7 @@
   "files": [
     "./src/",
     "./dist/",
+    "./CHANGELOG.md",
     "./CONFIGURATION.md"
   ],
   "publishConfig": {
