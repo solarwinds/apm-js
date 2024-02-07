@@ -180,6 +180,8 @@ export interface ExtendedSwConfiguration extends SwConfiguration {
   metrics: Metrics
 
   dev: z.infer<typeof schema>["dev"]
+
+  source?: string
 }
 
 const ENV_PREFIX = "SW_APM_"
@@ -191,6 +193,9 @@ export function readConfig():
   | Promise<ExtendedSwConfiguration> {
   const env = envObject()
   const devEnv = envObject(ENV_PREFIX_DEV)
+
+  const path = filePath()
+  const file = path ? readConfigFile(path) : {}
 
   const processFile = (file: object): ExtendedSwConfiguration => {
     const devFile =
@@ -212,6 +217,7 @@ export function readConfig():
       oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
       oboeLogType: otelLevelToOboeType(raw.logLevel),
       otelLogLevel: getEnvWithoutDefaults().OTEL_LOG_LEVEL ?? raw.logLevel,
+      source: path,
     }
 
     if (config.collector?.includes("appoptics.com")) {
@@ -221,9 +227,6 @@ export function readConfig():
 
     return config
   }
-
-  const path = filePath()
-  const file = path ? readConfigFile(path) : {}
 
   if (file instanceof Promise) return file.then(processFile)
   else return processFile(file)

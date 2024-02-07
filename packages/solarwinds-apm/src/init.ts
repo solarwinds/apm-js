@@ -67,6 +67,8 @@ export async function init() {
 
   diag.setLogger(new sdk.SwDiagLogger(), config.otelLogLevel)
   const logger = diag.createComponentLogger({ namespace: "[sw/init]" })
+  logger.debug(`CWD is ${process.cwd()}`)
+  logger.debug("SolarWinds APM configuration", config)
 
   if (!config.enabled) {
     logger.info("Library disabled, application will not be instrumented")
