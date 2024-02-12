@@ -16,6 +16,7 @@ limitations under the License.
 
 import { metrics, SpanStatusCode, ValueType } from "@opentelemetry/api"
 import { hrTimeToMilliseconds } from "@opentelemetry/core"
+import { Aggregation, View } from "@opentelemetry/sdk-metrics"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
 import { type oboe } from "@solarwinds-apm/bindings"
@@ -89,3 +90,11 @@ export function recordServerlessResponseTime(
     "sw.transaction": transaction ?? "unknown",
   })
 }
+
+export const serverlessViews = [
+  new View({
+    meterName: "sw.apm.request.metrics",
+    instrumentName: "trace.service.response_time",
+    aggregation: Aggregation.Histogram(),
+  }),
+]

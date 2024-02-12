@@ -175,7 +175,7 @@ async function initMetrics(
   const provider = new MeterProvider({
     resource,
     readers,
-    views: config.metrics.views,
+    views: [...sdk.metrics.views, ...config.metrics.views],
   })
 
   metrics.setGlobalMeterProvider(provider)

@@ -126,7 +126,7 @@ interface Instrumentations {
 }
 
 interface Metrics {
-  views?: View[]
+  views: View[]
   interval: number
 }
 
@@ -153,7 +153,7 @@ const schema = z.object({
     .default({}),
   metrics: z
     .object({
-      views: z.array(z.instanceof(View)).optional(),
+      views: z.array(z.instanceof(View)).default([]),
       interval: z.number().int().default(60_000),
     })
     .default({}),
