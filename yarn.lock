@@ -750,8 +750,8 @@ __metadata:
   linkType: hard
 
 "@opentelemetry/instrumentation-aws-sdk@npm:^0.38.0":
-  version: 0.38.0
-  resolution: "@opentelemetry/instrumentation-aws-sdk@npm:0.38.0"
+  version: 0.38.1
+  resolution: "@opentelemetry/instrumentation-aws-sdk@npm:0.38.1"
   dependencies:
     "@opentelemetry/core": "npm:^1.8.0"
     "@opentelemetry/instrumentation": "npm:^0.48.0"
@@ -759,7 +759,7 @@ __metadata:
     "@opentelemetry/semantic-conventions": "npm:^1.0.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/75f667aa964eecf1cdd1806ab60e4c16c2dcd2f192de0f5a35da372dc51d115e288e2c70e56fd63d171c3a9923c5e7d41f0ab3ae910eb71467135d3bf8a8a3f2
+  checksum: 10c0/ed0fc5d07dcde7bca6c93b6e254b6c1578fadad218e9d65835bde4ecf70aeec635b4155c466844e98f7b0e3d4756ba26d6caea4c5c7b65b7e73b409886cfb630
   languageName: node
   linkType: hard
 
