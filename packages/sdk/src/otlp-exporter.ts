@@ -35,7 +35,7 @@ export class SwOtlpExporter extends OTLPTraceExporter {
 
       const txname = cache.getTxname(context, this.config)
       if (txname) {
-        span.attributes["sw.transaction"] = txname
+        span.attributes["sw.transaction"] = txname.slice(0, 256)
       }
 
       cache.clear(context)
