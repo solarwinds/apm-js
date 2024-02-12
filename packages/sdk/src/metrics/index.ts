@@ -22,6 +22,7 @@ import * as cpu from "./cpu"
 import * as eventLoop from "./event-loop"
 import * as gc from "./gc"
 import * as memory from "./memory"
+import { serverlessViews } from "./serverless"
 
 export const meter = lazy(() =>
   metrics.getMeter(packageJson.name, packageJson.version),
@@ -39,3 +40,5 @@ export function stop() {
   gc.stop()
   memory.stop()
 }
+
+export const views = [...serverlessViews]
