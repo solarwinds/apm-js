@@ -45,7 +45,7 @@ describe("readConfig", () => {
       insertTraceContextIntoLogs: false,
       insertTraceContextIntoQueries: false,
       instrumentations: {},
-      metrics: { interval: 60_000 },
+      metrics: { interval: 60_000, views: [] },
       dev: {
         otlpTraces: false,
         otlpMetrics: false,
