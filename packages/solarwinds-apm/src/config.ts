@@ -27,7 +27,7 @@ import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import { load } from "@solarwinds-apm/module/load"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
-import { z } from "zod"
+import { z, ZodError, ZodIssueCode } from "zod"
 
 import aoCert from "./appoptics.crt.js"
 
@@ -60,7 +60,7 @@ const serviceKey = z
     const [token, ...name] = k.split(":")
     return {
       token: token!,
-      name: getEnvWithoutDefaults().OTEL_SERVICE_NAME ?? name.join(":"),
+      name: name.join(":"),
     }
   })
 
@@ -131,7 +131,7 @@ interface Metrics {
 }
 
 const schema = z.object({
-  serviceKey,
+  serviceKey: serviceKey.optional(),
   enabled: boolean.default(true),
   collector: z.string().optional(),
   trustedpath: trustedpath.optional(),
@@ -209,14 +209,30 @@ export function readConfig():
       dev: { ...devFile, ...devEnv },
     })
 
+    const otelEnv = getEnvWithoutDefaults()
+
+    const serviceName = otelEnv.OTEL_SERVICE_NAME ?? raw.serviceKey?.name
+    if (
+      !serviceName ||
+      (!raw.serviceKey && (raw.dev.swTraces || raw.dev.swMetrics))
+    ) {
+      throw new ZodError([
+        {
+          path: ["serviceKey"],
+          message: "Missing service key",
+          code: ZodIssueCode.custom,
+        },
+      ])
+    }
+
     const config: ExtendedSwConfiguration = {
       ...raw,
-      token: raw.serviceKey.token,
-      serviceName: raw.serviceKey.name,
+      serviceName,
+      token: raw.serviceKey?.token ?? "",
       certificate: raw.trustedpath,
       oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
       oboeLogType: otelLevelToOboeType(raw.logLevel),
-      otelLogLevel: getEnvWithoutDefaults().OTEL_LOG_LEVEL ?? raw.logLevel,
+      otelLogLevel: otelEnv.OTEL_LOG_LEVEL ?? raw.logLevel,
       source: path,
     }
 
