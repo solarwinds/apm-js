@@ -1,0 +1,4 @@
+releases:
+  "@solarwinds-apm/instrumentations": major
+  "@solarwinds-apm/sdk": minor
+  solarwinds-apm: major
