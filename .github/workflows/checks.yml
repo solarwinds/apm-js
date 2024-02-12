@@ -87,7 +87,7 @@ jobs:
       matrix: ${{ steps.launch.outputs.matrix }}
     runs-on: ubuntu-latest
     steps:
-      - uses: getsentry/action-github-app-token@v2
+      - uses: getsentry/action-github-app-token@v3
         id: github-token
         with:
           app_id: ${{ vars.APPLICATION_ID }}
@@ -197,7 +197,7 @@ jobs:
       - tests
     runs-on: ubuntu-latest
     steps:
-      - uses: getsentry/action-github-app-token@v2
+      - uses: getsentry/action-github-app-token@v3
         id: github-token
         with:
           app_id: ${{ vars.APPLICATION_ID }}
