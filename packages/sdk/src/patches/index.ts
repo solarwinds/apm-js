@@ -27,10 +27,11 @@ import { type TextMapPropagator } from "@opentelemetry/api"
 import { type InstrumentationConfig } from "@opentelemetry/instrumentation"
 
 import { type SwConfiguration } from "../config"
+import * as awsLambda from "./aws-lambda"
+import * as awsSdk from "./aws-sdk"
 import * as bunyan from "./bunyan"
 import * as fs from "./fs"
 import * as http from "./http"
-import * as lambda from "./lambda"
 import * as mysql2 from "./mysql2"
 import * as pg from "./pg"
 import * as pino from "./pino"
@@ -48,7 +49,8 @@ export type Patch<Config extends InstrumentationConfig> = (
 export const RESOURCE_SERVICE_NAME = "resource.service.name" as const
 
 const patches = {
-  "aws-lambda": lambda,
+  "aws-lambda": awsLambda,
+  "aws-sdk": awsSdk,
   bunyan,
   fs,
   http,

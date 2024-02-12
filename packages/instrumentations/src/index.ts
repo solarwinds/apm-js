@@ -119,7 +119,8 @@ export type InstrumentationConfigMap = {
 }
 
 export function getInstrumentations(
-  configs: InstrumentationConfigMap = {},
+  configs: InstrumentationConfigMap,
+  defaultDisabled: boolean,
 ): Instrumentation[] {
   const instrumentations: Instrumentation[] = []
   const c: Record<string, InstrumentationConfig> = configs
@@ -127,7 +128,9 @@ export function getInstrumentations(
   for (const [name, Class] of Object.entries<
     new (config?: InstrumentationConfig) => Instrumentation
   >(INSTRUMENTATIONS)) {
-    const config = c[name]
+    let config = c[name]
+
+    if (defaultDisabled) (config ??= {}).enabled ??= false
     if (config?.enabled === false) continue
 
     instrumentations.push(new Class(config))

@@ -131,6 +131,7 @@ function initInstrumentations(config: ExtendedSwConfiguration) {
         ...config,
         responsePropagator: traceOptionsResponsePropagator,
       }),
+      config.dev.instrumentationsDefaultDisabled,
     ),
     ...(config.instrumentations.extra ?? []),
   ]

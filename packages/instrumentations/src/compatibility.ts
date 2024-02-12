@@ -26,7 +26,7 @@ import { type Comparator, compare, minVersion, Range } from "semver"
 
 import { getInstrumentations } from "./index.js"
 
-const instrumentations = getInstrumentations() as InstrumentationBase[]
+const instrumentations = getInstrumentations({}, false) as InstrumentationBase[]
 
 const init = "init" as const
 const definitions = instrumentations
