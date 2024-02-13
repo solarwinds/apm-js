@@ -33,6 +33,7 @@ export class SwOtlpMetricsExporter
     switch (instrumentType) {
       case InstrumentType.COUNTER:
       case InstrumentType.OBSERVABLE_COUNTER:
+      case InstrumentType.HISTOGRAM:
         return AggregationTemporality.DELTA
       default:
         return super.selectAggregationTemporality(instrumentType)
