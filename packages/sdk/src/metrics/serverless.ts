@@ -83,12 +83,18 @@ export function recordServerlessResponseTime(
 
   const time = hrTimeToMilliseconds(span.duration)
 
-  responseTime.record(time, {
-    [SemanticAttributes.HTTP_METHOD]: method,
-    [SemanticAttributes.HTTP_STATUS_CODE]: statusCode,
-    "sw.is_error": isError,
+  const attrs = {
     "sw.transaction": transaction ?? "unknown",
-  })
+    "sw.is_error": isError,
+  }
+  if (method) {
+    attrs[SemanticAttributes.HTTP_METHOD] = method
+  }
+  if (statusCode) {
+    attrs[SemanticAttributes.HTTP_STATUS_CODE] = statusCode
+  }
+
+  responseTime.record(time, attrs)
 }
 
 export const serverlessViews = [
