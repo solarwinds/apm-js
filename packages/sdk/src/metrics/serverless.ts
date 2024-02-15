@@ -14,7 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { metrics, SpanStatusCode, ValueType } from "@opentelemetry/api"
+import {
+  type Attributes,
+  metrics,
+  SpanStatusCode,
+  ValueType,
+} from "@opentelemetry/api"
 import { hrTimeToMilliseconds } from "@opentelemetry/core"
 import { Aggregation, View } from "@opentelemetry/sdk-metrics"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
@@ -83,12 +88,18 @@ export function recordServerlessResponseTime(
 
   const time = hrTimeToMilliseconds(span.duration)
 
-  responseTime.record(time, {
-    [SemanticAttributes.HTTP_METHOD]: method,
-    [SemanticAttributes.HTTP_STATUS_CODE]: statusCode,
-    "sw.is_error": isError,
+  const attrs: Attributes = {
     "sw.transaction": transaction ?? "unknown",
-  })
+    "sw.is_error": isError,
+  }
+  if (method) {
+    attrs[SemanticAttributes.HTTP_METHOD] = method
+  }
+  if (statusCode) {
+    attrs[SemanticAttributes.HTTP_STATUS_CODE] = statusCode
+  }
+
+  responseTime.record(time, attrs)
 }
 
 export const serverlessViews = [
