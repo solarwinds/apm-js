@@ -14,7 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { metrics, SpanStatusCode, ValueType } from "@opentelemetry/api"
+import {
+  type Attributes,
+  metrics,
+  SpanStatusCode,
+  ValueType,
+} from "@opentelemetry/api"
 import { hrTimeToMilliseconds } from "@opentelemetry/core"
 import { Aggregation, View } from "@opentelemetry/sdk-metrics"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
@@ -83,7 +88,7 @@ export function recordServerlessResponseTime(
 
   const time = hrTimeToMilliseconds(span.duration)
 
-  const attrs = {
+  const attrs: Attributes = {
     "sw.transaction": transaction ?? "unknown",
     "sw.is_error": isError,
   }
