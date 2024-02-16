@@ -96,6 +96,8 @@ module.exports = {
   instrumentations: {
     configs: {
       "@opentelemetry/instrumentation-pg": { requireParentSpan: true },
+      // it is also possible to disable instrumentations completely if preferred
+      "@opentelemetry/instrumentation-fs": { enabled: false },
     },
     extra: [new CustomInstrumentation(customInstrumentationConfig)],
   },
