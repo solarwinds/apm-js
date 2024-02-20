@@ -15,13 +15,12 @@ limitations under the License.
 */
 
 const js = require("@eslint/js")
-const globals = require("globals")
+const ts = require("typescript-eslint")
 const prettier = require("eslint-config-prettier")
-const typescriptParser = require("@typescript-eslint/parser")
-const typescriptPlugin = require("@typescript-eslint/eslint-plugin")
-const tsdocPlugin = require("eslint-plugin-tsdoc")
-const importsPlugin = require("eslint-plugin-simple-import-sort")
-const headerPlugin = require("eslint-plugin-header")
+const imports = require("eslint-plugin-simple-import-sort")
+const header = require("eslint-plugin-header")
+const tsdoc = require("eslint-plugin-tsdoc")
+const globals = require("globals")
 
 const noticeTemplate = `
 Copyright [yyyy] [name of copyright owner]
@@ -67,7 +66,7 @@ module.exports = [
   { ignores: ["dist/**"] },
   // extend from eslint's recommendations as a baseline
   js.configs.recommended,
-  // js files assume node environment with es2021
+  // js files assume node environment with es2022
   {
     files: ["**/*.js"],
     languageOptions: {
@@ -78,53 +77,39 @@ module.exports = [
       "no-unused-vars": ["warn", unusedOptions],
     },
   },
-  // ts files require their own parser and plugins
-  {
-    files: ["**/*.ts"],
-    languageOptions: {
-      parser: typescriptParser,
-      // here we make the assumption that the tsconfig.json is in the root of the project and named that way
-      parserOptions: {
-        project: true,
-        EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
-      },
-    },
-    rules: {
-      // the typescript plugin provides an "eslint-recommended" config which disables eslint recommended rules
-      // that conflict with typescript
-      ...typescriptPlugin.configs["eslint-recommended"].overrides[0].rules,
-    },
-  },
-  // ts sources
-  {
-    files: ["**/*.ts"],
-    plugins: {
-      "@typescript-eslint": typescriptPlugin,
-      tsdoc: tsdocPlugin,
-    },
-    rules: {
-      // extends from typescript strict config
-      ...typescriptPlugin.configs["strict-type-checked"].rules,
-      // also use the typescript stylistic rules
-      ...typescriptPlugin.configs["stylistic-type-checked"].rules,
-      // since we use "noUncheckedIndexedAccess" we need non-null assertions
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-unused-vars": ["warn", unusedOptions],
-      "@typescript-eslint/consistent-type-imports": [
-        "warn",
-        {
-          prefer: "type-imports",
-          fixStyle: "inline-type-imports",
-          disallowTypeAnnotations: false,
+  // ts files use the typescript-eslint helper
+  ...ts
+    .config(
+      ...ts.configs.strictTypeChecked,
+      ...ts.configs.stylisticTypeChecked,
+      {
+        languageOptions: {
+          parserOptions: {
+            project: true,
+            EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
+          },
         },
-      ],
-      "tsdoc/syntax": "warn",
-    },
-  },
+        plugins: { tsdoc },
+        rules: {
+          "@typescript-eslint/no-non-null-assertion": "off",
+          "@typescript-eslint/no-unused-vars": ["warn", unusedOptions],
+          "@typescript-eslint/consistent-type-imports": [
+            "warn",
+            {
+              prefer: "type-imports",
+              fixStyle: "inline-type-imports",
+              disallowTypeAnnotations: false,
+            },
+          ],
+          "tsdoc/syntax": "warn",
+        },
+      },
+    )
+    .map((config) => ({ ...config, files: ["**/*.ts"] })),
   // imports and license notices
   {
     files: ["**/*.js", "**/*.ts"],
-    plugins: { imports: importsPlugin, header: headerPlugin },
+    plugins: { imports, header },
     rules: {
       "imports/imports": "warn",
       "imports/exports": "warn",
