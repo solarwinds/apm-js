@@ -36,27 +36,39 @@ module.exports = {
 
 ## Specification
 
-| Key                             | Environment                    | Default           | Description                                                  |
-| ------------------------------- | ------------------------------ | ----------------- | ------------------------------------------------------------ |
-| **`serviceKey`**                | **`SW_APM_SERVICE_KEY`**       |                   | **Service key**. See [Service Name](#service-name)           |
-| `enabled`                       | `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled                    |
-| `collector`                     | `SW_APM_COLLECTOR`             | Default collector | Collector URL                                                |
-| `trustedpath`                   | `SW_APM_TRUSTEDPATH`           | None              | Path to the collector's SSL certificate                      |
-| `proxy`                         | `SW_APM_PROXY`                 | None              | URL of a proxy to use to connect to the collector            |
-| `logLevel`                      | `SW_APM_LOG_LEVEL`             | `info`            | Logging level for the instrumentation libraries              |
-| `triggerTraceEnabled`           | `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled                    |
-| `runtimeMetrics`                | `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be collected                  |
-| `tracingMode`                   | `SW_APM_TRACING_MODE`          | None              | Custom tracing mode                                          |
-| `transactionName`               | `SW_APM_TRANSACTION_NAME`      | None              | Custom transaction name for all spans                        |
-| `insertTraceContextIntoLogs`    |                                | `false`           | Whether to insert trace context information into logs        |
-| `insertTraceContextIntoQueries` |                                | `false`           | Whether to insert trace context information into SQL queries |
-| `transactionSettings`           |                                | None              | See [Transaction Settings](#transaction-settings)            |
-| `instrumentations`              |                                | None              | See [Instrumentations](#instrumentations)                    |
-| `metricViews`                   |                                | None              | Custom metric views                                          |
+| Key                             | Environment                    | Default           | Description                                                                    |
+| ------------------------------- | ------------------------------ | ----------------- | ------------------------------------------------------------------------------ |
+| **`serviceKey`**                | **`SW_APM_SERVICE_KEY`**       |                   | **Service key**. See [Service Name](#service-name)                             |
+| `enabled`                       | `SW_APM_ENABLED`               | `true`            | Whether instrumentation should be enabled                                      |
+| `collector`                     | `SW_APM_COLLECTOR`             | Default collector | Collector URL                                                                  |
+| `trustedpath`                   | `SW_APM_TRUSTEDPATH`           | None              | Path to the collector's SSL certificate                                        |
+| `proxy`                         | `SW_APM_PROXY`                 | None              | URL of a proxy to use to connect to the collector                              |
+| `logLevel`                      | `SW_APM_LOG_LEVEL`             | `warn`            | Logging level for the instrumentation libraries. See [Log Levels](#log-levels) |
+| `triggerTraceEnabled`           | `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled                                      |
+| `runtimeMetrics`                | `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be collected                                    |
+| `tracingMode`                   | `SW_APM_TRACING_MODE`          | None              | Custom tracing mode                                                            |
+| `transactionName`               | `SW_APM_TRANSACTION_NAME`      | None              | Custom transaction name for all spans                                          |
+| `insertTraceContextIntoLogs`    |                                | `false`           | Whether to insert trace context information into logs                          |
+| `insertTraceContextIntoQueries` |                                | `false`           | Whether to insert trace context information into SQL queries                   |
+| `transactionSettings`           |                                | None              | See [Transaction Settings](#transaction-settings)                              |
+| `instrumentations`              |                                | None              | See [Instrumentations](#instrumentations)                                      |
+| `metricViews`                   |                                | None              | Custom metric views                                                            |
 
 ### Service Name
 
 By default the service name portion of the service key is used, e.g. `my-service` if the service key is `SW_APM_SERVICE_KEY=api-token:my-service`. If the `OTEL_SERVICE_NAME` or `OTEL_RESOURCE_ATTRIBUTES` environment variable is used to specify a service name, it will take precedence over the default.
+
+### Log Levels
+
+The following log levels are available in increasing order of verbosity.
+
+- `none`
+- `error`
+- `warn`
+- `info`
+- `debug`
+- `verbose`
+- `all`
 
 ### Transaction Settings
 
