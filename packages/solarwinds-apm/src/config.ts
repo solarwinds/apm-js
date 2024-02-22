@@ -136,7 +136,7 @@ const schema = z.object({
   collector: z.string().optional(),
   trustedpath: trustedpath.optional(),
   proxy: z.string().optional(),
-  logLevel: logLevel.default("info"),
+  logLevel: logLevel.default("warn"),
   triggerTraceEnabled: boolean.default(true),
   runtimeMetrics: boolean.default(!IS_SERVERLESS),
   tracingMode: tracingMode.optional(),
