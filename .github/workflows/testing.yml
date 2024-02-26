@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     env:
       YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
       YARN_NPM_AUTH_TOKEN: ${{ github.token }}
@@ -47,3 +49,17 @@ jobs:
           yarn lint:fix
 
       - run: yarn publish
+
+      - name: Export version
+        id: version
+        run: |
+          VERSION=$(cat packages/solarwinds-apm/package.json | jq -r '.version')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+  lambda:
+    needs: publish
+    uses: ./.github/workflows/lambda.yml
+    with:
+      type: testing
+      version: ${{ needs.publish.outputs.version }}
+    secrets: inherit
