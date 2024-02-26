@@ -27,6 +27,7 @@ This project is structured as a monorepo separated into a few key directories.
 - [`examples`](./examples/) contains runnable example projects
 - [`scripts`](./scripts/) contains project management scripts
 - [`docker`](./docker/) contains anything related to the docker environment used in CI, for running examples, and optionally for development
+- [`lambda`](./lambda/) contains the skeleton used to build AWS Lambda layers
 
 ## Docker
 

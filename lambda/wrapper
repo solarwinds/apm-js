@@ -1,0 +1,18 @@
+#!/bin/bash
+
+export NODE_OPTIONS="${NODE_OPTIONS} --require /opt/solarwinds-apm/shim.cjs"
+
+# Lambda function is default service name
+if [ -z "${OTEL_SERVICE_NAME}" ]; then
+    export OTEL_SERVICE_NAME=$AWS_LAMBDA_FUNCTION_NAME;
+fi
+
+# Set faas.instance resource attribute from the log stream name.
+export LAMBDA_RESOURCE_ATTRIBUTES="faas.instance=$AWS_LAMBDA_LOG_STREAM_NAME";
+if [ -z "${OTEL_RESOURCE_ATTRIBUTES}" ]; then
+    export OTEL_RESOURCE_ATTRIBUTES=$LAMBDA_RESOURCE_ATTRIBUTES;
+else
+    export OTEL_RESOURCE_ATTRIBUTES="$LAMBDA_RESOURCE_ATTRIBUTES,$OTEL_RESOURCE_ATTRIBUTES";
+fi
+
+exec "$@"

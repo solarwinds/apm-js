@@ -1,0 +1,97 @@
+name: Build & Publish Layer
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: Type of package to use
+        options:
+          - production
+          - testing
+        required: true
+      version:
+        type: string
+        description: Version of the package to use
+        required: true
+  workflow_call:
+    inputs:
+      type:
+        type: string
+        description: Type of package to use
+        required: true
+      version:
+        type: string
+        description: Version of the package to use
+        required: true
+    secrets:
+      LAMBDA_PUBLISHER_ARN:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PACKAGE_NAME: ${{ inputs.type == 'production' && 'solarwinds-apm' || '@solarwinds/solarwinds-apm' }}
+      PACKAGE_VERSION: ${{ inputs.version }}
+      YARN_ENABLE_IMMUTABLE_INSTALLS: false
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: corepack enable
+
+      - run: yarn install
+      - run: yarn lambda $PACKAGE_NAME $PACKAGE_VERSION
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: layer.zip
+          path: lambda/layer.zip
+
+  publish:
+    needs: build
+    permissions:
+      id-token: write
+    strategy:
+      matrix:
+        region:
+          - us-east-1
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: layer.zip
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.LAMBDA_PUBLISHER_ARN }}
+          aws-region: ${{ matrix.region }}
+
+      - name: Calculate layer name
+        run: |
+          LAYER_NAME="solarwinds-apm-js"
+          if [[ "${{ inputs.type }}" != "production" ]]; then
+            LAYER_NAME="${LAYER_NAME}-${{ inputs.type }}"
+          else
+            LAYER_NAME="${LAYER_NAME}-$(echo '${{ inputs.version }}' | sed -r 's/\./_/g')"
+          fi
+          echo "LAYER_NAME=$LAYER_NAME" >> $GITHUB_ENV
+
+      - name: Publish
+        run: |
+          LAYER_ARN=$(
+            aws lambda publish-layer-version \
+              --layer-name $LAYER_NAME \
+              --license-info "Apache 2.0" \
+              --compatible-architectures x86_64 arm64 \
+              --compatible-runtimes nodejs20.x nodejs16.x nodejs18.x \
+              --zip-file fileb://layer.zip \
+              --query 'LayerVersionArn' \
+              --output text
+          )
+          echo "::notice::$LAYER_ARN"
