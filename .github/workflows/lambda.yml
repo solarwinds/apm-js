@@ -24,8 +24,6 @@ on:
         description: Version of the package to use
         required: true
     secrets:
-      GITHUB_TOKEN:
-        required: true
       LAMBDA_PUBLISHER_ARN:
         required: true
 
