@@ -2000,6 +2000,7 @@ __metadata:
     "@opentelemetry/resource-detector-container": "npm:^0.3.1"
     "@opentelemetry/resources": "npm:~1.21.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
+    "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/rollup-config": "workspace:^"
     "@types/semver": "npm:^7.5.3"
     eslint: "npm:^8.50.0"

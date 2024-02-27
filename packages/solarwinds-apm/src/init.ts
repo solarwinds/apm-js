@@ -23,7 +23,10 @@ import {
   type TracerProvider,
 } from "@opentelemetry/api"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
-import { registerInstrumentations } from "@opentelemetry/instrumentation"
+import {
+  type Instrumentation,
+  registerInstrumentations,
+} from "@opentelemetry/instrumentation"
 import { Resource } from "@opentelemetry/resources"
 import {
   MeterProvider,
@@ -52,11 +55,10 @@ import {
 } from "./config.js"
 
 export async function init() {
-  let config: ExtendedSwConfiguration
+  let config
   try {
-    const configOrPromise = readConfig()
-    if (configOrPromise instanceof Promise) config = await configOrPromise
-    else config = configOrPromise
+    config = readConfig()
+    if (config instanceof Promise) config = await config
   } catch (err) {
     console.warn(
       "Invalid SolarWinds APM configuration, application will not be instrumented",
@@ -83,7 +85,10 @@ export async function init() {
   }
 
   // initialize instrumentations before any asynchronous code or imports
-  const registerInstrumentations = initInstrumentations(config)
+  let registerInstrumentations = initInstrumentations(config)
+  if (registerInstrumentations instanceof Promise) {
+    registerInstrumentations = await registerInstrumentations
+  }
 
   let resource = Resource.default().merge(
     new Resource({
@@ -125,23 +130,31 @@ function initInstrumentations(config: ExtendedSwConfiguration) {
   const traceOptionsResponsePropagator =
     new sdk.SwTraceOptionsResponsePropagator()
 
-  const instrumentations = [
-    ...getInstrumentations(
-      sdk.patch(config.instrumentations.configs ?? {}, {
-        ...config,
-        responsePropagator: traceOptionsResponsePropagator,
-      }),
-      config.dev.instrumentationsDefaultDisabled,
-    ),
-    ...(config.instrumentations.extra ?? []),
-  ]
+  const registrer = (instrumentations: Instrumentation[]) => {
+    instrumentations = [
+      ...instrumentations,
+      ...(config.instrumentations.extra ?? []),
+    ]
 
-  return (tracerProvider: TracerProvider, meterProvider: MeterProvider) =>
-    registerInstrumentations({
-      instrumentations,
-      tracerProvider,
-      meterProvider,
-    })
+    return (tracerProvider: TracerProvider, meterProvider: MeterProvider) =>
+      registerInstrumentations({
+        instrumentations,
+        tracerProvider,
+        meterProvider,
+      })
+  }
+
+  const instrumentations = getInstrumentations(
+    sdk.patch(config.instrumentations.configs ?? {}, {
+      ...config,
+      responsePropagator: traceOptionsResponsePropagator,
+    }),
+    config.dev.instrumentationsDefaultDisabled,
+  )
+
+  if (instrumentations instanceof Promise)
+    return instrumentations.then(registrer)
+  else return registrer(instrumentations)
 }
 
 async function initTracing(

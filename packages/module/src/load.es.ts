@@ -16,6 +16,10 @@ limitations under the License.
 
 export async function load(file: string): Promise<unknown> {
   const imported = (await import(file)) as object
-  if ("default" in imported) return imported.default
+
+  const defaultEsmExport =
+    "default" in imported && Object.keys(imported).length === 1
+
+  if (defaultEsmExport) return imported.default
   else return imported
 }
