@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export NODE_OPTIONS="${NODE_OPTIONS} --require /opt/solarwinds-apm/shim.cjs"
+export OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
 
 # Lambda function is default service name
 if [ -z "${OTEL_SERVICE_NAME}" ]; then
