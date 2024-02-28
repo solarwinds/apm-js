@@ -56,16 +56,8 @@ import { type SocketIoInstrumentation } from "@opentelemetry/instrumentation-soc
 import { type TediousInstrumentation } from "@opentelemetry/instrumentation-tedious"
 import { type WinstonInstrumentation } from "@opentelemetry/instrumentation-winston"
 import {
-  awsEc2Detector,
-  awsLambdaDetector,
-} from "@opentelemetry/resource-detector-aws"
-import { containerDetector } from "@opentelemetry/resource-detector-container"
-import {
+  type DetectorSync,
   detectResourcesSync,
-  envDetectorSync,
-  hostDetectorSync,
-  osDetectorSync,
-  processDetectorSync,
   type Resource,
 } from "@opentelemetry/resources"
 import { load } from "@solarwinds-apm/module/load"
@@ -152,6 +144,18 @@ const INSTRUMENTATION_NAMES: Record<string, string> = {
   "@opentelemetry/instrumentation-winston": "WinstonInstrumentation",
 }
 
+// map of resource detector package names to the names of their exported detectors
+const RESOURCE_DETECTOR_NAMES: Record<string, string[]> = {
+  "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
+  "@opentelemetry/resource-detector-container": ["containerDetector"],
+  "@opentelemetry/resources": [
+    "envDetectorSync",
+    "hostDetectorSync",
+    "osDetectorSync",
+    "processDetectorSync",
+  ],
+}
+
 export type InstrumentationConfigMap = {
   [I in keyof InstrumentationTypes]?: InstrumentationTypes[I] extends {
     setConfig(config: infer C): unknown
@@ -194,16 +198,17 @@ export function getInstrumentations(
   else return instrumentations as Instrumentation[]
 }
 
-export function getDetectedResource(): Resource {
+export async function getDetectedResource(): Promise<Resource> {
+  const detectors = await Promise.all(
+    Object.entries(RESOURCE_DETECTOR_NAMES).map(async ([name, detectors]) => {
+      const imported = (await import(name)) as object
+      return Object.entries(imported)
+        .filter(([name]) => detectors.includes(name))
+        .map(([, detector]) => detector as DetectorSync)
+    }),
+  )
+
   return detectResourcesSync({
-    detectors: [
-      containerDetector,
-      awsEc2Detector,
-      awsLambdaDetector,
-      envDetectorSync,
-      hostDetectorSync,
-      osDetectorSync,
-      processDetectorSync,
-    ],
+    detectors: detectors.flat(),
   })
 }

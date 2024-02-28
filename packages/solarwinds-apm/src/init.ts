@@ -97,7 +97,7 @@ export async function init() {
     }),
   )
   if (config.dev.resourceDetection) {
-    resource = resource.merge(getDetectedResource())
+    resource = resource.merge(await getDetectedResource())
   }
 
   const [reporter, serverlessApi] = IS_SERVERLESS
