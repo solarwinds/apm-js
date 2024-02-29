@@ -49,7 +49,8 @@ rm("lambda/layer.zip")
 rm("node_modules/.lambda", { recursive: true })
 cpSync("lambda", "node_modules/.lambda", { recursive: true })
 replace("node_modules/.lambda/package.json")
-replace("node_modules/.lambda/wrapper")
+replace("node_modules/.lambda/shim.cjs")
+replace("node_modules/.lambda/shim.mjs")
 
 execSync("touch yarn.lock && yarn install", {
   cwd: "node_modules/.lambda",
@@ -94,6 +95,12 @@ archive.directory(
   "node_modules/.lambda/node_modules/",
   "solarwinds-apm/node_modules/",
 )
+archive.file("node_modules/.lambda/shim.cjs", {
+  name: "solarwinds-apm/shim.cjs",
+})
+archive.file("node_modules/.lambda/shim.mjs", {
+  name: "solarwinds-apm/shim.mjs",
+})
 archive.file("node_modules/.lambda/wrapper", {
   name: "solarwinds-apm/wrapper",
   mode: 0o755,

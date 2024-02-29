@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ -z "${SW_APM_ESM}" ]; then
-    export NODE_OPTIONS="${NODE_OPTIONS} --require {{name}}"
+    export NODE_OPTIONS="${NODE_OPTIONS} --require /opt/solarwinds-apm/shim.cjs"
 else
-    export NODE_OPTIONS="${NODE_OPTIONS} --import {{name}}"
+    export NODE_OPTIONS="${NODE_OPTIONS} --import /opt/solarwinds-apm/shim.mjs"
 fi
 
 export OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
