@@ -85,7 +85,10 @@ jobs:
     if: github.event_name == 'pull_request'
     outputs:
       matrix: ${{ steps.launch.outputs.matrix }}
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
+
     steps:
       - uses: getsentry/action-github-app-token@v3
         id: github-token
@@ -94,8 +97,7 @@ jobs:
           private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.CI_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.CI_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.EC2_RUNNER_ARN }}
           aws-region: us-east-1
 
       - id: launch
@@ -195,7 +197,10 @@ jobs:
     needs:
       - launch-arm64
       - tests
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
+
     steps:
       - uses: getsentry/action-github-app-token@v3
         id: github-token
@@ -204,8 +209,7 @@ jobs:
           private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.CI_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.CI_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.EC2_RUNNER_ARN }}
           aws-region: us-east-1
       - uses: solarwinds/ec2-runner-action@main
         with:
