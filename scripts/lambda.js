@@ -39,7 +39,9 @@ const rm = (...args) => {
 
 const replace = (file) => {
   let contents = readFileSync(file, { encoding: "utf-8" })
-  contents = contents.replace("{{name}}", name).replace("{{version}}", version)
+  contents = contents
+    .replaceAll("{{name}}", name)
+    .replaceAll("{{version}}", version)
   writeFileSync(file, contents)
 }
 
