@@ -47,7 +47,7 @@ rm("lambda/layer.zip")
 rm("node_modules/.lambda", { recursive: true })
 cpSync("lambda", "node_modules/.lambda", { recursive: true })
 replace("node_modules/.lambda/package.json")
-replace("node_modules/.lambda/shim.cjs")
+replace("node_modules/.lambda/wrapper")
 
 execSync("touch yarn.lock && yarn install", {
   cwd: "node_modules/.lambda",
