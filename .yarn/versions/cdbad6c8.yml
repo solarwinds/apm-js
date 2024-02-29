@@ -1,0 +1,10 @@
+releases:
+  "@solarwinds-apm/instrumentations": major
+  "@solarwinds-apm/module": patch
+  solarwinds-apm: patch
+
+declined:
+  - "@solarwinds-apm/bindings"
+  - "@solarwinds-apm/dependencies"
+  - "@solarwinds-apm/sdk"
+  - "@solarwinds-apm/test"
