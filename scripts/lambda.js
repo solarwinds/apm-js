@@ -92,9 +92,6 @@ archive.directory(
   "node_modules/.lambda/node_modules/",
   "solarwinds-apm/node_modules/",
 )
-archive.file("node_modules/.lambda/shim.cjs", {
-  name: "solarwinds-apm/shim.cjs",
-})
 archive.file("node_modules/.lambda/wrapper", {
   name: "solarwinds-apm/wrapper",
   mode: 0o755,
