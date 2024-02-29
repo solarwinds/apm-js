@@ -168,7 +168,18 @@ export function getInstrumentations(
   configs: InstrumentationConfigMap,
   defaultDisabled: boolean,
 ): Instrumentation[] | Promise<Instrumentation[]> {
-  const instrumentations = Object.entries(configs)
+  const allConfigs = Object.assign(
+    Object.fromEntries(
+      Object.keys(INSTRUMENTATION_NAMES).map((name) => [name, {}]),
+    ),
+    Object.fromEntries(
+      Object.entries(configs).filter(([name]) =>
+        Object.keys(INSTRUMENTATION_NAMES).includes(name),
+      ),
+    ),
+  )
+
+  const instrumentations = Object.entries(allConfigs)
     .filter(([, config]: [unknown, InstrumentationConfig | undefined]) => {
       // explicitly set "enabled" to false if that's the default
       if (defaultDisabled) (config ??= {}).enabled ??= false

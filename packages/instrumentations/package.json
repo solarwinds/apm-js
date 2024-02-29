@@ -29,7 +29,7 @@
     "provenance": true
   },
   "scripts": {
-    "build": "rollup -c --forceExit && node ./dist/es/compatibility.js",
+    "build": "rollup -c --forceExit && node ./dist/es/compatibility.es.js",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js"
