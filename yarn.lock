@@ -651,7 +651,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/core@npm:1.21.0, @opentelemetry/core@npm:^1.0.0, @opentelemetry/core@npm:^1.1.0, @opentelemetry/core@npm:^1.8.0, @opentelemetry/core@npm:~1.21.0":
+"@opentelemetry/core@npm:1.21.0, @opentelemetry/core@npm:~1.21.0":
   version: 1.21.0
   resolution: "@opentelemetry/core@npm:1.21.0"
   dependencies:
@@ -659,6 +659,17 @@ __metadata:
   peerDependencies:
     "@opentelemetry/api": ">=1.0.0 <1.8.0"
   checksum: 10c0/e6f1adcd224944f725ccfc4a337cb20405cb2081fa0a2a66a47a9044b248f47318f43c6d140e8ebbd4082d8657894e9d1a8e1a10db112ca8896c6bc4494c346c
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/core@npm:1.22.0, @opentelemetry/core@npm:^1.0.0, @opentelemetry/core@npm:^1.1.0, @opentelemetry/core@npm:^1.8.0":
+  version: 1.22.0
+  resolution: "@opentelemetry/core@npm:1.22.0"
+  dependencies:
+    "@opentelemetry/semantic-conventions": "npm:1.22.0"
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.9.0"
+  checksum: 10c0/4850f6f407e4a4df72825d88b7dbe653e23f34a6dcba0b2d05725d0b497e1d44069909301b0efa1d4eac577225f10f5e86e09cb5338aacf28e2467b6d7d4c3b1
   languageName: node
   linkType: hard
 
@@ -1301,6 +1312,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@opentelemetry/resource-detector-azure@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@opentelemetry/resource-detector-azure@npm:0.2.4"
+  dependencies:
+    "@opentelemetry/resources": "npm:^1.10.1"
+    "@opentelemetry/semantic-conventions": "npm:^1.0.0"
+  checksum: 10c0/e18474423bc81c72ae1952519775bd1c38fc010bc1bf179a6d8baaf3342d28710001204ae4d20d69cd3fcd312c6af44f7dc60bc2c9cc4ed3244ee395b8aacc5a
+  languageName: node
+  linkType: hard
+
 "@opentelemetry/resource-detector-container@npm:^0.3.1":
   version: 0.3.6
   resolution: "@opentelemetry/resource-detector-container@npm:0.3.6"
@@ -1313,7 +1334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/resources@npm:1.21.0, @opentelemetry/resources@npm:^1.0.0, @opentelemetry/resources@npm:^1.8.0, @opentelemetry/resources@npm:~1.21.0":
+"@opentelemetry/resources@npm:1.21.0, @opentelemetry/resources@npm:~1.21.0":
   version: 1.21.0
   resolution: "@opentelemetry/resources@npm:1.21.0"
   dependencies:
@@ -1322,6 +1343,18 @@ __metadata:
   peerDependencies:
     "@opentelemetry/api": ">=1.0.0 <1.8.0"
   checksum: 10c0/0ac61b835e20d3323e1e6a5c74cbb64a9200e165724d6d1449f01bd18a0c5af3da854dacdc729cdb4ed00cb740639c76d6cd7c638ad6efffc23f9da0de36406a
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/resources@npm:^1.0.0, @opentelemetry/resources@npm:^1.10.1, @opentelemetry/resources@npm:^1.8.0":
+  version: 1.22.0
+  resolution: "@opentelemetry/resources@npm:1.22.0"
+  dependencies:
+    "@opentelemetry/core": "npm:1.22.0"
+    "@opentelemetry/semantic-conventions": "npm:1.22.0"
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.9.0"
+  checksum: 10c0/f8681d3f907bb44742223980283dd35fcf2fd52e6b6874063e0ed7fea21a3dc65c0dc05a66f21ee41d018343bc90d0221a018ac0d5a92ef01e623f4fe94355fd
   languageName: node
   linkType: hard
 
@@ -1380,10 +1413,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/semantic-conventions@npm:1.21.0, @opentelemetry/semantic-conventions@npm:^1.0.0, @opentelemetry/semantic-conventions@npm:~1.21.0":
+"@opentelemetry/semantic-conventions@npm:1.21.0, @opentelemetry/semantic-conventions@npm:~1.21.0":
   version: 1.21.0
   resolution: "@opentelemetry/semantic-conventions@npm:1.21.0"
   checksum: 10c0/ba1eabdbe5cdc04cbb7ce28f2df91fc95000e14861eb93937cfc7768d29c7e57692eb4fb2645f6ba87ae046acc1d1e27e4e6415e46e03015d54a6fdaf8e9635b
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/semantic-conventions@npm:1.22.0, @opentelemetry/semantic-conventions@npm:^1.0.0":
+  version: 1.22.0
+  resolution: "@opentelemetry/semantic-conventions@npm:1.22.0"
+  checksum: 10c0/35d4aae14111fd65becf667fb935aef673f820dba0e160cdf02dfee19b8eb169a8ba3f7db4db8a40d82a15989f465faf085b4ba41895ba2c89f8e631f5e53f08
   languageName: node
   linkType: hard
 
@@ -1997,6 +2037,7 @@ __metadata:
     "@opentelemetry/instrumentation-tedious": "npm:^0.7.0"
     "@opentelemetry/instrumentation-winston": "npm:^0.34.0"
     "@opentelemetry/resource-detector-aws": "npm:^1.3.1"
+    "@opentelemetry/resource-detector-azure": "npm:^0.2.4"
     "@opentelemetry/resource-detector-container": "npm:^0.3.1"
     "@opentelemetry/resources": "npm:~1.21.0"
     "@solarwinds-apm/eslint-config": "workspace:^"

@@ -147,6 +147,7 @@ const INSTRUMENTATION_NAMES: Record<string, string> = {
 // map of resource detector package names to the names of their exported detectors
 const RESOURCE_DETECTOR_NAMES: Record<string, string[]> = {
   "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
+  "@opentelemetry/resource-detector-azure": ["azureAppServiceDetector"],
   "@opentelemetry/resource-detector-container": ["containerDetector"],
   "@opentelemetry/resources": [
     "envDetectorSync",
@@ -169,9 +170,12 @@ export function getInstrumentations(
   defaultDisabled: boolean,
 ): Instrumentation[] | Promise<Instrumentation[]> {
   const allConfigs = Object.assign(
+    // one entry per available instrumentations
     Object.fromEntries(
       Object.keys(INSTRUMENTATION_NAMES).map((name) => [name, {}]),
     ),
+    // override defaults using the entries present in the config while
+    // filtering out entries from the config that are not available
     Object.fromEntries(
       Object.entries(configs).filter(([name]) =>
         Object.keys(INSTRUMENTATION_NAMES).includes(name),
@@ -180,11 +184,11 @@ export function getInstrumentations(
   )
 
   const instrumentations = Object.entries(allConfigs)
-    .filter(([, config]: [unknown, InstrumentationConfig | undefined]) => {
+    .filter(([, config]: [unknown, InstrumentationConfig]) => {
       // explicitly set "enabled" to false if that's the default
-      if (defaultDisabled) (config ??= {}).enabled ??= false
+      if (defaultDisabled) config.enabled ??= false
       // filter out disabled instrumentations
-      return config?.enabled !== false
+      return config.enabled !== false
     })
     .map(([name, config]) => {
       // instantiate the instrumentation class exported from package
@@ -212,8 +216,8 @@ export function getInstrumentations(
 export async function getDetectedResource(): Promise<Resource> {
   const detectors = await Promise.all(
     Object.entries(RESOURCE_DETECTOR_NAMES).map(async ([name, detectors]) => {
-      const imported = (await import(name)) as object
-      return Object.entries(imported)
+      const loaded = await load(name)
+      return Object.entries(loaded as object)
         .filter(([name]) => detectors.includes(name))
         .map(([, detector]) => detector as DetectorSync)
     }),
