@@ -44,12 +44,12 @@ import {
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import * as sdk from "@solarwinds-apm/sdk"
 
-import { version } from "../package.json"
 import {
   type ExtendedSwConfiguration,
   printError,
   readConfig,
 } from "./config.js"
+import { FULL_VERSION } from "./version.js"
 
 export async function init() {
   let config: ExtendedSwConfiguration
@@ -89,6 +89,7 @@ export async function init() {
     new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
       "sw.data.module": "apm",
+      "sw.apm.version": FULL_VERSION,
     }),
   )
   if (config.dev.resourceDetection) {
@@ -205,7 +206,7 @@ async function initMessage(
   if (resource.asyncAttributesPending) {
     await resource.waitForAsyncAttributes?.()
   }
-  sdk.sendStatus(reporter, await sdk.initMessage(resource, version))
+  sdk.sendStatus(reporter, await sdk.initMessage(resource, FULL_VERSION))
 }
 
 function sampler(
