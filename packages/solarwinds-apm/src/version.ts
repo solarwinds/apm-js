@@ -68,4 +68,5 @@ export function versionCheck(): boolean {
   }
 }
 
+export { VERSION }
 export const FULL_VERSION = `${VERSION}+${SDK_VERSION}`
