@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { mkdirSync } from "node:fs"
+import { mkdir } from "node:fs/promises"
 import { promisify } from "node:util"
 
 import { main as pbjsMain } from "protobufjs-cli/pbjs.js"
@@ -33,7 +33,7 @@ const targets = {
 }
 
 for (const [target, options] of Object.entries(targets)) {
-  mkdirSync(`dist/${target}`, { recursive: true })
+  await mkdir(`dist/${target}`, { recursive: true })
 
   await pbjs([
     "-t",
