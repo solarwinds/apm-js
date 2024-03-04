@@ -32,6 +32,7 @@
   "dependencies": {
     "@eslint/js": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-deprecation": "^2.0.0",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-simple-import-sort": "^12.0.0",
     "eslint-plugin-tsdoc": "^0.2.17",
