@@ -1,0 +1,3 @@
+[submodule "packages/proto/proto"]
+	path = packages/proto/src
+	url = ../apm-proto.git
