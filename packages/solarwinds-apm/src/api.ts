@@ -25,3 +25,4 @@ export function waitUntilReady(timeout: number): number {
 }
 
 export { type Config } from "./config.js"
+export { FULL_VERSION, VERSION } from "./version.js"

@@ -23,7 +23,6 @@ import { oboe } from "@solarwinds-apm/bindings"
 import { dependencies } from "@solarwinds-apm/dependencies"
 import * as semver from "semver"
 
-import packageJson from "../package.json"
 import { type SwConfiguration } from "./config"
 
 export function createReporter(config: SwConfiguration): oboe.Reporter {
@@ -112,8 +111,7 @@ export async function initMessage(
     Layer: "nodejs",
     Label: "single",
 
-    // `<solarwinds-apm>+<@solarwinds-apm/sdk>`
-    "APM.Version": `${version}+${packageJson.version}`,
+    "APM.Version": version,
     "APM.Extension.Version": oboe.Config.getVersionString(),
   }
 }
