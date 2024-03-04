@@ -15,7 +15,11 @@ limitations under the License.
 */
 
 import { Resource } from "@opentelemetry/resources"
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
+import {
+  SEMRESATTRS_PROCESS_COMMAND_ARGS,
+  SEMRESATTRS_PROCESS_COMMAND_LINE,
+  SEMRESATTRS_SERVICE_NAME,
+} from "@opentelemetry/semantic-conventions"
 import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { initMessage } from "../src/reporter"
@@ -45,11 +49,11 @@ describe("initMessage", () => {
 
   it("doesn't forward service name", async () => {
     const message = await initMessage(
-      new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: "value" }),
+      new Resource({ [SEMRESATTRS_SERVICE_NAME]: "value" }),
       "1.0.0",
     )
 
-    expect(message).not.to.have.key(SemanticResourceAttributes.SERVICE_NAME)
+    expect(message).not.to.have.key(SEMRESATTRS_SERVICE_NAME)
   })
 
   it("doesn't forward array or undefined resource properties", async () => {
@@ -67,17 +71,15 @@ describe("initMessage", () => {
   it("converts process command args to command line", async () => {
     const message = await initMessage(
       new Resource({
-        [SemanticResourceAttributes.PROCESS_COMMAND_ARGS]: ["node", "index.js"],
+        [SEMRESATTRS_PROCESS_COMMAND_ARGS]: ["node", "index.js"],
       }),
       "1.0.0",
     )
 
     expect(message).to.include({
-      [SemanticResourceAttributes.PROCESS_COMMAND_LINE]: "node index.js",
+      [SEMRESATTRS_PROCESS_COMMAND_LINE]: "node index.js",
     })
-    expect(message).not.to.have.key(
-      SemanticResourceAttributes.PROCESS_COMMAND_ARGS,
-    )
+    expect(message).not.to.have.key(SEMRESATTRS_PROCESS_COMMAND_ARGS)
   })
 
   it("doesn't override base attributes with resource attributes", async () => {

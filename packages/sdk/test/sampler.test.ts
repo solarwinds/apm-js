@@ -16,7 +16,11 @@ limitations under the License.
 
 import { SpanKind } from "@opentelemetry/api"
 import { SamplingDecision } from "@opentelemetry/sdk-trace-base"
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
+import {
+  SEMATTRS_HTTP_SCHEME,
+  SEMATTRS_HTTP_TARGET,
+  SEMATTRS_NET_HOST_NAME,
+} from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import { describe, expect, it } from "@solarwinds-apm/test"
 
@@ -127,9 +131,9 @@ describe("SwSampler", () => {
         { tracing: true, matcher: () => true },
       ]
       const attributes = {
-        [SemanticAttributes.HTTP_SCHEME]: "http",
-        [SemanticAttributes.NET_HOST_NAME]: "localhost",
-        [SemanticAttributes.HTTP_TARGET]: target,
+        [SEMATTRS_HTTP_SCHEME]: "http",
+        [SEMATTRS_NET_HOST_NAME]: "localhost",
+        [SEMATTRS_HTTP_TARGET]: target,
       }
 
       const sampler = new SwSampler(

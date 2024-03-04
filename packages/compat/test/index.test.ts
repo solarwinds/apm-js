@@ -20,7 +20,10 @@ import {
   SimpleSpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
+import {
+  SEMATTRS_EXCEPTION_MESSAGE,
+  SEMATTRS_EXCEPTION_STACKTRACE,
+} from "@opentelemetry/semantic-conventions"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { instrument, pInstrument } from "../src/index.js"
@@ -107,10 +110,10 @@ describe("instrument", () => {
       message: "error",
     })
     expect(span?.events[0]!.attributes).to.include({
-      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
+      [SEMATTRS_EXCEPTION_MESSAGE]: "error",
     })
     expect(span?.events[0]!.attributes).to.have.property(
-      SemanticAttributes.EXCEPTION_STACKTRACE,
+      SEMATTRS_EXCEPTION_STACKTRACE,
     )
   })
 
@@ -155,10 +158,10 @@ describe("instrument", () => {
       message: "error",
     })
     expect(span?.events[0]!.attributes).to.include({
-      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
+      [SEMATTRS_EXCEPTION_MESSAGE]: "error",
     })
     expect(span?.events[0]!.attributes).to.have.property(
-      SemanticAttributes.EXCEPTION_STACKTRACE,
+      SEMATTRS_EXCEPTION_STACKTRACE,
     )
   })
 
@@ -254,10 +257,10 @@ describe("pInstrument", () => {
       message: "error",
     })
     expect(span?.events[0]!.attributes).to.include({
-      [SemanticAttributes.EXCEPTION_MESSAGE]: "error",
+      [SEMATTRS_EXCEPTION_MESSAGE]: "error",
     })
     expect(span?.events[0]!.attributes).to.have.property(
-      SemanticAttributes.EXCEPTION_STACKTRACE,
+      SEMATTRS_EXCEPTION_STACKTRACE,
     )
   })
 })

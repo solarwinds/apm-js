@@ -5,6 +5,7 @@
 | `@aws-sdk/middleware-stack` | `>=3.1.0 <4.0.0`      |
 | `@aws-sdk/smithy-client`    | `>=3.1.0 <4.0.0`      |
 | `@cucumber/cucumber`        | `>=8.0.0 <11.0.0`     |
+| `@grpc/grpc-js`             | `>=1.0.0 <2.0.0`      |
 | `@hapi/hapi`                | `>=17.0.0 <21.0.0`    |
 | `@nestjs/core`              | `>=4.0.0`             |
 | `@node-redis/client`        | `>=1.0.0 <2.0.0`      |
