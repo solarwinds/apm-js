@@ -29,8 +29,8 @@ import {
   type ExponentialHistogram,
   ExponentialHistogramAggregation,
   type Histogram,
-  type InstrumentDescriptor,
   InstrumentType,
+  type MetricDescriptor,
   type PushMetricExporter,
   type ResourceMetrics,
 } from "@opentelemetry/sdk-metrics"
@@ -255,7 +255,7 @@ export class SwMetricsExporter implements PushMetricExporter {
   }
 
   private static descriptorTags(
-    descriptor: InstrumentDescriptor,
+    descriptor: MetricDescriptor,
   ): Record<string, string> {
     return {
       description: descriptor.description,

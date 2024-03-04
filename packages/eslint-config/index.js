@@ -20,6 +20,7 @@ const prettier = require("eslint-config-prettier")
 const imports = require("eslint-plugin-simple-import-sort")
 const header = require("eslint-plugin-header")
 const tsdoc = require("eslint-plugin-tsdoc")
+const deprecation = require("eslint-plugin-deprecation")
 const globals = require("globals")
 
 const noticeTemplate = `
@@ -61,7 +62,7 @@ const unusedOptions = {
   ignoreRestSiblings: false,
 }
 
-module.exports = [
+module.exports = ts.config(
   // dist folder is always generated
   { ignores: ["dist/**"] },
   // extend from eslint's recommendations as a baseline
@@ -77,35 +78,34 @@ module.exports = [
       "no-unused-vars": ["warn", unusedOptions],
     },
   },
-  // ts files use the typescript-eslint helper
-  ...ts
-    .config(
+  // ts files use typescript-eslint and some extra rules
+  {
+    files: ["**/*.ts"],
+    extends: [
       ...ts.configs.strictTypeChecked,
       ...ts.configs.stylisticTypeChecked,
-      {
-        languageOptions: {
-          parserOptions: {
-            project: true,
-            EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
-          },
-        },
-        plugins: { tsdoc },
-        rules: {
-          "@typescript-eslint/no-non-null-assertion": "off",
-          "@typescript-eslint/no-unused-vars": ["warn", unusedOptions],
-          "@typescript-eslint/consistent-type-imports": [
-            "warn",
-            {
-              prefer: "type-imports",
-              fixStyle: "inline-type-imports",
-              disallowTypeAnnotations: false,
-            },
-          ],
-          "tsdoc/syntax": "warn",
-        },
+    ],
+    languageOptions: {
+      parserOptions: {
+        EXPERIMENTAL_useProjectService: true,
       },
-    )
-    .map((config) => ({ ...config, files: ["**/*.ts"] })),
+    },
+    plugins: { tsdoc, deprecation },
+    rules: {
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-unused-vars": ["warn", unusedOptions],
+      "@typescript-eslint/consistent-type-imports": [
+        "warn",
+        {
+          prefer: "type-imports",
+          fixStyle: "inline-type-imports",
+          disallowTypeAnnotations: false,
+        },
+      ],
+      "tsdoc/syntax": "warn",
+      "deprecation/deprecation": "warn",
+    },
+  },
   // imports and license notices
   {
     files: ["**/*.js", "**/*.ts"],
@@ -118,4 +118,4 @@ module.exports = [
   },
   // disable rules that conflict with prettier
   prettier,
-]
+)
