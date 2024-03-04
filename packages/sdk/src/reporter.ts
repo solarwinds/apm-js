@@ -19,7 +19,7 @@ import * as process from "node:process"
 import { type AttributeValue } from "@opentelemetry/api"
 import { type Resource } from "@opentelemetry/resources"
 import {
-  SEMRESATTRS_PROCESS_COMMAND,
+  SEMRESATTRS_PROCESS_COMMAND_ARGS,
   SEMRESATTRS_PROCESS_COMMAND_LINE,
   SEMRESATTRS_SERVICE_NAME,
 } from "@opentelemetry/semantic-conventions"
@@ -91,7 +91,7 @@ export async function initMessage(
   const resourceAttributes = Object.fromEntries(
     Object.entries(resource.attributes)
       .map<[string, AttributeValue | undefined]>(([name, value]) =>
-        name === SEMRESATTRS_PROCESS_COMMAND
+        name === SEMRESATTRS_PROCESS_COMMAND_ARGS
           ? [SEMRESATTRS_PROCESS_COMMAND_LINE, (value as string[]).join(" ")]
           : [name, value],
       )
