@@ -20,7 +20,12 @@ import {
   NoopSpanProcessor,
   type ReadableSpan,
 } from "@opentelemetry/sdk-trace-base"
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
+import {
+  SEMATTRS_HTTP_METHOD,
+  SEMATTRS_HTTP_ROUTE,
+  SEMATTRS_HTTP_STATUS_CODE,
+  SEMATTRS_HTTP_URL,
+} from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 
 import { cache } from "./cache"
@@ -84,7 +89,7 @@ export class SwInboundMetricsSpanProcessor extends NoopSpanProcessor {
       } {
     if (
       span.kind !== SpanKind.SERVER ||
-      !(SemanticAttributes.HTTP_METHOD in span.attributes)
+      !(SEMATTRS_HTTP_METHOD in span.attributes)
     ) {
       return {
         isHttp: false,
@@ -95,13 +100,11 @@ export class SwInboundMetricsSpanProcessor extends NoopSpanProcessor {
       }
     }
 
-    const method = String(span.attributes[SemanticAttributes.HTTP_METHOD])
-    const status = Number(
-      span.attributes[SemanticAttributes.HTTP_STATUS_CODE] ?? 0,
-    )
-    const url = String(span.attributes[SemanticAttributes.HTTP_URL])
+    const method = String(span.attributes[SEMATTRS_HTTP_METHOD])
+    const status = Number(span.attributes[SEMATTRS_HTTP_STATUS_CODE] ?? 0)
+    const url = String(span.attributes[SEMATTRS_HTTP_URL])
 
-    let transaction = span.attributes[SemanticAttributes.HTTP_ROUTE]
+    let transaction = span.attributes[SEMATTRS_HTTP_ROUTE]
     if (typeof transaction !== "string") {
       try {
         const parsedUrl = new URL(url)

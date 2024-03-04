@@ -23,7 +23,10 @@ import {
 import { hrTimeToMilliseconds } from "@opentelemetry/core"
 import { Aggregation, View } from "@opentelemetry/sdk-metrics"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
+import {
+  SEMATTRS_HTTP_METHOD,
+  SEMATTRS_HTTP_STATUS_CODE,
+} from "@opentelemetry/semantic-conventions"
 import { type oboe } from "@solarwinds-apm/bindings"
 import { lazy } from "@solarwinds-apm/lazy"
 
@@ -82,8 +85,8 @@ export function recordServerlessResponseTime(
   span: ReadableSpan,
   transaction: string | undefined,
 ) {
-  const method = span.attributes[SemanticAttributes.HTTP_METHOD]
-  const statusCode = span.attributes[SemanticAttributes.HTTP_STATUS_CODE]
+  const method = span.attributes[SEMATTRS_HTTP_METHOD]
+  const statusCode = span.attributes[SEMATTRS_HTTP_STATUS_CODE]
   const isError = span.status.code === SpanStatusCode.ERROR
 
   const time = hrTimeToMilliseconds(span.duration)
@@ -93,10 +96,10 @@ export function recordServerlessResponseTime(
     "sw.is_error": isError,
   }
   if (method) {
-    attrs[SemanticAttributes.HTTP_METHOD] = method
+    attrs[SEMATTRS_HTTP_METHOD] = method
   }
   if (statusCode) {
-    attrs[SemanticAttributes.HTTP_STATUS_CODE] = statusCode
+    attrs[SEMATTRS_HTTP_STATUS_CODE] = statusCode
   }
 
   responseTime.record(time, attrs)

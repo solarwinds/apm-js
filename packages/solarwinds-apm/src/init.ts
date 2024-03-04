@@ -38,7 +38,7 @@ import {
   NodeTracerProvider,
   ParentBasedSampler,
 } from "@opentelemetry/sdk-trace-node"
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
+import { SEMRESATTRS_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import {
   getDetectedResource,
@@ -92,7 +92,7 @@ export async function init() {
 
   let resource = Resource.default().merge(
     new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
+      [SEMRESATTRS_SERVICE_NAME]: config.serviceName,
       "sw.data.module": "apm",
       "sw.apm.version": FULL_VERSION,
     }),

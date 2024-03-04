@@ -40,7 +40,7 @@ export class SwOtlpMetricsExporter
     }
   }
 
-  selectAggregation(instrumentType: InstrumentType): Aggregation {
+  override selectAggregation(instrumentType: InstrumentType): Aggregation {
     switch (instrumentType) {
       case InstrumentType.HISTOGRAM:
         return new ExponentialHistogramAggregation(undefined, true)

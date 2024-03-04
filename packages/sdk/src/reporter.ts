@@ -18,7 +18,11 @@ import * as process from "node:process"
 
 import { type AttributeValue } from "@opentelemetry/api"
 import { type Resource } from "@opentelemetry/resources"
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
+import {
+  SEMRESATTRS_PROCESS_COMMAND_ARGS,
+  SEMRESATTRS_PROCESS_COMMAND_LINE,
+  SEMRESATTRS_SERVICE_NAME,
+} from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import { dependencies } from "@solarwinds-apm/dependencies"
 import * as semver from "semver"
@@ -87,16 +91,13 @@ export async function initMessage(
   const resourceAttributes = Object.fromEntries(
     Object.entries(resource.attributes)
       .map<[string, AttributeValue | undefined]>(([name, value]) =>
-        name === SemanticResourceAttributes.PROCESS_COMMAND_ARGS
-          ? [
-              SemanticResourceAttributes.PROCESS_COMMAND_LINE,
-              (value as string[]).join(" "),
-            ]
+        name === SEMRESATTRS_PROCESS_COMMAND_ARGS
+          ? [SEMRESATTRS_PROCESS_COMMAND_LINE, (value as string[]).join(" ")]
           : [name, value],
       )
       .filter(
         ([name, value]) =>
-          name !== SemanticResourceAttributes.SERVICE_NAME &&
+          name !== SEMRESATTRS_SERVICE_NAME &&
           value !== undefined &&
           !Array.isArray(value),
       ),

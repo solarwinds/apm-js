@@ -34,7 +34,11 @@ import {
   type SpanExporter,
   type TimedEvent,
 } from "@opentelemetry/sdk-trace-base"
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
+import {
+  SEMATTRS_EXCEPTION_MESSAGE,
+  SEMATTRS_EXCEPTION_STACKTRACE,
+  SEMATTRS_EXCEPTION_TYPE,
+} from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 
 import { type SwConfiguration } from "."
@@ -163,29 +167,25 @@ export class SwExporter implements SpanExporter {
 
     evt.addInfo(
       "ErrorClass",
-      SwExporter.attributeValue(
-        event.attributes?.[SemanticAttributes.EXCEPTION_TYPE],
-      ),
+      SwExporter.attributeValue(event.attributes?.[SEMATTRS_EXCEPTION_TYPE]),
     )
     evt.addInfo(
       "ErrorMsg",
-      SwExporter.attributeValue(
-        event.attributes?.[SemanticAttributes.EXCEPTION_MESSAGE],
-      ),
+      SwExporter.attributeValue(event.attributes?.[SEMATTRS_EXCEPTION_MESSAGE]),
     )
     evt.addInfo(
       "Backtrace",
       SwExporter.attributeValue(
-        event.attributes?.[SemanticAttributes.EXCEPTION_STACKTRACE],
+        event.attributes?.[SEMATTRS_EXCEPTION_STACKTRACE],
       ),
     )
 
     const attributes = Object.entries(event.attributes ?? {}).filter(
       ([key]) =>
         ![
-          SemanticAttributes.EXCEPTION_TYPE,
-          SemanticAttributes.EXCEPTION_MESSAGE,
-          SemanticAttributes.EXCEPTION_STACKTRACE,
+          SEMATTRS_EXCEPTION_TYPE,
+          SEMATTRS_EXCEPTION_MESSAGE,
+          SEMATTRS_EXCEPTION_STACKTRACE,
         ].includes(key),
     )
     for (const [key, value] of attributes) {

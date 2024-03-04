@@ -32,7 +32,12 @@ import {
   SamplingDecision,
   type SamplingResult,
 } from "@opentelemetry/sdk-trace-base"
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions"
+import {
+  SEMATTRS_HTTP_SCHEME,
+  SEMATTRS_HTTP_TARGET,
+  SEMATTRS_NET_HOST_NAME,
+  SEMATTRS_NET_HOST_PORT,
+} from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 
 import { type SwConfiguration } from "./config"
@@ -202,10 +207,10 @@ export class SwSampler implements Sampler {
 
     const kindName = SpanKind[spanKind]
 
-    const httpScheme = attributes[SemanticAttributes.HTTP_SCHEME]?.toString()
-    const netHostName = attributes[SemanticAttributes.NET_HOST_NAME]?.toString()
-    const netHostPort = attributes[SemanticAttributes.NET_HOST_PORT]?.toString()
-    const httpTarget = attributes[SemanticAttributes.HTTP_TARGET]?.toString()
+    const httpScheme = attributes[SEMATTRS_HTTP_SCHEME]?.toString()
+    const netHostName = attributes[SEMATTRS_NET_HOST_NAME]?.toString()
+    const netHostPort = attributes[SEMATTRS_NET_HOST_PORT]?.toString()
+    const httpTarget = attributes[SEMATTRS_HTTP_TARGET]?.toString()
 
     let identifier: string
     if (httpScheme && netHostName && httpTarget) {
