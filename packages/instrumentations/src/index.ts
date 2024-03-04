@@ -18,102 +18,149 @@ import {
   type Instrumentation,
   type InstrumentationConfig,
 } from "@opentelemetry/instrumentation"
-import { AmqplibInstrumentation } from "@opentelemetry/instrumentation-amqplib"
-import { AwsLambdaInstrumentation } from "@opentelemetry/instrumentation-aws-lambda"
-import { AwsInstrumentation } from "@opentelemetry/instrumentation-aws-sdk"
-import { BunyanInstrumentation } from "@opentelemetry/instrumentation-bunyan"
-import { CassandraDriverInstrumentation } from "@opentelemetry/instrumentation-cassandra-driver"
-import { ConnectInstrumentation } from "@opentelemetry/instrumentation-connect"
-import { CucumberInstrumentation } from "@opentelemetry/instrumentation-cucumber"
-import { DataloaderInstrumentation } from "@opentelemetry/instrumentation-dataloader"
-import { DnsInstrumentation } from "@opentelemetry/instrumentation-dns"
-import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
-import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify"
-import { FsInstrumentation } from "@opentelemetry/instrumentation-fs"
-import { GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool"
-import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
-import { GrpcInstrumentation } from "@opentelemetry/instrumentation-grpc"
-import { HapiInstrumentation } from "@opentelemetry/instrumentation-hapi"
-import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
-import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
-import { KnexInstrumentation } from "@opentelemetry/instrumentation-knex"
-import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
-import { LruMemoizerInstrumentation } from "@opentelemetry/instrumentation-lru-memoizer"
-import { MemcachedInstrumentation } from "@opentelemetry/instrumentation-memcached"
-import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb"
-import { MongooseInstrumentation } from "@opentelemetry/instrumentation-mongoose"
-import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
-import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
-import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core"
-import { NetInstrumentation } from "@opentelemetry/instrumentation-net"
-import { PgInstrumentation } from "@opentelemetry/instrumentation-pg"
-import { PinoInstrumentation } from "@opentelemetry/instrumentation-pino"
-import { RedisInstrumentation as RedisInstrumentationV2 } from "@opentelemetry/instrumentation-redis"
-import { RedisInstrumentation as RedisInstrumentationV4 } from "@opentelemetry/instrumentation-redis-4"
-import { RestifyInstrumentation } from "@opentelemetry/instrumentation-restify"
-import { RouterInstrumentation } from "@opentelemetry/instrumentation-router"
-import { SocketIoInstrumentation } from "@opentelemetry/instrumentation-socket.io"
-import { TediousInstrumentation } from "@opentelemetry/instrumentation-tedious"
-import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston"
+import { type AmqplibInstrumentation } from "@opentelemetry/instrumentation-amqplib"
+import { type AwsLambdaInstrumentation } from "@opentelemetry/instrumentation-aws-lambda"
+import { type AwsInstrumentation } from "@opentelemetry/instrumentation-aws-sdk"
+import { type BunyanInstrumentation } from "@opentelemetry/instrumentation-bunyan"
+import { type CassandraDriverInstrumentation } from "@opentelemetry/instrumentation-cassandra-driver"
+import { type ConnectInstrumentation } from "@opentelemetry/instrumentation-connect"
+import { type CucumberInstrumentation } from "@opentelemetry/instrumentation-cucumber"
+import { type DataloaderInstrumentation } from "@opentelemetry/instrumentation-dataloader"
+import { type DnsInstrumentation } from "@opentelemetry/instrumentation-dns"
+import { type ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
+import { type FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify"
+import { type FsInstrumentation } from "@opentelemetry/instrumentation-fs"
+import { type GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool"
+import { type GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
+import { type GrpcInstrumentation } from "@opentelemetry/instrumentation-grpc"
+import { type HapiInstrumentation } from "@opentelemetry/instrumentation-hapi"
+import { type HttpInstrumentation } from "@opentelemetry/instrumentation-http"
+import { type IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
+import { type KnexInstrumentation } from "@opentelemetry/instrumentation-knex"
+import { type KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
+import { type LruMemoizerInstrumentation } from "@opentelemetry/instrumentation-lru-memoizer"
+import { type MemcachedInstrumentation } from "@opentelemetry/instrumentation-memcached"
+import { type MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb"
+import { type MongooseInstrumentation } from "@opentelemetry/instrumentation-mongoose"
+import { type MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
+import { type MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
+import { type NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core"
+import { type NetInstrumentation } from "@opentelemetry/instrumentation-net"
+import { type PgInstrumentation } from "@opentelemetry/instrumentation-pg"
+import { type PinoInstrumentation } from "@opentelemetry/instrumentation-pino"
+import { type RedisInstrumentation as RedisInstrumentationV2 } from "@opentelemetry/instrumentation-redis"
+import { type RedisInstrumentation as RedisInstrumentationV4 } from "@opentelemetry/instrumentation-redis-4"
+import { type RestifyInstrumentation } from "@opentelemetry/instrumentation-restify"
+import { type RouterInstrumentation } from "@opentelemetry/instrumentation-router"
+import { type SocketIoInstrumentation } from "@opentelemetry/instrumentation-socket.io"
+import { type TediousInstrumentation } from "@opentelemetry/instrumentation-tedious"
+import { type WinstonInstrumentation } from "@opentelemetry/instrumentation-winston"
 import {
-  awsEc2Detector,
-  awsLambdaDetector,
-} from "@opentelemetry/resource-detector-aws"
-import { containerDetector } from "@opentelemetry/resource-detector-container"
-import {
+  type DetectorSync,
   detectResourcesSync,
-  envDetectorSync,
-  hostDetectorSync,
-  osDetectorSync,
-  processDetectorSync,
   type Resource,
 } from "@opentelemetry/resources"
+import { load } from "@solarwinds-apm/module/load"
 
-const INSTRUMENTATIONS = {
-  "@opentelemetry/instrumentation-amqplib": AmqplibInstrumentation,
-  "@opentelemetry/instrumentation-aws-lambda": AwsLambdaInstrumentation,
-  "@opentelemetry/instrumentation-aws-sdk": AwsInstrumentation,
-  "@opentelemetry/instrumentation-bunyan": BunyanInstrumentation,
-  "@opentelemetry/instrumentation-cassandra-driver":
-    CassandraDriverInstrumentation,
-  "@opentelemetry/instrumentation-connect": ConnectInstrumentation,
-  "@opentelemetry/instrumentation-cucumber": CucumberInstrumentation,
-  "@opentelemetry/instrumentation-dataloader": DataloaderInstrumentation,
-  "@opentelemetry/instrumentation-dns": DnsInstrumentation,
-  "@opentelemetry/instrumentation-express": ExpressInstrumentation,
-  "@opentelemetry/instrumentation-fastify": FastifyInstrumentation,
-  "@opentelemetry/instrumentation-fs": FsInstrumentation,
-  "@opentelemetry/instrumentation-generic-pool": GenericPoolInstrumentation,
-  "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation,
-  "@opentelemetry/instrumentation-grpc": GrpcInstrumentation,
-  "@opentelemetry/instrumentation-hapi": HapiInstrumentation,
-  "@opentelemetry/instrumentation-http": HttpInstrumentation,
-  "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation,
-  "@opentelemetry/instrumentation-knex": KnexInstrumentation,
-  "@opentelemetry/instrumentation-koa": KoaInstrumentation,
-  "@opentelemetry/instrumentation-lru-memoizer": LruMemoizerInstrumentation,
-  "@opentelemetry/instrumentation-memcached": MemcachedInstrumentation,
-  "@opentelemetry/instrumentation-mongodb": MongoDBInstrumentation,
-  "@opentelemetry/instrumentation-mongoose": MongooseInstrumentation,
-  "@opentelemetry/instrumentation-mysql2": MySQL2Instrumentation,
-  "@opentelemetry/instrumentation-mysql": MySQLInstrumentation,
-  "@opentelemetry/instrumentation-nestjs-core": NestInstrumentation,
-  "@opentelemetry/instrumentation-net": NetInstrumentation,
-  "@opentelemetry/instrumentation-pg": PgInstrumentation,
-  "@opentelemetry/instrumentation-pino": PinoInstrumentation,
-  "@opentelemetry/instrumentation-redis": RedisInstrumentationV2,
-  "@opentelemetry/instrumentation-redis-4": RedisInstrumentationV4,
-  "@opentelemetry/instrumentation-restify": RestifyInstrumentation,
-  "@opentelemetry/instrumentation-router": RouterInstrumentation,
-  "@opentelemetry/instrumentation-socket.io": SocketIoInstrumentation,
-  "@opentelemetry/instrumentation-tedious": TediousInstrumentation,
-  "@opentelemetry/instrumentation-winston": WinstonInstrumentation,
+// map of package names to their instrumentation type
+interface InstrumentationTypes {
+  "@opentelemetry/instrumentation-amqplib": AmqplibInstrumentation
+  "@opentelemetry/instrumentation-aws-lambda": AwsLambdaInstrumentation
+  "@opentelemetry/instrumentation-aws-sdk": AwsInstrumentation
+  "@opentelemetry/instrumentation-bunyan": BunyanInstrumentation
+  "@opentelemetry/instrumentation-cassandra-driver": CassandraDriverInstrumentation
+  "@opentelemetry/instrumentation-connect": ConnectInstrumentation
+  "@opentelemetry/instrumentation-cucumber": CucumberInstrumentation
+  "@opentelemetry/instrumentation-dataloader": DataloaderInstrumentation
+  "@opentelemetry/instrumentation-dns": DnsInstrumentation
+  "@opentelemetry/instrumentation-express": ExpressInstrumentation
+  "@opentelemetry/instrumentation-fastify": FastifyInstrumentation
+  "@opentelemetry/instrumentation-fs": FsInstrumentation
+  "@opentelemetry/instrumentation-generic-pool": GenericPoolInstrumentation
+  "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation
+  "@opentelemetry/instrumentation-grpc": GrpcInstrumentation
+  "@opentelemetry/instrumentation-hapi": HapiInstrumentation
+  "@opentelemetry/instrumentation-http": HttpInstrumentation
+  "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation
+  "@opentelemetry/instrumentation-knex": KnexInstrumentation
+  "@opentelemetry/instrumentation-koa": KoaInstrumentation
+  "@opentelemetry/instrumentation-lru-memoizer": LruMemoizerInstrumentation
+  "@opentelemetry/instrumentation-memcached": MemcachedInstrumentation
+  "@opentelemetry/instrumentation-mongodb": MongoDBInstrumentation
+  "@opentelemetry/instrumentation-mongoose": MongooseInstrumentation
+  "@opentelemetry/instrumentation-mysql2": MySQL2Instrumentation
+  "@opentelemetry/instrumentation-mysql": MySQLInstrumentation
+  "@opentelemetry/instrumentation-nestjs-core": NestInstrumentation
+  "@opentelemetry/instrumentation-net": NetInstrumentation
+  "@opentelemetry/instrumentation-pg": PgInstrumentation
+  "@opentelemetry/instrumentation-pino": PinoInstrumentation
+  "@opentelemetry/instrumentation-redis": RedisInstrumentationV2
+  "@opentelemetry/instrumentation-redis-4": RedisInstrumentationV4
+  "@opentelemetry/instrumentation-restify": RestifyInstrumentation
+  "@opentelemetry/instrumentation-router": RouterInstrumentation
+  "@opentelemetry/instrumentation-socket.io": SocketIoInstrumentation
+  "@opentelemetry/instrumentation-tedious": TediousInstrumentation
+  "@opentelemetry/instrumentation-winston": WinstonInstrumentation
 }
+// map of instrumentation package names to the name of their exported instrumentation class
+const INSTRUMENTATION_NAMES: Record<string, string> = {
+  "@opentelemetry/instrumentation-amqplib": "AmqplibInstrumentation",
+  "@opentelemetry/instrumentation-aws-lambda": "AwsLambdaInstrumentation",
+  "@opentelemetry/instrumentation-aws-sdk": "AwsInstrumentation",
+  "@opentelemetry/instrumentation-bunyan": "BunyanInstrumentation",
+  "@opentelemetry/instrumentation-cassandra-driver":
+    "CassandraDriverInstrumentation",
+  "@opentelemetry/instrumentation-connect": "ConnectInstrumentation",
+  "@opentelemetry/instrumentation-cucumber": "CucumberInstrumentation",
+  "@opentelemetry/instrumentation-dataloader": "DataloaderInstrumentation",
+  "@opentelemetry/instrumentation-dns": "DnsInstrumentation",
+  "@opentelemetry/instrumentation-express": "ExpressInstrumentation",
+  "@opentelemetry/instrumentation-fastify": "FastifyInstrumentation",
+  "@opentelemetry/instrumentation-fs": "FsInstrumentation",
+  "@opentelemetry/instrumentation-generic-pool": "GenericPoolInstrumentation",
+  "@opentelemetry/instrumentation-graphql": "GraphQLInstrumentation",
+  "@opentelemetry/instrumentation-grpc": "GrpcInstrumentation",
+  "@opentelemetry/instrumentation-hapi": "HapiInstrumentation",
+  "@opentelemetry/instrumentation-http": "HttpInstrumentation",
+  "@opentelemetry/instrumentation-ioredis": "IORedisInstrumentation",
+  "@opentelemetry/instrumentation-knex": "KnexInstrumentation",
+  "@opentelemetry/instrumentation-koa": "KoaInstrumentation",
+  "@opentelemetry/instrumentation-lru-memoizer": "LruMemoizerInstrumentation",
+  "@opentelemetry/instrumentation-memcached": "MemcachedInstrumentation",
+  "@opentelemetry/instrumentation-mongodb": "MongoDBInstrumentation",
+  "@opentelemetry/instrumentation-mongoose": "MongooseInstrumentation",
+  "@opentelemetry/instrumentation-mysql2": "MySQL2Instrumentation",
+  "@opentelemetry/instrumentation-mysql": "MySQLInstrumentation",
+  "@opentelemetry/instrumentation-nestjs-core": "NestInstrumentation",
+  "@opentelemetry/instrumentation-net": "NetInstrumentation",
+  "@opentelemetry/instrumentation-pg": "PgInstrumentation",
+  "@opentelemetry/instrumentation-pino": "PinoInstrumentation",
+  "@opentelemetry/instrumentation-redis": "RedisInstrumentation",
+  "@opentelemetry/instrumentation-redis-4": "RedisInstrumentation",
+  "@opentelemetry/instrumentation-restify": "RestifyInstrumentation",
+  "@opentelemetry/instrumentation-router": "RouterInstrumentation",
+  "@opentelemetry/instrumentation-socket.io": "SocketIoInstrumentation",
+  "@opentelemetry/instrumentation-tedious": "TediousInstrumentation",
+  "@opentelemetry/instrumentation-winston": "WinstonInstrumentation",
+}
+
+// map of resource detector package names to the names of their exported detectors
+const RESOURCE_DETECTOR_NAMES: Record<string, string[]> = {
+  "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
+  "@opentelemetry/resource-detector-azure": ["azureAppServiceDetector"],
+  "@opentelemetry/resource-detector-container": ["containerDetector"],
+  "@opentelemetry/resources": [
+    "envDetectorSync",
+    "hostDetectorSync",
+    "osDetectorSync",
+    "processDetectorSync",
+  ],
+}
+
 export type InstrumentationConfigMap = {
-  [I in keyof typeof INSTRUMENTATIONS]?: (typeof INSTRUMENTATIONS)[I] extends new (
-    config: infer C,
-    ...args: unknown[]
-  ) => unknown
+  [I in keyof InstrumentationTypes]?: InstrumentationTypes[I] extends {
+    setConfig(config: infer C): unknown
+  }
     ? C
     : never
 }
@@ -121,33 +168,62 @@ export type InstrumentationConfigMap = {
 export function getInstrumentations(
   configs: InstrumentationConfigMap,
   defaultDisabled: boolean,
-): Instrumentation[] {
-  const instrumentations: Instrumentation[] = []
-  const c: Record<string, InstrumentationConfig> = configs
+): Instrumentation[] | Promise<Instrumentation[]> {
+  const allConfigs = Object.assign(
+    // one entry per available instrumentations
+    Object.fromEntries(
+      Object.keys(INSTRUMENTATION_NAMES).map((name) => [name, {}]),
+    ),
+    // override defaults using the entries present in the config while
+    // filtering out entries from the config that are not available
+    Object.fromEntries(
+      Object.entries(configs).filter(([name]) =>
+        Object.keys(INSTRUMENTATION_NAMES).includes(name),
+      ),
+    ),
+  )
 
-  for (const [name, Class] of Object.entries<
-    new (config?: InstrumentationConfig) => Instrumentation
-  >(INSTRUMENTATIONS)) {
-    let config = c[name]
+  const instrumentations = Object.entries(allConfigs)
+    .filter(([, config]: [unknown, InstrumentationConfig]) => {
+      // explicitly set "enabled" to false if that's the default
+      if (defaultDisabled) config.enabled ??= false
+      // filter out disabled instrumentations
+      return config.enabled !== false
+    })
+    .map(([name, config]) => {
+      // instantiate the instrumentation class exported from package
+      const instantiate = (loaded: unknown) => {
+        const Class = (
+          loaded as Record<
+            string,
+            new (config: InstrumentationConfig) => Instrumentation
+          >
+        )[INSTRUMENTATION_NAMES[name]!]!
+        return new Class(config)
+      }
 
-    if (defaultDisabled) (config ??= {}).enabled ??= false
-    if (config?.enabled === false) continue
+      // load is synchronous in CJS but async in ESM
+      const loaded = load(name)
+      if (loaded instanceof Promise) return loaded.then(instantiate)
+      else return instantiate(loaded)
+    })
 
-    instrumentations.push(new Class(config))
-  }
-  return instrumentations
+  if (instrumentations.length > 0 && instrumentations[0] instanceof Promise)
+    return Promise.all(instrumentations)
+  else return instrumentations as Instrumentation[]
 }
 
-export function getDetectedResource(): Resource {
+export async function getDetectedResource(): Promise<Resource> {
+  const detectors = await Promise.all(
+    Object.entries(RESOURCE_DETECTOR_NAMES).map(async ([name, detectors]) => {
+      const loaded = await load(name)
+      return Object.entries(loaded as object)
+        .filter(([name]) => detectors.includes(name))
+        .map(([, detector]) => detector as DetectorSync)
+    }),
+  )
+
   return detectResourcesSync({
-    detectors: [
-      containerDetector,
-      awsEc2Detector,
-      awsLambdaDetector,
-      envDetectorSync,
-      hostDetectorSync,
-      osDetectorSync,
-      processDetectorSync,
-    ],
+    detectors: detectors.flat(),
   })
 }

@@ -18,12 +18,14 @@ export function load(file: string): unknown {
   /* eslint-disable-next-line @typescript-eslint/no-var-requires */
   const required: unknown = require(file)
 
-  const fakeEsmDefaultExport =
-    typeof required === "object" &&
-    required !== null &&
-    "default" in required &&
-    Object.keys(required).length === 1
+  const isObject = typeof required === "object" && required !== null
+  const hasDefault = isObject && "default" in required
+  const keyCount = isObject && Object.keys(required).length
 
-  if (fakeEsmDefaultExport) return required.default
+  const useDefaultExport =
+    hasDefault &&
+    (keyCount === 1 || (keyCount === 2 && "__esModule" in required))
+
+  if (useDefaultExport) return required.default
   else return required
 }

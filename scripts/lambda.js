@@ -29,6 +29,11 @@ const ora = require("ora")
 
 const [name, version] = argv.slice(2)
 
+const sdkPackage = JSON.parse(readFileSync("packages/sdk/package.json"))
+const apiVersion = sdkPackage.peerDependencies["@opentelemetry/api"]
+const exportersVersion =
+  sdkPackage.devDependencies["@opentelemetry/exporter-trace-otlp-grpc"]
+
 const rm = (...args) => {
   try {
     rmSync(...args)
@@ -39,7 +44,11 @@ const rm = (...args) => {
 
 const replace = (file) => {
   let contents = readFileSync(file, { encoding: "utf-8" })
-  contents = contents.replace("{{name}}", name).replace("{{version}}", version)
+  contents = contents
+    .replaceAll("{{name}}", name)
+    .replaceAll("{{version}}", version)
+    .replaceAll("{{api-version}}", apiVersion)
+    .replaceAll("{{exporters-version}}", exportersVersion)
   writeFileSync(file, contents)
 }
 
@@ -48,6 +57,7 @@ rm("node_modules/.lambda", { recursive: true })
 cpSync("lambda", "node_modules/.lambda", { recursive: true })
 replace("node_modules/.lambda/package.json")
 replace("node_modules/.lambda/shim.cjs")
+replace("node_modules/.lambda/shim.mjs")
 
 execSync("touch yarn.lock && yarn install", {
   cwd: "node_modules/.lambda",
@@ -94,6 +104,9 @@ archive.directory(
 )
 archive.file("node_modules/.lambda/shim.cjs", {
   name: "solarwinds-apm/shim.cjs",
+})
+archive.file("node_modules/.lambda/shim.mjs", {
+  name: "solarwinds-apm/shim.mjs",
 })
 archive.file("node_modules/.lambda/wrapper", {
   name: "solarwinds-apm/wrapper",
