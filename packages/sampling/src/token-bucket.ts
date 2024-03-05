@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/** Maximum value of a signed 32 bit integer */
+const MAX_INTERVAL = 2 ** 31 - 1
+
 /**
  * Token bucket settings
  *
@@ -43,12 +46,12 @@ export class TokenBucket {
     this.#r = Math.max(0, n)
   }
 
-  #i = 1
+  #i = MAX_INTERVAL
   get #interval(): number {
     return this.#i
   }
   set #interval(n: number) {
-    this.#i = Math.max(1, n)
+    this.#i = Math.max(0, Math.min(MAX_INTERVAL, n))
   }
 
   #t = 0
@@ -64,7 +67,7 @@ export class TokenBucket {
   constructor(settings: TokenBucketSettings = {}) {
     this.#capacity = settings.capacity ?? 0
     this.#rate = settings.rate ?? 0
-    this.#interval = settings.interval ?? 1
+    this.#interval = settings.interval ?? MAX_INTERVAL
 
     this.#tokens = this.#capacity
   }
