@@ -19,7 +19,6 @@ import { spawnSync } from "node:child_process"
 import { createRequire } from "node:module"
 import * as path from "node:path"
 import * as process from "node:process"
-import { pathToFileURL } from "node:url"
 
 import { callsite } from "@solarwinds-apm/module"
 import globby from "globby"
@@ -36,9 +35,6 @@ const DEFAULTS = [
 ]
 
 const resolve = createRequire(callsite().getFileName()!).resolve
-
-// TSX registers a custom loader that lets Node import TypeScript files
-const tsxPath = pathToFileURL(resolve("tsx")).toString()
 
 // Skip Node executable and current script path
 let argv = process.argv.slice(2)
@@ -90,8 +86,8 @@ const reporter = semver.gte(process.versions.node, "18.0.0")
   : []
 
 const loader = semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
-  ? ["--import", tsxPath]
-  : ["--loader", tsxPath]
+  ? ["--import", "@solarwinds-apm/test/ts-node/import"]
+  : ["--loader", "@solarwinds-apm/test/ts-node/loader"]
 
 argv = [
   // Launch Node in test runner mode

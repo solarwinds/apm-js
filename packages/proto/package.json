@@ -42,5 +42,8 @@
     "eslint": "^8.50.0",
     "prettier": "^3.0.3",
     "protobufjs-cli": "^1.1.2"
+  },
+  "engines": {
+    "node": ">=16.13.0"
   }
 }
