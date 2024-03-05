@@ -1,5 +1,6 @@
 {
   "name": "@solarwinds-apm/proto",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -29,8 +30,8 @@
   },
   "scripts": {
     "build": "node build.js",
-    "lint": "prettier --check .",
-    "lint:fix": "prettier --write .",
+    "lint": "prettier --check . && eslint . --max-warnings=0",
+    "lint:fix": "eslint --fix . && prettier --write .",
     "publish": "node ../../scripts/publish.js"
   },
   "dependencies": {

@@ -2271,6 +2271,7 @@ __metadata:
   resolution: "@solarwinds-apm/solarwinds-apm@workspace:."
   dependencies:
     eslint: "npm:^8.50.0"
+    husky: "npm:^9.0.11"
     prettier: "npm:^3.0.3"
     turbo: "npm:^1.10.15"
     typescript: "npm:^5.2.2"
@@ -5416,6 +5417,15 @@ __metadata:
     agent-base: "npm:^7.0.2"
     debug: "npm:4"
   checksum: 10c0/bc4f7c38da32a5fc622450b6cb49a24ff596f9bd48dcedb52d2da3fa1c1a80e100fb506bd59b326c012f21c863c69b275c23de1a01d0b84db396822fdf25e52b
+  languageName: node
+  linkType: hard
+
+"husky@npm:^9.0.11":
+  version: 9.0.11
+  resolution: "husky@npm:9.0.11"
+  bin:
+    husky: bin.mjs
+  checksum: 10c0/2c787dcf74a837fc9a4fea7da907509d4bd9a289f4ea10ecc9d86279e4d4542b0f5f6443a619bccae19e265f2677172cc2b86aae5c932a35a330cc227d914605
   languageName: node
   linkType: hard
 
