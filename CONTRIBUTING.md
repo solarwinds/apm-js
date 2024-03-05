@@ -9,15 +9,15 @@
 ## Project setup
 
 ```sh
-# Enable corepack
-corepack enable
 # Enable git lfs
 git lfs install
-# Install latest dependencies
+# Fetch submodules
+git submodule update --init --recursive
+# Enable corepack
+corepack enable
+# Install dependencies
 yarn install
 ```
-
-The first two steps need to be repeated any time changes are made upstream that affect either the dependencies of any package or any of the files stored in LFS. It's a good habit to do it after any pull/checkout/merge/rebase.
 
 ## Project structure
 
