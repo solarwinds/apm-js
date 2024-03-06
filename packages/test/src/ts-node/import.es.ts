@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "ts-node/register"
+
 import { register } from "node:module"
 
 register("./loader.es.js", import.meta.url)

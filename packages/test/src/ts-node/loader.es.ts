@@ -14,5 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "ts-node/register"
+
 // @ts-expect-error hooks don't have a type definition
 export * from "ts-node/esm"
