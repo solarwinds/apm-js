@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { VERSION as OTEL_VERSION } from "@opentelemetry/core"
+import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import { VERSION as SDK_VERSION } from "@solarwinds-apm/sdk"
 import * as semver from "semver"
 
@@ -26,14 +27,16 @@ const MINIMUM_SUPPORTED = "16.13.0"
 const MINIMUM_LTS = "18.0.0"
 
 export function versionCheck(): boolean {
-  console.log(
-    [
-      `Node.js ${NODE_VERSION}`,
-      `solarwinds-apm ${VERSION}`,
-      `@solarwinds-apm/sdk ${SDK_VERSION}`,
-      `@opentelemetry/core ${OTEL_VERSION}`,
-    ].join("\n"),
-  )
+  if (!IS_SERVERLESS) {
+    console.log(
+      [
+        `Node.js ${NODE_VERSION}`,
+        `solarwinds-apm ${VERSION}`,
+        `@solarwinds-apm/sdk ${SDK_VERSION}`,
+        `@opentelemetry/core ${OTEL_VERSION}`,
+      ].join("\n"),
+    )
+  }
 
   try {
     let supported = true
@@ -54,7 +57,8 @@ export function versionCheck(): boolean {
     if (
       process.versions.ares &&
       semver.satisfies(process.versions.ares, "1.20.x") &&
-      process.env.GRPC_DNS_RESOLVER !== "native"
+      process.env.GRPC_DNS_RESOLVER !== "native" &&
+      !IS_SERVERLESS
     ) {
       console.error(
         "The current Node.js version is incompatible with the default DNS resolver used by the instrumentation library.",
