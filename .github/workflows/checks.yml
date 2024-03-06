@@ -37,9 +37,6 @@ jobs:
       - run: yarn build
       - run: yarn lint
       - run: yarn test
-        env:
-          TEST_SERVICE_KEY: ${{ secrets.TEST_SERVICE_KEY }}
-          TEST_COLLECTOR: ${{ secrets.TEST_COLLECTOR }}
 
       # load bearing .root file
       # actions/upload-artifact will make the archive root the topmost directory which contains all specified files
@@ -190,9 +187,6 @@ jobs:
 
       - run: yarn install --immutable
       - run: yarn test --only
-        env:
-          TEST_SERVICE_KEY: ${{ secrets.TEST_SERVICE_KEY }}
-          TEST_COLLECTOR: ${{ secrets.TEST_COLLECTOR }}
 
   terminate-arm64:
     if: always() && github.event_name == 'pull_request'

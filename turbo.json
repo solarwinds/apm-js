@@ -32,7 +32,7 @@
     "test": {
       "dependsOn": ["@solarwinds-apm/test#build", "build"],
       "inputs": ["package.json", "tsconfig.json", "src/**", "test/**"],
-      "env": ["TEST_*", "SW_APM_*", "OTEL_*"],
+      "env": ["SW_APM_*", "OTEL_*"],
       "outputs": []
     }
   },
