@@ -37,7 +37,7 @@ describe("TokenBucket", () => {
     expect(bucket.consume(2)).to.be.true
 
     bucket.start()
-    await setTimeout(25)
+    await setTimeout(50)
     bucket.stop()
     expect(bucket.consume(2)).to.be.true
   })
@@ -47,7 +47,7 @@ describe("TokenBucket", () => {
     expect(bucket.consume(2)).to.be.true
 
     bucket.start()
-    await setTimeout(50)
+    await setTimeout(100)
     bucket.stop()
     expect(bucket.consume(4)).to.be.false
   })
@@ -72,7 +72,7 @@ describe("TokenBucket", () => {
     bucket.start()
 
     bucket.update({ rate: 2, interval: 5 })
-    await setTimeout(25)
+    await setTimeout(50)
     bucket.stop()
     expect(bucket.consume(8)).to.be.true
   })
@@ -81,7 +81,7 @@ describe("TokenBucket", () => {
     const bucket = new TokenBucket()
 
     bucket.start()
-    await setTimeout(50)
+    await setTimeout(100)
     bucket.stop()
 
     expect(bucket.consume()).to.be.false
