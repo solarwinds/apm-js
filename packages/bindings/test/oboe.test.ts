@@ -56,7 +56,7 @@ describe("Reporter", () => {
 
     const ready = oboe.Context.isReady(INIT_TIMEOUT)
     expect(ready).not.to.be.greaterThan(oboe.SERVER_RESPONSE_OK)
-  })
+  }).timeout(INIT_TIMEOUT)
 })
 
 describe("Metadata", () => {

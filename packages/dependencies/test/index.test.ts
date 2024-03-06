@@ -15,13 +15,18 @@ limitations under the License.
 */
 
 import { expect, it } from "@solarwinds-apm/test"
+import { readFile } from "fs/promises"
 
-import { devDependencies } from "../package.json"
 import { dependencies } from "../src/index.js"
 
+const { devDependencies } = JSON.parse(
+  await readFile("package.json", { encoding: "utf-8" }),
+) as { devDependencies: Record<string, string> }
+
+const deps = await dependencies()
+
 for (const name of Object.keys(devDependencies)) {
-  it(`detects ${name}`, async () => {
-    const deps = await dependencies()
+  it(`detects ${name}`, () => {
     expect(deps.has(name)).to.be.true
   })
 }
