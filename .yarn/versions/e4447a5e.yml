@@ -3,9 +3,9 @@ releases:
   "@solarwinds-apm/proto": patch
   "@solarwinds-apm/sampling": major
   "@solarwinds-apm/test": minor
+  solarwinds-apm: minor
 
 declined:
   - "@solarwinds-apm/bindings"
   - "@solarwinds-apm/dependencies"
   - "@solarwinds-apm/sdk"
-  - solarwinds-apm
