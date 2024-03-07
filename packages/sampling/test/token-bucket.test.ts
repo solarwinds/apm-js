@@ -67,7 +67,7 @@ describe("TokenBucket", () => {
   })
 
   it("can be updated while running", async () => {
-    const bucket = new TokenBucket({ capacity: 8, rate: 1, interval: 10 })
+    const bucket = new TokenBucket({ capacity: 8, rate: 0, interval: 10 })
     expect(bucket.consume(8)).to.be.true
     bucket.start()
 
