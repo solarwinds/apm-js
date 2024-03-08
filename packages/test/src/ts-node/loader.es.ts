@@ -14,15 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { describe, expect, it } from "@solarwinds-apm/test"
+import "ts-node/register"
 
-import { oboe } from ".."
-
-describe("Metadata", () => {
-  describe("makeRandom", () => {
-    it("should produce valid metadata", () => {
-      const random = oboe.Metadata.makeRandom()
-      expect(random.isValid()).to.be.true
-    })
-  })
-})
+// @ts-expect-error hooks don't have a type definition
+export * from "ts-node/esm"

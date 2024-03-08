@@ -37,7 +37,7 @@ import {
   Tracer,
   type TracerConfig,
 } from "@opentelemetry/sdk-trace-base"
-import type { oboe } from "@solarwinds-apm/bindings"
+import { oboe } from "@solarwinds-apm/bindings"
 
 import { type SwConfiguration } from "../src"
 import { type TraceOptions } from "../src/context"
@@ -54,6 +54,7 @@ export function config(
     serviceName: "",
     enabled: true,
     oboeLogLevel: 6,
+    oboeLogType: oboe.INIT_LOG_TYPE_NULL,
     otelLogLevel: DiagLogLevel.ALL,
     runtimeMetrics: true,
     triggerTraceEnabled: true,

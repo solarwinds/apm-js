@@ -22,8 +22,6 @@ import {
   trace,
 } from "@opentelemetry/api"
 
-import packageJson from "../package.json"
-
 interface InstrumentOptions {
   enabled?: boolean
 }
@@ -41,7 +39,7 @@ function startActiveSpan<T>(span: SpanOptions, f: (span: Span) => T): T {
   const s = typeof span === "string" ? { name: span } : span()
   const last = trace.getActiveSpan()
 
-  const tracer = trace.getTracer(packageJson.name, packageJson.version)
+  const tracer = trace.getTracer("solarwinds-apm")
   return tracer.startActiveSpan(s.name, { attributes: s.kvpairs }, (span) => {
     s.finalize?.(span, last)
     return f(span)

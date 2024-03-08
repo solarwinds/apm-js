@@ -14,15 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { describe, expect, it } from "@solarwinds-apm/test"
+import base from "@solarwinds-apm/eslint-config"
 
-import { oboe } from ".."
-
-describe("Metadata", () => {
-  describe("makeRandom", () => {
-    it("should produce valid metadata", () => {
-      const random = oboe.Metadata.makeRandom()
-      expect(random.isValid()).to.be.true
-    })
-  })
-})
+export default [...base]

@@ -23,6 +23,12 @@ const setInit = setter("init")
 if (setInit && versionCheck()) {
   setInit()
 
+  console.warn(
+    "It looks like you're initialising solarwinds-apm using a require call or flag.",
+    "This initialisation method is not recommended and may be removed in a future release.",
+    "See https://github.com/solarwinds/apm-js/tree/main/packages/solarwinds-apm#installation-and-setup",
+  )
+
   try {
     init().catch((err) => {
       console.warn(err)

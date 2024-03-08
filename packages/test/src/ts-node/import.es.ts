@@ -14,15 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { describe, expect, it } from "@solarwinds-apm/test"
+import "ts-node/register"
 
-import { oboe } from ".."
+import { register } from "node:module"
 
-describe("Metadata", () => {
-  describe("makeRandom", () => {
-    it("should produce valid metadata", () => {
-      const random = oboe.Metadata.makeRandom()
-      expect(random.isValid()).to.be.true
-    })
-  })
-})
+register("./loader.es.js", import.meta.url)

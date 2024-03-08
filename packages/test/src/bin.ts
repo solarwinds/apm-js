@@ -19,7 +19,6 @@ import { spawnSync } from "node:child_process"
 import { createRequire } from "node:module"
 import * as path from "node:path"
 import * as process from "node:process"
-import { pathToFileURL } from "node:url"
 
 import { callsite } from "@solarwinds-apm/module"
 import globby from "globby"
@@ -36,9 +35,6 @@ const DEFAULTS = [
 ]
 
 const resolve = createRequire(callsite().getFileName()!).resolve
-
-// TSX registers a custom loader that lets Node import TypeScript files
-const tsxPath = pathToFileURL(resolve("tsx")).toString()
 
 // Skip Node executable and current script path
 let argv = process.argv.slice(2)
@@ -80,32 +76,33 @@ if (argv.length === 0) {
   argv = DEFAULTS.map((p) => `**/${p}`)
 }
 
+const mocha = resolve("mocha/bin/mocha.js")
+
 // We are not going through a shell to start the process so glob extension is done manually
 argv = globby.sync(argv, { gitignore: true, expandDirectories: DEFAULTS })
 
-// Use the human readable reporter when available
-// TODO: Remove this once Node 16 support is dropped
-const reporter = semver.gte(process.versions.node, "18.0.0")
-  ? ["--test-reporter", "spec"]
-  : []
-
 const loader = semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
-  ? ["--import", tsxPath]
-  : ["--loader", tsxPath]
+  ? ["--import", "@solarwinds-apm/test/ts-node/import"]
+  : ["--loader", "@solarwinds-apm/test/ts-node/loader"]
 
 argv = [
-  // Launch Node in test runner mode
-  "--test",
-  ...reporter,
-  // Register TSX loaders
+  // Register ts-node loaders
   ...loader,
   // Forward the rest of our parameters
   ...process.execArgv,
+  // mocha and its arguments
+  mocha,
+  "--extension",
+  "js,ts,cjs,cts,mjs,mts",
   ...argv,
 ]
 
-// TSX_TSCONFIG_PATH is used by TSX to look for a tsconfig.json
-const env = { TSX_TSCONFIG_PATH: project, ...process.env }
+// TS_NODE_PROJECT is used by ts-node to look for a tsconfig.json
+const env = {
+  TS_NODE_PROJECT: project,
+  TS_NODE_TRANSPILE_ONLY: "true",
+  ...process.env,
+}
 
 if (coverage) {
   const coverageOutputPath = path.join(
