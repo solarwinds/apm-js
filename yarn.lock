@@ -3065,21 +3065,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"archiver-utils@npm:^5.0.0":
-  version: 5.0.1
-  resolution: "archiver-utils@npm:5.0.1"
-  dependencies:
-    glob: "npm:^10.0.0"
-    graceful-fs: "npm:^4.2.0"
-    lazystream: "npm:^1.0.0"
-    lodash: "npm:^4.17.15"
-    normalize-path: "npm:^3.0.0"
-    readable-stream: "npm:^3.6.0"
-  checksum: 10c0/341e9e27523e8c4e6edc08288acaa10f5b38d2a04881addc44212a0181e8db4bb544f7557c03d2fb2637758b5da519e246f299d7aa70a199c438d350f36fb220
-  languageName: node
-  linkType: hard
-
-"archiver-utils@npm:^5.0.2":
+"archiver-utils@npm:^5.0.0, archiver-utils@npm:^5.0.2":
   version: 5.0.2
   resolution: "archiver-utils@npm:5.0.2"
   dependencies:
