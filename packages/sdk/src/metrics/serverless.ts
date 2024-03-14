@@ -21,7 +21,10 @@ import {
   ValueType,
 } from "@opentelemetry/api"
 import { hrTimeToMilliseconds } from "@opentelemetry/core"
-import { Aggregation, View } from "@opentelemetry/sdk-metrics"
+import {
+  ExplicitBucketHistogramAggregation,
+  View,
+} from "@opentelemetry/sdk-metrics"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 import {
   SEMATTRS_HTTP_METHOD,
@@ -109,6 +112,6 @@ export const serverlessViews = [
   new View({
     meterName: "sw.apm.request.metrics",
     instrumentName: "trace.service.response_time",
-    aggregation: Aggregation.Histogram(),
+    aggregation: new ExplicitBucketHistogramAggregation([], true),
   }),
 ]
