@@ -17,6 +17,7 @@ limitations under the License.
 import {
   type Attributes,
   metrics,
+  SpanKind,
   SpanStatusCode,
   ValueType,
 } from "@opentelemetry/api"
@@ -88,21 +89,22 @@ export function recordServerlessResponseTime(
   span: ReadableSpan,
   transaction: string | undefined,
 ) {
-  const method = span.attributes[SEMATTRS_HTTP_METHOD]
-  const statusCode = span.attributes[SEMATTRS_HTTP_STATUS_CODE]
+  const time = hrTimeToMilliseconds(span.duration)
   const isError = span.status.code === SpanStatusCode.ERROR
 
-  const time = hrTimeToMilliseconds(span.duration)
+  const copy =
+    span.kind === SpanKind.SERVER
+      ? [SEMATTRS_HTTP_METHOD, SEMATTRS_HTTP_STATUS_CODE]
+      : []
 
   const attrs: Attributes = {
     "sw.transaction": transaction ?? "unknown",
     "sw.is_error": isError,
   }
-  if (method) {
-    attrs[SEMATTRS_HTTP_METHOD] = method
-  }
-  if (statusCode) {
-    attrs[SEMATTRS_HTTP_STATUS_CODE] = statusCode
+  for (const attr of copy) {
+    if (span.attributes[attr]) {
+      attrs[attr] = span.attributes[attr]
+    }
   }
 
   responseTime.record(time, attrs)
