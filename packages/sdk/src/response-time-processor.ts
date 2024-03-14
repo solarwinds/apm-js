@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { SpanKind } from "@opentelemetry/api"
 import {
   NoopSpanProcessor,
   type ReadableSpan,
@@ -31,7 +30,7 @@ export class SwResponseTimeProcessor extends NoopSpanProcessor {
   }
 
   override onEnd(span: ReadableSpan): void {
-    if (!isEntrySpan(span) || span.kind !== SpanKind.SERVER) return
+    if (!isEntrySpan(span)) return
 
     const txname = cache.getTxname(span.spanContext(), this.config)
     recordServerlessResponseTime(span, txname)
