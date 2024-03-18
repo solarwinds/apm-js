@@ -52,7 +52,7 @@ describe("readConfig", () => {
         swTraces: true,
         swMetrics: true,
         initMessage: true,
-        resourceDetection: true,
+        extraResourceDetection: true,
         instrumentationsDefaultDisabled: false,
       },
     }

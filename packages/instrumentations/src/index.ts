@@ -145,16 +145,18 @@ const INSTRUMENTATION_NAMES: Record<string, string> = {
 }
 
 // map of resource detector package names to the names of their exported detectors
-const RESOURCE_DETECTOR_NAMES: Record<string, string[]> = {
-  "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
-  "@opentelemetry/resource-detector-azure": ["azureAppServiceDetector"],
-  "@opentelemetry/resource-detector-container": ["containerDetector"],
+const CORE_RESOURCE_DETECTOR_NAMES: Record<string, string[]> = {
   "@opentelemetry/resources": [
     "envDetectorSync",
     "hostDetectorSync",
     "osDetectorSync",
     "processDetectorSync",
   ],
+}
+const EXTRA_RESOURCE_DETECTOR_NAMES: Record<string, string[]> = {
+  "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
+  "@opentelemetry/resource-detector-azure": ["azureAppServiceDetector"],
+  "@opentelemetry/resource-detector-container": ["containerDetector"],
 }
 
 export type InstrumentationConfigMap = {
@@ -213,9 +215,14 @@ export function getInstrumentations(
   else return instrumentations as Instrumentation[]
 }
 
-export async function getDetectedResource(): Promise<Resource> {
+export async function getDetectedResource(extra: boolean): Promise<Resource> {
+  let names = { ...CORE_RESOURCE_DETECTOR_NAMES }
+  if (extra) {
+    names = { ...names, ...EXTRA_RESOURCE_DETECTOR_NAMES }
+  }
+
   const detectors = await Promise.all(
-    Object.entries(RESOURCE_DETECTOR_NAMES).map(async ([name, detectors]) => {
+    Object.entries(names).map(async ([name, detectors]) => {
       const loaded = await load(name)
       return Object.entries(loaded as object)
         .filter(([name]) => detectors.includes(name))
