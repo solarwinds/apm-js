@@ -97,9 +97,9 @@ export async function init() {
       "sw.apm.version": FULL_VERSION,
     }),
   )
-  if (config.dev.resourceDetection) {
-    resource = resource.merge(await getDetectedResource())
-  }
+  resource = resource.merge(
+    await getDetectedResource(config.dev.extraResourceDetection),
+  )
 
   const [reporter, serverlessApi] = IS_SERVERLESS
     ? [undefined, sdk.createServerlessApi(config)]
