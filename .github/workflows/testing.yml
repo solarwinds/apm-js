@@ -47,7 +47,6 @@ jobs:
           yarn install
           yarn version:testing
           yarn install
-          yarn lint:fix
 
       - run: yarn publish
 
