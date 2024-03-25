@@ -26,6 +26,8 @@ on:
     secrets:
       LAMBDA_PUBLISHER_ARN:
         required: true
+      LAMBDA_PROD_PUBLISHER_ARN:
+        required: true
 
 jobs:
   build:
@@ -60,17 +62,35 @@ jobs:
       id-token: write
     strategy:
       matrix:
-        region:
-          - us-east-1
+        region: |-
+          ${{
+            inputs.type == 'production' && fromJSON('[
+              "ap-northeast-1",
+              "ap-northeast-2",
+              "ap-south-1",
+              "ap-southeast-1",
+              "ap-southeast-2",
+              "ca-central-1",
+              "eu-central-1",
+              "eu-north-1",
+              "eu-west-1",
+              "eu-west-2",
+              "eu-west-3",
+              "sa-east-1",
+              "us-east-1",
+              "us-east-2",
+              "us-west-1",
+              "us-west-2"
+            ]') || fromJSON('["us-east-1"]')
+          }}
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: layer.zip
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.LAMBDA_PUBLISHER_ARN }}
+          role-to-assume: ${{ inputs.type == 'production' && secrets.LAMBDA_PROD_PUBLISHER_ARN || secrets.LAMBDA_PUBLISHER_ARN }}
           aws-region: ${{ matrix.region }}
 
       - name: Calculate layer name
@@ -90,9 +110,24 @@ jobs:
               --layer-name $LAYER_NAME \
               --license-info "Apache 2.0" \
               --compatible-architectures x86_64 arm64 \
-              --compatible-runtimes nodejs20.x nodejs16.x nodejs18.x \
+              --compatible-runtimes nodejs20.x nodejs18.x nodejs16.x \
               --zip-file fileb://layer.zip \
               --query 'LayerVersionArn' \
               --output text
           )
           echo "::notice::$LAYER_ARN"
+
+      - name: Make public
+        if: inputs.type == 'production'
+        run: |
+          LAYER_VERSION=$(
+            aws lambda list-layer-versions \
+              --layer-name $LAYER_NAME \
+              --query 'max_by(LayerVersions, &Version).Version'
+          )
+          aws lambda add-layer-version-permission \
+            --layer-name $LAYER_NAME \
+            --version-number $LAYER_VERSION \
+            --principal '*' \
+            --action lambda:GetLayerVersion \
+            --statement-id apm-js-add-permission
