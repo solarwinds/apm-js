@@ -24,9 +24,9 @@ on:
         description: Version of the package to use
         required: true
     secrets:
-      LAMBDA_PUBLISHER_ARN:
-        required: true
       LAMBDA_PROD_PUBLISHER_ARN:
+        required: true
+      LAMBDA_STAGE_PUBLISHER_ARN:
         required: true
 
 jobs:
@@ -90,7 +90,7 @@ jobs:
           name: layer.zip
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ inputs.type == 'production' && secrets.LAMBDA_PROD_PUBLISHER_ARN || secrets.LAMBDA_PUBLISHER_ARN }}
+          role-to-assume: ${{ inputs.type == 'production' && secrets.LAMBDA_PROD_PUBLISHER_ARN || secrets.LAMBDA_STAGE_PUBLISHER_ARN }}
           aws-region: ${{ matrix.region }}
 
       - name: Calculate layer name
