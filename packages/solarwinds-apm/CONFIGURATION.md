@@ -52,7 +52,6 @@ module.exports = {
 | `insertTraceContextIntoQueries` |                                | `false`           | Whether to insert trace context information into SQL queries                   |
 | `transactionSettings`           |                                | None              | See [Transaction Settings](#transaction-settings)                              |
 | `instrumentations`              |                                | None              | See [Instrumentations](#instrumentations)                                      |
-| `metricViews`                   |                                | None              | Custom metric views                                                            |
 
 ### Service Name
 
