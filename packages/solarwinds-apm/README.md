@@ -2,7 +2,7 @@
 
 The new OpenTelemetry-based SolarWinds APM Node.js library. Currently supports Node.js 16 LTS, 18 LTS and 20.
 
-A broad set of instrumentations are supported, see the listing in this [Module Compatibility table](../instrumentations/COMPATIBILITY.md).
+This library automatically instruments a wide set of frameworks and libraries, see the [Module Compatibility table](../instrumentations/COMPATIBILITY.md) for details.
 
 ## Installation and Setup
 
