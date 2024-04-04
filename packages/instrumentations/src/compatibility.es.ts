@@ -17,10 +17,7 @@ limitations under the License.
 import { writeFile } from "node:fs/promises"
 import { exit } from "node:process"
 
-import {
-  type InstrumentationBase,
-  type InstrumentationModuleDefinition,
-} from "@opentelemetry/instrumentation"
+import { type InstrumentationBase } from "@opentelemetry/instrumentation"
 import { format } from "prettier"
 import { type Comparator, compare, minVersion, Range } from "semver"
 
@@ -31,23 +28,35 @@ const instrumentations = (await getInstrumentations(
   false,
 )) as InstrumentationBase[]
 
-const init = "init" as const
-const definitions = instrumentations
-  .flatMap((i) => i[init]())
-  .filter((d): d is InstrumentationModuleDefinition<unknown> => !!d)
+const versions = new Map<
+  string,
+  { versions: Set<string>; instrumentation: string }
+>()
 
-const versions = new Map<string, Set<string>>()
-for (const d of definitions) {
-  const supported = versions.get(d.name) ?? new Set()
-  for (const v of d.supportedVersions) {
-    supported.add(v)
+for (const i of instrumentations) {
+  const init = "init" as const
+  let definitions = i[init]()
+  if (!definitions) continue
+  if (!Array.isArray(definitions)) definitions = [definitions]
+
+  const instrumentation = i.instrumentationName
+
+  for (const definition of definitions) {
+    const supported = versions.get(definition.name) ?? {
+      versions: new Set(),
+      instrumentation,
+    }
+    for (const v of definition.supportedVersions) {
+      supported.versions.add(v)
+    }
+    versions.set(definition.name, supported)
   }
-  versions.set(d.name, supported)
 }
 
-const ranges = [...versions].map(([name, versions]) => ({
+const ranges = [...versions].map(([name, { versions, instrumentation }]) => ({
   name,
   range: new Range([...versions].join("||")),
+  instrumentation,
 }))
 
 // whether the range consists of a lower inclusive bound and an optional upper exclusive bound
@@ -115,26 +124,27 @@ for (const { range } of ranges) {
 }
 
 const supported = ranges
-  .map(({ name, range }) => ({
+  .map(({ name, range, instrumentation }) => ({
     name,
     versions: range.set
       .map((comparators) => comparators.join(" "))
       .join(" || ")
       .replace(/^$/, "*"),
+    instrumentation,
   }))
   .sort((a, b) => a.name.localeCompare(b.name))
 
 const table = supported
   .map(
-    ({ name, versions }) =>
-      `| \`${name}\` | \`${versions.replaceAll("|", "\\|")}\` |`,
+    ({ name, versions, instrumentation }) =>
+      `| \`${name}\` | \`${versions.replaceAll("|", "\\|")}\` | \`${instrumentation}\` |`,
   )
   .join("\n")
 const md = `
 # Module Compatibility
 
-| Name | Versions |
-| ---- | -------- |
+| Name | Versions | Instrumentation |
+| ---- | -------- | --------------- |
 ${table}
 `
 
