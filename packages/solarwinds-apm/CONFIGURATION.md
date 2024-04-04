@@ -97,7 +97,7 @@ module.exports = {
 
 ### Instrumentations
 
-A default set of instrumentations are provided and configured by the library. However in many cases it may be desirable to manually configure the instrumentations or provide additional ones. The `instrumentations` configuration field accepts an object which in turn can contain two fields.
+A [default set of instrumentations](../instrumentations/COMPATIBILITY.md) are provided and configured by the library. However in many cases it may be desirable to manually configure the instrumentations or provide additional ones. The `instrumentations` configuration field accepts an object which in turn can contain two fields.
 
 - The `configs` field accepts an object with instrumentation package names mapping to their configuration.
 - The `extra` field accepts an array of additional [`Instrumentation`](https://open-telemetry.github.io/opentelemetry-js/interfaces/_opentelemetry_instrumentation.Instrumentation.html) instances to register.
