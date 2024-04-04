@@ -46,7 +46,7 @@ export type Patch<Config extends InstrumentationConfig> = (
   options: SwPatchesConfiguration,
 ) => Config
 
-export const RESOURCE_SERVICE_NAME = "resource.service.name" as const
+export const RESOURCE_SERVICE_NAME = "resource.service.name"
 
 const patches = {
   "aws-lambda": awsLambda,

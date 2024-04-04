@@ -29,7 +29,7 @@ import { SwSampler } from "../src/sampler"
 import * as mock from "./mock"
 
 describe("SwSampler", () => {
-  const tracingMode = "tracingMode" as const
+  const tracingMode = "tracingMode"
   describe(tracingMode, () => {
     it("is unset when no config or transaction settings", () => {
       const sampler = new SwSampler(
@@ -167,7 +167,7 @@ describe("SwSampler", () => {
     })
   })
 
-  const otelSamplingDecisionFromOboe = "otelSamplingDecisionFromOboe" as const
+  const otelSamplingDecisionFromOboe = "otelSamplingDecisionFromOboe"
   describe(otelSamplingDecisionFromOboe, () => {
     it("records and samples if do_sample and do_metrics are set", () => {
       const decision = SwSampler[otelSamplingDecisionFromOboe](
@@ -207,7 +207,7 @@ describe("SwSampler", () => {
     })
   })
 
-  const traceState = "traceState" as const
+  const traceState = "traceState"
   describe(traceState, () => {
     it("preserves parent trace state", () => {
       const decisions = mock.oboeDecisions()
@@ -220,7 +220,7 @@ describe("SwSampler", () => {
     })
   })
 
-  const updateTraceState = "updateTraceState" as const
+  const updateTraceState = "updateTraceState"
   describe(updateTraceState, () => {
     it("sets trace options response when present", () => {
       const old = mock.traceState()
@@ -240,7 +240,7 @@ describe("SwSampler", () => {
     })
   })
 
-  const traceOptionsResponse = "traceOptionsResponse" as const
+  const traceOptionsResponse = "traceOptionsResponse"
   describe(traceOptionsResponse, () => {
     it("contains auth message when present with signature", () => {
       const authMsg = "this is a message"
@@ -338,7 +338,7 @@ describe("SwSampler", () => {
     })
   })
 
-  const attributes = "attributes" as const
+  const attributes = "attributes"
   describe(attributes, () => {
     it("preserves existing attributes immutably", () => {
       const old = { foo: "bar" }

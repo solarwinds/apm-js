@@ -34,7 +34,7 @@ const versions = new Map<
 >()
 
 for (const i of instrumentations) {
-  const init = "init" as const
+  const init = "init"
   let definitions = i[init]()
   if (!definitions) continue
   if (!Array.isArray(definitions)) definitions = [definitions]
@@ -150,7 +150,7 @@ ${table}
 
 format(md, { parser: "markdown" })
   .then((md) => writeFile("./COMPATIBILITY.md", md))
-  .catch((err) => {
+  .catch((err: unknown) => {
     console.error(err)
     exit(1)
   })
