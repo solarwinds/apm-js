@@ -64,6 +64,6 @@ jobs:
         run: |
           gh release create "v${VERSION}" \
             --title "solarwinds-apm ${VERSION}" \
+            --notes-file ".github/RELEASE.md" \
             --draft \
-            --verify-tag \
-            --notes-file ".github/RELEASE.md"
+            --verify-tag
