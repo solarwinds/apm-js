@@ -30,7 +30,7 @@ if (setInit && versionCheck()) {
   )
 
   try {
-    init().catch((err) => {
+    init().catch((err: unknown) => {
       console.warn(err)
     })
   } catch (err) {

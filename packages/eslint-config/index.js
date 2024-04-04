@@ -102,6 +102,12 @@ module.exports = ts.config(
           disallowTypeAnnotations: false,
         },
       ],
+      "@typescript-eslint/restrict-template-expressions": [
+        "warn",
+        {
+          allowNumber: true,
+        },
+      ],
       "tsdoc/syntax": "warn",
       "deprecation/deprecation": "warn",
     },

@@ -22,7 +22,7 @@ import * as mock from "./mock"
 
 const propagator = new SwTraceContextOptionsPropagator(mock.logger())
 
-const parseTraceOptions = "parseTraceOptions" as const
+const parseTraceOptions = "parseTraceOptions"
 describe(parseTraceOptions, () => {
   test("no key no value", () => {
     const header = "="
