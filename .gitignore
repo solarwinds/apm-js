@@ -7,6 +7,9 @@ node_modules/
 # Turborepo cache
 .turbo/
 
+# Package archives
+package.tgz
+
 # Common build outputs
 *.tsbuildinfo
 *.log

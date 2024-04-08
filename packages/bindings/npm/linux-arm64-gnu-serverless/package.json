@@ -24,6 +24,7 @@
     "liboboe.so"
   ],
   "publishConfig": {
+    "access": "public",
     "provenance": true
   },
   "engines": {

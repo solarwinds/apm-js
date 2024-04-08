@@ -33,7 +33,7 @@
 | `koa`                       | `>=2.0.0 <3.0.0`      | `@opentelemetry/instrumentation-koa`              |
 | `lru-memoizer`              | `>=1.3.0 <3.0.0`      | `@opentelemetry/instrumentation-lru-memoizer`     |
 | `memcached`                 | `>=2.2.0`             | `@opentelemetry/instrumentation-memcached`        |
-| `mongodb`                   | `>=3.3.0 <6.4.0`      | `@opentelemetry/instrumentation-mongodb`          |
+| `mongodb`                   | `>=3.3.0 <7.0.0`      | `@opentelemetry/instrumentation-mongodb`          |
 | `mongoose`                  | `>=5.9.7 <7.0.0`      | `@opentelemetry/instrumentation-mongoose`         |
 | `mysql`                     | `>=2.0.0 <3.0.0`      | `@opentelemetry/instrumentation-mysql`            |
 | `mysql2`                    | `>=1.4.2 <4.0.0`      | `@opentelemetry/instrumentation-mysql2`           |

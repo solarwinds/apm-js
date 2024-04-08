@@ -39,7 +39,7 @@ if (publishedVersions.includes(version)) {
   process.exit()
 }
 
-let command = "yarn npm publish"
+let command = "yarn pack && npm publish package.tgz"
 if (version.includes("pre")) {
   command += " --tag prerelease"
 }
