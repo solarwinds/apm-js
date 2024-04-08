@@ -23,6 +23,10 @@ on:
         type: string
         description: Version of the package to use
         required: true
+    outputs:
+      arn:
+        description: Layer ARN
+        value: ${{ jobs.publish.outputs.arn }}
     secrets:
       LAMBDA_PROD_PUBLISHER_ARN:
         required: true
@@ -60,6 +64,8 @@ jobs:
     needs: build
     permissions:
       id-token: write
+    outputs:
+      arn: ${{ steps.publish.outputs.arn }}
     strategy:
       matrix:
         region: |-
@@ -104,6 +110,7 @@ jobs:
           echo "LAYER_NAME=$LAYER_NAME" >> $GITHUB_ENV
 
       - name: Publish
+        id: publish
         run: |
           LAYER_ARN=$(
             aws lambda publish-layer-version \
@@ -116,6 +123,7 @@ jobs:
               --output text
           )
           echo "::notice::$LAYER_ARN"
+          echo "arn=$(echo $LAYER_ARN | sed 's/${{ matrix.region }}/<region>/')" >> $GITHUB_OUTPUT
 
       - name: Make public
         if: inputs.type == 'production'
