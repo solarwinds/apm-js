@@ -35,7 +35,7 @@
     "publish": "node ../../scripts/publish.js"
   },
   "dependencies": {
-    "@opentelemetry/instrumentation": "~0.49.1",
+    "@opentelemetry/instrumentation": "~0.50.0",
     "@opentelemetry/instrumentation-amqplib": "^0.35.0",
     "@opentelemetry/instrumentation-aws-lambda": "^0.39.0",
     "@opentelemetry/instrumentation-aws-sdk": "^0.39.1",
@@ -50,9 +50,9 @@
     "@opentelemetry/instrumentation-fs": "^0.10.0",
     "@opentelemetry/instrumentation-generic-pool": "^0.34.0",
     "@opentelemetry/instrumentation-graphql": "^0.38.1",
-    "@opentelemetry/instrumentation-grpc": "~0.49.1",
+    "@opentelemetry/instrumentation-grpc": "~0.50.0",
     "@opentelemetry/instrumentation-hapi": "^0.35.0",
-    "@opentelemetry/instrumentation-http": "~0.49.1",
+    "@opentelemetry/instrumentation-http": "~0.50.0",
     "@opentelemetry/instrumentation-ioredis": "^0.38.0",
     "@opentelemetry/instrumentation-knex": "^0.34.0",
     "@opentelemetry/instrumentation-koa": "^0.38.0",
@@ -76,7 +76,7 @@
     "@opentelemetry/resource-detector-aws": "^1.3.1",
     "@opentelemetry/resource-detector-azure": "^0.2.4",
     "@opentelemetry/resource-detector-container": "^0.3.1",
-    "@opentelemetry/resources": "~1.22.0",
+    "@opentelemetry/resources": "~1.23.0",
     "@solarwinds-apm/module": "workspace:^"
   },
   "peerDependencies": {
