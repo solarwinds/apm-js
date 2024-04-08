@@ -54,16 +54,18 @@ export function versionCheck(): boolean {
       )
     }
 
-    if (
-      process.versions.ares &&
-      semver.satisfies(process.versions.ares, "1.20.x") &&
-      process.env.GRPC_DNS_RESOLVER !== "native" &&
-      !IS_SERVERLESS
-    ) {
-      console.error(
-        "The current Node.js version is incompatible with the default DNS resolver used by the instrumentation library.",
-        "This can be fixed by setting the 'GRPC_DNS_RESOLVER' environment variable to 'native'.",
-      )
+    if (process.versions.ares) {
+      if (
+        process.env.GRPC_DNS_RESOLVER &&
+        process.env.GRPC_DNS_RESOLVER.toLowerCase() === "ares"
+      ) {
+        console.error(
+          "The current Node.js version is incompatible with the c-ares gRPC DNS resolver which this application explicitly specifies.",
+        )
+        supported = false
+      } else {
+        process.env.GRPC_DNS_RESOLVER = "native"
+      }
     }
 
     return supported
