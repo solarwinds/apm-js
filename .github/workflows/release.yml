@@ -35,3 +35,35 @@ jobs:
       type: production
       version: ${{ needs.publish.outputs.version }}
     secrets: inherit
+
+  draft:
+    needs:
+      - publish
+      - lambda
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
+
+      - name: Replace placeholders in release template
+        run: |
+          API=$(cat packages/solarwinds-apm/package.json | jq -r '.peerDependencies."@opentelemetry/api"')
+          CORE=$(cat packages/solarwinds-apm/package.json | jq -r '.dependencies."@opentelemetry/core"')
+          sed -i 's/{{arn}}/${{ needs.lambda.outputs.arn }}/' .github/RELEASE.md
+          sed -i "s/{{api}}/${API}/" .github/RELEASE.md
+          sed -i "s/{{core}}/${CORE}/" .github/RELEASE.md
+
+      - name: Create release draft
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          gh release create "v${VERSION}" \
+            --title "solarwinds-apm ${VERSION}" \
+            --notes-file ".github/RELEASE.md" \
+            --draft \
+            --verify-tag
