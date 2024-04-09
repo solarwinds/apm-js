@@ -7,7 +7,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/solarwinds/apm-js.git",
+    "url": "git+https://github.com/solarwinds/apm-js.git",
     "directory": "packages/eslint-config"
   },
   "bugs": {
