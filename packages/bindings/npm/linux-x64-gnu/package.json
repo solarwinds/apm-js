@@ -8,7 +8,7 @@
     "directory": "packages/bindings/npm/linux-x64-gnu"
   },
   "scripts": {
-    "publish": "node ../../../../scripts/publish.js"
+    "release": "node ../../../../scripts/publish.js"
   },
   "os": [
     "linux"

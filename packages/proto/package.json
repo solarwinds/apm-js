@@ -33,7 +33,7 @@
     "build": "node build.js",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
-    "publish": "node ../../scripts/publish.js"
+    "release": "node ../../scripts/publish.js"
   },
   "dependencies": {
     "protobufjs": "^7.2.6"

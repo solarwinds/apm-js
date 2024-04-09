@@ -33,7 +33,7 @@
     "build": "rollup -c --forceExit",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
-    "publish": "node ../../scripts/publish.js",
+    "release": "node ../../scripts/publish.js",
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
