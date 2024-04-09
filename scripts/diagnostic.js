@@ -111,12 +111,12 @@ if (majorNodeVersion <= 14) {
 
 if (
   process.versions.ares &&
-  process.versions.ares.startsWith("1.20.") &&
-  process.env.GRPC_DNS_RESOLVER !== "native"
+  process.env.GRPC_DNS_RESOLVER &&
+  process.env.GRPC_DNS_RESOLVER.toLowerCase() === "ares"
 ) {
   console.warn(
-    `The current Node.js version (${process.version}) is incompatible with the default DNS resolver used by 'solarwinds-apm'.`,
-    "This can be fixed by setting the 'GRPC_DNS_RESOLVER' environment variable to 'native'.",
+    `The current Node.js version (${process.version}) is incompatible with the c-ares gRPC DNS resolver which this application explicitly specifies.`,
+    "This can be fixed by unsetting the 'GRPC_DNS_RESOLVER' environment variable.",
   )
 }
 

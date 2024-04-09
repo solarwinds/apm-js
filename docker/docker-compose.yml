@@ -161,7 +161,7 @@ services:
       - postgres
 
   apm-collector:
-    image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/librato/apm-agent-test-collector:v2.0.0}
+    image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/solarwinds-cloud/apm-agent-test-collector:2.1.3}
     volumes:
       - ..:/solarwinds-apm
     expose:
@@ -173,7 +173,7 @@ services:
   udpdump:
     build:
       context: .
-      dockerfile: 18-alpine.Dockerfile
+      dockerfile: 20-alpine.Dockerfile
     command: [yarn node udpdump.js]
     working_dir: /solarwinds-apm/scripts
     volumes:
@@ -182,7 +182,7 @@ services:
       - 12225
 
   otel-collector:
-    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector:0.81.0}
+    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector:0.97.0}
     command: [--config=/solarwinds-apm/docker/otel-collector/config.yml]
     volumes:
       - ..:/solarwinds-apm
