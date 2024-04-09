@@ -20,7 +20,7 @@ import * as process from "node:process"
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { getEnvWithoutDefaults } from "@opentelemetry/core"
-import { InstrumentationBase } from "@opentelemetry/instrumentation"
+import { type Instrumentation } from "@opentelemetry/instrumentation"
 import { View } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
@@ -122,7 +122,7 @@ const transactionSettings = z.array(
 
 interface Instrumentations {
   configs?: InstrumentationConfigMap
-  extra?: InstrumentationBase[]
+  extra?: Instrumentation[]
 }
 
 interface Metrics {
@@ -147,7 +147,7 @@ const schema = z.object({
   instrumentations: z
     .object({
       configs: z.record(z.unknown()).optional(),
-      extra: z.array(z.instanceof(InstrumentationBase)).optional(),
+      extra: z.array(z.unknown()).optional(),
     })
     .transform((i) => i as Instrumentations)
     .default({}),

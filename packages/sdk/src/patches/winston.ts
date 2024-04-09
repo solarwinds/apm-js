@@ -28,4 +28,5 @@ export const patch: Patch<WinstonInstrumentationConfig> = (
     record[RESOURCE_SERVICE_NAME] = options.serviceName
     config.logHook?.(span, record)
   },
+  disableLogSending: config.disableLogSending ?? true,
 })
