@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/histogram",
-  "version": "1.0.0-pre.11",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -48,6 +48,5 @@
   },
   "engines": {
     "node": ">=16.13.0"
-  },
-  "stableVersion": "0.0.0"
+  }
 }

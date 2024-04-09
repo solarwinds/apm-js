@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/rollup-config",
-  "version": "1.0.0-pre.6",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -53,6 +53,5 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "eslint": "^8.50.0",
     "prettier": "^3.0.3"
-  },
-  "stableVersion": "0.0.0"
+  }
 }

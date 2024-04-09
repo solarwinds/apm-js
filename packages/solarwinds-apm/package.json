@@ -1,6 +1,6 @@
 {
   "name": "solarwinds-apm",
-  "version": "14.0.0-pre.11",
+  "version": "14.0.0",
   "description": "OpenTelemetry-based SolarWinds APM library",
   "license": "Apache-2.0",
   "contributors": [
@@ -94,6 +94,5 @@
   },
   "engines": {
     "node": ">=16.13.0"
-  },
-  "stableVersion": "13.0.0"
+  }
 }
