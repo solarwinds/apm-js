@@ -195,12 +195,17 @@ export function getInstrumentations(
     .map(([name, config]) => {
       // instantiate the instrumentation class exported from package
       const instantiate = (loaded: unknown) => {
-        const Class = (
-          loaded as Record<
-            string,
-            new (config: InstrumentationConfig) => Instrumentation
-          >
-        )[INSTRUMENTATION_NAMES[name]!]!
+        const Class =
+          typeof loaded === "function"
+            ? // instrumentation class is the single default export
+              (loaded as new (config: InstrumentationConfig) => Instrumentation)
+            : // multiple exports, retrieve by name
+              (
+                loaded as Record<
+                  string,
+                  new (config: InstrumentationConfig) => Instrumentation
+                >
+              )[INSTRUMENTATION_NAMES[name]!]!
         return new Class(config)
       }
 
