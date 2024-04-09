@@ -1,4 +1,0 @@
-releases:
-  "@solarwinds-apm/instrumentations": patch
-  "@solarwinds-apm/sdk": patch
-  solarwinds-apm: patch
