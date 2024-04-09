@@ -4,6 +4,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
