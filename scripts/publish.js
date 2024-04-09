@@ -39,10 +39,10 @@ if (publishedVersions.includes(version)) {
   process.exit()
 }
 
-let command = "yarn pack && npm publish package.tgz"
+cproc.execSync("yarn pack", { stdio: "inherit" })
+
+let command = "npm publish package.tgz"
 if (version.includes("pre")) {
   command += " --tag prerelease"
 }
-
-console.log(`$ ${command}`)
 cproc.execSync(command, { stdio: "inherit" })
