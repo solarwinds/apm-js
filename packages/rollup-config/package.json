@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/rollup-config",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
