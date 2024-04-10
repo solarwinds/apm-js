@@ -1,4 +1,4 @@
-# [14.0.0](https://github.com/solarwinds/apm-js/releases/tag/v14.0.0)
+# [14.0.2](https://github.com/solarwinds/apm-js/releases/tag/v14.0.2)
 
 ## Breaking changes
 
