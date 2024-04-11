@@ -4,6 +4,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
@@ -21,7 +23,7 @@ jobs:
       - run: yarn lint
       - run: yarn publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Export version
         id: version

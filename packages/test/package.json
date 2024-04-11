@@ -1,13 +1,13 @@
 {
   "name": "@solarwinds-apm/test",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/solarwinds/apm-js.git",
+    "url": "git+https://github.com/solarwinds/apm-js.git",
     "directory": "packages/test"
   },
   "bugs": {
@@ -42,7 +42,7 @@
     "build": "rollup -c --forceExit",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
-    "publish": "node ../../scripts/publish.js"
+    "release": "node ../../scripts/publish.js"
   },
   "dependencies": {
     "@solarwinds-apm/module": "workspace:^",
