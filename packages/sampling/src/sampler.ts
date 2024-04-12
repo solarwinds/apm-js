@@ -103,7 +103,7 @@ export abstract class OboeSampler implements Sampler {
 
     const traceState = parentSpan?.spanContext().traceState?.get("sw")
     if (traceState && TRACESTATE_REGEXP.test(traceState)) {
-      this.logger.debug("context is valid for parent based sampling")
+      this.logger.debug("context is valid for parent-based sampling")
 
       if (settings.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
         this.logger.debug(
