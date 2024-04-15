@@ -129,6 +129,16 @@ export class TokenBucket {
     return this.#timer !== undefined
   }
 
+  /** https://nodejs.org/docs/latest/api/timers.html#timeoutref */
+  ref(): void {
+    this.#timer?.ref()
+  }
+
+  /** https://nodejs.org/docs/latest/api/timers.html#timeoutunref */
+  unref(): void {
+    this.#timer?.unref()
+  }
+
   #task() {
     this.#tokens += this.#rate
   }

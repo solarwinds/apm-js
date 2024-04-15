@@ -2089,6 +2089,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/sampling@workspace:packages/sampling"
   dependencies:
+    "@opentelemetry/api": "npm:^1.3.0"
+    "@opentelemetry/sdk-trace-base": "npm:~1.23.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/rollup-config": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
@@ -2097,6 +2099,11 @@ __metadata:
     prettier: "npm:^3.0.3"
     rollup: "npm:^4.3.0"
     typescript: "npm:~5.4.4"
+  peerDependencies:
+    "@opentelemetry/api": ^1.3.0
+  peerDependenciesMeta:
+    "@opentelemetry/api":
+      optional: false
   languageName: unknown
   linkType: soft
 

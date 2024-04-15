@@ -102,6 +102,7 @@ module.exports = ts.config(
           disallowTypeAnnotations: false,
         },
       ],
+      "@typescript-eslint/prefer-literal-enum-member": "off",
       "@typescript-eslint/restrict-template-expressions": [
         "warn",
         {
