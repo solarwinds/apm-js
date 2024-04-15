@@ -147,14 +147,10 @@ export abstract class OboeSampler implements Sampler {
    */
   protected updateSettings(settings: Settings): void {
     this.#settings = settings
-    for (const type of [
-      BucketType.DEFAULT,
-      BucketType.TRIGGER_RELAXED,
-      BucketType.TRIGGER_STRICT,
-    ]) {
-      const settings = this.#settings.buckets[type]
+    for (const [type, bucket] of Object.entries(this.#buckets)) {
+      const settings = this.#settings.buckets[type as BucketType]
       if (settings) {
-        this.#buckets[type].update(settings)
+        bucket.update(settings)
       }
     }
   }
