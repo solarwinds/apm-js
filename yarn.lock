@@ -1106,7 +1106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation@npm:0.49.1, @opentelemetry/instrumentation@npm:~0.49.1":
+"@opentelemetry/instrumentation@npm:0.49.1":
   version: 0.49.1
   resolution: "@opentelemetry/instrumentation@npm:0.49.1"
   dependencies:
@@ -1964,7 +1964,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/instrumentations@workspace:packages/instrumentations"
   dependencies:
-    "@opentelemetry/instrumentation": "npm:~0.49.1"
+    "@opentelemetry/instrumentation": "npm:~0.50.0"
     "@opentelemetry/instrumentation-amqplib": "npm:^0.36.0"
     "@opentelemetry/instrumentation-aws-lambda": "npm:^0.40.0"
     "@opentelemetry/instrumentation-aws-sdk": "npm:^0.40.0"
