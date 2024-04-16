@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import {
+  type Attributes,
   type DiagLogger,
   type Span,
   trace,
@@ -34,10 +35,24 @@ import {
   type Settings,
 } from "./settings.js"
 import { TokenBucket } from "./token-bucket.js"
-import { type RequestHeaders, type ResponseHeaders } from "./trace-options.js"
+import {
+  Auth,
+  parseTraceOptions,
+  type RequestHeaders,
+  type ResponseHeaders,
+  stringifyTraceOptionsResponse,
+  type TraceOptions,
+  type TraceOptionsResponse,
+  TriggerTrace,
+  validateSignature,
+} from "./trace-options.js"
 
 const TRACESTATE_REGEXP = /^[0-9a-f]{16}-[0-9a-f]{2}$/
 const BUCKET_INTERVAL = 1000
+
+const SW_KEYS_ATTRIBUTE = "SWKeys"
+const BUCKET_CAPACITY_ATTRIBUTE = "BucketCapacity"
+const BUCKET_RATE_ATTRIBUTE = "BucketRate"
 
 export type SampleParams = Parameters<Sampler["shouldSample"]>
 
@@ -48,6 +63,21 @@ export enum SpanType {
   ENTRY,
   /** Local span with a local parent */
   LOCAL,
+}
+
+interface SampleState {
+  decision: SamplingDecision
+  attributes: Attributes
+
+  params: SampleParams
+  settings: Settings
+  traceState?: string
+  headers: RequestHeaders
+
+  trace?: {
+    options: TraceOptions
+    optionsResponse: TraceOptionsResponse
+  }
 }
 
 /**
@@ -82,7 +112,8 @@ export abstract class OboeSampler implements Sampler {
   }
 
   shouldSample(...params: SampleParams): SamplingResult {
-    const [context] = params
+    const [context, , , , attributes] = params
+
     const parentSpan = trace.getSpan(context)
     const type = spanType(parentSpan)
     this.logger.debug(`span type is ${SpanType[type]}`)
@@ -102,44 +133,168 @@ export abstract class OboeSampler implements Sampler {
       return { decision: SamplingDecision.NOT_RECORD }
     }
 
-    const traceState = parentSpan?.spanContext().traceState?.get("sw")
-    if (traceState && TRACESTATE_REGEXP.test(traceState)) {
-      this.logger.debug("context is valid for parent-based sampling")
+    const s: SampleState = {
+      decision: SamplingDecision.NOT_RECORD,
+      attributes,
 
-      if (settings.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
-        this.logger.debug(
-          `${Flags[Flags.SAMPLE_THROUGH_ALWAYS]} is set; parent-based sampling`,
+      params,
+      settings,
+      traceState: parentSpan?.spanContext().traceState?.get("sw"),
+      headers: this.requestHeaders(...params),
+    }
+
+    if (s.headers["X-Trace-Options"]) {
+      s.trace = {
+        options: parseTraceOptions(s.headers["X-Trace-Options"], this.logger),
+        optionsResponse: {},
+      }
+
+      this.logger.debug("X-Trace-Options present", s.trace.options)
+
+      if (s.headers["X-Trace-Options-Signature"]) {
+        this.logger.debug("X-Trace-Options-Signature present; validating")
+
+        s.trace.optionsResponse.auth = validateSignature(
+          s.headers["X-Trace-Options"],
+          s.headers["X-Trace-Options-Signature"],
+          s.settings.signatureKey,
+          s.trace.options.timestamp,
         )
 
-        // this is guaranteed to be valid if the regexp matched
-        const flags = Number.parseInt(traceState.slice(-2), 16)
-        const sampled = flags & TraceFlags.SAMPLED
-
-        if (sampled) {
-          this.logger.debug(`parent is sampled; record and sample`)
-          return { decision: SamplingDecision.RECORD_AND_SAMPLED }
-        } else {
-          this.logger.debug(`parent is not sampled; record only`)
-          return { decision: SamplingDecision.RECORD }
-        }
-      } else {
-        this.logger.debug(
-          `${Flags[Flags.SAMPLE_THROUGH_ALWAYS]} is unset; sampling disabled`,
-        )
-
-        if (settings.flags & Flags.SAMPLE_START) {
-          this.logger.debug(`${Flags[Flags.SAMPLE_START]} is set; record`)
-          return { decision: SamplingDecision.RECORD }
-        } else {
+        if (s.trace.optionsResponse.auth !== Auth.OK) {
           this.logger.debug(
-            `${Flags[Flags.SAMPLE_START]} is unset; don't record`,
+            "X-Trace-Options-Signature invalid; tracing disabled",
           )
+
+          this.#setResponseHeaders(s)
           return { decision: SamplingDecision.NOT_RECORD }
         }
       }
+
+      if (!s.trace.options.triggerTrace) {
+        s.trace.optionsResponse.triggerTrace = TriggerTrace.NOT_REQUESTED
+      }
+
+      // apply span attributes
+      if (s.trace.options.swKeys) {
+        s.attributes[SW_KEYS_ATTRIBUTE] = s.trace.options.swKeys
+      }
+      for (const [k, v] of Object.entries(s.trace.options.custom)) {
+        s.attributes[k] = v
+      }
+
+      // list ignored keys in response
+      if (s.trace.options.ignored.length > 0) {
+        s.trace.optionsResponse.ignored = s.trace.options.ignored.map(
+          ([k]) => k,
+        )
+      }
     }
 
-    throw new Error("TODO: Trigger Trace & Dice Roll")
+    if (s.traceState && TRACESTATE_REGEXP.test(s.traceState)) {
+      this.logger.debug("context is valid for parent-based sampling")
+      this.#parentBasedAlgo(s)
+    } else {
+      if (s.settings.flags & Flags.SAMPLE_START) {
+        if (s.trace?.options.triggerTrace) {
+          this.logger.debug("trigger trace requested")
+          this.#triggerTraceAlgo(s)
+        } else {
+          this.logger.debug("defaulting to dice roll")
+          this.#diceRollAlgo(s)
+        }
+      } else {
+        this.logger.debug("SAMPLE_START is unset; sampling disabled")
+        this.#disabledAlgo(s)
+      }
+    }
+
+    this.logger.debug("final sampling state", s)
+
+    this.#setResponseHeaders(s)
+    return { decision: s.decision, attributes: s.attributes }
+  }
+
+  #parentBasedAlgo(s: SampleState) {
+    if (s.trace?.options.triggerTrace) {
+      this.logger.debug("trigger trace requested but ignored")
+      s.trace.optionsResponse.triggerTrace = TriggerTrace.IGNORED
+    }
+
+    if (s.settings.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
+      this.logger.debug("SAMPLE_THROUGH_ALWAYS is set; parent-based sampling")
+
+      // this is guaranteed to be valid if the regexp matched
+      const flags = Number.parseInt(s.traceState!.slice(-2), 16)
+      const sampled = flags & TraceFlags.SAMPLED
+
+      if (sampled) {
+        this.logger.debug("parent is sampled; record and sample")
+        s.decision = SamplingDecision.RECORD_AND_SAMPLED
+      } else {
+        this.logger.debug("parent is not sampled; record only")
+        s.decision = SamplingDecision.RECORD
+      }
+    } else {
+      this.logger.debug("SAMPLE_THROUGH_ALWAYS is unset; sampling disabled")
+
+      if (s.settings.flags & Flags.SAMPLE_START) {
+        this.logger.debug("SAMPLE_START is set; record")
+        s.decision = SamplingDecision.RECORD
+      } else {
+        this.logger.debug("SAMPLE_START is unset; don't record")
+        s.decision = SamplingDecision.NOT_RECORD
+      }
+    }
+  }
+
+  #triggerTraceAlgo(s: SampleState) {
+    if (s.settings.flags & Flags.TRIGGERED_TRACE) {
+      this.logger.debug("TRIGGERED_TRACE set; trigger tracing")
+
+      let bucket: TokenBucket
+      if (s.trace!.optionsResponse.auth) {
+        this.logger.debug("signed request; using relaxed rate")
+        bucket = this.#buckets[BucketType.TRIGGER_RELAXED]
+      } else {
+        this.logger.debug("unsigned request; using strict rate")
+        bucket = this.#buckets[BucketType.TRIGGER_STRICT]
+      }
+
+      s.attributes[BUCKET_CAPACITY_ATTRIBUTE] = bucket.capacity
+      s.attributes[BUCKET_RATE_ATTRIBUTE] = bucket.rate
+
+      if (bucket.consume()) {
+        s.decision = SamplingDecision.RECORD_AND_SAMPLED
+      } else {
+        s.decision = SamplingDecision.NOT_RECORD
+      }
+    } else {
+      this.logger.debug("TRIGGERED_TRACE unset; record only")
+
+      s.trace!.optionsResponse.triggerTrace =
+        TriggerTrace.TRIGGER_TRACING_DISABLED
+      s.decision = SamplingDecision.RECORD
+    }
+  }
+
+  #diceRollAlgo(_s: SampleState) {
+    throw new Error("TODO")
+  }
+
+  #disabledAlgo(s: SampleState) {
+    if (s.trace?.options.triggerTrace) {
+      this.logger.debug("trigger trace requested but tracing disabled")
+      s.trace.optionsResponse.triggerTrace = TriggerTrace.TRACING_DISABLED
+    }
+
+    if (s.settings.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
+      this.logger.debug("SAMPLE_THROUGH_ALWAYS is set; record")
+      s.decision = SamplingDecision.RECORD
+    } else {
+      this.logger.debug("SAMPLE_THROUGH_ALWAYS is unset; don't record")
+      s.decision = SamplingDecision.NOT_RECORD
+    }
   }
 
   /**
@@ -182,6 +337,18 @@ export abstract class OboeSampler implements Sampler {
     headers: ResponseHeaders,
     ...params: SampleParams
   ): void
+
+  #setResponseHeaders(s: SampleState) {
+    const headers: ResponseHeaders = {}
+
+    if (s.trace?.optionsResponse) {
+      headers["X-Trace-Options-Response"] = stringifyTraceOptionsResponse(
+        s.trace.optionsResponse,
+      )
+    }
+
+    this.setResponseHeaders(headers, ...s.params)
+  }
 
   /** See {@link Sampler.toString} */
   abstract toString(): string

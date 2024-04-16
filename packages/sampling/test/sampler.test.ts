@@ -35,6 +35,10 @@ import {
   spanType,
 } from "../src/sampler.js"
 import { Flags, type LocalSettings, type Settings } from "../src/settings.js"
+import {
+  type RequestHeaders,
+  type ResponseHeaders,
+} from "../src/trace-options.js"
 
 interface MakeSpan {
   name?: string
@@ -100,17 +104,36 @@ const makeSampleParams = (options: MakeSampleParams = {}): SampleParams => {
   ]
 }
 
+interface TestSamplerOptions {
+  settings: Settings
+  localSettings: LocalSettings
+  requestHeaders: RequestHeaders
+}
 class TestSampler extends OboeSampler {
   #localSettings: LocalSettings
+  #requestHeaders: RequestHeaders
+  #responseHeaders: ResponseHeaders | undefined
 
-  constructor(settings: Settings, localSettings: LocalSettings) {
+  get responseHeaders() {
+    return this.#responseHeaders
+  }
+
+  constructor(options: TestSamplerOptions) {
     super(diag)
-    this.#localSettings = localSettings
-    this.updateSettings(settings)
+    this.#localSettings = options.localSettings
+    this.#requestHeaders = options.requestHeaders
+    this.updateSettings(options.settings)
   }
 
   override localSettings(): LocalSettings {
     return this.#localSettings
+  }
+
+  override requestHeaders(): RequestHeaders {
+    return this.#requestHeaders
+  }
+  override setResponseHeaders(headers: ResponseHeaders): void {
+    this.#responseHeaders = headers
   }
 
   override toString(): string {
@@ -149,10 +172,11 @@ describe("spanType", () => {
 describe("OboeSampler", () => {
   describe("LOCAL span", () => {
     it("respects parent sampled", () => {
-      const sampler = new TestSampler(
-        { sampleRate: 0, flags: 0x0, buckets: {} },
-        { triggerMode: false },
-      )
+      const sampler = new TestSampler({
+        settings: { sampleRate: 0, flags: 0x0, buckets: {} },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
 
       const parent = makeSpan({ remote: false, sampled: true })
       const params = makeSampleParams({ parent })
@@ -162,10 +186,11 @@ describe("OboeSampler", () => {
     })
 
     it("respects parent not sampled", () => {
-      const sampler = new TestSampler(
-        { sampleRate: 0, flags: 0x0, buckets: {} },
-        { triggerMode: false },
-      )
+      const sampler = new TestSampler({
+        settings: { sampleRate: 0, flags: 0x0, buckets: {} },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
 
       const parent = makeSpan({ remote: false, sampled: false })
       const params = makeSampleParams({ parent })
@@ -177,10 +202,15 @@ describe("OboeSampler", () => {
 
   describe("ENTRY span with valid sw context", () => {
     describe("SAMPLE_THROUGH_ALWAYS set", () => {
-      const sampler = new TestSampler(
-        { sampleRate: 0, flags: Flags.SAMPLE_THROUGH_ALWAYS, buckets: {} },
-        { triggerMode: false },
-      )
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 0,
+          flags: Flags.SAMPLE_THROUGH_ALWAYS,
+          buckets: {},
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
 
       it("respects parent sampled", () => {
         const parent = makeSpan({ remote: true, sw: true, sampled: true })
@@ -218,14 +248,15 @@ describe("OboeSampler", () => {
     describe("SAMPLE_THROUGH_ALWAYS unset", () => {
       describe("SAMPLE_START set", () =>
         it("records but does not sample", () => {
-          const sampler = new TestSampler(
-            {
+          const sampler = new TestSampler({
+            settings: {
               sampleRate: 0,
               flags: Flags.SAMPLE_START,
               buckets: {},
             },
-            { triggerMode: false },
-          )
+            localSettings: { triggerMode: false },
+            requestHeaders: {},
+          })
 
           const parent = makeSpan({
             remote: true,
@@ -240,14 +271,15 @@ describe("OboeSampler", () => {
 
       describe("SAMPLE_START unset", () =>
         it("does not record or sample", () => {
-          const sampler = new TestSampler(
-            {
+          const sampler = new TestSampler({
+            settings: {
               sampleRate: 0,
               flags: 0x0,
               buckets: {},
             },
-            { triggerMode: false },
-          )
+            localSettings: { triggerMode: false },
+            requestHeaders: {},
+          })
 
           const parent = makeSpan({
             remote: true,

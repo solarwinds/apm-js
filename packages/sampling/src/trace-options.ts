@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { diag, type DiagLogger } from "@opentelemetry/api"
+import { createHmac } from "crypto"
 
 const TRIGGER_TRACE_KEY = "trigger-trace"
 const TIMESTAMP_KEY = "ts"
@@ -31,13 +32,34 @@ export interface TraceOptions {
   ignored: [string, string | undefined][]
 }
 
+export interface TraceOptionsResponse {
+  auth?: Auth
+  triggerTrace?: TriggerTrace
+  ignored?: string[]
+}
+
 export interface RequestHeaders {
-  traceOptions?: string
-  traceOptionsSignature?: string
+  "X-Trace-Options"?: string
+  "X-Trace-Options-Signature"?: string
 }
 
 export interface ResponseHeaders {
-  traceOptionsResponse?: string
+  "X-Trace-Options-Response"?: string
+}
+
+export enum Auth {
+  OK = "ok",
+  BAD_TIMESTAMP = "bad-timestamp",
+  BAD_SIGNATURE = "bad-signature",
+  NO_SIGNATURE_KEY = "no-signature-key",
+}
+
+export enum TriggerTrace {
+  OK = "ok",
+  NOT_REQUESTED = "not-requested",
+  IGNORED = "ignored",
+  TRACING_DISABLED = "tracing-disabled",
+  TRIGGER_TRACING_DISABLED = "trigger-tracing-disabled",
 }
 
 export function parseTraceOptions(
@@ -116,4 +138,46 @@ export function parseTraceOptions(
   }
 
   return traceOptions
+}
+
+export function stringifyTraceOptionsResponse(
+  traceOptionsResponse: TraceOptionsResponse,
+): string {
+  const kvs = {
+    auth: traceOptionsResponse.auth,
+    "trigger-trace": traceOptionsResponse.triggerTrace,
+    ignored: traceOptionsResponse.ignored?.join(","),
+  }
+
+  return Object.entries(kvs)
+    .filter(([, v]) => v !== undefined)
+    .map(([k, v]) => `${k}=${v}`)
+    .join(";")
+}
+
+export function validateSignature(
+  header: string,
+  signature: string,
+  key: string | undefined,
+  timestamp: number | undefined,
+): Auth {
+  // unix seconds
+  const now = Date.now() / 1000
+  // timestamp must within 5 minutes
+  if (!timestamp || Math.abs(now - timestamp) > 5 * 60) {
+    return Auth.BAD_TIMESTAMP
+  }
+
+  if (!key) {
+    return Auth.NO_SIGNATURE_KEY
+  }
+
+  const hmac = createHmac("sha1", key)
+  const digest = hmac.update(header).digest()
+
+  if (signature !== digest.toString("hex")) {
+    return Auth.BAD_SIGNATURE
+  }
+
+  return Auth.OK
 }

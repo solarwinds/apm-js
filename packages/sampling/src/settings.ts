@@ -20,6 +20,7 @@ export interface Settings {
   sampleRate: number
   flags: number
   buckets: Partial<Record<BucketType, BucketSettings>>
+  signatureKey?: string
 }
 
 export interface LocalSettings {
