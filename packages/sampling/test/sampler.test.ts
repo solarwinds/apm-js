@@ -48,6 +48,10 @@ interface MakeSpan {
   remote?: boolean
   sampled?: boolean
 
+  /**
+   * Whether to generate a sw tracestate field.
+   * "inverse" will generate a field that contradicts the W3C trace flags.
+   */
   sw?: boolean | "inverse"
 }
 const makeSpan = (options: MakeSpan = {}): Span => {
