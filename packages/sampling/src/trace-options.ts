@@ -1,0 +1,119 @@
+/*
+Copyright 2023-2024 SolarWinds Worldwide, LLC.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+import { diag, type DiagLogger } from "@opentelemetry/api"
+
+const TRIGGER_TRACE_KEY = "trigger-trace"
+const TIMESTAMP_KEY = "ts"
+const SW_KEYS_KEY = "sw-keys"
+
+const CUSTOM_KEY_REGEX = /^custom-[^\s]+$/
+
+export interface TraceOptions {
+  triggerTrace?: true
+  timestamp?: number
+  swKeys?: string
+
+  custom: Record<string, string>
+  ignored: [string, string | undefined][]
+}
+
+export interface RequestHeaders {
+  traceOptions?: string
+  traceOptionsSignature?: string
+}
+
+export interface ResponseHeaders {
+  traceOptionsResponse?: string
+}
+
+export function parseTraceOptions(
+  header: string,
+  logger: DiagLogger = diag,
+): TraceOptions {
+  const traceOptions: TraceOptions = {
+    custom: {},
+    ignored: [],
+  }
+
+  const kvs = header
+    .split(";")
+    .map<[string, string | undefined]>((kv) => {
+      const [k, ...vs] = kv.split("=").map((s) => s.trim())
+      return [k!, vs.length > 0 ? vs.join("=") : undefined]
+    })
+    .filter(([k]) => k.length > 0)
+
+  for (const [k, v] of kvs) {
+    if (k === TRIGGER_TRACE_KEY) {
+      if (v !== undefined || traceOptions.triggerTrace !== undefined) {
+        logger.debug(
+          "invalid trace option for trigger trace, should not have a value and only be provided once",
+        )
+
+        traceOptions.ignored.push([k, v])
+        continue
+      }
+
+      traceOptions.triggerTrace = true
+    } else if (k === TIMESTAMP_KEY) {
+      if (v === undefined || traceOptions.timestamp !== undefined) {
+        logger.debug(
+          "invalid trace option for timestamp, should have a value and only be provided once",
+        )
+
+        traceOptions.ignored.push([k, v])
+        continue
+      }
+
+      const ts = Number.parseFloat(v)
+      if (!Number.isSafeInteger(ts)) {
+        logger.debug("invalid trace option for timestamp, should be an integer")
+
+        traceOptions.ignored.push([k, v])
+        continue
+      }
+
+      traceOptions.timestamp = ts
+    } else if (k === SW_KEYS_KEY) {
+      if (v === undefined || traceOptions.swKeys !== undefined) {
+        logger.debug(
+          "invalid trace option for sw keys, should have a value and only be provided once",
+        )
+
+        traceOptions.ignored.push([k, v])
+        continue
+      }
+
+      traceOptions.swKeys = v
+    } else if (CUSTOM_KEY_REGEX.test(k)) {
+      if (v === undefined || traceOptions.custom[k] !== undefined) {
+        logger.debug(
+          `invalid trace option for custom key ${k}, should have a value and only be provided once`,
+        )
+
+        traceOptions.ignored.push([k, v])
+        continue
+      }
+
+      traceOptions.custom[k] = v
+    } else {
+      traceOptions.ignored.push([k, v])
+    }
+  }
+
+  return traceOptions
+}

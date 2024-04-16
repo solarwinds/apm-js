@@ -34,6 +34,7 @@ import {
   type Settings,
 } from "./settings.js"
 import { TokenBucket } from "./token-bucket.js"
+import { type RequestHeaders, type ResponseHeaders } from "./trace-options.js"
 
 const TRACESTATE_REGEXP = /^[0-9a-f]{16}-[0-9a-f]{2}$/
 const BUCKET_INTERVAL = 1000
@@ -160,7 +161,27 @@ export abstract class OboeSampler implements Sampler {
    *
    * @param params - Parameters passed to {@link Sampler.shouldSample}
    */
-  abstract localSettings(...params: SampleParams): LocalSettings
+  protected abstract localSettings(...params: SampleParams): LocalSettings
+
+  /**
+   * Retrieves the trace options request headers for the given span information.
+   *
+   * @param params - Parameters passed to {@link Sampler.shouldSample}
+   *
+   * @returns Headers set on the request that initiated the trace
+   */
+  protected abstract requestHeaders(...params: SampleParams): RequestHeaders
+
+  /**
+   * Sets the trace options response headers for the given span information
+   *
+   * @param headers - Headers to be set on the response to the request that initiated the trace
+   * @param params - Parameters passed to {@link Sampler.shouldSample}
+   */
+  protected abstract setResponseHeaders(
+    headers: ResponseHeaders,
+    ...params: SampleParams
+  ): void
 
   /** See {@link Sampler.toString} */
   abstract toString(): string
