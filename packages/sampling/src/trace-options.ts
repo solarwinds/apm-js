@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { diag, type DiagAPI } from "@opentelemetry/api"
+import { diag, type DiagLogger } from "@opentelemetry/api"
 
 const TRIGGER_TRACE_KEY = "trigger-trace"
 const TIMESTAMP_KEY = "ts"
@@ -42,7 +42,7 @@ export interface ResponseHeaders {
 
 export function parseTraceOptions(
   header: string,
-  logger: DiagAPI = diag,
+  logger: DiagLogger = diag,
 ): TraceOptions {
   const traceOptions: TraceOptions = {
     custom: {},
