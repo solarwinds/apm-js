@@ -158,6 +158,7 @@ export abstract class OboeSampler implements Sampler {
           s.traceOptions.timestamp,
         )
 
+        // if the request has an invalid signature we always short circuit
         if (s.traceOptions.response.auth !== Auth.OK) {
           this.logger.debug(
             "X-Trace-Options-Signature invalid; tracing disabled",
@@ -248,6 +249,8 @@ export abstract class OboeSampler implements Sampler {
       this.logger.debug("TRIGGERED_TRACE set; trigger tracing")
 
       let bucket: TokenBucket
+      // if there's an auth response present we know it's a valid signed request
+      // otherwise we would never have reached this code
       if (s.traceOptions!.response.auth) {
         this.logger.debug("signed request; using relaxed rate")
         bucket = this.#buckets[BucketType.TRIGGER_RELAXED]
