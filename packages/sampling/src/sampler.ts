@@ -27,6 +27,7 @@ import {
   type SamplingResult,
 } from "@opentelemetry/sdk-trace-base"
 
+import { Dice } from "./dice.js"
 import {
   BucketType,
   Flags,
@@ -49,8 +50,10 @@ import {
 
 const TRACESTATE_REGEXP = /^[0-9a-f]{16}-[0-9a-f]{2}$/
 const BUCKET_INTERVAL = 1000
+const DICE_SCALE = 1_000_000
 
 const SW_KEYS_ATTRIBUTE = "SWKeys"
+const SAMPLE_RATE_ATTRIBUTE = "SampleRate"
 const BUCKET_CAPACITY_ATTRIBUTE = "BucketCapacity"
 const BUCKET_RATE_ATTRIBUTE = "BucketRate"
 
@@ -261,9 +264,13 @@ export abstract class OboeSampler implements Sampler {
       s.attributes[BUCKET_RATE_ATTRIBUTE] = bucket.rate
 
       if (bucket.consume()) {
+        this.logger.debug("sufficient capacity; record and sample")
+
         s.traceOptions!.response.triggerTrace = TriggerTrace.OK
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
+        this.logger.debug("insufficient capacity; record only")
+
         s.traceOptions!.response.triggerTrace = TriggerTrace.RATE_EXCEEDED
         s.decision = SamplingDecision.RECORD
       }
@@ -276,8 +283,28 @@ export abstract class OboeSampler implements Sampler {
     }
   }
 
-  #diceRollAlgo(_s: SampleState) {
-    throw new Error("TODO")
+  #diceRollAlgo(s: SampleState) {
+    const dice = new Dice({ rate: s.settings.sampleRate, scale: DICE_SCALE })
+    s.attributes[SAMPLE_RATE_ATTRIBUTE] = dice.rate
+
+    if (dice.roll()) {
+      this.logger.debug("dice roll success; checking capacity")
+
+      const bucket = this.#buckets[BucketType.DEFAULT]
+      s.attributes[BUCKET_CAPACITY_ATTRIBUTE] = bucket.capacity
+      s.attributes[BUCKET_RATE_ATTRIBUTE] = bucket.rate
+
+      if (bucket.consume()) {
+        this.logger.debug("sufficient capacity; record and sample")
+        s.decision = SamplingDecision.RECORD_AND_SAMPLED
+      } else {
+        this.logger.debug("insufficient capacity; record only")
+        s.decision = SamplingDecision.RECORD
+      }
+    } else {
+      this.logger.debug("dice roll failure; don't record")
+      s.decision = SamplingDecision.NOT_RECORD
+    }
   }
 
   #disabledAlgo(s: SampleState) {
