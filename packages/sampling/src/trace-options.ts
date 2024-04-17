@@ -161,15 +161,15 @@ export function validateSignature(
   key: string | undefined,
   timestamp: number | undefined,
 ): Auth {
+  if (!key) {
+    return Auth.NO_SIGNATURE_KEY
+  }
+
   // unix seconds
   const now = Date.now() / 1000
   // timestamp must within 5 minutes
   if (!timestamp || Math.abs(now - timestamp) > 5 * 60) {
     return Auth.BAD_TIMESTAMP
-  }
-
-  if (!key) {
-    return Auth.NO_SIGNATURE_KEY
   }
 
   const hmac = createHmac("sha1", key)
