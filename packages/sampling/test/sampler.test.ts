@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { randomBytes } from "node:crypto"
+import { createHmac, randomBytes } from "node:crypto"
 
 import {
   createTraceState,
@@ -106,6 +106,48 @@ const makeSampleParams = (options: MakeSampleParams = {}): SampleParams => {
     {},
     [],
   ]
+}
+
+interface MakeRequestHeaders {
+  triggerTrace?: boolean
+  signature?: boolean | "bad-timestamp"
+  signatureKey?: string
+  kvs?: Record<string, string>
+}
+const makeRequestHeaders = (
+  options: MakeRequestHeaders = {},
+): RequestHeaders => {
+  if (!options.triggerTrace && !options.kvs && !options.signature) {
+    return {}
+  }
+
+  let timestamp = Date.now() / 1000
+  if (options.signature === "bad-timestamp") {
+    timestamp -= 10 * 60
+  }
+  const ts = `ts=${timestamp.toFixed(0)}`
+
+  const triggerTrace = options.triggerTrace && "trigger-trace"
+  const kvs = options.kvs
+    ? Object.entries(options.kvs).map(([k, v]) => `${k}=${v}`)
+    : []
+
+  const headers: RequestHeaders = {
+    "X-Trace-Options": [triggerTrace, ...kvs, ts].filter((v) => v).join(";"),
+  }
+
+  if (options.signature) {
+    options.signatureKey ??= randomBytes(8).toString("hex")
+    headers["X-Trace-Options-Signature"] = createHmac(
+      "sha1",
+      options.signatureKey,
+    )
+      .update(headers["X-Trace-Options"]!)
+      .digest()
+      .toString("hex")
+  }
+
+  return headers
 }
 
 interface TestSamplerOptions {
@@ -204,7 +246,115 @@ describe("OboeSampler", () => {
     })
   })
 
+  describe("invalid X-Trace-Options-Signature", () => {
+    it("rejects missing signature key", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 1_000_000,
+          flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
+          buckets: {},
+        },
+        localSettings: { triggerMode: true },
+        requestHeaders: makeRequestHeaders({
+          triggerTrace: true,
+          signature: true,
+          kvs: { "custom-key": "value" },
+        }),
+      })
+
+      const parent = makeSpan({ remote: true, sampled: true })
+      const params = makeSampleParams({ parent })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+      expect(sample.attributes).to.be.undefined
+      expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
+        "auth=no-signature-key",
+      )
+    })
+
+    it("rejects bad timestamp", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 1_000_000,
+          flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
+          buckets: {},
+          signatureKey: "key",
+        },
+        localSettings: { triggerMode: true },
+        requestHeaders: makeRequestHeaders({
+          triggerTrace: true,
+          signature: "bad-timestamp",
+          signatureKey: "key",
+          kvs: { "custom-key": "value" },
+        }),
+      })
+
+      const parent = makeSpan({ remote: true, sampled: true })
+      const params = makeSampleParams({ parent })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+      expect(sample.attributes).to.be.undefined
+      expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
+        "auth=bad-timestamp",
+      )
+    })
+
+    it("rejects bad signature", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 1_000_000,
+          flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
+          buckets: {},
+          signatureKey: "key1",
+        },
+        localSettings: { triggerMode: true },
+        requestHeaders: makeRequestHeaders({
+          triggerTrace: true,
+          signature: true,
+          signatureKey: "key2",
+          kvs: { "custom-key": "value" },
+        }),
+      })
+
+      const parent = makeSpan({ remote: true, sampled: true })
+      const params = makeSampleParams({ parent })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+      expect(sample.attributes).to.be.undefined
+      expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
+        "auth=bad-signature",
+      )
+    })
+  })
+
   describe("ENTRY span with valid sw context", () => {
+    it("ignores trigger-trace", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 0,
+          flags: Flags.SAMPLE_THROUGH_ALWAYS,
+          buckets: {},
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: makeRequestHeaders({
+          triggerTrace: true,
+          kvs: { "custom-key": "value" },
+        }),
+      })
+
+      const parent = makeSpan({ remote: true, sw: true, sampled: true })
+      const params = makeSampleParams({ parent })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.attributes).to.include({ "custom-key": "value" })
+      expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
+        "trigger-trace=ignored",
+      )
+    })
+
     describe("SAMPLE_THROUGH_ALWAYS set", () => {
       const sampler = new TestSampler({
         settings: {
