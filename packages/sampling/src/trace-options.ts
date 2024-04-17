@@ -176,9 +176,9 @@ export function validateSignature(
   const hmac = createHmac("sha1", key)
   const digest = hmac.update(header).digest()
 
-  if (signature !== digest.toString("hex")) {
+  if (signature === digest.toString("hex")) {
+    return Auth.OK
+  } else {
     return Auth.BAD_SIGNATURE
   }
-
-  return Auth.OK
 }
