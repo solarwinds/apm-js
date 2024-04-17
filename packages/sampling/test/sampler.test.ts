@@ -787,7 +787,7 @@ describe("OboeSampler", () => {
       })
     })
 
-    it("doesn't record when dice failure", () => {
+    it("records but doesn't sample when dice failure", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
@@ -801,7 +801,7 @@ describe("OboeSampler", () => {
       const params = makeSampleParams({ parent: false })
       const sample = sampler.shouldSample(...params)
 
-      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+      expect(sample.decision).to.equal(SamplingDecision.RECORD)
       expect(sample.attributes).to.include({ SampleRate: 0 })
       expect(sample.attributes).not.to.have.property("BucketCapacity")
       expect(sample.attributes).not.to.have.property("BucketRate")

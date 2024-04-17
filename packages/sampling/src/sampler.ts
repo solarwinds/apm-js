@@ -28,6 +28,7 @@ import {
 } from "@opentelemetry/sdk-trace-base"
 
 import { Dice } from "./dice.js"
+import { counters } from "./metrics.js"
 import {
   BucketType,
   Flags,
@@ -197,6 +198,9 @@ export abstract class OboeSampler implements Sampler {
       return { decision: SamplingDecision.NOT_RECORD, attributes: s.attributes }
     }
 
+    counters.requestCount.add(1, {}, context)
+
+    // https://swicloud.atlassian.net/wiki/spaces/NIT/pages/3815473156/Tracing+Decision+Tree
     if (s.traceState && TRACESTATE_REGEXP.test(s.traceState)) {
       this.logger.debug("context is valid for parent-based sampling")
       this.#parentBasedAlgo(s)
@@ -220,6 +224,8 @@ export abstract class OboeSampler implements Sampler {
   }
 
   #parentBasedAlgo(s: SampleState) {
+    const [context] = s.params
+
     if (s.traceOptions?.triggerTrace) {
       this.logger.debug("trigger trace requested but ignored")
       s.traceOptions.response.triggerTrace = TriggerTrace.IGNORED
@@ -234,6 +240,10 @@ export abstract class OboeSampler implements Sampler {
 
       if (sampled) {
         this.logger.debug("parent is sampled; record and sample")
+
+        counters.traceCount.add(1, {}, context)
+        counters.throughTraceCount.add(1, {}, context)
+
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
         this.logger.debug("parent is not sampled; record only")
@@ -253,6 +263,8 @@ export abstract class OboeSampler implements Sampler {
   }
 
   #triggerTraceAlgo(s: SampleState) {
+    const [context] = s.params
+
     if (s.settings!.flags & Flags.TRIGGERED_TRACE) {
       this.logger.debug("TRIGGERED_TRACE set; trigger tracing")
 
@@ -273,6 +285,9 @@ export abstract class OboeSampler implements Sampler {
       if (bucket.consume()) {
         this.logger.debug("sufficient capacity; record and sample")
 
+        counters.triggeredTraceCount.add(1, {}, context)
+        counters.traceCount.add(1, {}, context)
+
         s.traceOptions!.response.triggerTrace = TriggerTrace.OK
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
@@ -291,8 +306,12 @@ export abstract class OboeSampler implements Sampler {
   }
 
   #diceRollAlgo(s: SampleState) {
+    const [context] = s.params
+
     const dice = new Dice({ rate: s.settings!.sampleRate, scale: DICE_SCALE })
     s.attributes[SAMPLE_RATE_ATTRIBUTE] = dice.rate
+
+    counters.sampleCount.add(1, {}, context)
 
     if (dice.roll()) {
       this.logger.debug("dice roll success; checking capacity")
@@ -303,14 +322,20 @@ export abstract class OboeSampler implements Sampler {
 
       if (bucket.consume()) {
         this.logger.debug("sufficient capacity; record and sample")
+
+        counters.traceCount.add(1, {}, context)
+
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
         this.logger.debug("insufficient capacity; record only")
+
+        counters.tokenBucketExhaustionCount.add(1, {}, context)
+
         s.decision = SamplingDecision.RECORD
       }
     } else {
-      this.logger.debug("dice roll failure; don't record")
-      s.decision = SamplingDecision.NOT_RECORD
+      this.logger.debug("dice roll failure; record only")
+      s.decision = SamplingDecision.RECORD
     }
   }
 
