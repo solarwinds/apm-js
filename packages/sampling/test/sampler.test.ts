@@ -34,7 +34,12 @@ import {
   SpanType,
   spanType,
 } from "../src/sampler.js"
-import { Flags, type LocalSettings, type Settings } from "../src/settings.js"
+import {
+  BucketType,
+  Flags,
+  type LocalSettings,
+  type Settings,
+} from "../src/settings.js"
 import {
   type RequestHeaders,
   type ResponseHeaders,
@@ -87,7 +92,7 @@ const makeSpan = (options: MakeSpan = {}): Span => {
 }
 
 interface MakeSampleParams {
-  parent?: Span
+  parent?: Span | false
   name?: string
   kind?: SpanKind
 }
@@ -99,8 +104,10 @@ const makeSampleParams = (options: MakeSampleParams = {}): SampleParams => {
   }
 
   return [
-    trace.setSpan(ROOT_CONTEXT, object.parent),
-    object.parent.spanContext().traceId,
+    object.parent ? trace.setSpan(ROOT_CONTEXT, object.parent) : ROOT_CONTEXT,
+    object.parent
+      ? object.parent.spanContext().traceId
+      : randomBytes(16).toString("hex"),
     object.name,
     object.kind,
     {},
@@ -151,7 +158,7 @@ const makeRequestHeaders = (
 }
 
 interface TestSamplerOptions {
-  settings: Settings
+  settings: Settings | false
   localSettings: LocalSettings
   requestHeaders: RequestHeaders
 }
@@ -168,7 +175,9 @@ class TestSampler extends OboeSampler {
     super(diag)
     this.#localSettings = options.localSettings
     this.#requestHeaders = options.requestHeaders
-    this.updateSettings(options.settings)
+    if (options.settings) {
+      this.updateSettings(options.settings)
+    }
   }
 
   override localSettings(): LocalSettings {
@@ -327,6 +336,63 @@ describe("OboeSampler", () => {
       expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
         "auth=bad-signature",
       )
+    })
+  })
+
+  describe("missing settings", () => {
+    it("doesn't sample", () => {
+      const sampler = new TestSampler({
+        settings: false,
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
+
+      const params = makeSampleParams({ parent: false })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+    })
+
+    describe("X-Trace-Options", () => {
+      it("respects keys and values", () => {
+        const sampler = new TestSampler({
+          settings: false,
+          localSettings: { triggerMode: false },
+          requestHeaders: makeRequestHeaders({
+            kvs: { "custom-key": "value", "sw-keys": "sw-values" },
+          }),
+        })
+
+        const params = makeSampleParams({ parent: false })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.attributes).to.include({
+          "custom-key": "value",
+          SWKeys: "sw-values",
+        })
+        expect(
+          sampler.responseHeaders?.["X-Trace-Options-Response"],
+        ).to.include("trigger-trace=not-requested")
+      })
+
+      it("ignores trigger-trace", () => {
+        const sampler = new TestSampler({
+          settings: false,
+          localSettings: { triggerMode: true },
+          requestHeaders: makeRequestHeaders({
+            triggerTrace: true,
+            kvs: { "custom-key": "value", "invalid-key": "value" },
+          }),
+        })
+
+        const params = makeSampleParams({ parent: false })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.attributes).to.include({ "custom-key": "value" })
+        expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+          .to.include("trigger-trace=settings-not-available")
+          .and.to.include("ignored=invalid-key")
+      })
     })
   })
 
@@ -645,6 +711,100 @@ describe("OboeSampler", () => {
           .to.include("trigger-trace=trigger-tracing-disabled")
           .and.to.include("ignored=invalid-key")
       })
+    })
+  })
+
+  describe("dice roll", () => {
+    describe("X-Trace-Options", () => {
+      it("respects keys and values", () => {
+        const sampler = new TestSampler({
+          settings: {
+            sampleRate: 0,
+            flags: Flags.SAMPLE_START,
+            buckets: {},
+          },
+          localSettings: { triggerMode: false },
+          requestHeaders: makeRequestHeaders({
+            kvs: { "custom-key": "value", "sw-keys": "sw-values" },
+          }),
+        })
+
+        const parent = makeSpan({ remote: true, sampled: false })
+        const params = makeSampleParams({ parent })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.attributes).to.include({
+          "custom-key": "value",
+          SWKeys: "sw-values",
+        })
+        expect(
+          sampler.responseHeaders?.["X-Trace-Options-Response"],
+        ).to.include("trigger-trace=not-requested")
+      })
+    })
+
+    it("records and samples when dice success and sufficient capacity", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 1_000_000,
+          flags: Flags.SAMPLE_START,
+          buckets: { [BucketType.DEFAULT]: { capacity: 10, rate: 5 } },
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
+
+      const params = makeSampleParams({ parent: false })
+      const sample = sampler.shouldSample(...params)
+
+      expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+      expect(sample.attributes).to.include({
+        SampleRate: 1_000_000,
+        BucketCapacity: 10,
+        BucketRate: 5,
+      })
+    })
+
+    it("records but doesn't sample when dice success but insufficient capacity", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 1_000_000,
+          flags: Flags.SAMPLE_START,
+          buckets: { [BucketType.DEFAULT]: { capacity: 0, rate: 0 } },
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
+
+      const params = makeSampleParams({ parent: false })
+      const sample = sampler.shouldSample(...params)
+
+      expect(sample.decision).to.equal(SamplingDecision.RECORD)
+      expect(sample.attributes).to.include({
+        SampleRate: 1_000_000,
+        BucketCapacity: 0,
+        BucketRate: 0,
+      })
+    })
+
+    it("doesn't record when dice failure", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 0,
+          flags: Flags.SAMPLE_START,
+          buckets: { [BucketType.DEFAULT]: { capacity: 10, rate: 5 } },
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
+
+      const params = makeSampleParams({ parent: false })
+      const sample = sampler.shouldSample(...params)
+
+      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+      expect(sample.attributes).to.include({ SampleRate: 0 })
+      expect(sample.attributes).not.to.have.property("BucketCapacity")
+      expect(sample.attributes).not.to.have.property("BucketRate")
     })
   })
 

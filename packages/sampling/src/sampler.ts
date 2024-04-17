@@ -27,6 +27,7 @@ import {
   type SamplingResult,
 } from "@opentelemetry/sdk-trace-base"
 
+import { Dice } from "./dice.js"
 import {
   BucketType,
   Flags,
@@ -49,8 +50,10 @@ import {
 
 const TRACESTATE_REGEXP = /^[0-9a-f]{16}-[0-9a-f]{2}$/
 const BUCKET_INTERVAL = 1000
+const DICE_SCALE = 1_000_000
 
 const SW_KEYS_ATTRIBUTE = "SWKeys"
+const SAMPLE_RATE_ATTRIBUTE = "SampleRate"
 const BUCKET_CAPACITY_ATTRIBUTE = "BucketCapacity"
 const BUCKET_RATE_ATTRIBUTE = "BucketRate"
 
@@ -70,7 +73,7 @@ interface SampleState {
   attributes: Attributes
 
   params: SampleParams
-  settings: Settings
+  settings?: Settings
   traceState?: string
   headers: RequestHeaders
 
@@ -124,18 +127,12 @@ export abstract class OboeSampler implements Sampler {
       }
     }
 
-    const settings = this.#getSettings(...params)
-    if (!settings) {
-      this.logger.debug("settings unavailable; sampling disabled")
-      return { decision: SamplingDecision.NOT_RECORD }
-    }
-
     const s: SampleState = {
       decision: SamplingDecision.NOT_RECORD,
       attributes,
 
       params,
-      settings,
+      settings: this.#getSettings(...params),
       traceState: parentSpan?.spanContext().traceState?.get("sw"),
       headers: this.requestHeaders(...params),
     }
@@ -154,7 +151,7 @@ export abstract class OboeSampler implements Sampler {
         s.traceOptions.response.auth = validateSignature(
           s.headers["X-Trace-Options"],
           s.headers["X-Trace-Options-Signature"],
-          s.settings.signatureKey,
+          s.settings?.signatureKey,
           s.traceOptions.timestamp,
         )
 
@@ -187,6 +184,19 @@ export abstract class OboeSampler implements Sampler {
       }
     }
 
+    if (!s.settings) {
+      this.logger.debug("settings unavailable; sampling disabled")
+
+      if (s.traceOptions?.triggerTrace) {
+        this.logger.debug("trigger trace requested but unavailable")
+        s.traceOptions.response.triggerTrace =
+          TriggerTrace.SETTINGS_NOT_AVAILABLE
+      }
+
+      this.#setResponseHeaders(s)
+      return { decision: SamplingDecision.NOT_RECORD, attributes: s.attributes }
+    }
+
     if (s.traceState && TRACESTATE_REGEXP.test(s.traceState)) {
       this.logger.debug("context is valid for parent-based sampling")
       this.#parentBasedAlgo(s)
@@ -215,7 +225,7 @@ export abstract class OboeSampler implements Sampler {
       s.traceOptions.response.triggerTrace = TriggerTrace.IGNORED
     }
 
-    if (s.settings.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
+    if (s.settings!.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
       this.logger.debug("SAMPLE_THROUGH_ALWAYS is set; parent-based sampling")
 
       // this is guaranteed to be valid if the regexp matched
@@ -232,7 +242,7 @@ export abstract class OboeSampler implements Sampler {
     } else {
       this.logger.debug("SAMPLE_THROUGH_ALWAYS is unset; sampling disabled")
 
-      if (s.settings.flags & Flags.SAMPLE_START) {
+      if (s.settings!.flags & Flags.SAMPLE_START) {
         this.logger.debug("SAMPLE_START is set; record")
         s.decision = SamplingDecision.RECORD
       } else {
@@ -243,7 +253,7 @@ export abstract class OboeSampler implements Sampler {
   }
 
   #triggerTraceAlgo(s: SampleState) {
-    if (s.settings.flags & Flags.TRIGGERED_TRACE) {
+    if (s.settings!.flags & Flags.TRIGGERED_TRACE) {
       this.logger.debug("TRIGGERED_TRACE set; trigger tracing")
 
       let bucket: TokenBucket
@@ -261,9 +271,13 @@ export abstract class OboeSampler implements Sampler {
       s.attributes[BUCKET_RATE_ATTRIBUTE] = bucket.rate
 
       if (bucket.consume()) {
+        this.logger.debug("sufficient capacity; record and sample")
+
         s.traceOptions!.response.triggerTrace = TriggerTrace.OK
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
+        this.logger.debug("insufficient capacity; record only")
+
         s.traceOptions!.response.triggerTrace = TriggerTrace.RATE_EXCEEDED
         s.decision = SamplingDecision.RECORD
       }
@@ -276,8 +290,28 @@ export abstract class OboeSampler implements Sampler {
     }
   }
 
-  #diceRollAlgo(_s: SampleState) {
-    throw new Error("TODO")
+  #diceRollAlgo(s: SampleState) {
+    const dice = new Dice({ rate: s.settings!.sampleRate, scale: DICE_SCALE })
+    s.attributes[SAMPLE_RATE_ATTRIBUTE] = dice.rate
+
+    if (dice.roll()) {
+      this.logger.debug("dice roll success; checking capacity")
+
+      const bucket = this.#buckets[BucketType.DEFAULT]
+      s.attributes[BUCKET_CAPACITY_ATTRIBUTE] = bucket.capacity
+      s.attributes[BUCKET_RATE_ATTRIBUTE] = bucket.rate
+
+      if (bucket.consume()) {
+        this.logger.debug("sufficient capacity; record and sample")
+        s.decision = SamplingDecision.RECORD_AND_SAMPLED
+      } else {
+        this.logger.debug("insufficient capacity; record only")
+        s.decision = SamplingDecision.RECORD
+      }
+    } else {
+      this.logger.debug("dice roll failure; don't record")
+      s.decision = SamplingDecision.NOT_RECORD
+    }
   }
 
   #disabledAlgo(s: SampleState) {
@@ -286,7 +320,7 @@ export abstract class OboeSampler implements Sampler {
       s.traceOptions.response.triggerTrace = TriggerTrace.TRACING_DISABLED
     }
 
-    if (s.settings.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
+    if (s.settings!.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
       this.logger.debug("SAMPLE_THROUGH_ALWAYS is set; record")
       s.decision = SamplingDecision.RECORD
     } else {

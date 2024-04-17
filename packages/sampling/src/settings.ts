@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export const SAMPLE_RATE_SCALE = 1_000_000
-
 export interface Settings {
   sampleRate: number
   flags: number
