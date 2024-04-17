@@ -16,7 +16,13 @@ limitations under the License.
 
 import { describe, expect, it as test } from "@solarwinds-apm/test"
 
-import { parseTraceOptions } from "../src/trace-options.js"
+import {
+  Auth,
+  parseTraceOptions,
+  stringifyTraceOptionsResponse,
+  TriggerTrace,
+  validateSignature,
+} from "../src/trace-options.js"
 
 describe("parseTraceOptions", () => {
   test("no key no value", () => {
@@ -300,5 +306,96 @@ describe("parseTraceOptions", () => {
         ["5", undefined],
       ],
     })
+  })
+})
+
+describe("stringifyTraceOptionsResponse", () => {
+  test("basic", () => {
+    const result = stringifyTraceOptionsResponse({
+      auth: Auth.OK,
+      triggerTrace: TriggerTrace.OK,
+    })
+
+    expect(result).to.equal("auth=ok;trigger-trace=ok")
+  })
+
+  test("ignored values", () => {
+    const result = stringifyTraceOptionsResponse({
+      auth: Auth.OK,
+      triggerTrace: TriggerTrace.TRIGGER_TRACING_DISABLED,
+      ignored: ["invalid-key1", "invalid_key2"],
+    })
+
+    expect(result).to.equal(
+      "auth=ok;trigger-trace=trigger-tracing-disabled;ignored=invalid-key1,invalid_key2",
+    )
+  })
+})
+
+describe("validateSignature", () => {
+  test("valid signature", () => {
+    const result = validateSignature(
+      "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
+      "2c1c398c3e6be898f47f74bf74f035903b48b59c",
+      "8mZ98ZnZhhggcsUmdMbS",
+      Date.now() / 1000 - 60,
+    )
+
+    expect(result).to.equal(Auth.OK)
+  })
+
+  test("invalid signature", () => {
+    const result = validateSignature(
+      "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
+      "2c1c398c3e6be898f47f74bf74f035903b48b59d",
+      "8mZ98ZnZhhggcsUmdMbS",
+      Date.now() / 1000 - 60,
+    )
+
+    expect(result).to.equal(Auth.BAD_SIGNATURE)
+  })
+
+  test("missing signature key", () => {
+    const result = validateSignature(
+      "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
+      "2c1c398c3e6be898f47f74bf74f035903b48b59c",
+      undefined,
+      Date.now() / 1000 - 60,
+    )
+
+    expect(result).to.equal(Auth.NO_SIGNATURE_KEY)
+  })
+
+  test("timestamp past", () => {
+    const result = validateSignature(
+      "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
+      "2c1c398c3e6be898f47f74bf74f035903b48b59c",
+      "8mZ98ZnZhhggcsUmdMbS",
+      Date.now() / 1000 - 10 * 60,
+    )
+
+    expect(result).to.equal(Auth.BAD_TIMESTAMP)
+  })
+
+  test("timestamp future", () => {
+    const result = validateSignature(
+      "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
+      "2c1c398c3e6be898f47f74bf74f035903b48b59c",
+      "8mZ98ZnZhhggcsUmdMbS",
+      Date.now() / 1000 + 10 * 60,
+    )
+
+    expect(result).to.equal(Auth.BAD_TIMESTAMP)
+  })
+
+  test("missing timestamp", () => {
+    const result = validateSignature(
+      "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
+      "2c1c398c3e6be898f47f74bf74f035903b48b59c",
+      "8mZ98ZnZhhggcsUmdMbS",
+      undefined,
+    )
+
+    expect(result).to.equal(Auth.BAD_TIMESTAMP)
   })
 })
