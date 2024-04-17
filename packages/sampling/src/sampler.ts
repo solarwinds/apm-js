@@ -190,19 +190,17 @@ export abstract class OboeSampler implements Sampler {
     if (s.traceState && TRACESTATE_REGEXP.test(s.traceState)) {
       this.logger.debug("context is valid for parent-based sampling")
       this.#parentBasedAlgo(s)
-    } else {
-      if (s.settings.flags & Flags.SAMPLE_START) {
-        if (s.traceOptions?.triggerTrace) {
-          this.logger.debug("trigger trace requested")
-          this.#triggerTraceAlgo(s)
-        } else {
-          this.logger.debug("defaulting to dice roll")
-          this.#diceRollAlgo(s)
-        }
+    } else if (s.settings.flags & Flags.SAMPLE_START) {
+      if (s.traceOptions?.triggerTrace) {
+        this.logger.debug("trigger trace requested")
+        this.#triggerTraceAlgo(s)
       } else {
-        this.logger.debug("SAMPLE_START is unset; sampling disabled")
-        this.#disabledAlgo(s)
+        this.logger.debug("defaulting to dice roll")
+        this.#diceRollAlgo(s)
       }
+    } else {
+      this.logger.debug("SAMPLE_START is unset; sampling disabled")
+      this.#disabledAlgo(s)
     }
 
     this.logger.debug("final sampling state", s)
@@ -263,8 +261,10 @@ export abstract class OboeSampler implements Sampler {
       s.attributes[BUCKET_RATE_ATTRIBUTE] = bucket.rate
 
       if (bucket.consume()) {
+        s.traceOptions!.response.triggerTrace = TriggerTrace.OK
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
+        s.traceOptions!.response.triggerTrace = TriggerTrace.RATE_EXCEEDED
         s.decision = SamplingDecision.RECORD
       }
     } else {

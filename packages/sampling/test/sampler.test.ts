@@ -331,28 +331,56 @@ describe("OboeSampler", () => {
   })
 
   describe("ENTRY span with valid sw context", () => {
-    it("ignores trigger-trace", () => {
-      const sampler = new TestSampler({
-        settings: {
-          sampleRate: 0,
-          flags: Flags.SAMPLE_THROUGH_ALWAYS,
-          buckets: {},
-        },
-        localSettings: { triggerMode: false },
-        requestHeaders: makeRequestHeaders({
-          triggerTrace: true,
-          kvs: { "custom-key": "value" },
-        }),
+    describe("X-Trace-Options", () => {
+      it("respects keys and values", () => {
+        const sampler = new TestSampler({
+          settings: {
+            sampleRate: 0,
+            flags: Flags.SAMPLE_THROUGH_ALWAYS,
+            buckets: {},
+          },
+          localSettings: { triggerMode: false },
+          requestHeaders: makeRequestHeaders({
+            kvs: { "custom-key": "value", "sw-keys": "sw-values" },
+          }),
+        })
+
+        const parent = makeSpan({ remote: true, sw: true, sampled: true })
+        const params = makeSampleParams({ parent })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.attributes).to.include({
+          "custom-key": "value",
+          SWKeys: "sw-values",
+        })
+        expect(
+          sampler.responseHeaders?.["X-Trace-Options-Response"],
+        ).to.include("trigger-trace=not-requested")
       })
 
-      const parent = makeSpan({ remote: true, sw: true, sampled: true })
-      const params = makeSampleParams({ parent })
+      it("ignores trigger-trace", () => {
+        const sampler = new TestSampler({
+          settings: {
+            sampleRate: 0,
+            flags: Flags.SAMPLE_THROUGH_ALWAYS,
+            buckets: {},
+          },
+          localSettings: { triggerMode: true },
+          requestHeaders: makeRequestHeaders({
+            triggerTrace: true,
+            kvs: { "custom-key": "value", "invalid-key": "value" },
+          }),
+        })
 
-      const sample = sampler.shouldSample(...params)
-      expect(sample.attributes).to.include({ "custom-key": "value" })
-      expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
-        "trigger-trace=ignored",
-      )
+        const parent = makeSpan({ remote: true, sw: true, sampled: true })
+        const params = makeSampleParams({ parent })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.attributes).to.include({ "custom-key": "value" })
+        expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+          .to.include("trigger-trace=ignored")
+          .and.to.include("ignored=invalid-key")
+      })
     })
 
     describe("SAMPLE_THROUGH_ALWAYS set", () => {
@@ -446,5 +474,241 @@ describe("OboeSampler", () => {
           expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
         }))
     })
+  })
+
+  describe("trigger-trace requested", () => {
+    describe("TRIGGERED_TRACE set", () => {
+      describe("unsigned", () => {
+        it("records and samples when there is capacity", () => {
+          const sampler = new TestSampler({
+            settings: {
+              sampleRate: 0,
+              flags: Flags.SAMPLE_START | Flags.TRIGGERED_TRACE,
+              buckets: {
+                TriggerStrict: { capacity: 10, rate: 5 },
+                TriggerRelaxed: { capacity: 0, rate: 0 },
+              },
+            },
+            localSettings: { triggerMode: true },
+            requestHeaders: makeRequestHeaders({
+              triggerTrace: true,
+              kvs: { "custom-key": "value", "sw-keys": "sw-values" },
+            }),
+          })
+
+          const parent = makeSpan({ remote: true, sampled: true })
+          const params = makeSampleParams({ parent })
+
+          const sample = sampler.shouldSample(...params)
+          expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+          expect(sample.attributes).to.include({
+            "custom-key": "value",
+            SWKeys: "sw-values",
+            BucketCapacity: 10,
+            BucketRate: 5,
+          })
+          expect(
+            sampler.responseHeaders?.["X-Trace-Options-Response"],
+          ).to.include("trigger-trace=ok")
+        })
+
+        it("records but doesn't sample when there is no capacity", () => {
+          const sampler = new TestSampler({
+            settings: {
+              sampleRate: 0,
+              flags: Flags.SAMPLE_START | Flags.TRIGGERED_TRACE,
+              buckets: {
+                TriggerStrict: { capacity: 0, rate: 0 },
+                TriggerRelaxed: { capacity: 20, rate: 10 },
+              },
+            },
+            localSettings: { triggerMode: true },
+            requestHeaders: makeRequestHeaders({
+              triggerTrace: true,
+              kvs: { "custom-key": "value", "invalid-key": "value" },
+            }),
+          })
+
+          const parent = makeSpan({ remote: true, sampled: true })
+          const params = makeSampleParams({ parent })
+
+          const sample = sampler.shouldSample(...params)
+          expect(sample.decision).to.equal(SamplingDecision.RECORD)
+          expect(sample.attributes).to.include({
+            "custom-key": "value",
+            BucketCapacity: 0,
+            BucketRate: 0,
+          })
+          expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+            .to.include("trigger-trace=rate-exceeded")
+            .and.to.include("ignored=invalid-key")
+        })
+      })
+
+      describe("signed", () => {
+        it("records and samples when there is capacity", () => {
+          const sampler = new TestSampler({
+            settings: {
+              sampleRate: 0,
+              flags: Flags.SAMPLE_START | Flags.TRIGGERED_TRACE,
+              buckets: {
+                TriggerStrict: { capacity: 0, rate: 0 },
+                TriggerRelaxed: { capacity: 20, rate: 10 },
+              },
+              signatureKey: "key",
+            },
+            localSettings: { triggerMode: true },
+            requestHeaders: makeRequestHeaders({
+              triggerTrace: true,
+              kvs: { "custom-key": "value", "sw-keys": "sw-values" },
+              signature: true,
+              signatureKey: "key",
+            }),
+          })
+
+          const parent = makeSpan({ remote: true, sampled: true })
+          const params = makeSampleParams({ parent })
+
+          const sample = sampler.shouldSample(...params)
+          expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+          expect(sample.attributes).to.include({
+            "custom-key": "value",
+            SWKeys: "sw-values",
+            BucketCapacity: 20,
+            BucketRate: 10,
+          })
+          expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+            .to.include("auth=ok")
+            .and.to.include("trigger-trace=ok")
+        })
+
+        it("records but doesn't sample when there is no capacity", () => {
+          const sampler = new TestSampler({
+            settings: {
+              sampleRate: 0,
+              flags: Flags.SAMPLE_START | Flags.TRIGGERED_TRACE,
+              buckets: {
+                TriggerStrict: { capacity: 10, rate: 5 },
+                TriggerRelaxed: { capacity: 0, rate: 0 },
+              },
+              signatureKey: "key",
+            },
+            localSettings: { triggerMode: true },
+            requestHeaders: makeRequestHeaders({
+              triggerTrace: true,
+              kvs: { "custom-key": "value", "invalid-key": "value" },
+              signature: true,
+              signatureKey: "key",
+            }),
+          })
+
+          const parent = makeSpan({ remote: true, sampled: true })
+          const params = makeSampleParams({ parent })
+
+          const sample = sampler.shouldSample(...params)
+          expect(sample.decision).to.equal(SamplingDecision.RECORD)
+          expect(sample.attributes).to.include({
+            "custom-key": "value",
+            BucketCapacity: 0,
+            BucketRate: 0,
+          })
+          expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+            .to.include("auth=ok")
+            .and.to.include("trigger-trace=rate-exceeded")
+            .and.to.include("ignored=invalid-key")
+        })
+      })
+    })
+
+    describe("TRIGGERED_TRACE unset", () => {
+      it("record but does not sample", () => {
+        const sampler = new TestSampler({
+          settings: {
+            sampleRate: 0,
+            flags: Flags.SAMPLE_START,
+            buckets: {},
+          },
+          localSettings: { triggerMode: false },
+          requestHeaders: makeRequestHeaders({
+            triggerTrace: true,
+            kvs: { "custom-key": "value", "invalid-key": "value" },
+          }),
+        })
+
+        const parent = makeSpan({ remote: true, sampled: true })
+        const params = makeSampleParams({ parent })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.decision).to.equal(SamplingDecision.RECORD)
+        expect(sample.attributes).to.include({ "custom-key": "value" })
+        expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+          .to.include("trigger-trace=trigger-tracing-disabled")
+          .and.to.include("ignored=invalid-key")
+      })
+    })
+  })
+
+  describe("SAMPLE_START unset", () => {
+    it("ignores trigger-trace", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 0,
+          flags: 0x0,
+          buckets: {},
+        },
+        localSettings: { triggerMode: true },
+        requestHeaders: makeRequestHeaders({
+          triggerTrace: true,
+          kvs: { "custom-key": "value", "invalid-key": "value" },
+        }),
+      })
+
+      const parent = makeSpan({ remote: true, sampled: true })
+      const params = makeSampleParams({ parent })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.attributes).to.include({ "custom-key": "value" })
+      expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+        .to.include("trigger-trace=tracing-disabled")
+        .and.to.include("ignored=invalid-key")
+    })
+
+    describe("SAMPLE_THROUGH_ALWAYS set", () =>
+      it("records", () => {
+        const sampler = new TestSampler({
+          settings: {
+            sampleRate: 0,
+            flags: Flags.SAMPLE_THROUGH_ALWAYS,
+            buckets: {},
+          },
+          localSettings: { triggerMode: false },
+          requestHeaders: {},
+        })
+
+        const parent = makeSpan({ remote: true, sampled: true })
+        const params = makeSampleParams({ parent })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.decision).to.equal(SamplingDecision.RECORD)
+      }))
+
+    describe("SAMPLE_THROUGH_ALWAYS unset", () =>
+      it("doesn't record", () => {
+        const sampler = new TestSampler({
+          settings: {
+            sampleRate: 0,
+            flags: 0x0,
+            buckets: {},
+          },
+          localSettings: { triggerMode: false },
+          requestHeaders: {},
+        })
+
+        const parent = makeSpan({ remote: true, sampled: true })
+        const params = makeSampleParams({ parent })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+      }))
   })
 })
