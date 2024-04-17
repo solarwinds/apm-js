@@ -74,10 +74,7 @@ interface SampleState {
   traceState?: string
   headers: RequestHeaders
 
-  trace?: {
-    options: TraceOptions
-    optionsResponse: TraceOptionsResponse
-  }
+  traceOptions?: TraceOptions & { response: TraceOptionsResponse }
 }
 
 /**
@@ -144,24 +141,24 @@ export abstract class OboeSampler implements Sampler {
     }
 
     if (s.headers["X-Trace-Options"]) {
-      s.trace = {
-        options: parseTraceOptions(s.headers["X-Trace-Options"], this.logger),
-        optionsResponse: {},
+      s.traceOptions = {
+        ...parseTraceOptions(s.headers["X-Trace-Options"], this.logger),
+        response: {},
       }
 
-      this.logger.debug("X-Trace-Options present", s.trace.options)
+      this.logger.debug("X-Trace-Options present", s.traceOptions)
 
       if (s.headers["X-Trace-Options-Signature"]) {
         this.logger.debug("X-Trace-Options-Signature present; validating")
 
-        s.trace.optionsResponse.auth = validateSignature(
+        s.traceOptions.response.auth = validateSignature(
           s.headers["X-Trace-Options"],
           s.headers["X-Trace-Options-Signature"],
           s.settings.signatureKey,
-          s.trace.options.timestamp,
+          s.traceOptions.timestamp,
         )
 
-        if (s.trace.optionsResponse.auth !== Auth.OK) {
+        if (s.traceOptions.response.auth !== Auth.OK) {
           this.logger.debug(
             "X-Trace-Options-Signature invalid; tracing disabled",
           )
@@ -171,23 +168,21 @@ export abstract class OboeSampler implements Sampler {
         }
       }
 
-      if (!s.trace.options.triggerTrace) {
-        s.trace.optionsResponse.triggerTrace = TriggerTrace.NOT_REQUESTED
+      if (!s.traceOptions.triggerTrace) {
+        s.traceOptions.response.triggerTrace = TriggerTrace.NOT_REQUESTED
       }
 
       // apply span attributes
-      if (s.trace.options.swKeys) {
-        s.attributes[SW_KEYS_ATTRIBUTE] = s.trace.options.swKeys
+      if (s.traceOptions.swKeys) {
+        s.attributes[SW_KEYS_ATTRIBUTE] = s.traceOptions.swKeys
       }
-      for (const [k, v] of Object.entries(s.trace.options.custom)) {
+      for (const [k, v] of Object.entries(s.traceOptions.custom)) {
         s.attributes[k] = v
       }
 
       // list ignored keys in response
-      if (s.trace.options.ignored.length > 0) {
-        s.trace.optionsResponse.ignored = s.trace.options.ignored.map(
-          ([k]) => k,
-        )
+      if (s.traceOptions.ignored.length > 0) {
+        s.traceOptions.response.ignored = s.traceOptions.ignored.map(([k]) => k)
       }
     }
 
@@ -196,7 +191,7 @@ export abstract class OboeSampler implements Sampler {
       this.#parentBasedAlgo(s)
     } else {
       if (s.settings.flags & Flags.SAMPLE_START) {
-        if (s.trace?.options.triggerTrace) {
+        if (s.traceOptions?.triggerTrace) {
           this.logger.debug("trigger trace requested")
           this.#triggerTraceAlgo(s)
         } else {
@@ -216,9 +211,9 @@ export abstract class OboeSampler implements Sampler {
   }
 
   #parentBasedAlgo(s: SampleState) {
-    if (s.trace?.options.triggerTrace) {
+    if (s.traceOptions?.triggerTrace) {
       this.logger.debug("trigger trace requested but ignored")
-      s.trace.optionsResponse.triggerTrace = TriggerTrace.IGNORED
+      s.traceOptions.response.triggerTrace = TriggerTrace.IGNORED
     }
 
     if (s.settings.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
@@ -253,7 +248,7 @@ export abstract class OboeSampler implements Sampler {
       this.logger.debug("TRIGGERED_TRACE set; trigger tracing")
 
       let bucket: TokenBucket
-      if (s.trace!.optionsResponse.auth) {
+      if (s.traceOptions!.response.auth) {
         this.logger.debug("signed request; using relaxed rate")
         bucket = this.#buckets[BucketType.TRIGGER_RELAXED]
       } else {
@@ -267,12 +262,12 @@ export abstract class OboeSampler implements Sampler {
       if (bucket.consume()) {
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
-        s.decision = SamplingDecision.NOT_RECORD
+        s.decision = SamplingDecision.RECORD
       }
     } else {
       this.logger.debug("TRIGGERED_TRACE unset; record only")
 
-      s.trace!.optionsResponse.triggerTrace =
+      s.traceOptions!.response.triggerTrace =
         TriggerTrace.TRIGGER_TRACING_DISABLED
       s.decision = SamplingDecision.RECORD
     }
@@ -283,9 +278,9 @@ export abstract class OboeSampler implements Sampler {
   }
 
   #disabledAlgo(s: SampleState) {
-    if (s.trace?.options.triggerTrace) {
+    if (s.traceOptions?.triggerTrace) {
       this.logger.debug("trigger trace requested but tracing disabled")
-      s.trace.optionsResponse.triggerTrace = TriggerTrace.TRACING_DISABLED
+      s.traceOptions.response.triggerTrace = TriggerTrace.TRACING_DISABLED
     }
 
     if (s.settings.flags & Flags.SAMPLE_THROUGH_ALWAYS) {
@@ -341,9 +336,9 @@ export abstract class OboeSampler implements Sampler {
   #setResponseHeaders(s: SampleState) {
     const headers: ResponseHeaders = {}
 
-    if (s.trace?.optionsResponse) {
+    if (s.traceOptions?.response) {
       headers["X-Trace-Options-Response"] = stringifyTraceOptionsResponse(
-        s.trace.optionsResponse,
+        s.traceOptions.response,
       )
     }
 
