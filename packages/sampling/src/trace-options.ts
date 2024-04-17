@@ -61,6 +61,7 @@ export enum TriggerTrace {
   TRACING_DISABLED = "tracing-disabled",
   TRIGGER_TRACING_DISABLED = "trigger-tracing-disabled",
   RATE_EXCEEDED = "rate-exceeded",
+  SETTINGS_NOT_AVAILABLE = "settings-not-available",
 }
 
 export function parseTraceOptions(

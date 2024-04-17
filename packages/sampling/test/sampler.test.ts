@@ -255,21 +255,6 @@ describe("OboeSampler", () => {
     })
   })
 
-  describe("missing settings", () => {
-    it("doesn't sample", () => {
-      const sampler = new TestSampler({
-        settings: false,
-        localSettings: { triggerMode: false },
-        requestHeaders: {},
-      })
-
-      const params = makeSampleParams({ parent: false })
-
-      const sample = sampler.shouldSample(...params)
-      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
-    })
-  })
-
   describe("invalid X-Trace-Options-Signature", () => {
     it("rejects missing signature key", () => {
       const sampler = new TestSampler({
@@ -351,6 +336,63 @@ describe("OboeSampler", () => {
       expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
         "auth=bad-signature",
       )
+    })
+  })
+
+  describe("missing settings", () => {
+    it("doesn't sample", () => {
+      const sampler = new TestSampler({
+        settings: false,
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
+
+      const params = makeSampleParams({ parent: false })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+    })
+
+    describe("X-Trace-Options", () => {
+      it("respects keys and values", () => {
+        const sampler = new TestSampler({
+          settings: false,
+          localSettings: { triggerMode: false },
+          requestHeaders: makeRequestHeaders({
+            kvs: { "custom-key": "value", "sw-keys": "sw-values" },
+          }),
+        })
+
+        const params = makeSampleParams({ parent: false })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.attributes).to.include({
+          "custom-key": "value",
+          SWKeys: "sw-values",
+        })
+        expect(
+          sampler.responseHeaders?.["X-Trace-Options-Response"],
+        ).to.include("trigger-trace=not-requested")
+      })
+
+      it("ignores trigger-trace", () => {
+        const sampler = new TestSampler({
+          settings: false,
+          localSettings: { triggerMode: true },
+          requestHeaders: makeRequestHeaders({
+            triggerTrace: true,
+            kvs: { "custom-key": "value", "invalid-key": "value" },
+          }),
+        })
+
+        const params = makeSampleParams({ parent: false })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.attributes).to.include({ "custom-key": "value" })
+        expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+          .to.include("trigger-trace=settings-not-available")
+          .and.to.include("ignored=invalid-key")
+      })
     })
   })
 
