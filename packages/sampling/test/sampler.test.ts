@@ -19,14 +19,22 @@ import { createHmac, randomBytes } from "node:crypto"
 import {
   createTraceState,
   diag,
+  metrics,
   ROOT_CONTEXT,
   type Span,
   SpanKind,
   trace,
   TraceFlags,
 } from "@opentelemetry/api"
+import {
+  AggregationTemporality,
+  DataPointType,
+  InMemoryMetricExporter,
+  MeterProvider,
+  PeriodicExportingMetricReader,
+} from "@opentelemetry/sdk-metrics"
 import { SamplingDecision } from "@opentelemetry/sdk-trace-base"
-import { describe, expect, it } from "@solarwinds-apm/test"
+import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import {
   OboeSampler,
@@ -157,6 +165,38 @@ const makeRequestHeaders = (
   return headers
 }
 
+const metricExporter = new InMemoryMetricExporter(AggregationTemporality.DELTA)
+const metricReader = new PeriodicExportingMetricReader({
+  exporter: metricExporter,
+  exportIntervalMillis: 2 ** 24,
+})
+metrics.setGlobalMeterProvider(new MeterProvider({ readers: [metricReader] }))
+
+const checkCounters = async (counters: string[]) => {
+  await metricReader.forceFlush()
+
+  const remaining = new Set(counters)
+  const metrics = metricExporter
+    .getMetrics()
+    .flatMap(({ scopeMetrics }) => scopeMetrics)
+    .flatMap(({ metrics }) => metrics)
+
+  while (remaining.size && metrics.length) {
+    const metric = metrics.pop()!
+    const name = metric.descriptor.name
+
+    expect(remaining).to.include(name)
+    remaining.delete(name)
+
+    expect(metric.dataPointType).to.equal(DataPointType.SUM)
+    expect(metric.dataPoints).to.have.lengthOf(1)
+    expect(metric.dataPoints[0]).to.include({ value: 1 })
+  }
+
+  expect(remaining).to.be.empty
+  expect(metrics).to.be.empty
+}
+
 interface TestSamplerOptions {
   settings: Settings | false
   localSettings: LocalSettings
@@ -225,8 +265,13 @@ describe("spanType", () => {
 })
 
 describe("OboeSampler", () => {
+  beforeEach(async () => {
+    await metricReader.forceFlush()
+    metricExporter.reset()
+  })
+
   describe("LOCAL span", () => {
-    it("respects parent sampled", () => {
+    it("respects parent sampled", async () => {
       const sampler = new TestSampler({
         settings: { sampleRate: 0, flags: 0x0, buckets: {} },
         localSettings: { triggerMode: false },
@@ -238,9 +283,11 @@ describe("OboeSampler", () => {
 
       const sample = sampler.shouldSample(...params)
       expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+
+      await checkCounters([])
     })
 
-    it("respects parent not sampled", () => {
+    it("respects parent not sampled", async () => {
       const sampler = new TestSampler({
         settings: { sampleRate: 0, flags: 0x0, buckets: {} },
         localSettings: { triggerMode: false },
@@ -252,11 +299,13 @@ describe("OboeSampler", () => {
 
       const sample = sampler.shouldSample(...params)
       expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+
+      await checkCounters([])
     })
   })
 
   describe("invalid X-Trace-Options-Signature", () => {
-    it("rejects missing signature key", () => {
+    it("rejects missing signature key", async () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
@@ -280,9 +329,11 @@ describe("OboeSampler", () => {
       expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
         "auth=no-signature-key",
       )
+
+      await checkCounters([])
     })
 
-    it("rejects bad timestamp", () => {
+    it("rejects bad timestamp", async () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
@@ -308,9 +359,11 @@ describe("OboeSampler", () => {
       expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
         "auth=bad-timestamp",
       )
+
+      await checkCounters([])
     })
 
-    it("rejects bad signature", () => {
+    it("rejects bad signature", async () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
@@ -336,11 +389,13 @@ describe("OboeSampler", () => {
       expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
         "auth=bad-signature",
       )
+
+      await checkCounters([])
     })
   })
 
   describe("missing settings", () => {
-    it("doesn't sample", () => {
+    it("doesn't sample", async () => {
       const sampler = new TestSampler({
         settings: false,
         localSettings: { triggerMode: false },
@@ -351,48 +406,48 @@ describe("OboeSampler", () => {
 
       const sample = sampler.shouldSample(...params)
       expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+
+      await checkCounters([])
     })
 
-    describe("X-Trace-Options", () => {
-      it("respects keys and values", () => {
-        const sampler = new TestSampler({
-          settings: false,
-          localSettings: { triggerMode: false },
-          requestHeaders: makeRequestHeaders({
-            kvs: { "custom-key": "value", "sw-keys": "sw-values" },
-          }),
-        })
-
-        const params = makeSampleParams({ parent: false })
-
-        const sample = sampler.shouldSample(...params)
-        expect(sample.attributes).to.include({
-          "custom-key": "value",
-          SWKeys: "sw-values",
-        })
-        expect(
-          sampler.responseHeaders?.["X-Trace-Options-Response"],
-        ).to.include("trigger-trace=not-requested")
+    it("respects X-Trace-Options keys and values", () => {
+      const sampler = new TestSampler({
+        settings: false,
+        localSettings: { triggerMode: false },
+        requestHeaders: makeRequestHeaders({
+          kvs: { "custom-key": "value", "sw-keys": "sw-values" },
+        }),
       })
 
-      it("ignores trigger-trace", () => {
-        const sampler = new TestSampler({
-          settings: false,
-          localSettings: { triggerMode: true },
-          requestHeaders: makeRequestHeaders({
-            triggerTrace: true,
-            kvs: { "custom-key": "value", "invalid-key": "value" },
-          }),
-        })
+      const params = makeSampleParams({ parent: false })
 
-        const params = makeSampleParams({ parent: false })
-
-        const sample = sampler.shouldSample(...params)
-        expect(sample.attributes).to.include({ "custom-key": "value" })
-        expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
-          .to.include("trigger-trace=settings-not-available")
-          .and.to.include("ignored=invalid-key")
+      const sample = sampler.shouldSample(...params)
+      expect(sample.attributes).to.include({
+        "custom-key": "value",
+        SWKeys: "sw-values",
       })
+      expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
+        "trigger-trace=not-requested",
+      )
+    })
+
+    it("ignores trigger-trace", () => {
+      const sampler = new TestSampler({
+        settings: false,
+        localSettings: { triggerMode: true },
+        requestHeaders: makeRequestHeaders({
+          triggerTrace: true,
+          kvs: { "custom-key": "value", "invalid-key": "value" },
+        }),
+      })
+
+      const params = makeSampleParams({ parent: false })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.attributes).to.include({ "custom-key": "value" })
+      expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
+        .to.include("trigger-trace=settings-not-available")
+        .and.to.include("ignored=invalid-key")
     })
   })
 
@@ -460,92 +515,110 @@ describe("OboeSampler", () => {
         requestHeaders: {},
       })
 
-      it("respects parent sampled", () => {
+      it("respects parent sampled", async () => {
         const parent = makeSpan({ remote: true, sw: true, sampled: true })
         const params = makeSampleParams({ parent })
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+
+        await checkCounters([
+          "trace.service.request_count",
+          "trace.service.tracecount",
+          "trace.service.through_trace_count",
+        ])
       })
 
-      it("respects parent not sampled", () => {
+      it("respects parent not sampled", async () => {
         const parent = makeSpan({ remote: true, sw: true, sampled: false })
         const params = makeSampleParams({ parent })
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD)
+
+        await checkCounters(["trace.service.request_count"])
       })
 
-      it("respects sw sampled over w3c not sampled", () => {
+      it("respects sw sampled over w3c not sampled", async () => {
         const parent = makeSpan({ remote: true, sw: "inverse", sampled: false })
         const params = makeSampleParams({ parent })
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+
+        await checkCounters([
+          "trace.service.request_count",
+          "trace.service.tracecount",
+          "trace.service.through_trace_count",
+        ])
       })
 
-      it("respects sw not sampled over w3c sampled", () => {
+      it("respects sw not sampled over w3c sampled", async () => {
         const parent = makeSpan({ remote: true, sw: "inverse", sampled: true })
         const params = makeSampleParams({ parent })
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD)
+
+        await checkCounters(["trace.service.request_count"])
       })
     })
 
     describe("SAMPLE_THROUGH_ALWAYS unset", () => {
-      describe("SAMPLE_START set", () =>
-        it("records but does not sample", () => {
-          const sampler = new TestSampler({
-            settings: {
-              sampleRate: 0,
-              flags: Flags.SAMPLE_START,
-              buckets: {},
-            },
-            localSettings: { triggerMode: false },
-            requestHeaders: {},
-          })
+      it("records but does not sample when SAMPLE_START set", async () => {
+        const sampler = new TestSampler({
+          settings: {
+            sampleRate: 0,
+            flags: Flags.SAMPLE_START,
+            buckets: {},
+          },
+          localSettings: { triggerMode: false },
+          requestHeaders: {},
+        })
 
-          const parent = makeSpan({
-            remote: true,
-            sw: true,
-            sampled: true,
-          })
-          const params = makeSampleParams({ parent })
+        const parent = makeSpan({
+          remote: true,
+          sw: true,
+          sampled: true,
+        })
+        const params = makeSampleParams({ parent })
 
-          const sample = sampler.shouldSample(...params)
-          expect(sample.decision).to.equal(SamplingDecision.RECORD)
-        }))
+        const sample = sampler.shouldSample(...params)
+        expect(sample.decision).to.equal(SamplingDecision.RECORD)
 
-      describe("SAMPLE_START unset", () =>
-        it("does not record or sample", () => {
-          const sampler = new TestSampler({
-            settings: {
-              sampleRate: 0,
-              flags: 0x0,
-              buckets: {},
-            },
-            localSettings: { triggerMode: false },
-            requestHeaders: {},
-          })
+        await checkCounters(["trace.service.request_count"])
+      })
 
-          const parent = makeSpan({
-            remote: true,
-            sw: true,
-            sampled: true,
-          })
-          const params = makeSampleParams({ parent })
+      it("does not record or sample when SAMPLE_START unset", async () => {
+        const sampler = new TestSampler({
+          settings: {
+            sampleRate: 0,
+            flags: 0x0,
+            buckets: {},
+          },
+          localSettings: { triggerMode: false },
+          requestHeaders: {},
+        })
 
-          const sample = sampler.shouldSample(...params)
-          expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
-        }))
+        const parent = makeSpan({
+          remote: true,
+          sw: true,
+          sampled: true,
+        })
+        const params = makeSampleParams({ parent })
+
+        const sample = sampler.shouldSample(...params)
+        expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+
+        await checkCounters(["trace.service.request_count"])
+      })
     })
   })
 
   describe("trigger-trace requested", () => {
     describe("TRIGGERED_TRACE set", () => {
       describe("unsigned", () => {
-        it("records and samples when there is capacity", () => {
+        it("records and samples when there is capacity", async () => {
           const sampler = new TestSampler({
             settings: {
               sampleRate: 0,
@@ -576,9 +649,15 @@ describe("OboeSampler", () => {
           expect(
             sampler.responseHeaders?.["X-Trace-Options-Response"],
           ).to.include("trigger-trace=ok")
+
+          await checkCounters([
+            "trace.service.request_count",
+            "trace.service.tracecount",
+            "trace.service.triggered_trace_count",
+          ])
         })
 
-        it("records but doesn't sample when there is no capacity", () => {
+        it("records but doesn't sample when there is no capacity", async () => {
           const sampler = new TestSampler({
             settings: {
               sampleRate: 0,
@@ -608,11 +687,13 @@ describe("OboeSampler", () => {
           expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
             .to.include("trigger-trace=rate-exceeded")
             .and.to.include("ignored=invalid-key")
+
+          await checkCounters(["trace.service.request_count"])
         })
       })
 
       describe("signed", () => {
-        it("records and samples when there is capacity", () => {
+        it("records and samples when there is capacity", async () => {
           const sampler = new TestSampler({
             settings: {
               sampleRate: 0,
@@ -646,9 +727,15 @@ describe("OboeSampler", () => {
           expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
             .to.include("auth=ok")
             .and.to.include("trigger-trace=ok")
+
+          await checkCounters([
+            "trace.service.request_count",
+            "trace.service.tracecount",
+            "trace.service.triggered_trace_count",
+          ])
         })
 
-        it("records but doesn't sample when there is no capacity", () => {
+        it("records but doesn't sample when there is no capacity", async () => {
           const sampler = new TestSampler({
             settings: {
               sampleRate: 0,
@@ -682,12 +769,14 @@ describe("OboeSampler", () => {
             .to.include("auth=ok")
             .and.to.include("trigger-trace=rate-exceeded")
             .and.to.include("ignored=invalid-key")
+
+          await checkCounters(["trace.service.request_count"])
         })
       })
     })
 
-    describe("TRIGGERED_TRACE unset", () => {
-      it("record but does not sample", () => {
+    describe("TRIGGERED_TRACE unset", () =>
+      it("record but does not sample when TRIGGERED_TRACE unset", async () => {
         const sampler = new TestSampler({
           settings: {
             sampleRate: 0,
@@ -710,40 +799,39 @@ describe("OboeSampler", () => {
         expect(sampler.responseHeaders?.["X-Trace-Options-Response"])
           .to.include("trigger-trace=trigger-tracing-disabled")
           .and.to.include("ignored=invalid-key")
-      })
-    })
+
+        await checkCounters(["trace.service.request_count"])
+      }))
   })
 
   describe("dice roll", () => {
-    describe("X-Trace-Options", () => {
-      it("respects keys and values", () => {
-        const sampler = new TestSampler({
-          settings: {
-            sampleRate: 0,
-            flags: Flags.SAMPLE_START,
-            buckets: {},
-          },
-          localSettings: { triggerMode: false },
-          requestHeaders: makeRequestHeaders({
-            kvs: { "custom-key": "value", "sw-keys": "sw-values" },
-          }),
-        })
-
-        const parent = makeSpan({ remote: true, sampled: false })
-        const params = makeSampleParams({ parent })
-
-        const sample = sampler.shouldSample(...params)
-        expect(sample.attributes).to.include({
-          "custom-key": "value",
-          SWKeys: "sw-values",
-        })
-        expect(
-          sampler.responseHeaders?.["X-Trace-Options-Response"],
-        ).to.include("trigger-trace=not-requested")
+    it("respects X-Trace-Options keys and values", () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 0,
+          flags: Flags.SAMPLE_START,
+          buckets: {},
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: makeRequestHeaders({
+          kvs: { "custom-key": "value", "sw-keys": "sw-values" },
+        }),
       })
+
+      const parent = makeSpan({ remote: true, sampled: false })
+      const params = makeSampleParams({ parent })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.attributes).to.include({
+        "custom-key": "value",
+        SWKeys: "sw-values",
+      })
+      expect(sampler.responseHeaders?.["X-Trace-Options-Response"]).to.include(
+        "trigger-trace=not-requested",
+      )
     })
 
-    it("records and samples when dice success and sufficient capacity", () => {
+    it("records and samples when dice success and sufficient capacity", async () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
@@ -763,9 +851,15 @@ describe("OboeSampler", () => {
         BucketCapacity: 10,
         BucketRate: 5,
       })
+
+      await checkCounters([
+        "trace.service.request_count",
+        "trace.service.samplecount",
+        "trace.service.tracecount",
+      ])
     })
 
-    it("records but doesn't sample when dice success but insufficient capacity", () => {
+    it("records but doesn't sample when dice success but insufficient capacity", async () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
@@ -785,9 +879,15 @@ describe("OboeSampler", () => {
         BucketCapacity: 0,
         BucketRate: 0,
       })
+
+      await checkCounters([
+        "trace.service.request_count",
+        "trace.service.samplecount",
+        "trace.service.tokenbucket_exhaustion_count",
+      ])
     })
 
-    it("doesn't record when dice failure", () => {
+    it("records but doesn't sample when dice failure", async () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
@@ -801,10 +901,15 @@ describe("OboeSampler", () => {
       const params = makeSampleParams({ parent: false })
       const sample = sampler.shouldSample(...params)
 
-      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+      expect(sample.decision).to.equal(SamplingDecision.RECORD)
       expect(sample.attributes).to.include({ SampleRate: 0 })
       expect(sample.attributes).not.to.have.property("BucketCapacity")
       expect(sample.attributes).not.to.have.property("BucketRate")
+
+      await checkCounters([
+        "trace.service.request_count",
+        "trace.service.samplecount",
+      ])
     })
   })
 
@@ -833,42 +938,44 @@ describe("OboeSampler", () => {
         .and.to.include("ignored=invalid-key")
     })
 
-    describe("SAMPLE_THROUGH_ALWAYS set", () =>
-      it("records", () => {
-        const sampler = new TestSampler({
-          settings: {
-            sampleRate: 0,
-            flags: Flags.SAMPLE_THROUGH_ALWAYS,
-            buckets: {},
-          },
-          localSettings: { triggerMode: false },
-          requestHeaders: {},
-        })
+    it("records when SAMPLE_THROUGH_ALWAYS set", async () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 0,
+          flags: Flags.SAMPLE_THROUGH_ALWAYS,
+          buckets: {},
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
 
-        const parent = makeSpan({ remote: true, sampled: true })
-        const params = makeSampleParams({ parent })
+      const parent = makeSpan({ remote: true, sampled: true })
+      const params = makeSampleParams({ parent })
 
-        const sample = sampler.shouldSample(...params)
-        expect(sample.decision).to.equal(SamplingDecision.RECORD)
-      }))
+      const sample = sampler.shouldSample(...params)
+      expect(sample.decision).to.equal(SamplingDecision.RECORD)
 
-    describe("SAMPLE_THROUGH_ALWAYS unset", () =>
-      it("doesn't record", () => {
-        const sampler = new TestSampler({
-          settings: {
-            sampleRate: 0,
-            flags: 0x0,
-            buckets: {},
-          },
-          localSettings: { triggerMode: false },
-          requestHeaders: {},
-        })
+      await checkCounters(["trace.service.request_count"])
+    })
 
-        const parent = makeSpan({ remote: true, sampled: true })
-        const params = makeSampleParams({ parent })
+    it("doesn't record when SAMPLE_THROUGH_ALWAYS unset", async () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 0,
+          flags: 0x0,
+          buckets: {},
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
 
-        const sample = sampler.shouldSample(...params)
-        expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
-      }))
+      const parent = makeSpan({ remote: true, sampled: true })
+      const params = makeSampleParams({ parent })
+
+      const sample = sampler.shouldSample(...params)
+      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+
+      await checkCounters(["trace.service.request_count"])
+    })
   })
 })
