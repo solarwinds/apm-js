@@ -24,14 +24,10 @@ export const counters = lazy(() => {
     requestCount: meter.createCounter("trace.service.request_count", {
       valueType: ValueType.INT,
     }),
-    tokenBucketExhaustionCount: meter.createCounter(
-      "trace.service.tokenbucket_exhaustion_count",
-      { valueType: ValueType.INT },
-    ),
-    traceCount: meter.createCounter("trace.service.tracecount", {
+    sampleCount: meter.createCounter("trace.service.samplecount", {
       valueType: ValueType.INT,
     }),
-    sampleCount: meter.createCounter("trace.service.samplecount", {
+    traceCount: meter.createCounter("trace.service.tracecount", {
       valueType: ValueType.INT,
     }),
     throughTraceCount: meter.createCounter(
@@ -40,6 +36,10 @@ export const counters = lazy(() => {
     ),
     triggeredTraceCount: meter.createCounter(
       "trace.service.triggered_trace_count",
+      { valueType: ValueType.INT },
+    ),
+    tokenBucketExhaustionCount: meter.createCounter(
+      "trace.service.tokenbucket_exhaustion_count",
       { valueType: ValueType.INT },
     ),
   }
