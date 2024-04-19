@@ -1,6 +1,2 @@
 releases:
   "@solarwinds-apm/sampling": minor
-
-undecided:
-  - "@solarwinds-apm/proto"
-  - "@solarwinds-apm/sdk"
