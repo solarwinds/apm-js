@@ -422,7 +422,8 @@ export abstract class OboeSampler implements Sampler {
 
     const expiry = this.#updated + this.#settings.ttl * 1000
     if (Date.now() > expiry) {
-      this.logger.debug("settings expired")
+      this.logger.debug("settings expired, removing")
+      this.#settings = undefined
       return
     }
 
