@@ -160,7 +160,7 @@ export function stringifyTraceOptionsResponse(
 export function validateSignature(
   header: string,
   signature: string,
-  key: string | undefined,
+  key: Uint8Array | undefined,
   timestamp: number | undefined,
 ): Auth {
   if (!key) {
