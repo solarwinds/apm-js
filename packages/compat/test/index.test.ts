@@ -16,24 +16,12 @@ limitations under the License.
 
 import { SpanStatusCode, trace } from "@opentelemetry/api"
 import {
-  InMemorySpanExporter,
-  SimpleSpanProcessor,
-} from "@opentelemetry/sdk-trace-base"
-import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
-import {
   SEMATTRS_EXCEPTION_MESSAGE,
   SEMATTRS_EXCEPTION_STACKTRACE,
 } from "@opentelemetry/semantic-conventions"
-import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
+import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import { instrument, pInstrument } from "../src/index.js"
-
-const exporter = new InMemorySpanExporter()
-const processor = new SimpleSpanProcessor(exporter)
-const provider = new NodeTracerProvider()
-
-provider.addSpanProcessor(processor)
-provider.register()
 
 function inParent(f: () => void | Promise<void>) {
   return trace.getTracer("test").startActiveSpan("parent", async (span) => {
@@ -43,15 +31,11 @@ function inParent(f: () => void | Promise<void>) {
 }
 
 describe("instrument", () => {
-  beforeEach(() => {
-    exporter.reset()
-  })
-
-  it("doesn't instrument if there's no parent span", () => {
+  it("doesn't instrument if there's no parent span", async () => {
     const r = instrument("parent", () => "return")
     expect(r).to.equal("return")
 
-    const spans = exporter.getFinishedSpans()
+    const spans = await otel.spans()
     expect(spans).to.be.empty
   })
 
@@ -61,7 +45,7 @@ describe("instrument", () => {
       expect(r).to.equal("return")
     })
 
-    const spans = exporter.getFinishedSpans()
+    const spans = await otel.spans()
     expect(spans).to.have.length(1)
     expect(spans[0]?.name).to.equal("parent")
   })
@@ -72,7 +56,7 @@ describe("instrument", () => {
       expect(r).to.equal("return")
     })
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
   })
 
@@ -85,7 +69,7 @@ describe("instrument", () => {
       expect(r).to.equal("return")
     })
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
     expect(span?.attributes).to.have.property("key", "value")
   })
@@ -103,7 +87,7 @@ describe("instrument", () => {
       expect(error).to.be.an.instanceof(Error)
     })
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
     expect(span?.status).to.include({
       code: SpanStatusCode.ERROR,
@@ -132,7 +116,7 @@ describe("instrument", () => {
         ),
     )
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
   })
 
@@ -151,7 +135,7 @@ describe("instrument", () => {
         ),
     )
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
     expect(span?.status).to.include({
       code: SpanStatusCode.ERROR,
@@ -181,21 +165,17 @@ describe("instrument", () => {
         ),
     )
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
   })
 })
 
 describe("pInstrument", () => {
-  beforeEach(() => {
-    exporter.reset()
-  })
-
   it("doesn't instrument if there's no parent span", async () => {
     const r = await pInstrument("parent", () => Promise.resolve("return"))
     expect(r).to.equal("return")
 
-    const spans = exporter.getFinishedSpans()
+    const spans = await otel.spans()
     expect(spans).to.be.empty
   })
 
@@ -207,7 +187,7 @@ describe("pInstrument", () => {
       expect(r).to.equal("return")
     })
 
-    const spans = exporter.getFinishedSpans()
+    const spans = await otel.spans()
     expect(spans).to.have.length(1)
     expect(spans[0]?.name).to.equal("parent")
   })
@@ -218,7 +198,7 @@ describe("pInstrument", () => {
       expect(r).to.equal("return")
     })
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
   })
 
@@ -231,7 +211,7 @@ describe("pInstrument", () => {
       expect(r).to.equal("return")
     })
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
     expect(span?.attributes).to.have.property("key", "value")
   })
@@ -250,7 +230,7 @@ describe("pInstrument", () => {
       expect(error).to.be.an.instanceof(Error)
     })
 
-    const span = exporter.getFinishedSpans()[0]
+    const span = (await otel.spans())[0]
     expect(span?.name).to.equal("child")
     expect(span?.status).to.include({
       code: SpanStatusCode.ERROR,
