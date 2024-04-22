@@ -14,13 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export { OboeSampler } from "./sampler.js"
-export {
-  BucketSettings,
-  BucketType,
-  Flags,
-  LocalSettings,
-  Settings,
-  TracingMode,
-} from "./settings.js"
-export { RequestHeaders, ResponseHeaders } from "./trace-options.js"
+export * from "./sampler.js"
+export * from "./settings.js"
+export * from "./trace-options.js"
