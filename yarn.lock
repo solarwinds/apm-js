@@ -1805,8 +1805,6 @@ __metadata:
   resolution: "@solarwinds-apm/compat@workspace:packages/compat"
   dependencies:
     "@opentelemetry/api": "npm:^1.3.0"
-    "@opentelemetry/sdk-trace-base": "npm:~1.23.0"
-    "@opentelemetry/sdk-trace-node": "npm:~1.23.0"
     "@opentelemetry/semantic-conventions": "npm:~1.23.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/rollup-config": "workspace:^"
