@@ -24,11 +24,13 @@ import { spanStorage } from "../storage.js"
 
 const PARENT_STORAGE = spanStorage<Span | false>("solarwinds-apm parent span")
 
+/** Returns true if this span has no parent or its parent is remote */
 export function isRootOrEntry(span: Span): boolean {
   const parentSpan = PARENT_STORAGE.get(span)
   return parentSpan === false || parentSpan?.spanContext().isRemote === true
 }
 
+/** Traverses the span hierarchy until it finds the root or entry */
 export function getRootOrEntry(span: Span): Span | undefined {
   let parentSpan = PARENT_STORAGE.get(span)
 
@@ -44,6 +46,7 @@ export function getRootOrEntry(span: Span): Span | undefined {
   return undefined
 }
 
+/** Processor that stores span parents */
 export class ParentSpanProcessor
   extends NoopSpanProcessor
   implements SpanProcessor
