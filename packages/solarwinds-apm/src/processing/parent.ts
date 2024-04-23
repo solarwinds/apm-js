@@ -31,7 +31,7 @@ export function isRootOrEntry(span: Span): boolean {
   return parentSpan === false || parentSpan?.spanContext().isRemote === true
 }
 
-/** Traverses the span hierarchy until it finds the root or entry */
+/** Traverses the span hierarchy until the root or entry is found */
 export function getRootOrEntry(span: Span): Span | undefined {
   let parentSpan = PARENT_STORAGE.get(span)
 
