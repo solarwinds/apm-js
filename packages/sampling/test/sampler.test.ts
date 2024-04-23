@@ -20,22 +20,15 @@ import { setTimeout } from "node:timers/promises"
 import {
   createTraceState,
   diag,
-  metrics,
   ROOT_CONTEXT,
   type Span,
   SpanKind,
   trace,
   TraceFlags,
 } from "@opentelemetry/api"
-import {
-  AggregationTemporality,
-  DataPointType,
-  InMemoryMetricExporter,
-  MeterProvider,
-  PeriodicExportingMetricReader,
-} from "@opentelemetry/sdk-metrics"
+import { DataPointType } from "@opentelemetry/sdk-metrics"
 import { SamplingDecision } from "@opentelemetry/sdk-trace-base"
-import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
+import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import {
   OboeSampler,
@@ -166,19 +159,9 @@ const makeRequestHeaders = (
   return headers
 }
 
-const metricExporter = new InMemoryMetricExporter(AggregationTemporality.DELTA)
-const metricReader = new PeriodicExportingMetricReader({
-  exporter: metricExporter,
-  exportIntervalMillis: 2 ** 24,
-})
-metrics.setGlobalMeterProvider(new MeterProvider({ readers: [metricReader] }))
-
 const checkCounters = async (counters: string[]) => {
-  await metricReader.forceFlush()
-
   const remaining = new Set(counters)
-  const metrics = metricExporter
-    .getMetrics()
+  const metrics = (await otel.metrics())
     .flatMap(({ scopeMetrics }) => scopeMetrics)
     .flatMap(({ metrics }) => metrics)
 
@@ -266,11 +249,6 @@ describe("spanType", () => {
 })
 
 describe("OboeSampler", () => {
-  beforeEach(async () => {
-    await metricReader.forceFlush()
-    metricExporter.reset()
-  })
-
   describe("LOCAL span", () => {
     it("respects parent sampled", async () => {
       const sampler = new TestSampler({

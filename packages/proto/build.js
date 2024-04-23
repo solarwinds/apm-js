@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { mkdir } from "node:fs/promises"
+import { mkdir, writeFile } from "node:fs/promises"
 import { promisify } from "node:util"
 
 import { main as pbjsMain } from "protobufjs-cli/pbjs.js"
@@ -34,6 +34,9 @@ const targets = {
 
 for (const [target, options] of Object.entries(targets)) {
   await mkdir(`dist/${target}`, { recursive: true })
+
+  const type = target === "es" ? "module" : "commonjs"
+  await writeFile(`dist/${target}/package.json`, JSON.stringify({ type }))
 
   await pbjs([
     "-t",
