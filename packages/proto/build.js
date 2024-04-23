@@ -25,10 +25,12 @@ const pbts = promisify(pbtsMain)
 
 const targets = {
   es: {
-    wrapper: "es6",
+    wrapper: "./es.wrapper",
+    dependency: "protobufjs/minimal.js",
   },
   cjs: {
-    wrapper: "commonjs",
+    wrapper: "./cjs.wrapper",
+    dependency: "protobufjs/minimal",
   },
 }
 
@@ -43,6 +45,8 @@ for (const [target, options] of Object.entries(targets)) {
     "static-module",
     "-w",
     options.wrapper,
+    "--dependency",
+    options.dependency,
     "-o",
     `./dist/${target}/index.js`,
     "--es6",

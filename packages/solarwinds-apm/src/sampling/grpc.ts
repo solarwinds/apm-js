@@ -67,6 +67,9 @@ export class GrpcSampler extends CoreSampler {
   readonly #client: CollectorClient
   #lastWarningMessage = ""
 
+  #ready!: () => void
+  readonly ready: Promise<void>
+
   constructor(config: ExtendedSwConfiguration, logger: DiagLogger) {
     super(config, logger)
 
@@ -81,6 +84,8 @@ export class GrpcSampler extends CoreSampler {
       ? credentials.createSsl(Buffer.from(config.certificate))
       : credentials.createSsl()
     this.#client = new CollectorClient(this.#address, cred)
+
+    this.ready = new Promise((resolve) => (this.#ready = resolve))
 
     setImmediate(() => {
       this.#loop()
@@ -158,6 +163,7 @@ export class GrpcSampler extends CoreSampler {
         }
 
         this.updateSettings(parsed)
+        this.#ready()
 
         const nextRequestTimeout = parsed.ttl * 1000 - REQUEST_TIMEOUT
         setTimeout(() => {
@@ -220,19 +226,19 @@ export class CollectorClient extends Client {
 export function parseSettings(
   unparsed: collector.IOboeSetting,
 ): Settings | undefined {
-  if (!unparsed.value || !unparsed.flags || !unparsed.ttl) {
+  if (!unparsed.ttl) {
     return undefined
   }
 
   const settings: Settings = {
-    sampleRate: unparsed.value,
+    sampleRate: unparsed.value ?? 0,
     flags: Flags.OK,
     buckets: {},
     ttl: unparsed.ttl,
   }
   const decoder = new TextDecoder("utf-8", { fatal: false })
 
-  const flagNames = decoder.decode(unparsed.flags)
+  const flagNames = decoder.decode(unparsed.flags ?? new Uint8Array([]))
   for (const flagName of flagNames.split(",")) {
     const flagValue = FLAGS_NAMES[flagName]
     if (flagValue != undefined) {
@@ -285,7 +291,7 @@ export function parseSettings(
   return settings
 }
 
-export function parseBucketSetting(
+function parseBucketSetting(
   settings: Settings,
   type: BucketType,
   key: keyof BucketSettings,
