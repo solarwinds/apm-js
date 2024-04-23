@@ -42,7 +42,7 @@ const CLIENT_VERSION = "2"
 const REQUEST_TIMEOUT = 10 * 1000 // 10s
 const RETRY_MIN_TIMEOUT = 500 // 500ms
 const RETRY_MAX_TIMEOUT = 10 * 60 * 1000 // 10 minutes
-const RETRY_MULTIPLIER = 1.5
+const MULTIPLIER = 1.5
 
 const FLAGS_NAMES: Record<string, Flags | undefined> = {
   OVERRIDE: Flags.OVERRIDE,
@@ -67,8 +67,9 @@ export class GrpcSampler extends CoreSampler {
   readonly #client: CollectorClient
   #lastWarningMessage = ""
 
-  #ready!: () => void
+  /** Resolves once the sampler has received settings */
   readonly ready: Promise<void>
+  #ready!: () => void
 
   constructor(config: ExtendedSwConfiguration, logger: DiagLogger) {
     super(config, logger)
@@ -110,7 +111,7 @@ export class GrpcSampler extends CoreSampler {
       this.logger.debug(`retrying in ${(retryTimeout / 1000).toFixed(1)}s`)
 
       const nextRetryTimeout = Math.min(
-        retryTimeout * RETRY_MULTIPLIER,
+        retryTimeout * MULTIPLIER,
         RETRY_MAX_TIMEOUT,
       )
       setTimeout(() => {
@@ -165,10 +166,16 @@ export class GrpcSampler extends CoreSampler {
         this.updateSettings(parsed)
         this.#ready()
 
-        const nextRequestTimeout = parsed.ttl * 1000 - REQUEST_TIMEOUT
-        setTimeout(() => {
-          this.#loop()
-        }, nextRequestTimeout).unref()
+        // this is pretty arbitrary but the goal is to update the settings
+        // before the previous ones expire with some time to spare
+        const nextRequestTimeout =
+          parsed.ttl * 1000 - REQUEST_TIMEOUT * MULTIPLIER
+        setTimeout(
+          () => {
+            this.#loop()
+          },
+          Math.max(0, nextRequestTimeout),
+        ).unref()
       })
       .catch((error: unknown) => {
         const grpcError = error as ServiceError
