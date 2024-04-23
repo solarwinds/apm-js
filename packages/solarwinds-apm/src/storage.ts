@@ -131,6 +131,7 @@ export function contextStorage<T>(id: string): ContextStorage<T> {
 /** Creates a new {@link SpanStorage} for the given ID */
 export function spanStorage<T>(id: string): SpanStorage<T> {
   const key = Symbol.for(id)
+
   return {
     get: (span) =>
       withSdkSpan(span, undefined, (span) => {
