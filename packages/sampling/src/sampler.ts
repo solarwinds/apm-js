@@ -103,6 +103,7 @@ export abstract class OboeSampler implements Sampler {
     }),
   }
   #settings: Settings | undefined = undefined
+  #updated: number = Date.now()
 
   constructor(protected readonly logger: DiagLogger) {
     for (const bucket of Object.values(this.#buckets)) {
@@ -359,7 +360,11 @@ export abstract class OboeSampler implements Sampler {
    * the subclass whenever the remote settings are updated.
    */
   protected updateSettings(settings: Settings): void {
+    this.logger.debug("settings updated", settings)
+
     this.#settings = settings
+    this.#updated = Date.now()
+
     for (const [type, bucket] of Object.entries(this.#buckets)) {
       const settings = this.#settings.buckets[type as BucketType]
       if (settings) {
@@ -411,9 +416,18 @@ export abstract class OboeSampler implements Sampler {
   abstract toString(): string
 
   #getSettings(...params: SampleParams): Settings | undefined {
-    return (
-      this.#settings && merge(this.#settings, this.localSettings(...params))
-    )
+    if (!this.#settings) {
+      return
+    }
+
+    const expiry = this.#updated + this.#settings.ttl * 1000
+    if (Date.now() > expiry) {
+      this.logger.debug("settings expired, removing")
+      this.#settings = undefined
+      return
+    }
+
+    return merge(this.#settings, this.localSettings(...params))
   }
 }
 

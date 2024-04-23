@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { createHmac, randomBytes } from "node:crypto"
+import { setTimeout } from "node:timers/promises"
 
 import {
   createTraceState,
@@ -126,7 +127,7 @@ const makeSampleParams = (options: MakeSampleParams = {}): SampleParams => {
 interface MakeRequestHeaders {
   triggerTrace?: boolean
   signature?: boolean | "bad-timestamp"
-  signatureKey?: string
+  signatureKey?: Uint8Array
   kvs?: Record<string, string>
 }
 const makeRequestHeaders = (
@@ -152,7 +153,7 @@ const makeRequestHeaders = (
   }
 
   if (options.signature) {
-    options.signatureKey ??= randomBytes(8).toString("hex")
+    options.signatureKey ??= randomBytes(8)
     headers["X-Trace-Options-Signature"] = createHmac(
       "sha1",
       options.signatureKey,
@@ -273,7 +274,7 @@ describe("OboeSampler", () => {
   describe("LOCAL span", () => {
     it("respects parent sampled", async () => {
       const sampler = new TestSampler({
-        settings: { sampleRate: 0, flags: 0x0, buckets: {} },
+        settings: { sampleRate: 0, flags: 0x0, buckets: {}, ttl: 10 },
         localSettings: { triggerMode: false },
         requestHeaders: {},
       })
@@ -289,7 +290,7 @@ describe("OboeSampler", () => {
 
     it("respects parent not sampled", async () => {
       const sampler = new TestSampler({
-        settings: { sampleRate: 0, flags: 0x0, buckets: {} },
+        settings: { sampleRate: 0, flags: 0x0, buckets: {}, ttl: 10 },
         localSettings: { triggerMode: false },
         requestHeaders: {},
       })
@@ -311,6 +312,7 @@ describe("OboeSampler", () => {
           sampleRate: 1_000_000,
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
+          ttl: 10,
         },
         localSettings: { triggerMode: true },
         requestHeaders: makeRequestHeaders({
@@ -339,13 +341,14 @@ describe("OboeSampler", () => {
           sampleRate: 1_000_000,
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
-          signatureKey: "key",
+          signatureKey: Buffer.from("key"),
+          ttl: 10,
         },
         localSettings: { triggerMode: true },
         requestHeaders: makeRequestHeaders({
           triggerTrace: true,
           signature: "bad-timestamp",
-          signatureKey: "key",
+          signatureKey: Buffer.from("key"),
           kvs: { "custom-key": "value" },
         }),
       })
@@ -369,13 +372,14 @@ describe("OboeSampler", () => {
           sampleRate: 1_000_000,
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
-          signatureKey: "key1",
+          signatureKey: Buffer.from("key1"),
+          ttl: 10,
         },
         localSettings: { triggerMode: true },
         requestHeaders: makeRequestHeaders({
           triggerTrace: true,
           signature: true,
-          signatureKey: "key2",
+          signatureKey: Buffer.from("key2"),
           kvs: { "custom-key": "value" },
         }),
       })
@@ -404,6 +408,28 @@ describe("OboeSampler", () => {
 
       const params = makeSampleParams({ parent: false })
 
+      const sample = sampler.shouldSample(...params)
+      expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
+
+      await checkCounters([])
+    })
+
+    it("expires after ttl", async () => {
+      const sampler = new TestSampler({
+        settings: {
+          sampleRate: 0,
+          flags: Flags.SAMPLE_THROUGH_ALWAYS,
+          buckets: {},
+          ttl: 0,
+        },
+        localSettings: { triggerMode: false },
+        requestHeaders: {},
+      })
+
+      const parent = makeSpan({ remote: true, sw: true, sampled: true })
+      const params = makeSampleParams({ parent })
+
+      await setTimeout(10)
       const sample = sampler.shouldSample(...params)
       expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
 
@@ -459,6 +485,7 @@ describe("OboeSampler", () => {
             sampleRate: 0,
             flags: Flags.SAMPLE_THROUGH_ALWAYS,
             buckets: {},
+            ttl: 10,
           },
           localSettings: { triggerMode: false },
           requestHeaders: makeRequestHeaders({
@@ -485,6 +512,7 @@ describe("OboeSampler", () => {
             sampleRate: 0,
             flags: Flags.SAMPLE_THROUGH_ALWAYS,
             buckets: {},
+            ttl: 10,
           },
           localSettings: { triggerMode: true },
           requestHeaders: makeRequestHeaders({
@@ -510,6 +538,7 @@ describe("OboeSampler", () => {
           sampleRate: 0,
           flags: Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
+          ttl: 10,
         },
         localSettings: { triggerMode: false },
         requestHeaders: {},
@@ -571,6 +600,7 @@ describe("OboeSampler", () => {
             sampleRate: 0,
             flags: Flags.SAMPLE_START,
             buckets: {},
+            ttl: 10,
           },
           localSettings: { triggerMode: false },
           requestHeaders: {},
@@ -595,6 +625,7 @@ describe("OboeSampler", () => {
             sampleRate: 0,
             flags: 0x0,
             buckets: {},
+            ttl: 10,
           },
           localSettings: { triggerMode: false },
           requestHeaders: {},
@@ -627,6 +658,7 @@ describe("OboeSampler", () => {
                 TriggerStrict: { capacity: 10, rate: 5 },
                 TriggerRelaxed: { capacity: 0, rate: 0 },
               },
+              ttl: 10,
             },
             localSettings: { triggerMode: true },
             requestHeaders: makeRequestHeaders({
@@ -666,6 +698,7 @@ describe("OboeSampler", () => {
                 TriggerStrict: { capacity: 0, rate: 0 },
                 TriggerRelaxed: { capacity: 20, rate: 10 },
               },
+              ttl: 10,
             },
             localSettings: { triggerMode: true },
             requestHeaders: makeRequestHeaders({
@@ -702,14 +735,15 @@ describe("OboeSampler", () => {
                 TriggerStrict: { capacity: 0, rate: 0 },
                 TriggerRelaxed: { capacity: 20, rate: 10 },
               },
-              signatureKey: "key",
+              signatureKey: Buffer.from("key"),
+              ttl: 10,
             },
             localSettings: { triggerMode: true },
             requestHeaders: makeRequestHeaders({
               triggerTrace: true,
               kvs: { "custom-key": "value", "sw-keys": "sw-values" },
               signature: true,
-              signatureKey: "key",
+              signatureKey: Buffer.from("key"),
             }),
           })
 
@@ -744,14 +778,15 @@ describe("OboeSampler", () => {
                 TriggerStrict: { capacity: 10, rate: 5 },
                 TriggerRelaxed: { capacity: 0, rate: 0 },
               },
-              signatureKey: "key",
+              signatureKey: Buffer.from("key"),
+              ttl: 10,
             },
             localSettings: { triggerMode: true },
             requestHeaders: makeRequestHeaders({
               triggerTrace: true,
               kvs: { "custom-key": "value", "invalid-key": "value" },
               signature: true,
-              signatureKey: "key",
+              signatureKey: Buffer.from("key"),
             }),
           })
 
@@ -782,6 +817,7 @@ describe("OboeSampler", () => {
             sampleRate: 0,
             flags: Flags.SAMPLE_START,
             buckets: {},
+            ttl: 10,
           },
           localSettings: { triggerMode: false },
           requestHeaders: makeRequestHeaders({
@@ -811,6 +847,7 @@ describe("OboeSampler", () => {
           sampleRate: 0,
           flags: Flags.SAMPLE_START,
           buckets: {},
+          ttl: 10,
         },
         localSettings: { triggerMode: false },
         requestHeaders: makeRequestHeaders({
@@ -837,6 +874,7 @@ describe("OboeSampler", () => {
           sampleRate: 1_000_000,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 10, rate: 5 } },
+          ttl: 10,
         },
         localSettings: { triggerMode: false },
         requestHeaders: {},
@@ -865,6 +903,7 @@ describe("OboeSampler", () => {
           sampleRate: 1_000_000,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 0, rate: 0 } },
+          ttl: 10,
         },
         localSettings: { triggerMode: false },
         requestHeaders: {},
@@ -893,6 +932,7 @@ describe("OboeSampler", () => {
           sampleRate: 0,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 10, rate: 5 } },
+          ttl: 10,
         },
         localSettings: { triggerMode: false },
         requestHeaders: {},
@@ -920,6 +960,7 @@ describe("OboeSampler", () => {
           sampleRate: 0,
           flags: 0x0,
           buckets: {},
+          ttl: 10,
         },
         localSettings: { triggerMode: true },
         requestHeaders: makeRequestHeaders({
@@ -944,6 +985,7 @@ describe("OboeSampler", () => {
           sampleRate: 0,
           flags: Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
+          ttl: 10,
         },
         localSettings: { triggerMode: false },
         requestHeaders: {},
@@ -964,6 +1006,7 @@ describe("OboeSampler", () => {
           sampleRate: 0,
           flags: 0x0,
           buckets: {},
+          ttl: 10,
         },
         localSettings: { triggerMode: false },
         requestHeaders: {},
