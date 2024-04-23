@@ -88,17 +88,21 @@ export interface ContextStorage<T> {
  * Unlike the previous implementation which used the span ID as a key
  * and needed to be carefully cleared at the right times to avoid leaking
  * memory, this uses a WeakMap with the span object itself as a key
- * which ensures the stored values are kept exactly as long as they need
+ * which ensures the stored values are kept at least as long as they need
  * to be accessed.
+ *
+ * However it it still useful to manually clear unused entries to avoid
+ * using up memory unnecessarily while waiting for the next GC cycle.
  */
 export interface SpanStorage<T> {
   get(span: Span | sdk.Span | sdk.ReadableSpan): T | undefined
   set(span: Span | sdk.Span | sdk.ReadableSpan, value: T): boolean
+  delete(span: Span | sdk.Span | sdk.ReadableSpan): boolean
 }
 
 const GLOBAL_SPAN_STORAGE = global(
   "solarwinds-apm span storage",
-  () => new WeakMap<sdk.Span, Record<symbol, unknown>>(),
+  () => new WeakMap<sdk.Span, Map<symbol, unknown>>(),
 )
 
 function withSdkSpan<T, const U>(
@@ -130,14 +134,30 @@ export function spanStorage<T>(id: string): SpanStorage<T> {
   return {
     get: (span) =>
       withSdkSpan(span, undefined, (span) => {
-        return GLOBAL_SPAN_STORAGE.get(span)?.[key] as T | undefined
+        return GLOBAL_SPAN_STORAGE.get(span)?.get(key) as T | undefined
       }),
     set: (span, val) =>
       withSdkSpan(span, false, (span) => {
-        const storage = GLOBAL_SPAN_STORAGE.get(span) ?? {}
-        storage[key] = val
+        const storage =
+          GLOBAL_SPAN_STORAGE.get(span) ?? new Map<symbol, unknown>()
+        storage.set(key, val)
         GLOBAL_SPAN_STORAGE.set(span, storage)
         return true
+      }),
+
+    delete: (span) =>
+      withSdkSpan(span, false, (span) => {
+        const storage = GLOBAL_SPAN_STORAGE.get(span)
+        if (!storage) {
+          return false
+        }
+
+        const deleted = storage.delete(key)
+        if (storage.size === 0) {
+          GLOBAL_SPAN_STORAGE.delete(span)
+        }
+
+        return deleted
       }),
   }
 }

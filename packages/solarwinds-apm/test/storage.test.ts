@@ -58,6 +58,9 @@ describe("SpanStorage", () => {
     })
 
     expect(storage.get(span)).to.equal("value")
+
+    storage.delete(span)
+    expect(storage.get(span)).to.be.undefined
   })
 
   it("ignores invalid spans", () => {
