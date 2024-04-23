@@ -22,6 +22,7 @@ import {
 
 import { spanStorage } from "../storage.js"
 
+/** Parent storage where false means no parent */
 const PARENT_STORAGE = spanStorage<Span | false>("solarwinds-apm parent span")
 
 /** Returns true if this span has no parent or its parent is remote */
