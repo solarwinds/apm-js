@@ -216,7 +216,7 @@ class TestSampler extends OboeSampler {
   }
 
   override toString(): string {
-    return "TestSampler"
+    return "Test sampler"
   }
 }
 

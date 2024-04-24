@@ -34,6 +34,7 @@ describe("merge", () => {
           Flags.SAMPLE_THROUGH_ALWAYS |
           Flags.TRIGGERED_TRACE,
         buckets: {},
+        ttl: 60,
       }
       const local: LocalSettings = {
         sampleRate: 1,
@@ -53,6 +54,7 @@ describe("merge", () => {
         sampleRate: 1,
         flags: 0x0,
         buckets: {},
+        ttl: 60,
       }
       const local: LocalSettings = {
         sampleRate: 2,
@@ -78,6 +80,7 @@ describe("merge", () => {
           Flags.SAMPLE_THROUGH_ALWAYS |
           Flags.TRIGGERED_TRACE,
         buckets: {},
+        ttl: 60,
       }
       const local: LocalSettings = {
         triggerMode: true,
@@ -98,6 +101,7 @@ describe("merge", () => {
           Flags.SAMPLE_THROUGH_ALWAYS |
           Flags.TRIGGERED_TRACE,
         buckets: {},
+        ttl: 60,
       }
       const local: LocalSettings = {
         sampleRate: 1,
@@ -117,6 +121,7 @@ describe("merge", () => {
         sampleRate: 1,
         flags: Flags.OVERRIDE,
         buckets: {},
+        ttl: 60,
       }
       const local: LocalSettings = {
         sampleRate: 2,
@@ -133,6 +138,7 @@ describe("merge", () => {
         sampleRate: 1,
         flags: Flags.OVERRIDE,
         buckets: {},
+        ttl: 60,
       }
       const local: LocalSettings = {
         triggerMode: false,

@@ -34,13 +34,12 @@ import {
 } from "@solarwinds-apm/sampling"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
-import { type ExtendedSwConfiguration } from "../config.js"
 import { HEADERS_STORAGE } from "../propagation/headers.js"
 
 export abstract class CoreSampler extends OboeSampler {
   readonly #tracingMode: TracingMode | undefined
   readonly #triggerMode: boolean
-  readonly #transactionSettings: ExtendedSwConfiguration["transactionSettings"]
+  readonly #transactionSettings: SwConfiguration["transactionSettings"]
 
   constructor(config: SwConfiguration, logger: DiagLogger) {
     super(logger)
@@ -66,7 +65,7 @@ export abstract class CoreSampler extends OboeSampler {
       triggerMode: this.#triggerMode,
     }
 
-    if (!this.#transactionSettings) {
+    if (!this.#transactionSettings?.length) {
       return settings
     }
 

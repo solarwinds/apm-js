@@ -45,6 +45,7 @@ import {
 } from "@opentelemetry/sdk-trace-node"
 import * as chai from "chai"
 import chaiAsPromised from "chai-as-promised"
+import { afterEach } from "mocha"
 
 chai.use(chaiAsPromised)
 
@@ -99,10 +100,12 @@ diag.setLogger(diagLogger, DiagLogLevel.ALL)
 let spanExporter: InMemorySpanExporter
 let spanProcessor: SimpleSpanProcessor
 let tracerProvider: NodeTracerProvider
+let shouldResetTrace = true
 
 let metricExporter: InMemoryMetricExporter
 let metricReader: PeriodicExportingMetricReader
 let meterProvider: MeterProvider
+let shouldResetMetrics = true
 
 export interface OtelConfig {
   trace?: NodeTracerConfig &
@@ -110,50 +113,52 @@ export interface OtelConfig {
   metrics?: MeterProviderOptions
 }
 
-function initOtel(config: OtelConfig) {
-  trace.disable()
-  metrics.disable()
+async function resetOtel(config: OtelConfig = {}) {
+  if (shouldResetTrace || config.trace) {
+    shouldResetTrace = Boolean(config.trace)
 
-  context.disable()
-  propagation.disable()
+    context.disable()
+    propagation.disable()
+    trace.disable()
 
-  spanExporter = new InMemorySpanExporter()
-  spanProcessor = new SimpleSpanProcessor(spanExporter)
+    spanExporter = new InMemorySpanExporter()
+    spanProcessor = new SimpleSpanProcessor(spanExporter)
 
-  tracerProvider = new NodeTracerProvider(config.trace)
-  for (const processor of [
-    ...(config.trace?.processors ?? []),
-    spanProcessor,
-  ]) {
-    tracerProvider.addSpanProcessor(processor)
-  }
-  tracerProvider.register(config.trace)
-
-  metricExporter = new InMemoryMetricExporter(AggregationTemporality.DELTA)
-  metricReader = new PeriodicExportingMetricReader({ exporter: metricExporter })
-
-  meterProvider = new MeterProvider({
-    ...config.metrics,
-    readers: [...(config.metrics?.readers ?? []), metricReader],
-  })
-  metrics.setGlobalMeterProvider(meterProvider)
-}
-initOtel({})
-
-async function resetOtel(config?: OtelConfig) {
-  if (config) {
-    initOtel(config)
+    tracerProvider = new NodeTracerProvider(config.trace)
+    for (const processor of [
+      ...(config.trace?.processors ?? []),
+      spanProcessor,
+    ]) {
+      tracerProvider.addSpanProcessor(processor)
+    }
+    tracerProvider.register(config.trace)
   } else {
     await spanProcessor.forceFlush()
-    await metricReader.forceFlush()
-
     spanExporter.reset()
-    metricExporter.reset()
   }
 
-  diagLogger.reset()
+  if (shouldResetMetrics || config.metrics) {
+    shouldResetMetrics = Boolean(config.metrics)
+
+    metrics.disable()
+
+    metricExporter = new InMemoryMetricExporter(AggregationTemporality.DELTA)
+    metricReader = new PeriodicExportingMetricReader({
+      exporter: metricExporter,
+    })
+
+    meterProvider = new MeterProvider({
+      ...config.metrics,
+      readers: [...(config.metrics?.readers ?? []), metricReader],
+    })
+    metrics.setGlobalMeterProvider(meterProvider)
+  } else {
+    await metricReader.forceFlush()
+    metricExporter.reset()
+  }
 }
-beforeEach(() => resetOtel())
+void resetOtel()
+afterEach(() => resetOtel())
 
 export const otel = Object.freeze({
   /** Spans processed during the current test */

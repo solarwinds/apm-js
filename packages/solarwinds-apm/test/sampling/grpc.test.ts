@@ -107,8 +107,6 @@ describe("GrpcSampler", () => {
 
       expect(logger.logs.warn).not.to.be.empty
     })
-
-    after(() => otel.reset({}))
   })
 
   describe("invalid collector", () => {
@@ -139,8 +137,6 @@ describe("GrpcSampler", () => {
 
       expect(logger.logs.warn).not.to.be.empty
     })
-
-    after(() => otel.reset({}))
   })
 })
 
