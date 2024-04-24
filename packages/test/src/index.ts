@@ -16,7 +16,16 @@ limitations under the License.
 
 import "./plugin.js"
 
-import { metrics, trace } from "@opentelemetry/api"
+import {
+  context,
+  diag,
+  type DiagLogFunction,
+  type DiagLogger,
+  DiagLogLevel,
+  metrics,
+  propagation,
+  trace,
+} from "@opentelemetry/api"
 import {
   AggregationTemporality,
   InMemoryMetricExporter,
@@ -42,6 +51,48 @@ chai.use(chaiAsPromised)
 export { expect } from "chai"
 export { after, afterEach, before, beforeEach, describe, it } from "mocha"
 
+type Log = [message: string, ...args: unknown[]]
+
+class TestDiagLogger implements DiagLogger {
+  readonly error: DiagLogFunction
+  readonly warn: DiagLogFunction
+  readonly info: DiagLogFunction
+  readonly debug: DiagLogFunction
+  readonly verbose: DiagLogFunction
+
+  constructor() {
+    this.error = this.#log("error")
+    this.warn = this.#log("warn")
+    this.info = this.#log("info")
+    this.debug = this.#log("debug")
+    this.verbose = this.#log("verbose")
+  }
+
+  #logs: Record<keyof DiagLogger, Log[]> = {
+    error: [],
+    warn: [],
+    info: [],
+    debug: [],
+    verbose: [],
+  }
+  #log(level: keyof DiagLogger): DiagLogFunction {
+    return (...log) => {
+      this.#logs[level].push(log)
+    }
+  }
+
+  get logs(): Record<keyof DiagLogger, Log[]> {
+    return this.#logs
+  }
+
+  reset() {
+    this.#logs = { error: [], warn: [], info: [], debug: [], verbose: [] }
+  }
+}
+
+const diagLogger = new TestDiagLogger()
+diag.setLogger(diagLogger, DiagLogLevel.ALL)
+
 let spanExporter: InMemorySpanExporter
 let spanProcessor: SimpleSpanProcessor
 let tracerProvider: NodeTracerProvider
@@ -59,6 +110,9 @@ export interface OtelConfig {
 function initOtel(config: OtelConfig) {
   trace.disable()
   metrics.disable()
+
+  context.disable()
+  propagation.disable()
 
   spanExporter = new InMemorySpanExporter()
   spanProcessor = new SimpleSpanProcessor(spanExporter)
@@ -84,15 +138,17 @@ function initOtel(config: OtelConfig) {
 initOtel({})
 
 async function resetOtel(config?: OtelConfig) {
-  await spanProcessor.forceFlush()
-  spanExporter.reset()
-
-  await metricReader.forceFlush()
-  metricExporter.reset()
-
   if (config) {
     initOtel(config)
+  } else {
+    await spanProcessor.forceFlush()
+    await metricReader.forceFlush()
+
+    spanExporter.reset()
+    metricExporter.reset()
   }
+
+  diagLogger.reset()
 }
 beforeEach(() => resetOtel())
 
@@ -106,6 +162,10 @@ export const otel = Object.freeze({
   metrics: async () => {
     await metricReader.forceFlush()
     return metricExporter.getMetrics()
+  },
+  /** Logs processed during the current test */
+  get logs() {
+    return diagLogger.logs
   },
   /** Reset OTel, optionally with a custom config */
   reset: (config?: OtelConfig) => resetOtel(config),

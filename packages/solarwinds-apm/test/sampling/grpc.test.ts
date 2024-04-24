@@ -32,6 +32,7 @@ import {
 expect(process.env).to.include.keys("SW_APM_COLLECTOR", "SW_APM_SERVICE_KEY")
 const COLLECTOR = process.env.SW_APM_COLLECTOR!
 const SERVICE_KEY = process.env.SW_APM_SERVICE_KEY!
+const [token, serviceName] = SERVICE_KEY.split(":")
 
 const numberBuffer = (n: number) => {
   const buf = Buffer.alloc(8)
@@ -40,35 +41,92 @@ const numberBuffer = (n: number) => {
 }
 
 describe("GrpcSampler", () => {
-  before(async () => {
-    const [token, serviceName] = SERVICE_KEY.split(":")
-    const config = {
-      collector: COLLECTOR,
-      token,
-      serviceName,
-    } as unknown as ExtendedSwConfiguration
+  describe("valid service key", () => {
+    before(async () => {
+      const config = {
+        collector: COLLECTOR,
+        token,
+        serviceName,
+      } as unknown as ExtendedSwConfiguration
 
-    const sampler = new GrpcSampler(config, diag)
-    await otel.reset({ trace: { sampler } })
-    await sampler.ready
-  })
-
-  it("samples created spans", async () => {
-    const tracer = trace.getTracer("test")
-
-    tracer.startActiveSpan("test", (span) => {
-      expect(span.isRecording()).to.be.true
-      span.end()
+      const sampler = new GrpcSampler(config, diag)
+      await otel.reset({ trace: { sampler } })
+      await sampler.ready
     })
 
-    const span = (await otel.spans())[0]
-    expect(span).not.to.be.undefined
-    expect(span!.attributes).to.include.keys(
-      "SampleRate",
-      "BucketCapacity",
-      "BucketRate",
-    )
-  }).retries(4)
+    it("samples created spans", async () => {
+      const tracer = trace.getTracer("test")
+
+      tracer.startActiveSpan("test", (span) => {
+        expect(span.isRecording()).to.be.true
+        span.end()
+      })
+
+      const span = (await otel.spans())[0]
+      expect(span).not.to.be.undefined
+      expect(span!.attributes).to.include.keys(
+        "SampleRate",
+        "BucketCapacity",
+        "BucketRate",
+      )
+    }).retries(4)
+  })
+
+  describe("invalid service key", () => {
+    before(async () => {
+      const config = {
+        collector: COLLECTOR,
+        token: "woops",
+        serviceName,
+      } as unknown as ExtendedSwConfiguration
+
+      const sampler = new GrpcSampler(config, diag)
+      await otel.reset({ trace: { sampler } })
+      await sampler.ready
+    })
+
+    it("does not sample created spans", async () => {
+      const tracer = trace.getTracer("test")
+
+      tracer.startActiveSpan("test", (span) => {
+        expect(span.isRecording()).to.be.false
+        span.end()
+      })
+
+      const spans = await otel.spans()
+      expect(spans).to.be.empty
+    })
+
+    after(() => otel.reset({}))
+  })
+
+  describe("invalid collector", () => {
+    before(async () => {
+      const config = {
+        collector: "woops",
+        token,
+        serviceName,
+      } as unknown as ExtendedSwConfiguration
+
+      const sampler = new GrpcSampler(config, diag)
+      await otel.reset({ trace: { sampler } })
+      await sampler.ready
+    })
+
+    it("does not sample created spans", async () => {
+      const tracer = trace.getTracer("test")
+
+      tracer.startActiveSpan("test", (span) => {
+        expect(span.isRecording()).to.be.false
+        span.end()
+      })
+
+      const spans = await otel.spans()
+      expect(spans).to.be.empty
+    })
+
+    after(() => otel.reset({}))
+  })
 })
 
 describe("CollectorClient", () => {

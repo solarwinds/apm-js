@@ -108,8 +108,9 @@ export class GrpcSampler extends CoreSampler {
 
   #loop(retryTimeout = RETRY_MIN_TIMEOUT) {
     const retry = () => {
-      this.logger.debug(`retrying in ${(retryTimeout / 1000).toFixed(1)}s`)
+      this.#ready()
 
+      this.logger.debug(`retrying in ${(retryTimeout / 1000).toFixed(1)}s`)
       const nextRetryTimeout = Math.min(
         retryTimeout * MULTIPLIER,
         RETRY_MAX_TIMEOUT,
@@ -148,6 +149,10 @@ export class GrpcSampler extends CoreSampler {
           this.logger.debug("collector asked to retry later")
           retry()
           return
+        } else if (response.result !== collector.ResultCode.OK) {
+          this.logger.debug("collector returned error status", response.result)
+          retry()
+          return
         }
 
         const unparsed = response.settings?.find(
@@ -181,8 +186,10 @@ export class GrpcSampler extends CoreSampler {
         const grpcError = error as ServiceError
         this.#warn(
           `Failed to retrieve sampling settings (${grpcError.details})`,
-          error,
+          grpcError,
         )
+
+        retry()
       })
   }
 }
