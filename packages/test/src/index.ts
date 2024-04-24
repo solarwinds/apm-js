@@ -78,6 +78,9 @@ export class TestDiagLogger implements DiagLogger {
   #log(level: keyof DiagLogger): DiagLogFunction {
     return (...log) => {
       this.#logs[level].push(log)
+      if (process.env.SW_APM_TEST_LOG) {
+        console.log(level.toUpperCase().padEnd(7, " "), "|", ...log)
+      }
     }
   }
 
