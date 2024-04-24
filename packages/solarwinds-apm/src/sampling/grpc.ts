@@ -33,8 +33,8 @@ import {
   Flags,
   type Settings,
 } from "@solarwinds-apm/sampling"
+import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
-import { type ExtendedSwConfiguration } from "../config.js"
 import { CoreSampler } from "./core.js"
 
 const CLIENT_VERSION = "2"
@@ -71,7 +71,7 @@ export class GrpcSampler extends CoreSampler {
   readonly ready: Promise<void>
   #ready!: () => void
 
-  constructor(config: ExtendedSwConfiguration, logger: DiagLogger) {
+  constructor(config: SwConfiguration, logger: DiagLogger) {
     super(config, logger)
 
     this.#address = config.collector!
@@ -205,13 +205,9 @@ export class CollectorClient extends Client {
     request: collector.ISettingsRequest,
     options: CollectorRequestOptions = {},
   ): Promise<collector.ISettingsResult | undefined> {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this
-    const ctx = suppressTracing(context.active())
-
     return new Promise((resolve, reject) => {
-      context.bind(ctx, function () {
-        const call = self.makeUnaryRequest<
+      context.with(suppressTracing(context.active()), () => {
+        const call = this.makeUnaryRequest<
           collector.ISettingsRequest,
           collector.ISettingsResult
         >(
@@ -232,7 +228,7 @@ export class CollectorClient extends Client {
         options.signal?.addEventListener("abort", () => {
           call.cancel()
         })
-      })()
+      })
     })
   }
 }

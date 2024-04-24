@@ -53,7 +53,7 @@ export { after, afterEach, before, beforeEach, describe, it } from "mocha"
 
 type Log = [message: string, ...args: unknown[]]
 
-class TestDiagLogger implements DiagLogger {
+export class TestDiagLogger implements DiagLogger {
   readonly error: DiagLogFunction
   readonly warn: DiagLogFunction
   readonly info: DiagLogFunction

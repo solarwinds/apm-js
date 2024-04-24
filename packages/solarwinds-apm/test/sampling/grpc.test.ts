@@ -16,13 +16,20 @@ limitations under the License.
 
 import { hostname } from "node:os"
 
-import { credentials } from "@grpc/grpc-js"
+import { credentials, type ServiceError, status } from "@grpc/grpc-js"
 import { diag, trace } from "@opentelemetry/api"
 import { collector } from "@solarwinds-apm/proto"
 import { BucketType, Flags } from "@solarwinds-apm/sampling"
-import { before, describe, expect, it, otel } from "@solarwinds-apm/test"
+import { type SwConfiguration } from "@solarwinds-apm/sdk"
+import {
+  before,
+  describe,
+  expect,
+  it,
+  otel,
+  TestDiagLogger,
+} from "@solarwinds-apm/test"
 
-import { type ExtendedSwConfiguration } from "../../src/config.js"
 import {
   CollectorClient,
   GrpcSampler,
@@ -47,7 +54,7 @@ describe("GrpcSampler", () => {
         collector: COLLECTOR,
         token,
         serviceName,
-      } as unknown as ExtendedSwConfiguration
+      } as unknown as SwConfiguration
 
       const sampler = new GrpcSampler(config, diag)
       await otel.reset({ trace: { sampler } })
@@ -73,14 +80,16 @@ describe("GrpcSampler", () => {
   })
 
   describe("invalid service key", () => {
+    const logger = new TestDiagLogger()
+
     before(async () => {
       const config = {
         collector: COLLECTOR,
         token: "woops",
         serviceName,
-      } as unknown as ExtendedSwConfiguration
+      } as unknown as SwConfiguration
 
-      const sampler = new GrpcSampler(config, diag)
+      const sampler = new GrpcSampler(config, logger)
       await otel.reset({ trace: { sampler } })
       await sampler.ready
     })
@@ -95,20 +104,24 @@ describe("GrpcSampler", () => {
 
       const spans = await otel.spans()
       expect(spans).to.be.empty
+
+      expect(logger.logs.warn).not.to.be.empty
     })
 
     after(() => otel.reset({}))
   })
 
   describe("invalid collector", () => {
+    const logger = new TestDiagLogger()
+
     before(async () => {
       const config = {
         collector: "woops",
         token,
         serviceName,
-      } as unknown as ExtendedSwConfiguration
+      } as unknown as SwConfiguration
 
-      const sampler = new GrpcSampler(config, diag)
+      const sampler = new GrpcSampler(config, logger)
       await otel.reset({ trace: { sampler } })
       await sampler.ready
     })
@@ -123,6 +136,8 @@ describe("GrpcSampler", () => {
 
       const spans = await otel.spans()
       expect(spans).to.be.empty
+
+      expect(logger.logs.warn).not.to.be.empty
     })
 
     after(() => otel.reset({}))
@@ -149,6 +164,32 @@ describe("CollectorClient", () => {
     const setting = parseSettings(settings!.settings![0]!)
     expect(setting).not.to.be.undefined
   }).retries(4)
+
+  it("can be cancelled", async () => {
+    const ac = new AbortController()
+    setImmediate(() => {
+      ac.abort()
+    })
+
+    let settings: unknown
+    let error: unknown
+    try {
+      settings = await client.getSettings(
+        {
+          apiKey: SERVICE_KEY,
+          identity: { hostname: hostname() },
+          clientVersion: "2",
+        },
+        { signal: ac.signal },
+      )
+    } catch (e) {
+      error = e
+    }
+
+    expect(settings).to.be.undefined
+    expect(error).not.to.be.undefined
+    expect((error as ServiceError).code).to.equal(status.CANCELLED)
+  })
 })
 
 describe("parseSettings", () => {
