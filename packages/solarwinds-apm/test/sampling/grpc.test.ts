@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { hostname } from "node:os"
+import { setTimeout } from "node:timers/promises"
 
 import { credentials, type ServiceError, status } from "@grpc/grpc-js"
 import { diag, trace } from "@opentelemetry/api"
@@ -136,6 +137,15 @@ describe("GrpcSampler", () => {
       expect(spans).to.be.empty
 
       expect(logger.logs.warn).not.to.be.empty
+    })
+
+    it("retries with backoff", async () => {
+      await setTimeout(1000)
+
+      const logs = logger.logs.debug.filter(([message]) =>
+        message.includes("retry"),
+      )
+      expect(logs).not.to.be.empty
     })
   })
 })

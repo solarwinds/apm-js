@@ -30,13 +30,15 @@ import {
 } from "@solarwinds-apm/sampling"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
+import { Backoff } from "../backoff.js"
 import { CoreSampler } from "./core.js"
 
 const CLIENT_VERSION = "2"
 
 const REQUEST_TIMEOUT = 10 * 1000 // 10s
-const RETRY_MIN_TIMEOUT = 500 // 500ms
-const RETRY_MAX_TIMEOUT = 10 * 60 * 1000 // 10 minutes
+const RETRY_INITIAL_TIMEOUT = 500 // 500ms
+const RETRY_MAX_TIMEOUT = 60 * 1000 // 60s
+const RETRY_MAX_ATTEMPTS = 20
 const MULTIPLIER = 1.5
 
 /** Map of flag names to their value */
@@ -60,9 +62,15 @@ export class GrpcSampler extends CoreSampler {
   readonly #key: string
   readonly #address: URL
   readonly #hostname = hostname()
+  readonly #backoff = new Backoff({
+    initial: RETRY_INITIAL_TIMEOUT,
+    max: RETRY_MAX_TIMEOUT,
+    retries: RETRY_MAX_ATTEMPTS,
+    multiplier: MULTIPLIER,
+  })
 
   #client: CollectorClient
-  #lastWarningMessage = ""
+  #lastWarningMessage: string | undefined = undefined
 
   /** Resolves once the sampler has received settings */
   readonly ready: Promise<void>
@@ -85,7 +93,7 @@ export class GrpcSampler extends CoreSampler {
     const invalidCollectorClient = (cause?: unknown): CollectorClient => ({
       getSettings: () =>
         Promise.reject(
-          new Error(`Invalid collector (${config.collector!})`, { cause }),
+          new Error(`Invalid collector "${config.collector!}"`, { cause }),
         ),
     })
 
@@ -134,26 +142,34 @@ export class GrpcSampler extends CoreSampler {
 
   /** Logs a de-duplicated warning */
   #warn(message: string, ...args: unknown[]) {
-    if (message === this.#lastWarningMessage) {
-      return
+    if (message !== this.#lastWarningMessage) {
+      this.logger.warn(message, ...args)
+      this.#lastWarningMessage = message
+    } else {
+      this.logger.debug(message, ...args)
     }
-
-    this.logger.warn(message, ...args)
-    this.#lastWarningMessage = message
+  }
+  /** Resets last memorised warning */
+  #resetWarn() {
+    this.#lastWarningMessage = undefined
   }
 
-  #loop(retryTimeout = RETRY_MIN_TIMEOUT) {
+  #loop() {
     const retry = () => {
       this.#ready()
 
-      this.logger.debug(`retrying in ${(retryTimeout / 1000).toFixed(1)}s`)
-      const nextRetryTimeout = Math.min(
-        retryTimeout * MULTIPLIER,
-        RETRY_MAX_TIMEOUT,
-      )
-      setTimeout(() => {
-        this.#loop(nextRetryTimeout)
-      }, retryTimeout).unref()
+      const timeout = this.#backoff.backoff()
+      if (timeout) {
+        this.logger.debug(`retrying in ${(timeout / 1000).toFixed(1)}s`)
+        setTimeout(() => {
+          this.#loop()
+        }, timeout).unref()
+      } else {
+        this.logger.warn(
+          "Reached max retry attempts for sampling settings retrieval.",
+          "Tracing will remain disabled.",
+        )
+      }
     }
 
     this.logger.debug("retrieving sampling settings")
@@ -197,7 +213,7 @@ export class GrpcSampler extends CoreSampler {
         const parsed = unparsed && parseSettings(unparsed)
         if (!parsed) {
           this.#warn(
-            "Retrieved sampling settings are invalid",
+            "Retrieved sampling settings are invalid.",
             "If you are connecting to an AppOptics collector please set the 'SW_APM_LEGACY' environment variable.",
           )
           retry()
@@ -205,17 +221,18 @@ export class GrpcSampler extends CoreSampler {
         }
 
         this.updateSettings(parsed)
+        this.#backoff.reset()
+        this.#resetWarn()
         this.#ready()
 
         // this is pretty arbitrary but the goal is to update the settings
         // before the previous ones expire with some time to spare
-        const nextRequestTimeout =
-          parsed.ttl * 1000 - REQUEST_TIMEOUT * MULTIPLIER
+        const timeout = parsed.ttl * 1000 - REQUEST_TIMEOUT * MULTIPLIER
         setTimeout(
           () => {
             this.#loop()
           },
-          Math.max(0, nextRequestTimeout),
+          Math.max(0, timeout),
         ).unref()
       })
       .catch((error: unknown) => {
@@ -223,6 +240,7 @@ export class GrpcSampler extends CoreSampler {
         if (error instanceof Error) {
           message += ` (${error.message})`
         }
+        message += ", tracing will be disabled until valid ones are available"
         this.#warn(message, error)
 
         retry()
