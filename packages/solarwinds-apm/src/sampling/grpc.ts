@@ -82,52 +82,43 @@ export class GrpcSampler extends CoreSampler {
       collector = `https://${collector}`
     }
 
+    const invalidCollectorClient = (cause?: unknown): CollectorClient => ({
+      getSettings: () =>
+        Promise.reject(
+          new Error(`Invalid collector (${config.collector!})`, { cause }),
+        ),
+    })
+
     try {
       this.#address = new URL(collector)
 
       // on Alpine the grpc.Client constructor will hang forever if the hostname can't resolve
-      // to avoid this we try to resolve before actually instantiating it
+      // to avoid this we try to resolve before actually instantiating it. if it doesn't resolve
+      // we instead use a dummy client which always rejects and informs the user
       const resolve = Promise.any([
         dns.resolve4(this.#address.hostname),
         dns.resolve6(this.#address.hostname),
       ])
+        .then(() => {
+          const cred = config.certificate
+            ? credentials.createSsl(Buffer.from(config.certificate))
+            : credentials.createSsl()
+          this.#client = new GrpcCollectorClient(this.#address.host, cred)
+        })
+        .catch((cause: unknown) => {
+          this.#client = invalidCollectorClient(cause)
+        })
 
-      // create a temporary client that checks the hostname can be resolved
-      // before replacing itself with the real thing
+      // create a temporary client that waits until the real one is instantiated
+      // then forwards the call to it
       this.#client = {
         getSettings: (request, response) =>
-          resolve
-            .then(() => {
-              const cred = config.certificate
-                ? credentials.createSsl(Buffer.from(config.certificate))
-                : credentials.createSsl()
-
-              // at this point we know the hostname resolves so
-              // we can replace the temporary client
-              this.#client = new GrpcCollectorClient(this.#address.host, cred)
-              return this.#client.getSettings(request, response)
-            })
-            .catch((cause: unknown) =>
-              // if the hostname doesn't resolve we just always return an error
-              Promise.reject(
-                new Error(`Invalid collector (${config.collector!})`, {
-                  cause,
-                }),
-              ),
-            ),
+          resolve.then(() => this.#client.getSettings(request, response)),
       }
     } catch (cause) {
-      // this should only happen if the collector setting is set
-      // to complete gibberish
+      // this should only happen if the collector setting is set to something nonsensical
       this.#address = new URL("https://collector.invalid:443")
-      this.#client = {
-        getSettings: () =>
-          Promise.reject(
-            new Error(`Invalid collector (${config.collector!})`, {
-              cause,
-            }),
-          ),
-      }
+      this.#client = invalidCollectorClient(cause)
     }
 
     this.ready = new Promise((resolve) => (this.#ready = resolve))
