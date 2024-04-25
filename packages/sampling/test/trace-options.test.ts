@@ -337,7 +337,7 @@ describe("validateSignature", () => {
     const result = validateSignature(
       "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
       "2c1c398c3e6be898f47f74bf74f035903b48b59c",
-      "8mZ98ZnZhhggcsUmdMbS",
+      Buffer.from("8mZ98ZnZhhggcsUmdMbS"),
       Date.now() / 1000 - 60,
     )
 
@@ -348,7 +348,7 @@ describe("validateSignature", () => {
     const result = validateSignature(
       "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
       "2c1c398c3e6be898f47f74bf74f035903b48b59d",
-      "8mZ98ZnZhhggcsUmdMbS",
+      Buffer.from("8mZ98ZnZhhggcsUmdMbS"),
       Date.now() / 1000 - 60,
     )
 
@@ -370,7 +370,7 @@ describe("validateSignature", () => {
     const result = validateSignature(
       "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
       "2c1c398c3e6be898f47f74bf74f035903b48b59c",
-      "8mZ98ZnZhhggcsUmdMbS",
+      Buffer.from("8mZ98ZnZhhggcsUmdMbS"),
       Date.now() / 1000 - 10 * 60,
     )
 
@@ -381,7 +381,7 @@ describe("validateSignature", () => {
     const result = validateSignature(
       "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
       "2c1c398c3e6be898f47f74bf74f035903b48b59c",
-      "8mZ98ZnZhhggcsUmdMbS",
+      Buffer.from("8mZ98ZnZhhggcsUmdMbS"),
       Date.now() / 1000 + 10 * 60,
     )
 
@@ -392,7 +392,7 @@ describe("validateSignature", () => {
     const result = validateSignature(
       "trigger-trace;pd-keys=lo:se,check-id:123;ts=1564597681",
       "2c1c398c3e6be898f47f74bf74f035903b48b59c",
-      "8mZ98ZnZhhggcsUmdMbS",
+      Buffer.from("8mZ98ZnZhhggcsUmdMbS"),
       undefined,
     )
 

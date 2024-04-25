@@ -37,6 +37,9 @@ jobs:
       - run: yarn build
       - run: yarn lint
       - run: yarn test
+        env:
+          SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
+          SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
 
       # load bearing .root file
       # actions/upload-artifact will make the archive root the topmost directory which contains all specified files
@@ -187,6 +190,9 @@ jobs:
 
       - run: yarn install --immutable
       - run: yarn test --only
+        env:
+          SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
+          SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
 
   terminate-arm64:
     if: always() && github.event_name == 'pull_request'
