@@ -36,6 +36,14 @@ import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
 import { HEADERS_STORAGE } from "../propagation/headers.js"
 
+/**
+ * Abstract core sampler to extend from other samplers
+ *
+ * This extends {@link OboeSampler} to retrieve local settings from
+ * the configuration and manage request headers retrieval and
+ * response headers setting. The only piece of logic left to implement
+ * by specific sampler is remote setting retrieval.
+ */
 export abstract class CoreSampler extends OboeSampler {
   readonly #tracingMode: TracingMode | undefined
   readonly #triggerMode: boolean
@@ -53,6 +61,7 @@ export abstract class CoreSampler extends OboeSampler {
     this.#transactionSettings = config.transactionSettings
   }
 
+  /** Computes local settings for the current configuration */
   protected override localSettings(
     _context: Context,
     _traceId: string,
@@ -92,10 +101,12 @@ export abstract class CoreSampler extends OboeSampler {
     return settings
   }
 
+  /** Retrieves request headers in the {@link HEADERS_STORAGE} */
   protected override requestHeaders(context: Context): RequestHeaders {
     return HEADERS_STORAGE.get(context)?.request ?? {}
   }
 
+  /** Sets response headers in the {@link HEADERS_STORAGE} */
   protected override setResponseHeaders(
     headers: ResponseHeaders,
     context: Context,

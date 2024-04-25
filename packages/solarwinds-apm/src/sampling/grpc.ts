@@ -44,6 +44,7 @@ const RETRY_MIN_TIMEOUT = 500 // 500ms
 const RETRY_MAX_TIMEOUT = 10 * 60 * 1000 // 10 minutes
 const MULTIPLIER = 1.5
 
+/** Map of flag names to their value */
 const FLAGS_NAMES: Record<string, Flags | undefined> = {
   OVERRIDE: Flags.OVERRIDE,
   SAMPLE_START: Flags.SAMPLE_START,
@@ -59,6 +60,7 @@ const TRIGGER_STRICT_BUCKET_CAPACITY = "TriggerStrictBucketCapacity"
 const TRIGGER_STRICT_BUCKET_RATE = "TriggerStrictBucketRate"
 const SIGNATURE_KEY = "SignatureKey"
 
+/** Sampler that retrieves settings from the SWO collector directly via gRPC */
 export class GrpcSampler extends CoreSampler {
   readonly #address: string
   readonly #key: string
@@ -97,6 +99,7 @@ export class GrpcSampler extends CoreSampler {
     return `gRPC Sampler (${this.#address})`
   }
 
+  /** Logs a de-duplicated warning */
   #warn(message: string, ...args: unknown[]) {
     if (message === this.#lastWarningMessage) {
       return
@@ -195,11 +198,15 @@ export class GrpcSampler extends CoreSampler {
 }
 
 export interface CollectorRequestOptions {
+  /** gRPC metadata */
   metadata?: Metadata
+  /** gRPC call options */
   options?: CallOptions
+  /** Optional abort signal */
   signal?: AbortSignal
 }
 
+/** gRPC client for the SWO collector */
 export class CollectorClient extends Client {
   getSettings(
     request: collector.ISettingsRequest,
@@ -233,6 +240,7 @@ export class CollectorClient extends Client {
   }
 }
 
+/** Converts settings received from the gRPC collector into the internal representation */
 export function parseSettings(
   unparsed: collector.IOboeSetting,
 ): Settings | undefined {
