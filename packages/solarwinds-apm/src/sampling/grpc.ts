@@ -14,16 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import * as dns from "node:dns/promises"
 import { hostname } from "node:os"
 import { TextDecoder } from "node:util"
 
-import {
-  type CallOptions,
-  Client,
-  credentials,
-  Metadata,
-  type ServiceError,
-} from "@grpc/grpc-js"
+import { type CallOptions, Client, credentials, Metadata } from "@grpc/grpc-js"
 import { context, type DiagLogger } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
 import { collector } from "@solarwinds-apm/proto"
@@ -62,11 +57,11 @@ const SIGNATURE_KEY = "SignatureKey"
 
 /** Sampler that retrieves settings from the SWO collector directly via gRPC */
 export class GrpcSampler extends CoreSampler {
-  readonly #address: string
   readonly #key: string
+  readonly #address: URL
   readonly #hostname = hostname()
 
-  readonly #client: CollectorClient
+  #client: CollectorClient
   #lastWarningMessage = ""
 
   /** Resolves once the sampler has received settings */
@@ -76,17 +71,64 @@ export class GrpcSampler extends CoreSampler {
   constructor(config: SwConfiguration, logger: DiagLogger) {
     super(config, logger)
 
-    this.#address = config.collector!
-    if (!this.#address.includes(":")) {
-      this.#address += `:443`
-    }
-
     this.#key = `${config.token}:${config.serviceName}`
 
-    const cred = config.certificate
-      ? credentials.createSsl(Buffer.from(config.certificate))
-      : credentials.createSsl()
-    this.#client = new CollectorClient(this.#address, cred)
+    // convert the collector string into a valid full URL
+    let collector = config.collector!
+    if (!/:{0-9}+$/.test(collector)) {
+      collector = `${collector}:443`
+    }
+    if (!/^https?:/.test(collector)) {
+      collector = `https://${collector}`
+    }
+
+    try {
+      this.#address = new URL(collector)
+
+      // on Alpine the grpc.Client constructor will hang forever if the hostname can't resolve
+      // to avoid this we try to resolve before actually instantiating it
+      const resolve = Promise.any([
+        dns.resolve4(this.#address.hostname),
+        dns.resolve6(this.#address.hostname),
+      ])
+
+      // create a temporary client that checks the hostname can be resolved
+      // before replacing itself with the real thing
+      this.#client = {
+        getSettings: (request, response) =>
+          resolve
+            .then(() => {
+              const cred = config.certificate
+                ? credentials.createSsl(Buffer.from(config.certificate))
+                : credentials.createSsl()
+
+              // at this point we know the hostname resolves so
+              // we can replace the temporary client
+              this.#client = new GrpcCollectorClient(this.#address.host, cred)
+              return this.#client.getSettings(request, response)
+            })
+            .catch((cause: unknown) =>
+              // if the hostname doesn't resolve we just always return an error
+              Promise.reject(
+                new Error(`Invalid collector (${config.collector!})`, {
+                  cause,
+                }),
+              ),
+            ),
+      }
+    } catch (cause) {
+      // this should only happen if the collector setting is set
+      // to complete gibberish
+      this.#address = new URL("https://collector.invalid:443")
+      this.#client = {
+        getSettings: () =>
+          Promise.reject(
+            new Error(`Invalid collector (${config.collector!})`, {
+              cause,
+            }),
+          ),
+      }
+    }
 
     this.ready = new Promise((resolve) => (this.#ready = resolve))
 
@@ -96,7 +138,7 @@ export class GrpcSampler extends CoreSampler {
   }
 
   override toString(): string {
-    return `gRPC Sampler (${this.#address})`
+    return `gRPC Sampler (${this.#address.host})`
   }
 
   /** Logs a de-duplicated warning */
@@ -186,11 +228,11 @@ export class GrpcSampler extends CoreSampler {
         ).unref()
       })
       .catch((error: unknown) => {
-        const grpcError = error as ServiceError
-        this.#warn(
-          `Failed to retrieve sampling settings (${grpcError.details})`,
-          grpcError,
-        )
+        let message = "Failed to retrieve sampling settings"
+        if (error instanceof Error) {
+          message += ` (${error.message})`
+        }
+        this.#warn(message, error)
 
         retry()
       })
@@ -206,8 +248,15 @@ export interface CollectorRequestOptions {
   signal?: AbortSignal
 }
 
+interface CollectorClient {
+  getSettings(
+    request: collector.ISettingsRequest,
+    options?: CollectorRequestOptions,
+  ): Promise<collector.ISettingsResult | undefined>
+}
+
 /** gRPC client for the SWO collector */
-export class CollectorClient extends Client {
+export class GrpcCollectorClient extends Client implements CollectorClient {
   getSettings(
     request: collector.ISettingsRequest,
     options: CollectorRequestOptions = {},

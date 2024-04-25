@@ -31,7 +31,7 @@ import {
 } from "@solarwinds-apm/test"
 
 import {
-  CollectorClient,
+  GrpcCollectorClient,
   GrpcSampler,
   parseSettings,
 } from "../../src/sampling/grpc.js"
@@ -140,8 +140,8 @@ describe("GrpcSampler", () => {
   })
 })
 
-describe("CollectorClient", () => {
-  const client = new CollectorClient(
+describe("GrpcCollectorClient", () => {
+  const client = new GrpcCollectorClient(
     `${COLLECTOR}:443`,
     credentials.createSsl(),
   )
