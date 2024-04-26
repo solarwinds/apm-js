@@ -113,6 +113,10 @@ export class TransactionNamePool {
 
   /** Given a desired transaction name return the one that should be used */
   registered(name: string): string {
+    // new name and room in pool -> add name to pool and schedule for removal after ttl -> return name
+    // new name but no room in pool -> return default name
+    // existing name -> cancel previously scheduled removal -> schedule new removal -> return name
+
     const existing = this.#pool.get(name)
     if (existing !== undefined) {
       clearTimeout(existing)
