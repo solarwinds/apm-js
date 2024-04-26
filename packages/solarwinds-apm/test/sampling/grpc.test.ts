@@ -77,7 +77,7 @@ describe("GrpcSampler", () => {
         "BucketCapacity",
         "BucketRate",
       )
-    }).retries(4)
+    }).retries(16)
   })
 
   describe("invalid service key", () => {

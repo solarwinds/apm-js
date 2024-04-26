@@ -21,7 +21,7 @@ import {
   getRootOrEntry,
   isRootOrEntry,
   ParentSpanProcessor,
-} from "../../src/processing/parent.js"
+} from "../../src/processing/parent-span.js"
 
 describe("ParentSpanProcessor", () => {
   before(async () => {
