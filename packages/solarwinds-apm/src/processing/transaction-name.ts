@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 import { trace } from "@opentelemetry/api"
-import type * as sdk from "@opentelemetry/sdk-trace-base"
 import {
   NoopSpanProcessor,
   type ReadableSpan,
@@ -34,6 +33,12 @@ const TRANSACTION_NAME_POOL_MAX = 200
 const TRANSACTION_NAME_DEFAULT = "other"
 const TRANSACTION_NAME_ATTRIBUTE = "sw.transaction"
 
+/**
+ * Sets a custom name for the current transaction
+ *
+ * @param name - Custom transaction name
+ * @returns Whether the name was successfully set
+ */
 export function setTransactionName(name: string): boolean {
   const active = trace.getActiveSpan()
   const rootOrEntry = active && getRootOrEntry(active)
@@ -45,6 +50,7 @@ export function setTransactionName(name: string): boolean {
   return true
 }
 
+/** Processor that sets the transaction name attribute on spans */
 export class TransactionNameProcessor
   extends NoopSpanProcessor
   implements SpanProcessor
@@ -76,7 +82,8 @@ export class TransactionNameProcessor
   }
 }
 
-export function computedTransactionName(span: sdk.Span): string {
+/** Computes a transaction name from a span and its attributes */
+export function computedTransactionName(span: ReadableSpan): string {
   if (typeof process.env.AWS_LAMBDA_FUNCTION_NAME === "string") {
     return process.env.AWS_LAMBDA_FUNCTION_NAME
   } else if (typeof span.attributes[SEMATTRS_HTTP_ROUTE] === "string") {
@@ -90,6 +97,7 @@ export function computedTransactionName(span: sdk.Span): string {
   }
 }
 
+/** A pool that prevents explosion of cardinality in transaction names */
 export class TransactionNamePool {
   readonly #pool = new Map<string, NodeJS.Timeout>()
 
@@ -103,6 +111,7 @@ export class TransactionNamePool {
     this.#default = options.default
   }
 
+  /** Given a desired transaction name return the one that should be used */
   registered(name: string): string {
     const existing = this.#pool.get(name)
     if (existing !== undefined) {
