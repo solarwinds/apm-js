@@ -97,7 +97,14 @@ export function computedTransactionName(span: ReadableSpan): string {
   }
 }
 
-/** A pool that prevents explosion of cardinality in transaction names */
+/**
+ * A pool that prevents explosion of cardinality in transaction names
+ *
+ * The pool only allows a certain amount of transaction names to exist
+ * at any given moment. If it is full, it will replace any name not
+ * already in the pool with a default one. The pool frees up space
+ * by pruning names that haven't been used in a given amount of time.
+ */
 export class TransactionNamePool {
   readonly #pool = new Map<string, NodeJS.Timeout>()
 
