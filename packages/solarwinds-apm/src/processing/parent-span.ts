@@ -15,8 +15,10 @@ limitations under the License.
 */
 
 import { type Context, type Span, trace } from "@opentelemetry/api"
+import type * as sdk from "@opentelemetry/sdk-trace-base"
 import {
   NoopSpanProcessor,
+  type ReadableSpan,
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
 
@@ -26,7 +28,9 @@ import { spanStorage } from "../storage.js"
 const PARENT_STORAGE = spanStorage<Span | false>("solarwinds-apm parent span")
 
 /** Returns true if this span has no parent or its parent is remote */
-export function isRootOrEntry(span: Span): boolean {
+export function isRootOrEntry(
+  span: Span | sdk.Span | ReadableSpan,
+): span is sdk.Span {
   const parentSpan = PARENT_STORAGE.get(span)
   return parentSpan === false || parentSpan?.spanContext().isRemote === true
 }
@@ -55,5 +59,9 @@ export class ParentSpanProcessor
   override onStart(span: Span, parentContext: Context): void {
     const parentSpan = trace.getSpan(parentContext)
     PARENT_STORAGE.set(span, parentSpan ?? false)
+  }
+
+  override onEnd(span: ReadableSpan): void {
+    PARENT_STORAGE.delete(span)
   }
 }
