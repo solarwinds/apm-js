@@ -28,10 +28,11 @@ import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
 import { getRootOrEntry, isRootOrEntry } from "./parent-span.js"
 
+export const TRANSACTION_NAME_ATTRIBUTE = "sw.transaction"
+
 const TRANSACTION_NAME_POOL_TTL = 60 * 1000 // 1 minute
 const TRANSACTION_NAME_POOL_MAX = 200
 const TRANSACTION_NAME_DEFAULT = "other"
-const TRANSACTION_NAME_ATTRIBUTE = "sw.transaction"
 
 /**
  * Sets a custom name for the current transaction
