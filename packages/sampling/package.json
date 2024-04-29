@@ -37,7 +37,7 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@opentelemetry/sdk-trace-base": "~1.23.0"
+    "@opentelemetry/sdk-trace-base": "~1.24.0"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.3.0"
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.3.0",
-    "@opentelemetry/sdk-metrics": "~1.23.0",
+    "@opentelemetry/sdk-metrics": "~1.24.0",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/lazy": "workspace:^",
     "@solarwinds-apm/rollup-config": "workspace:^",
