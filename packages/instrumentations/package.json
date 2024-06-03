@@ -46,7 +46,7 @@
     "@opentelemetry/instrumentation-cucumber": "^0.6.0",
     "@opentelemetry/instrumentation-dataloader": "^0.9.0",
     "@opentelemetry/instrumentation-dns": "^0.36.0",
-    "@opentelemetry/instrumentation-express": "^0.38.0",
+    "@opentelemetry/instrumentation-express": "^0.39.0",
     "@opentelemetry/instrumentation-fastify": "^0.36.0",
     "@opentelemetry/instrumentation-fs": "^0.12.0",
     "@opentelemetry/instrumentation-generic-pool": "^0.36.0",
