@@ -16,6 +16,7 @@ limitations under the License.
 
 import {
   type Attributes,
+  type DiagLogger,
   metrics,
   SpanKind,
   SpanStatusCode,
@@ -56,6 +57,10 @@ export class ResponseTimeProcessor
   extends NoopSpanProcessor
   implements SpanProcessor
 {
+  constructor(protected readonly logger: DiagLogger) {
+    super()
+  }
+
   override onEnd(span: ReadableSpan): void {
     if (!isRootOrEntry(span)) {
       return
@@ -76,6 +81,7 @@ export class ResponseTimeProcessor
       }
     }
 
+    this.logger.debug("recording response time", time, attributes)
     RESPONSE_TIME.record(time, attributes)
   }
 }

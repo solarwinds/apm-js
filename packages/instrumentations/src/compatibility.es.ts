@@ -34,11 +34,7 @@ const versions = new Map<
 >()
 
 for (const i of instrumentations) {
-  const init = "init"
-  let definitions = i[init]()
-  if (!definitions) continue
-  if (!Array.isArray(definitions)) definitions = [definitions]
-
+  const definitions = i.getModuleDefinitions()
   const instrumentation = i.instrumentationName
 
   for (const definition of definitions) {
