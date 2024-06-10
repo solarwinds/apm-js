@@ -6,7 +6,7 @@
 | `@aws-sdk/smithy-client`    | `>=3.1.0 <4.0.0`      | `@opentelemetry/instrumentation-aws-sdk`          |
 | `@cucumber/cucumber`        | `>=8.0.0 <11.0.0`     | `@opentelemetry/instrumentation-cucumber`         |
 | `@grpc/grpc-js`             | `>=1.0.0 <2.0.0`      | `@opentelemetry/instrumentation-grpc`             |
-| `@hapi/hapi`                | `>=17.0.0 <21.0.0`    | `@opentelemetry/instrumentation-hapi`             |
+| `@hapi/hapi`                | `>=17.0.0 <22.0.0`    | `@opentelemetry/instrumentation-hapi`             |
 | `@nestjs/core`              | `>=4.0.0`             | `@opentelemetry/instrumentation-nestjs-core`      |
 | `@node-redis/client`        | `>=1.0.0 <2.0.0`      | `@opentelemetry/instrumentation-redis-4`          |
 | `@redis/client`             | `>=1.0.0 <2.0.0`      | `@opentelemetry/instrumentation-redis-4`          |
@@ -40,10 +40,10 @@
 | `net`                       | `*`                   | `@opentelemetry/instrumentation-net`              |
 | `pg`                        | `>=8.0.0 <9.0.0`      | `@opentelemetry/instrumentation-pg`               |
 | `pg-pool`                   | `>=2.0.0 <4.0.0`      | `@opentelemetry/instrumentation-pg`               |
-| `pino`                      | `>=5.14.0 <9.0.0`     | `@opentelemetry/instrumentation-pino`             |
+| `pino`                      | `>=5.14.0 <10.0.0`    | `@opentelemetry/instrumentation-pino`             |
 | `redis`                     | `>=2.6.0 <4.0.0`      | `@opentelemetry/instrumentation-redis`            |
 | `restify`                   | `>=4.0.0 <12.0.0`     | `@opentelemetry/instrumentation-restify`          |
 | `router`                    | `>=1.0.0 <2.0.0`      | `@opentelemetry/instrumentation-router`           |
 | `socket.io`                 | `>=2.0.0 <5.0.0`      | `@opentelemetry/instrumentation-socket.io`        |
-| `tedious`                   | `>=1.11.0 <16.0.0`    | `@opentelemetry/instrumentation-tedious`          |
+| `tedious`                   | `>=1.11.0 <18.0.0`    | `@opentelemetry/instrumentation-tedious`          |
 | `winston`                   | `>=1.0.0 <4.0.0`      | `@opentelemetry/instrumentation-winston`          |

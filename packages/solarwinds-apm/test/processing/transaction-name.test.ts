@@ -16,7 +16,7 @@ limitations under the License.
 
 import { setTimeout } from "node:timers/promises"
 
-import { trace } from "@opentelemetry/api"
+import { diag, trace } from "@opentelemetry/api"
 import type * as sdk from "@opentelemetry/sdk-trace-base"
 import {
   SEMATTRS_HTTP_ROUTE,
@@ -38,7 +38,7 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({} as SwConfiguration),
+          new TransactionNameProcessor({} as SwConfiguration, diag),
           new ParentSpanProcessor(),
         ],
       },
@@ -70,9 +70,12 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({
-            transactionName: "default",
-          } as SwConfiguration),
+          new TransactionNameProcessor(
+            {
+              transactionName: "default",
+            } as SwConfiguration,
+            diag,
+          ),
           new ParentSpanProcessor(),
         ],
       },
@@ -104,9 +107,12 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({
-            transactionName: "default",
-          } as SwConfiguration),
+          new TransactionNameProcessor(
+            {
+              transactionName: "default",
+            } as SwConfiguration,
+            diag,
+          ),
           new ParentSpanProcessor(),
         ],
       },
@@ -141,7 +147,7 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({} as SwConfiguration),
+          new TransactionNameProcessor({} as SwConfiguration, diag),
           new ParentSpanProcessor(),
         ],
       },
@@ -160,6 +166,43 @@ describe("TransactionNameProcessor", () => {
       (span) => span.attributes["sw.transaction"] === "other",
     )
     expect(didNotMakeIt).to.have.lengthOf(1)
+  })
+
+  it("trims transaction names to 256 characters", async () => {
+    await otel.reset({
+      trace: {
+        processors: [
+          new TransactionNameProcessor({} as SwConfiguration, diag),
+          new ParentSpanProcessor(),
+        ],
+      },
+    })
+
+    const tracer = trace.getTracer("test")
+    tracer.startActiveSpan("parent", (span) => {
+      expect(span.isRecording()).to.be.true
+
+      tracer.startActiveSpan("child", (span) => {
+        expect(span.isRecording()).to.be.true
+
+        expect(setTransactionName("hello".repeat(100))).to.be.true
+
+        span.end()
+      })
+
+      span.end()
+    })
+
+    const spans = await otel.spans()
+    expect(spans).to.have.lengthOf(2)
+
+    const parent = spans.find((s) => s.name === "parent")!
+    const child = spans.find((s) => s.name === "child")!
+
+    expect(parent.attributes)
+      .to.have.property("sw.transaction")
+      .with.lengthOf(256)
+    expect(child.attributes).not.to.have.property("sw.transaction")
   })
 })
 
@@ -224,6 +267,7 @@ describe("TransactionNamePool", () => {
     const pool = new TransactionNamePool({
       max: 2,
       ttl: 10,
+      maxLength: 3,
       default: "default",
     })
 
@@ -235,5 +279,6 @@ describe("TransactionNamePool", () => {
     await setTimeout(50)
 
     expect(pool.registered("baz")).to.equal("baz")
+    expect(pool.registered("fooo")).to.equal("foo")
   })
 })

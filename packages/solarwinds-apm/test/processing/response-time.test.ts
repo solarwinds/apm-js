@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api"
+import { diag, SpanKind, SpanStatusCode, trace } from "@opentelemetry/api"
 import {
   DataPointType,
   type ExponentialHistogramMetricData,
@@ -63,8 +63,8 @@ describe("ResponseTimeProcessor", () => {
     otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({} as SwConfiguration),
-          new ResponseTimeProcessor(),
+          new TransactionNameProcessor({} as SwConfiguration, diag),
+          new ResponseTimeProcessor(diag),
           new ParentSpanProcessor(),
         ],
       },

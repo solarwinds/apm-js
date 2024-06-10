@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { trace } from "@opentelemetry/api"
+import { type DiagLogger, trace } from "@opentelemetry/api"
 import {
   NoopSpanProcessor,
   type ReadableSpan,
@@ -32,6 +32,7 @@ export const TRANSACTION_NAME_ATTRIBUTE = "sw.transaction"
 
 const TRANSACTION_NAME_POOL_TTL = 60 * 1000 // 1 minute
 const TRANSACTION_NAME_POOL_MAX = 200
+const TRANSACTION_NAME_MAX_LENGTH = 256
 const TRANSACTION_NAME_DEFAULT = "other"
 
 /**
@@ -41,6 +42,10 @@ const TRANSACTION_NAME_DEFAULT = "other"
  * @returns Whether the name was successfully set
  */
 export function setTransactionName(name: string): boolean {
+  if (!name) {
+    return false
+  }
+
   const active = trace.getActiveSpan()
   const rootOrEntry = active && getRootOrEntry(active)
   if (!rootOrEntry) {
@@ -59,11 +64,15 @@ export class TransactionNameProcessor
   readonly #pool = new TransactionNamePool({
     max: TRANSACTION_NAME_POOL_MAX,
     ttl: TRANSACTION_NAME_POOL_TTL,
+    maxLength: TRANSACTION_NAME_MAX_LENGTH,
     default: TRANSACTION_NAME_DEFAULT,
   })
   readonly #defaultName?: string
 
-  constructor(config: SwConfiguration) {
+  constructor(
+    config: SwConfiguration,
+    protected readonly logger: DiagLogger,
+  ) {
     super()
     this.#defaultName = config.transactionName
   }
@@ -74,10 +83,12 @@ export class TransactionNameProcessor
     }
 
     let name = span.attributes[TRANSACTION_NAME_ATTRIBUTE]
+    this.logger.debug("initial transaction name", name)
     if (typeof name !== "string") {
       name = this.#defaultName ?? computedTransactionName(span)
     }
     name = this.#pool.registered(name)
+    this.logger.debug("final transaction name", name)
 
     span.attributes[TRANSACTION_NAME_ATTRIBUTE] = name
   }
@@ -111,16 +122,24 @@ export class TransactionNamePool {
 
   readonly #max: number
   readonly #ttl: number
+  readonly #maxLength: number
   readonly #default: string
 
-  constructor(options: { max: number; ttl: number; default: string }) {
+  constructor(options: {
+    max: number
+    ttl: number
+    maxLength: number
+    default: string
+  }) {
     this.#max = options.max
     this.#ttl = options.ttl
+    this.#maxLength = options.maxLength
     this.#default = options.default
   }
 
   /** Given a desired transaction name return the one that should be used */
   registered(name: string): string {
+    name = name.slice(0, this.#maxLength)
     // new name and room in pool -> add name to pool and schedule for removal after ttl -> return name
     // new name but no room in pool -> return default name
     // existing name -> cancel previously scheduled removal -> schedule new removal -> return name
