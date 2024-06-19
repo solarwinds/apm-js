@@ -105,6 +105,11 @@ jobs:
           - 20-debian
           - 20-ubi
           - 20-ubuntu
+          - 22-alpine
+          - 22-amazonlinux
+          - 22-debian
+          - 22-ubi
+          - 22-ubuntu
         arch:
           - x64
           - arm64
@@ -115,6 +120,8 @@ jobs:
           - image: 18-alpine
             arch: arm64
           - image: 20-alpine
+            arch: arm64
+          - image: 22-alpine
             arch: arm64
       fail-fast: false
     container:
