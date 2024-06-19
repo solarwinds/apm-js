@@ -8,8 +8,10 @@ RUN dnf install -y \
     xz
 
 RUN dnf module disable -y nodejs && \
-    curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
+    update-crypto-policies --set LEGACY && \
+    curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
     dnf install -y nodejs && \
+    update-crypto-policies --set DEFAULT && \
     dnf clean -y all
 
 RUN corepack enable
