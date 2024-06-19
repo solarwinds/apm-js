@@ -7,7 +7,7 @@ RUN dnf install -y \
     tar \
     xz
 
-RUN dnf install -y https://rpm.nodesource.com/pub_20.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm && \
+RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
     dnf install -y nodejs && \
     dnf clean -y all
 
