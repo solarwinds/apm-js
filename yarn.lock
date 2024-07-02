@@ -124,10 +124,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.57.0, @eslint/js@npm:^8.51.0":
+"@eslint/js@npm:8.57.0":
   version: 8.57.0
   resolution: "@eslint/js@npm:8.57.0"
   checksum: 10c0/9a518bb8625ba3350613903a6d8c622352ab0c6557a59fe6ff6178bf882bf57123f9d92aa826ee8ac3ee74b9c6203fe630e9ee00efb03d753962dcf65ee4bd94
+  languageName: node
+  linkType: hard
+
+"@eslint/js@npm:^9.6.0":
+  version: 9.6.0
+  resolution: "@eslint/js@npm:9.6.0"
+  checksum: 10c0/83967a7e59f2e958c9bbb3acd0929cad00d59d927ad786ed8e0d30b07f983c6bea3af6f4ad32da32145db40b7a741a816ba339bdd8960fc7fc8231716d943b7f
   languageName: node
   linkType: hard
 
@@ -1659,7 +1666,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/eslint-config@workspace:packages/eslint-config"
   dependencies:
-    "@eslint/js": "npm:^8.51.0"
+    "@eslint/js": "npm:^9.6.0"
     eslint: "npm:^8.50.0"
     eslint-config-prettier: "npm:^9.0.0"
     eslint-plugin-deprecation: "npm:^3.0.0"
