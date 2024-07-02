@@ -55,7 +55,7 @@
     "@solarwinds-apm/rollup-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^16.13.0",
-    "eslint": "^8.50.0",
+    "eslint": "^9.6.0",
     "prettier": "^3.0.3",
     "rollup": "^4.3.0",
     "typescript": "~5.4.4"
