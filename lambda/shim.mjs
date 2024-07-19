@@ -1,6 +1,6 @@
 import fs from "node:fs"
 import path from "node:path"
-import satisfies from "semver/functions/satisfies"
+import satisfies from "semver/functions/satisfies.js"
 
 try {
   const BUNDLED_API = "/opt/solarwinds-apm/node_modules/@opentelemetry/api"
