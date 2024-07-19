@@ -1,3 +1,9 @@
+# [14.0.3](https://github.com/solarwinds/apm-js/releases/tag/v14.0.3)
+
+## Fixes
+
+- Properly support user-provided `@opentelemetry/api` in Lambda.
+
 # [14.0.0](https://github.com/solarwinds/apm-js/releases/tag/v14.0.0)
 
 ## Breaking changes
