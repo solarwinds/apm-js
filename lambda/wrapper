@@ -1,11 +1,5 @@
 #!/bin/bash
-
-# Only use --require to load if SW_APM_CJS is set
-if [ -z "${SW_APM_CJS}" ]; then
-    export NODE_OPTIONS="${NODE_OPTIONS} --import /opt/solarwinds-apm/shim.mjs"
-else
-    export NODE_OPTIONS="${NODE_OPTIONS} --require /opt/solarwinds-apm/shim.cjs"
-fi
+export NODE_OPTIONS="${NODE_OPTIONS} --import /opt/solarwinds-apm/shim.mjs"
 
 # The default for Node is http/proto but we only include the gRPC exporters
 export OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
