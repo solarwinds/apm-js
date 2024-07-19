@@ -26,7 +26,7 @@ try {
   const NODE_PATH = process.env.NODE_PATH?.split(":") ?? []
   dirs.push(...NODE_PATH)
 
-  // Search for a use-provided OTel API
+  // Search for a user-provided OTel API
   for (const dir of dirs) {
     const api = path.join(dir, "@opentelemetry", "api")
     let version
@@ -46,13 +46,14 @@ try {
         fs.rmSync(BUNDLED_API, { recursive: true, force: true })
         fs.symlinkSync(api, BUNDLED_API)
       }
-    } catch {
+    } catch (error) {
       // Something is wrong, bail
+      console.error("error while detecting @opentelemetry/api")
       break
     }
   }
 
   await import("{{name}}")
 } catch (error) {
-  console.error(error)
+  console.error("error while loading solarwinds-apm", error)
 }
