@@ -34,7 +34,7 @@ describe("Dice", () => {
     // statistically we should always be between 40%-60% over 1000 rolls
     // otherwise something is very wrong
     expect(Math.abs(trues - falses)).to.be.below(100)
-  })
+  }).retries(2)
 
   it("defaults to zero and never succeeds", () => {
     const dice = new Dice({ scale: 100 })

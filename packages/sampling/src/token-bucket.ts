@@ -31,7 +31,7 @@ export interface TokenBucketSettings {
 
 export class TokenBucket {
   #c = 0
-  get #capacity(): number {
+  get capacity(): number {
     return this.#c
   }
   set #capacity(n: number) {
@@ -39,7 +39,7 @@ export class TokenBucket {
   }
 
   #r = 0
-  get #rate(): number {
+  get rate(): number {
     return this.#r
   }
   set #rate(n: number) {
@@ -47,7 +47,7 @@ export class TokenBucket {
   }
 
   #i = MAX_INTERVAL
-  get #interval(): number {
+  get interval(): number {
     return this.#i
   }
   set #interval(n: number) {
@@ -59,7 +59,7 @@ export class TokenBucket {
     return this.#t
   }
   set #tokens(n: number) {
-    this.#t = Math.max(0, Math.min(this.#capacity, n))
+    this.#t = Math.max(0, Math.min(this.capacity, n))
   }
 
   #timer: NodeJS.Timer | undefined = undefined
@@ -69,12 +69,12 @@ export class TokenBucket {
     this.#rate = settings.rate ?? 0
     this.#interval = settings.interval ?? MAX_INTERVAL
 
-    this.#tokens = this.#capacity
+    this.#tokens = this.capacity
   }
 
   update(settings: TokenBucketSettings) {
     if (settings.capacity !== undefined) {
-      const difference = settings.capacity - this.#capacity
+      const difference = settings.capacity - this.capacity
       this.#capacity = settings.capacity
       this.#tokens += difference
     }
@@ -113,7 +113,7 @@ export class TokenBucket {
 
     this.#timer = setInterval(() => {
       this.#task()
-    }, this.#interval)
+    }, this.interval)
   }
 
   /** Stops replenishing the bucket */
@@ -129,7 +129,17 @@ export class TokenBucket {
     return this.#timer !== undefined
   }
 
+  /** https://nodejs.org/docs/latest/api/timers.html#timeoutref */
+  ref(): void {
+    this.#timer?.ref()
+  }
+
+  /** https://nodejs.org/docs/latest/api/timers.html#timeoutunref */
+  unref(): void {
+    this.#timer?.unref()
+  }
+
   #task() {
-    this.#tokens += this.#rate
+    this.#tokens += this.rate
   }
 }

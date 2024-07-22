@@ -21,6 +21,7 @@ import * as path from "node:path"
 import * as process from "node:process"
 
 import { callsite } from "@solarwinds-apm/module"
+import * as dotenv from "dotenv"
 import globby from "globby"
 import semver from "semver"
 
@@ -96,6 +97,12 @@ argv = [
   "js,ts,cjs,cts,mjs,mts",
   ...argv,
 ]
+
+const envs = []
+for (let dir = process.cwd(); dir !== "/"; dir = path.dirname(dir)) {
+  envs.push(`${dir}/.env`)
+}
+dotenv.configDotenv({ path: envs })
 
 // TS_NODE_PROJECT is used by ts-node to look for a tsconfig.json
 const env = {

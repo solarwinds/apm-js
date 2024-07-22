@@ -148,6 +148,52 @@ services:
       - apm-collector
       - otel-collector
 
+  22-alpine:
+    build:
+      context: .
+      dockerfile: 22-alpine.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  22-amazonlinux:
+    build:
+      context: .
+      dockerfile: 22-amazonlinux.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  22-debian:
+    build:
+      context: .
+      dockerfile: 22-debian.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  22-ubi:
+    build:
+      context: .
+      dockerfile: 22-ubi.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  22-ubuntu:
+    build:
+      context: .
+      dockerfile: 22-ubuntu.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+
   example:
     build:
       context: .
@@ -196,7 +242,7 @@ services:
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
   postgres:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_PASSWORD: postgres
     volumes:

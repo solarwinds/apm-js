@@ -28,6 +28,11 @@ jobs:
           - 20-debian
           - 20-ubi
           - 20-ubuntu
+          - 22-alpine
+          - 22-amazonlinux
+          - 22-debian
+          - 22-ubi
+          - 22-ubuntu
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -41,7 +46,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: docker
           file: docker/${{ matrix.image }}.Dockerfile

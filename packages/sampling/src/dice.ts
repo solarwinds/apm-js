@@ -25,7 +25,7 @@ export class Dice {
   #scale: number
 
   #r = 0
-  get #rate(): number {
+  get rate(): number {
     return this.#r
   }
   set #rate(n: number) {
@@ -39,10 +39,10 @@ export class Dice {
 
   update(settings: Partial<DiceSettings>) {
     this.#scale = settings.scale ?? this.#scale
-    this.#rate = settings.rate ?? this.#rate
+    this.#rate = settings.rate ?? this.rate
   }
 
   roll(): boolean {
-    return Math.random() * this.#scale < this.#rate
+    return Math.random() * this.#scale < this.rate
   }
 }

@@ -21,8 +21,7 @@ import {
   trace,
   TraceFlags,
 } from "@opentelemetry/api"
-import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
-import { describe, expect, it } from "@solarwinds-apm/test"
+import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import { cache } from "../src/cache"
 import {
@@ -115,12 +114,12 @@ describe("setTransactionName", () => {
       .to.be.false
   })
 
-  it("returns true and sets the transaction name of the root span if there is a cache entry", () => {
-    const txname = "foo"
+  it("returns true and sets the transaction name of the root span if there is a cache entry", async () => {
+    await otel.reset({
+      trace: { processors: [new SwParentInfoSpanProcessor()] },
+    })
 
-    const provider = new NodeTracerProvider()
-    provider.addSpanProcessor(new SwParentInfoSpanProcessor())
-    provider.register()
+    const txname = "foo"
 
     const tracer = trace.getTracer("test")
 

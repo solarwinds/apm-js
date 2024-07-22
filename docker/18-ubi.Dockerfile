@@ -8,8 +8,8 @@ RUN dnf install -y \
     xz
 
 RUN dnf module disable -y nodejs && \
-    dnf install -y https://rpm.nodesource.com/pub_18.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm && \
     update-crypto-policies --set LEGACY && \
+    curl -fsSL https://rpm.nodesource.com/setup_18.x | bash - && \
     dnf install -y nodejs && \
     update-crypto-policies --set DEFAULT && \
     dnf clean -y all

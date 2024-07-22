@@ -7,7 +7,7 @@ This library automatically instruments a wide set of frameworks and libraries, s
 ## Installation and Setup
 
 ```sh
-npm install --save "solarwinds-apm@prerelease" "@opentelemetry/api@^1.3.0"
+npm install --save "solarwinds-apm" "@opentelemetry/api@^1.3.0"
 ```
 
 Install using your package manager then follow the [configuration guide](./CONFIGURATION.md). Make sure to install the matching version of `@opentelmetry/api` as it is required for the library to work. The two packages should be updated at the same time and kept in sync.
