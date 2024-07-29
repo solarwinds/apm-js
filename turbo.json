@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": [
@@ -11,7 +11,12 @@
         "src/**",
         "oboe/**"
       ],
-      "outputs": ["dist/**", "npm/*/*.node", "npm/*/liboboe.so"]
+      "outputs": [
+        "dist/**",
+        "npm/*/*.node",
+        "npm/*/liboboe.so",
+        "COMPATIBILITY.md"
+      ]
     },
     "lint": {
       "dependsOn": ["^build"],
@@ -32,12 +37,12 @@
     "test": {
       "dependsOn": ["@solarwinds-apm/test#build", "build"],
       "inputs": ["package.json", "tsconfig.json", "src/**", "test/**"],
-      "env": ["SW_APM_*", "OTEL_*"],
       "outputs": []
     }
   },
   "globalDependencies": [
     ".clang-format",
+    ".env",
     ".prettierrc.json",
     ".yarnrc.yml",
     "tsconfig.base.json",
@@ -45,5 +50,6 @@
     "yarn.lock",
     "packages/eslint-config/index.js",
     "packages/rollup-config/index.js"
-  ]
+  ],
+  "globalPassThroughEnv": ["SW_APM_*", "OTEL_*", "NODE_ENV", "GITHUB_TOKEN"]
 }

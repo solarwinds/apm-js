@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "turbo run build --continue",
+    "build:watch": "turbo watch build",
     "docker": "node scripts/docker.js",
     "example": "node scripts/example.js",
     "lambda": "node scripts/lambda.js",
@@ -19,6 +20,7 @@
     "lint:fix": "prettier --write *.json *.md .github && turbo run lint:fix --continue",
     "publish": "turbo run build && turbo run release",
     "test": "turbo run test --continue",
+    "test:watch": "turbo watch test",
     "version:latest": "node scripts/version.js",
     "version:prerelease": "node scripts/version.js pre",
     "version:testing": "node scripts/testing.js",
@@ -28,7 +30,7 @@
     "eslint": "^8.50.0",
     "husky": "^9.0.11",
     "prettier": "^3.0.3",
-    "turbo": "^1.10.15",
+    "turbo": "^2.0.9",
     "typescript": "~5.5.3"
   }
 }
