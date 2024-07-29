@@ -31,7 +31,7 @@
     "release": "node ../../scripts/publish.js"
   },
   "dependencies": {
-    "@eslint/js": "^8.51.0",
+    "@eslint/js": "^9.8.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-deprecation": "^3.0.0",
     "eslint-plugin-header": "^3.1.1",
