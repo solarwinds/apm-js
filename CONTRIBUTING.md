@@ -47,6 +47,8 @@ It is possible to start a development environment in any of the images using `ya
 
 Tests can be run with `yarn test`, either at the project root for all packages or in a package's directory for just that package. Additionally, when running in a package directory, any arguments accepted by Jest can be passed to the command. Note that while most of the tests do not depend on the bindings, some do and will fail on unsupported platforms. An easy way to run tests on a supported platform is to use the docker environment.
 
+There's also a `yarn test:watch` command to intelligently run tests on code changes, which is only available at the project root.
+
 ## Code style
 
 Code style is enforced throughout the entire project with Prettier and ESLint. The Prettier configuration is at [`.prettierrc.json`](./.prettierrc.json) and the ESLint configuration [lives under its own package](./packages/eslint-config/index.js) and uses the new flat config format. The native C++ code is checked more summarily with clang-format.
