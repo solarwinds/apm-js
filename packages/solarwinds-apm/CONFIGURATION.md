@@ -48,6 +48,7 @@ module.exports = {
 | `runtimeMetrics`                | `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be collected                                    |
 | `tracingMode`                   | `SW_APM_TRACING_MODE`          | None              | Custom tracing mode                                                            |
 | `transactionName`               | `SW_APM_TRANSACTION_NAME`      | None              | Custom transaction name for all spans                                          |
+| `exportLogsEnabled`             | `SW_APM_EXPORT_LOGS_ENABLED`   | `false`           | Whether to export logs to the collector. See [Logs Export](#logs-export)       |
 | `insertTraceContextIntoLogs`    |                                | `false`           | Whether to insert trace context information into logs                          |
 | `insertTraceContextIntoQueries` |                                | `false`           | Whether to insert trace context information into SQL queries                   |
 | `transactionSettings`           |                                | None              | See [Transaction Settings](#transaction-settings)                              |
@@ -68,6 +69,12 @@ The following log levels are available in increasing order of verbosity.
 - `debug`
 - `verbose`
 - `all`
+
+### Logs Export
+
+It is possible to export logs to the collector by explicitly enabling the feature. This feature integrates directly with select logging libraries listed below. Support will be added to more libraries in the future if requested.
+
+- `winston`
 
 ### Transaction Settings
 
