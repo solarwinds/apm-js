@@ -47,7 +47,12 @@ describe("readConfig", () => {
       exportLogsEnabled: false,
       instrumentations: {},
       metrics: { interval: 60_000, views: [] },
-      otlp: {},
+      otlp: {
+        tracesEndpoint: undefined,
+        metricsEndpoint: undefined,
+        logsEndpoint: undefined,
+        authorization: "Bearer token",
+      },
       dev: {
         otlpTraces: false,
         otlpMetrics: false,
@@ -60,6 +65,17 @@ describe("readConfig", () => {
     }
 
     expect(config).to.deep.include(expected)
+  })
+
+  it("properly sets OTLP endpoints", async () => {
+    process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
+
+    const config = await readConfig()
+    expect(config.otlp).to.include({
+      tracesEndpoint: "https://otel.collector.na-01.cloud.solarwinds.com",
+      metricsEndpoint: "https://otel.collector.na-01.cloud.solarwinds.com",
+      logsEndpoint: "https://otel.collector.na-01.cloud.solarwinds.com",
+    })
   })
 
   it("parses booleans", async () => {
