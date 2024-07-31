@@ -22,8 +22,11 @@ import { type SwConfiguration } from "."
 import { cache } from "./cache"
 
 export class SwOtlpExporter extends OTLPTraceExporter {
-  constructor(private readonly config: SwConfiguration) {
-    super()
+  constructor(
+    private readonly config: SwConfiguration,
+    superConfig?: ConstructorParameters<typeof OTLPTraceExporter>[0],
+  ) {
+    super(superConfig)
   }
 
   override export(

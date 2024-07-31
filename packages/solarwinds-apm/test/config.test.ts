@@ -44,8 +44,10 @@ describe("readConfig", () => {
       runtimeMetrics: true,
       insertTraceContextIntoLogs: false,
       insertTraceContextIntoQueries: false,
+      exportLogsEnabled: false,
       instrumentations: {},
       metrics: { interval: 60_000, views: [] },
+      otlp: {},
       dev: {
         otlpTraces: false,
         otlpMetrics: false,
@@ -133,11 +135,13 @@ describe("readConfig", () => {
 
   it("uses the right defaults for AppOptics", async () => {
     process.env.SW_APM_COLLECTOR = "collector.appoptics.com"
+    process.env.SW_APM_EXPORT_LOGS_ENABLED = "true"
 
     const config = await readConfig()
     expect(config).to.include({
       metricFormat: 1,
       certificate: aoCert,
+      exportLogsEnabled: false,
     })
   })
 

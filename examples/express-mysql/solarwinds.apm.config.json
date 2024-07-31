@@ -1,4 +1,5 @@
 {
   "insertTraceContextIntoQueries": true,
-  "insertTraceContextIntoLogs": true
+  "insertTraceContextIntoLogs": true,
+  "exportLogsEnabled": true
 }

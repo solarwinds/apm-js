@@ -78,6 +78,7 @@
     "@opentelemetry/resource-detector-azure": "^0.2.4",
     "@opentelemetry/resource-detector-container": "^0.3.1",
     "@opentelemetry/resources": "~1.25.0",
+    "@opentelemetry/winston-transport": "^0.5.0",
     "@solarwinds-apm/module": "workspace:^"
   },
   "peerDependencies": {
