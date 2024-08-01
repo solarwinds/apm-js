@@ -59,9 +59,12 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.10.6",
+    "@opentelemetry/api-logs": "~0.52.0",
     "@opentelemetry/core": "~1.25.0",
+    "@opentelemetry/exporter-logs-otlp-grpc": "~0.52.0",
     "@opentelemetry/instrumentation": "~0.52.0",
     "@opentelemetry/resources": "~1.25.0",
+    "@opentelemetry/sdk-logs": "~0.52.0",
     "@opentelemetry/sdk-metrics": "~1.25.0",
     "@opentelemetry/sdk-trace-base": "~1.25.0",
     "@opentelemetry/sdk-trace-node": "~1.25.0",

@@ -33,6 +33,7 @@ export interface SwConfiguration {
   transactionName?: string
   insertTraceContextIntoLogs: boolean
   insertTraceContextIntoQueries: boolean
+  exportLogsEnabled: boolean
   transactionSettings?: TransactionSetting[]
 }
 

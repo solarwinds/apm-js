@@ -445,7 +445,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api-logs@npm:0.52.1, @opentelemetry/api-logs@npm:^0.52.0":
+"@opentelemetry/api-logs@npm:0.52.1, @opentelemetry/api-logs@npm:^0.52.0, @opentelemetry/api-logs@npm:~0.52.0":
   version: 0.52.1
   resolution: "@opentelemetry/api-logs@npm:0.52.1"
   dependencies:
@@ -478,6 +478,21 @@ __metadata:
   peerDependencies:
     "@opentelemetry/api": ">=1.0.0 <1.10.0"
   checksum: 10c0/37270396fe3546e454f5a6e8cab0e5777e49a8e4e56ef05644c4e458b3ba7c662f57ad1ba2dd936ddaef54cbe985abd7cee0d3e9188dfdc0e3b3d446c3484337
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/exporter-logs-otlp-grpc@npm:~0.52.0":
+  version: 0.52.1
+  resolution: "@opentelemetry/exporter-logs-otlp-grpc@npm:0.52.1"
+  dependencies:
+    "@grpc/grpc-js": "npm:^1.7.1"
+    "@opentelemetry/core": "npm:1.25.1"
+    "@opentelemetry/otlp-grpc-exporter-base": "npm:0.52.1"
+    "@opentelemetry/otlp-transformer": "npm:0.52.1"
+    "@opentelemetry/sdk-logs": "npm:0.52.1"
+  peerDependencies:
+    "@opentelemetry/api": ^1.0.0
+  checksum: 10c0/e44abdab5e3bfad2492dcc23dc5a7c2a61861b29ad96593025942bb4d350f7148efcece134c504ed657dc3ddc28d8359df6d6ccec4d7131c3b87a32f4cb63432
   languageName: node
   linkType: hard
 
@@ -1156,7 +1171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-logs@npm:0.52.1":
+"@opentelemetry/sdk-logs@npm:0.52.1, @opentelemetry/sdk-logs@npm:~0.52.0":
   version: 0.52.1
   resolution: "@opentelemetry/sdk-logs@npm:0.52.1"
   dependencies:
@@ -1226,6 +1241,16 @@ __metadata:
   peerDependencies:
     "@opentelemetry/api": ^1.1.0
   checksum: 10c0/60a70358f0c94f610e2995333e96b406626d67d03d38ed03b15a3461ad0f8d64afbf6275cca7cb58fe955ecdce832f3ffc9b73f9d88503bba5d2a620bbd6d351
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/winston-transport@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@opentelemetry/winston-transport@npm:0.5.0"
+  dependencies:
+    "@opentelemetry/api-logs": "npm:^0.52.0"
+    winston-transport: "npm:4.*"
+  checksum: 10c0/d2c8fa2ac8813839a24d3360363833b59ae883a75dec9d07dfa030851d2f14e994b378aa17d6acc17264e7f2d48b460db7338feceda8cd93b9462534c01aef45
   languageName: node
   linkType: hard
 
@@ -1828,6 +1853,7 @@ __metadata:
     "@opentelemetry/resource-detector-azure": "npm:^0.2.4"
     "@opentelemetry/resource-detector-container": "npm:^0.3.1"
     "@opentelemetry/resources": "npm:~1.25.0"
+    "@opentelemetry/winston-transport": "npm:^0.5.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/rollup-config": "workspace:^"
@@ -5766,7 +5792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"logform@npm:^2.3.2, logform@npm:^2.6.0":
+"logform@npm:^2.6.0, logform@npm:^2.6.1":
   version: 2.6.1
   resolution: "logform@npm:2.6.1"
   dependencies:
@@ -7107,7 +7133,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.0":
+"readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.2":
   version: 3.6.2
   resolution: "readable-stream@npm:3.6.2"
   dependencies:
@@ -7718,9 +7744,12 @@ __metadata:
   dependencies:
     "@grpc/grpc-js": "npm:^1.10.6"
     "@opentelemetry/api": "npm:^1.3.0"
+    "@opentelemetry/api-logs": "npm:~0.52.0"
     "@opentelemetry/core": "npm:~1.25.0"
+    "@opentelemetry/exporter-logs-otlp-grpc": "npm:~0.52.0"
     "@opentelemetry/instrumentation": "npm:~0.52.0"
     "@opentelemetry/resources": "npm:~1.25.0"
+    "@opentelemetry/sdk-logs": "npm:~0.52.0"
     "@opentelemetry/sdk-metrics": "npm:~1.25.0"
     "@opentelemetry/sdk-trace-base": "npm:~1.25.0"
     "@opentelemetry/sdk-trace-node": "npm:~1.25.0"
@@ -8280,14 +8309,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-detect@npm:^4.0.0":
-  version: 4.0.8
-  resolution: "type-detect@npm:4.0.8"
-  checksum: 10c0/8fb9a51d3f365a7de84ab7f73b653534b61b622aa6800aecdb0f1095a4a646d3f5eb295322127b6573db7982afcd40ab492d038cf825a42093a58b1e1353e0bd
-  languageName: node
-  linkType: hard
-
-"type-detect@npm:^4.1.0":
+"type-detect@npm:^4.0.0, type-detect@npm:^4.1.0":
   version: 4.1.0
   resolution: "type-detect@npm:4.1.0"
   checksum: 10c0/df8157ca3f5d311edc22885abc134e18ff8ffbc93d6a9848af5b682730ca6a5a44499259750197250479c5331a8a75b5537529df5ec410622041650a7f293e2a
@@ -8603,14 +8625,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston-transport@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "winston-transport@npm:4.7.0"
+"winston-transport@npm:4.*, winston-transport@npm:^4.7.0":
+  version: 4.7.1
+  resolution: "winston-transport@npm:4.7.1"
   dependencies:
-    logform: "npm:^2.3.2"
-    readable-stream: "npm:^3.6.0"
+    logform: "npm:^2.6.1"
+    readable-stream: "npm:^3.6.2"
     triple-beam: "npm:^1.3.0"
-  checksum: 10c0/cd16f3d0ab56697f93c4899e0eb5f89690f291bb6cf309194819789326a7c7ed943ef00f0b2fab513b114d371314368bde1a7ae6252ad1516181a79f90199cd2
+  checksum: 10c0/99b7b55cc2ef7f38988ab1717e7fd946c81b856b42a9530aef8ee725490ef2f2811f9cb06d63aa2f76a85fe99ae15b3bef10a54afde3be8b5059ce325e78481f
   languageName: node
   linkType: hard
 

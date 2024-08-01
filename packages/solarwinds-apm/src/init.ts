@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import type { Metadata } from "@grpc/grpc-js"
 import {
   diag,
   type DiagLogFunction,
@@ -22,12 +23,19 @@ import {
   type TextMapPropagator,
   type TracerProvider,
 } from "@opentelemetry/api"
+import { logs } from "@opentelemetry/api-logs"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-grpc"
 import {
   type Instrumentation,
   registerInstrumentations,
 } from "@opentelemetry/instrumentation"
 import { Resource } from "@opentelemetry/resources"
+import {
+  BatchLogRecordProcessor,
+  LoggerProvider,
+  type LogRecordProcessor,
+} from "@opentelemetry/sdk-logs"
 import {
   MeterProvider,
   type MetricReader,
@@ -122,6 +130,7 @@ export async function init() {
   const [tracerProvider, meterProvider] = await Promise.all([
     initTracing(config, resource, reporter, serverlessApi),
     initMetrics(config, resource, logger, reporter),
+    initLogs(config, resource),
     initMessage(config, resource, reporter),
   ])
   registerInstrumentations(tracerProvider, meterProvider)
@@ -209,6 +218,21 @@ async function initMetrics(
   return provider
 }
 
+async function initLogs(config: ExtendedSwConfiguration, resource: Resource) {
+  if (!config.exportLogsEnabled) return
+
+  const provider = new LoggerProvider({ resource })
+
+  const processors = await logRecordProcessors(config)
+  for (const processor of processors) {
+    provider.addLogRecordProcessor(processor)
+  }
+
+  logs.setGlobalLoggerProvider(provider)
+
+  return provider
+}
+
 async function initMessage(
   config: ExtendedSwConfiguration,
   resource: Resource,
@@ -275,7 +299,10 @@ async function spanProcessors(
 
   if (config.dev.otlpTraces) {
     const { SwOtlpExporter } = await import("@solarwinds-apm/sdk/otlp-exporter")
-    const exporter = new SwOtlpExporter(config)
+    const exporter = new SwOtlpExporter(config, {
+      url: config.otlp.tracesEndpoint,
+      metadata: await grpcMetadata(config),
+    })
 
     const responseTimeProcessor = new sdk.SwResponseTimeProcessor(config)
     const transactionNameProcessor = new sdk.SwTransactionNameProcessor()
@@ -315,7 +342,10 @@ async function metricReaders(
     const { SwOtlpMetricsExporter } = await import(
       "@solarwinds-apm/sdk/otlp-metrics-exporter"
     )
-    const exporter = new SwOtlpMetricsExporter()
+    const exporter = new SwOtlpMetricsExporter({
+      url: config.otlp.tracesEndpoint,
+      metadata: await grpcMetadata(config),
+    })
     readers.push(
       new PeriodicExportingMetricReader({
         exporter,
@@ -325,6 +355,32 @@ async function metricReaders(
   }
 
   return readers
+}
+
+async function logRecordProcessors(
+  config: ExtendedSwConfiguration,
+): Promise<LogRecordProcessor[]> {
+  return [
+    new BatchLogRecordProcessor(
+      new OTLPLogExporter({
+        url: config.otlp.logsEndpoint,
+        metadata: await grpcMetadata(config),
+      }),
+    ),
+  ]
+}
+
+export async function grpcMetadata(
+  config: ExtendedSwConfiguration,
+): Promise<Metadata | undefined> {
+  if (!config.otlp.authorization) return
+
+  const { Metadata } = await import("@grpc/grpc-js")
+  const metadata = new Metadata()
+
+  metadata.set("authorization", config.otlp.authorization)
+
+  return metadata
 }
 
 // https://github.com/boostorg/log/blob/boost-1.82.0/include/boost/log/trivial.hpp#L42-L50

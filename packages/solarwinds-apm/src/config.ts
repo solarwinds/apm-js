@@ -143,6 +143,7 @@ const schema = z.object({
   transactionName: z.string().optional(),
   insertTraceContextIntoLogs: boolean.default(false),
   insertTraceContextIntoQueries: boolean.default(false),
+  exportLogsEnabled: boolean.default(false),
   transactionSettings: transactionSettings.optional(),
   instrumentations: z
     .object({
@@ -180,6 +181,12 @@ export interface ExtendedSwConfiguration extends SwConfiguration {
   instrumentations: Instrumentations
   metrics: Metrics
 
+  otlp: {
+    tracesEndpoint?: string
+    metricsEndpoint?: string
+    logsEndpoint?: string
+    authorization?: string
+  }
   dev: z.infer<typeof schema>["dev"]
 
   source?: string
@@ -235,11 +242,38 @@ export function readConfig():
       oboeLogType: otelLevelToOboeType(raw.logLevel),
       otelLogLevel: otelEnv.OTEL_LOG_LEVEL ?? raw.logLevel,
       source: path,
+
+      otlp: {
+        tracesEndpoint:
+          otelEnv.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
+          raw.collector?.replace(
+            /^apm\.collector\./,
+            "https://otel.collector.",
+          ),
+        metricsEndpoint:
+          otelEnv.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
+          raw.collector?.replace(
+            /^apm\.collector\./,
+            "https://otel.collector.",
+          ),
+        logsEndpoint:
+          otelEnv.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
+          raw.collector?.replace(
+            /^apm\.collector\./,
+            "https://otel.collector.",
+          ),
+        authorization:
+          raw.serviceKey?.token && `Bearer ${raw.serviceKey.token}`,
+      },
     }
 
     if (config.collector?.includes("appoptics.com")) {
       config.metricFormat ??= 1
       config.certificate ??= aoCert
+      config.exportLogsEnabled = false
     }
 
     return config
