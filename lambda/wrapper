@@ -3,6 +3,7 @@ export NODE_OPTIONS="${NODE_OPTIONS} --import /opt/solarwinds-apm/shim.mjs"
 
 # The default for Node is http/proto but we only include the gRPC exporters
 export OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
 
 # Lambda function is default service name
 if [ -z "${OTEL_SERVICE_NAME}" ]; then
