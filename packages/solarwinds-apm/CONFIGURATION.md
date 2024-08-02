@@ -74,6 +74,8 @@ The following log levels are available in increasing order of verbosity.
 
 It is possible to export logs to the collector by explicitly enabling the feature. This feature integrates directly with select logging libraries listed below. Support will be added to more libraries in the future if requested.
 
+- `bunyan`
+- `pino`
 - `winston`
 
 ### Transaction Settings

@@ -24,9 +24,9 @@ export const patch: Patch<WinstonInstrumentationConfig> = (
 ) => ({
   ...config,
   enabled: config.enabled ?? options.insertTraceContextIntoLogs,
+  disableLogSending: config.disableLogSending ?? !options.exportLogsEnabled,
   logHook: (span, record) => {
     record[RESOURCE_SERVICE_NAME] = options.serviceName
     config.logHook?.(span, record)
   },
-  disableLogSending: config.disableLogSending ?? !options.exportLogsEnabled,
 })
