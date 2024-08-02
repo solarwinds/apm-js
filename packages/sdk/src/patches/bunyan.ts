@@ -21,6 +21,7 @@ import { type Patch, RESOURCE_SERVICE_NAME } from "."
 export const patch: Patch<BunyanInstrumentationConfig> = (config, options) => ({
   ...config,
   enabled: config.enabled ?? options.insertTraceContextIntoLogs,
+  disableLogSending: config.disableLogSending ?? !options.exportLogsEnabled,
   logHook: (span, record) => {
     record[RESOURCE_SERVICE_NAME] = options.serviceName
     config.logHook?.(span, record)
