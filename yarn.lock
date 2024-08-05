@@ -545,16 +545,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation-amqplib@npm:^0.39.0":
-  version: 0.39.0
-  resolution: "@opentelemetry/instrumentation-amqplib@npm:0.39.0"
+"@opentelemetry/instrumentation-amqplib@npm:^0.41.0":
+  version: 0.41.0
+  resolution: "@opentelemetry/instrumentation-amqplib@npm:0.41.0"
   dependencies:
     "@opentelemetry/core": "npm:^1.8.0"
     "@opentelemetry/instrumentation": "npm:^0.52.0"
     "@opentelemetry/semantic-conventions": "npm:^1.22.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/369adeeb3b22ef8a0f39c34e8ee86f74d78c4e1c842b6c8153d423c3c024c2fa3d56fbda99e0713e4caaa395e672d1245dcd7db48708792b17cbf414f243b049
+  checksum: 10c0/c54376907a8abc20e32a90c1d0b4dbc0a7b9a30e68e0fffb1e73eece4e7bc7cceef68ce931a21c3934f450ae7f3458a1f6a6bf4aa7ad31a0b259b3beba71944b
   languageName: node
   linkType: hard
 
@@ -574,8 +574,8 @@ __metadata:
   linkType: hard
 
 "@opentelemetry/instrumentation-aws-sdk@npm:^0.43.0":
-  version: 0.43.0
-  resolution: "@opentelemetry/instrumentation-aws-sdk@npm:0.43.0"
+  version: 0.43.1
+  resolution: "@opentelemetry/instrumentation-aws-sdk@npm:0.43.1"
   dependencies:
     "@opentelemetry/core": "npm:^1.8.0"
     "@opentelemetry/instrumentation": "npm:^0.52.0"
@@ -583,7 +583,7 @@ __metadata:
     "@opentelemetry/semantic-conventions": "npm:^1.22.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/058a29a2841411e2ff026177a947f0c7dbadb8e1be4c41bd1848878c045e7a995bc999677e609458746ea4b2f09dbe473ee64375a9265227532cffdbfc1dcbd8
+  checksum: 10c0/79d5567e9c470558bcdb6bb1d38018dde7b82ca9114d0a2247e8f3ea232e5b45e139ab0b1388a20796ecdd02b40d1cb133eb79a74cd65a24c56ca0b6702bc60d
   languageName: node
   linkType: hard
 
@@ -662,15 +662,15 @@ __metadata:
   linkType: hard
 
 "@opentelemetry/instrumentation-express@npm:^0.41.0":
-  version: 0.41.0
-  resolution: "@opentelemetry/instrumentation-express@npm:0.41.0"
+  version: 0.41.1
+  resolution: "@opentelemetry/instrumentation-express@npm:0.41.1"
   dependencies:
     "@opentelemetry/core": "npm:^1.8.0"
     "@opentelemetry/instrumentation": "npm:^0.52.0"
     "@opentelemetry/semantic-conventions": "npm:^1.22.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/45ac1234f554e1a6ad9554e365d826f0d7b62535d90739367f8db41ccd5e65fe027b84cd1b4310c6acb9293ae93ba91cce4d686a641ef43dd2d6d58f124cebf3
+  checksum: 10c0/0f6c43c78c6e3f8102d80befcf4d658b1175b6b8d0036787c9cc7fd8f27ac0f118c0227402e819ad1d95f596d3cf18c5012a959c82686a5ad8c122d8c3c5913d
   languageName: node
   linkType: hard
 
@@ -773,15 +773,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation-knex@npm:^0.38.0":
-  version: 0.38.0
-  resolution: "@opentelemetry/instrumentation-knex@npm:0.38.0"
+"@opentelemetry/instrumentation-knex@npm:^0.39.0":
+  version: 0.39.0
+  resolution: "@opentelemetry/instrumentation-knex@npm:0.39.0"
   dependencies:
     "@opentelemetry/instrumentation": "npm:^0.52.0"
     "@opentelemetry/semantic-conventions": "npm:^1.22.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/f3f754778f030bdba27113d62d6510a7c8be5deb7848b59c540b58d678295935b06fa8b5c029fa592a01ecef84f4624505eab48be8d74b7c4199cf6301fd4be1
+  checksum: 10c0/f8f86081b698141238b78d388c6e45c37f430bb77098b98b931d1c735d85cb48a2c93e63485bdfb416463aa2e759396a5398e25f9e6f7347b351272d038e6a50
   languageName: node
   linkType: hard
 
@@ -1812,7 +1812,7 @@ __metadata:
   resolution: "@solarwinds-apm/instrumentations@workspace:packages/instrumentations"
   dependencies:
     "@opentelemetry/instrumentation": "npm:~0.52.0"
-    "@opentelemetry/instrumentation-amqplib": "npm:^0.39.0"
+    "@opentelemetry/instrumentation-amqplib": "npm:^0.41.0"
     "@opentelemetry/instrumentation-aws-lambda": "npm:^0.43.0"
     "@opentelemetry/instrumentation-aws-sdk": "npm:^0.43.0"
     "@opentelemetry/instrumentation-bunyan": "npm:^0.40.0"
@@ -1830,7 +1830,7 @@ __metadata:
     "@opentelemetry/instrumentation-hapi": "npm:^0.40.0"
     "@opentelemetry/instrumentation-http": "npm:~0.52.0"
     "@opentelemetry/instrumentation-ioredis": "npm:^0.42.0"
-    "@opentelemetry/instrumentation-knex": "npm:^0.38.0"
+    "@opentelemetry/instrumentation-knex": "npm:^0.39.0"
     "@opentelemetry/instrumentation-koa": "npm:^0.42.0"
     "@opentelemetry/instrumentation-lru-memoizer": "npm:^0.39.0"
     "@opentelemetry/instrumentation-memcached": "npm:^0.38.0"
