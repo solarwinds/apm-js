@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@opentelemetry/instrumentation": "~0.52.0",
-    "@opentelemetry/instrumentation-amqplib": "^0.39.0",
+    "@opentelemetry/instrumentation-amqplib": "^0.41.0",
     "@opentelemetry/instrumentation-aws-lambda": "^0.43.0",
     "@opentelemetry/instrumentation-aws-sdk": "^0.43.0",
     "@opentelemetry/instrumentation-bunyan": "^0.40.0",
@@ -55,7 +55,7 @@
     "@opentelemetry/instrumentation-hapi": "^0.40.0",
     "@opentelemetry/instrumentation-http": "~0.52.0",
     "@opentelemetry/instrumentation-ioredis": "^0.42.0",
-    "@opentelemetry/instrumentation-knex": "^0.38.0",
+    "@opentelemetry/instrumentation-knex": "^0.39.0",
     "@opentelemetry/instrumentation-koa": "^0.42.0",
     "@opentelemetry/instrumentation-lru-memoizer": "^0.39.0",
     "@opentelemetry/instrumentation-memcached": "^0.38.0",
