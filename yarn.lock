@@ -1622,7 +1622,7 @@ __metadata:
     "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^16.13.0"
     eslint: "npm:^8.50.0"
-    node-addon-api: "npm:^7.0.0"
+    node-addon-api: "npm:^8.1.0"
     prettier: "npm:^3.0.3"
     typescript: "npm:~5.5.3"
     zig-build: "npm:^0.3.0"
@@ -6302,12 +6302,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-addon-api@npm:^7.0.0":
-  version: 7.1.0
-  resolution: "node-addon-api@npm:7.1.0"
+"node-addon-api@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "node-addon-api@npm:8.1.0"
   dependencies:
     node-gyp: "npm:latest"
-  checksum: 10c0/2e096ab079e3c46d33b0e252386e9c239c352f7cc6d75363d9a3c00bdff34c1a5da170da861917512843f213c32d024ced9dc9552b968029786480d18727ec66
+  checksum: 10c0/b4009408ea4d0cdda9b59765e949422d464cdbb3e42b9330bddceda7829e0c3cdae7ae9dd1e4203ef731cd51f5a52b339afef581efb72c539f1f1a5464bb291b
   languageName: node
   linkType: hard
 

@@ -54,7 +54,7 @@
     "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^16.13.0",
     "eslint": "^8.50.0",
-    "node-addon-api": "^7.0.0",
+    "node-addon-api": "^8.1.0",
     "prettier": "^3.0.3",
     "typescript": "~5.5.3",
     "zig-build": "^0.3.0"
