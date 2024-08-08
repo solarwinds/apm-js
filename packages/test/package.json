@@ -50,7 +50,7 @@
     "@types/chai-as-promised": "^7.1.6",
     "@types/mocha": "^10.0.7",
     "@types/node": "^18.19.0 || >=20.6.0",
-    "c8": "^9.1.0",
+    "c8": "^10.1.2",
     "chai": "^4.3.10",
     "chai-as-promised": "^7.1.1",
     "dotenv": "^16.4.5",
