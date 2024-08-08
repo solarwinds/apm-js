@@ -93,7 +93,7 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/rollup-config": "workspace:^",
     "@types/semver": "^7.5.3",
-    "eslint": "^8.50.0",
+    "eslint": "^9.8.0",
     "prettier": "^3.0.3",
     "rollup": "^4.3.0",
     "semver": "^7.5.4",
