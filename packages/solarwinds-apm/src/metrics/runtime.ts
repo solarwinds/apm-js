@@ -125,7 +125,7 @@ const latency = {
 const elu = {
   meter: meter.createObservableGauge("eventloop.utilization", {
     description:
-      "percentage of time the event loop has spent processing callbacks over waiting for event",
+      "percentage of time the event loop has spent processing callbacks over waiting for events",
     unit: "%",
     valueType: ValueType.DOUBLE,
   }),
@@ -135,7 +135,7 @@ const elu = {
     const current = performance.eventLoopUtilization()
     const diff = performance.eventLoopUtilization(current, this.previous)
 
-    self.observe(diff.utilization)
+    self.observe(diff.utilization * 100)
 
     this.previous = current
   },
