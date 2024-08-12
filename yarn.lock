@@ -2227,7 +2227,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^18.19.0 || >=20.6.0, @types/node@npm:^20.6.0":
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^18.19.0 || >=20.6.0":
   version: 20.11.24
   resolution: "@types/node@npm:20.11.24"
   dependencies:
@@ -2240,6 +2240,15 @@ __metadata:
   version: 16.18.86
   resolution: "@types/node@npm:16.18.86"
   checksum: 10c0/7280efb4ee49b10c34a456d4d0d89872c099a721093439e001ff3b5e3569167305fba4a578a30a087fdfa06bf55f4a98aa65e9e2c31589e66ddeca1460de1dd0
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.19.43":
+  version: 18.19.43
+  resolution: "@types/node@npm:18.19.43"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: 10c0/8be49897596d7641941d21d943b10a7b907af714617f9e3d1c69d735850de0c0a8d04f1428277c2b2451b4eda6ab1a3c05bfadfe66b4a30cd9ca51200814c647
   languageName: node
   linkType: hard
 
@@ -7805,7 +7814,7 @@ __metadata:
     "@solarwinds-apm/sampling": "workspace:^"
     "@solarwinds-apm/sdk": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
-    "@types/node": "npm:^20.6.0"
+    "@types/node": "npm:^18.19.43"
     "@types/semver": "npm:^7.5.3"
     eslint: "npm:^8.50.0"
     prettier: "npm:^3.0.3"
