@@ -44,7 +44,7 @@ import { HEADERS_STORAGE } from "../propagation/headers.js"
  * response headers setting. The only piece of logic left to implement
  * by specific sampler is remote setting retrieval.
  */
-export abstract class CoreSampler extends OboeSampler {
+export abstract class Sampler extends OboeSampler {
   readonly #tracingMode: TracingMode | undefined
   readonly #triggerMode: boolean
   readonly #transactionSettings: SwConfiguration["transactionSettings"]

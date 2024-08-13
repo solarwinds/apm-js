@@ -31,7 +31,7 @@ import {
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
 import { Backoff } from "../backoff.js"
-import { CoreSampler } from "./core.js"
+import { Sampler } from "./sampler.js"
 
 const CLIENT_VERSION = "2"
 
@@ -58,7 +58,7 @@ const TRIGGER_STRICT_BUCKET_RATE = "TriggerStrictBucketRate"
 const SIGNATURE_KEY = "SignatureKey"
 
 /** Sampler that retrieves settings from the SWO collector directly via gRPC */
-export class GrpcSampler extends CoreSampler {
+export class GrpcSampler extends Sampler {
   readonly #key: string
   readonly #address: URL
   readonly #hostname = hostname()

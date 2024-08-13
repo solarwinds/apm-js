@@ -116,7 +116,9 @@ const transactionSettings = z.array(
     .transform((s) => ({
       tracing: s.tracing,
       matcher:
-        "matcher" in s ? s.matcher : (ident: string) => s.regex.test(ident),
+        "matcher" in s
+          ? s.matcher.bind(s)
+          : (ident: string) => s.regex.test(ident),
     })),
 )
 
@@ -172,7 +174,7 @@ const schema = z.object({
     .default({}),
 })
 
-export interface Config extends Partial<z.input<typeof schema>> {
+export interface Config extends z.input<typeof schema> {
   instrumentations?: Instrumentations
   metrics?: Metrics
 }
@@ -185,7 +187,7 @@ export interface ExtendedSwConfiguration extends SwConfiguration {
     tracesEndpoint?: string
     metricsEndpoint?: string
     logsEndpoint?: string
-    authorization?: string
+    headers: Record<string, string>
   }
   dev: z.infer<typeof schema>["dev"]
 
@@ -247,26 +249,25 @@ export function readConfig():
         tracesEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
           otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
-          raw.collector?.replace(
-            /^apm\.collector\./,
-            "https://otel.collector.",
-          ),
+          raw.collector
+            ?.replace(/^apm\.collector\./, "https://otel.collector.")
+            .concat("/v1/traces"),
         metricsEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
           otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
-          raw.collector?.replace(
-            /^apm\.collector\./,
-            "https://otel.collector.",
-          ),
+          raw.collector
+            ?.replace(/^apm\.collector\./, "https://otel.collector.")
+            .concat("/v1/metrics"),
         logsEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
           otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
-          raw.collector?.replace(
-            /^apm\.collector\./,
-            "https://otel.collector.",
-          ),
-        authorization:
-          raw.serviceKey?.token && `Bearer ${raw.serviceKey.token}`,
+          raw.collector
+            ?.replace(/^apm\.collector\./, "https://otel.collector.")
+            .concat("/v1/logs"),
+
+        headers: raw.serviceKey?.token
+          ? { authorization: `Bearer ${raw.serviceKey.token}` }
+          : {},
       },
     }
 

@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import type { Metadata } from "@grpc/grpc-js"
 import {
   diag,
   type DiagLogFunction,
@@ -25,7 +24,6 @@ import {
 } from "@opentelemetry/api"
 import { logs } from "@opentelemetry/api-logs"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
-import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-grpc"
 import {
   type Instrumentation,
   registerInstrumentations,
@@ -298,11 +296,8 @@ async function spanProcessors(
   }
 
   if (config.dev.otlpTraces) {
-    const { SwOtlpExporter } = await import("@solarwinds-apm/sdk/otlp-exporter")
-    const exporter = new SwOtlpExporter(config, {
-      url: config.otlp.tracesEndpoint,
-      metadata: await grpcMetadata(config),
-    })
+    const { TraceExporter } = await import("./exporters/traces.js")
+    const exporter = new TraceExporter(config)
 
     const responseTimeProcessor = new sdk.SwResponseTimeProcessor(config)
     const transactionNameProcessor = new sdk.SwTransactionNameProcessor()
@@ -339,13 +334,8 @@ async function metricReaders(
   }
 
   if (config.dev.otlpMetrics) {
-    const { SwOtlpMetricsExporter } = await import(
-      "@solarwinds-apm/sdk/otlp-metrics-exporter"
-    )
-    const exporter = new SwOtlpMetricsExporter({
-      url: config.otlp.tracesEndpoint,
-      metadata: await grpcMetadata(config),
-    })
+    const { MetricExporter } = await import("./exporters/metrics.js")
+    const exporter = new MetricExporter(config)
     readers.push(
       new PeriodicExportingMetricReader({
         exporter,
@@ -360,27 +350,8 @@ async function metricReaders(
 async function logRecordProcessors(
   config: ExtendedSwConfiguration,
 ): Promise<LogRecordProcessor[]> {
-  return [
-    new BatchLogRecordProcessor(
-      new OTLPLogExporter({
-        url: config.otlp.logsEndpoint,
-        metadata: await grpcMetadata(config),
-      }),
-    ),
-  ]
-}
-
-export async function grpcMetadata(
-  config: ExtendedSwConfiguration,
-): Promise<Metadata | undefined> {
-  if (!config.otlp.authorization) return
-
-  const { Metadata } = await import("@grpc/grpc-js")
-  const metadata = new Metadata()
-
-  metadata.set("authorization", config.otlp.authorization)
-
-  return metadata
+  const { LogExporter } = await import("./exporters/logs.js")
+  return [new BatchLogRecordProcessor(new LogExporter(config))]
 }
 
 // https://github.com/boostorg/log/blob/boost-1.82.0/include/boost/log/trivial.hpp#L42-L50
