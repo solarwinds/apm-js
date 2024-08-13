@@ -31,6 +31,12 @@ import { z, ZodError, ZodIssueCode } from "zod"
 
 import aoCert from "./appoptics.crt.js"
 
+const ENDPOINTS = {
+  traces: "/v1/traces",
+  metrics: "/v1/metrics",
+  logs: "/v1/logs",
+}
+
 const boolean = z.union([
   z.boolean(),
   z
@@ -248,22 +254,22 @@ export function readConfig():
       otlp: {
         tracesEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.traces) ??
           raw.collector
             ?.replace(/^apm\.collector\./, "https://otel.collector.")
-            .concat("/v1/traces"),
+            .concat(ENDPOINTS.traces),
         metricsEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.metrics) ??
           raw.collector
             ?.replace(/^apm\.collector\./, "https://otel.collector.")
-            .concat("/v1/metrics"),
+            .concat(ENDPOINTS.metrics),
         logsEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.logs) ??
           raw.collector
             ?.replace(/^apm\.collector\./, "https://otel.collector.")
-            .concat("/v1/logs"),
+            .concat(ENDPOINTS.logs),
 
         headers: raw.serviceKey?.token
           ? { authorization: `Bearer ${raw.serviceKey.token}` }
