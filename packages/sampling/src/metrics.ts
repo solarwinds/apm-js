@@ -15,32 +15,28 @@ limitations under the License.
 */
 
 import { metrics, ValueType } from "@opentelemetry/api"
-import { lazy } from "@solarwinds-apm/lazy"
 
-export const counters = lazy(() => {
-  const meter = metrics.getMeter("sw.apm.sampling.metrics")
+const meter = metrics.getMeter("sw.apm.sampling.metrics")
 
-  return {
-    requestCount: meter.createCounter("trace.service.request_count", {
-      valueType: ValueType.INT,
-    }),
-    sampleCount: meter.createCounter("trace.service.samplecount", {
-      valueType: ValueType.INT,
-    }),
-    traceCount: meter.createCounter("trace.service.tracecount", {
-      valueType: ValueType.INT,
-    }),
-    throughTraceCount: meter.createCounter(
-      "trace.service.through_trace_count",
-      { valueType: ValueType.INT },
-    ),
-    triggeredTraceCount: meter.createCounter(
-      "trace.service.triggered_trace_count",
-      { valueType: ValueType.INT },
-    ),
-    tokenBucketExhaustionCount: meter.createCounter(
-      "trace.service.tokenbucket_exhaustion_count",
-      { valueType: ValueType.INT },
-    ),
-  }
-})
+export const counters = {
+  requestCount: meter.createCounter("trace.service.request_count", {
+    valueType: ValueType.INT,
+  }),
+  sampleCount: meter.createCounter("trace.service.samplecount", {
+    valueType: ValueType.INT,
+  }),
+  traceCount: meter.createCounter("trace.service.tracecount", {
+    valueType: ValueType.INT,
+  }),
+  throughTraceCount: meter.createCounter("trace.service.through_trace_count", {
+    valueType: ValueType.INT,
+  }),
+  triggeredTraceCount: meter.createCounter(
+    "trace.service.triggered_trace_count",
+    { valueType: ValueType.INT },
+  ),
+  tokenBucketExhaustionCount: meter.createCounter(
+    "trace.service.tokenbucket_exhaustion_count",
+    { valueType: ValueType.INT },
+  ),
+}

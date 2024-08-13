@@ -51,7 +51,7 @@ describe("readConfig", () => {
         tracesEndpoint: undefined,
         metricsEndpoint: undefined,
         logsEndpoint: undefined,
-        authorization: "Bearer token",
+        headers: { authorization: "Bearer token" },
       },
       dev: {
         otlpTraces: false,
@@ -72,9 +72,11 @@ describe("readConfig", () => {
 
     const config = await readConfig()
     expect(config.otlp).to.include({
-      tracesEndpoint: "https://otel.collector.na-01.cloud.solarwinds.com",
-      metricsEndpoint: "https://otel.collector.na-01.cloud.solarwinds.com",
-      logsEndpoint: "https://otel.collector.na-01.cloud.solarwinds.com",
+      tracesEndpoint:
+        "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
+      metricsEndpoint:
+        "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
+      logsEndpoint: "https://otel.collector.na-01.cloud.solarwinds.com/v1/logs",
     })
   })
 

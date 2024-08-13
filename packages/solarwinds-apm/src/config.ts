@@ -31,6 +31,12 @@ import { z, ZodError, ZodIssueCode } from "zod"
 
 import aoCert from "./appoptics.crt.js"
 
+const ENDPOINTS = {
+  traces: "/v1/traces",
+  metrics: "/v1/metrics",
+  logs: "/v1/logs",
+}
+
 const boolean = z.union([
   z.boolean(),
   z
@@ -116,7 +122,9 @@ const transactionSettings = z.array(
     .transform((s) => ({
       tracing: s.tracing,
       matcher:
-        "matcher" in s ? s.matcher : (ident: string) => s.regex.test(ident),
+        "matcher" in s
+          ? s.matcher.bind(s)
+          : (ident: string) => s.regex.test(ident),
     })),
 )
 
@@ -172,7 +180,7 @@ const schema = z.object({
     .default({}),
 })
 
-export interface Config extends Partial<z.input<typeof schema>> {
+export interface Config extends z.input<typeof schema> {
   instrumentations?: Instrumentations
   metrics?: Metrics
 }
@@ -185,7 +193,7 @@ export interface ExtendedSwConfiguration extends SwConfiguration {
     tracesEndpoint?: string
     metricsEndpoint?: string
     logsEndpoint?: string
-    authorization?: string
+    headers: Record<string, string>
   }
   dev: z.infer<typeof schema>["dev"]
 
@@ -246,27 +254,26 @@ export function readConfig():
       otlp: {
         tracesEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
-          raw.collector?.replace(
-            /^apm\.collector\./,
-            "https://otel.collector.",
-          ),
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.traces) ??
+          raw.collector
+            ?.replace(/^apm\.collector\./, "https://otel.collector.")
+            .concat(ENDPOINTS.traces),
         metricsEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
-          raw.collector?.replace(
-            /^apm\.collector\./,
-            "https://otel.collector.",
-          ),
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.metrics) ??
+          raw.collector
+            ?.replace(/^apm\.collector\./, "https://otel.collector.")
+            .concat(ENDPOINTS.metrics),
         logsEndpoint:
           otelEnv.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT ??
-          raw.collector?.replace(
-            /^apm\.collector\./,
-            "https://otel.collector.",
-          ),
-        authorization:
-          raw.serviceKey?.token && `Bearer ${raw.serviceKey.token}`,
+          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.logs) ??
+          raw.collector
+            ?.replace(/^apm\.collector\./, "https://otel.collector.")
+            .concat(ENDPOINTS.logs),
+
+        headers: raw.serviceKey?.token
+          ? { authorization: `Bearer ${raw.serviceKey.token}` }
+          : {},
       },
     }
 

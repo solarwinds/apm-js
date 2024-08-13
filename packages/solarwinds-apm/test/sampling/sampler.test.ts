@@ -25,9 +25,9 @@ import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import { HEADERS_STORAGE } from "../../src/propagation/headers.js"
-import { CoreSampler } from "../../src/sampling/core.js"
+import { Sampler } from "../../src/sampling/sampler.js"
 
-class TestSampler extends CoreSampler {
+class TestSampler extends Sampler {
   constructor(config: SwConfiguration, settings: Settings) {
     super(config, diag)
     this.updateSettings(settings)
@@ -70,7 +70,7 @@ const settings = (options: {
   }
 }
 
-describe("CoreSampler", () => {
+describe("Sampler", () => {
   it("respects enabled settings when no config or transaction settings", async () => {
     const sampler = new TestSampler(
       options({ triggerTrace: false }),
