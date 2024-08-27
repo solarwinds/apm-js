@@ -1,4 +1,5 @@
 releases:
+  "@solarwinds-apm/eslint-config": major
   "@solarwinds-apm/module": patch
   solarwinds-apm: patch
 
@@ -6,7 +7,6 @@ declined:
   - "@solarwinds-apm/bindings"
   - "@solarwinds-apm/compat"
   - "@solarwinds-apm/dependencies"
-  - "@solarwinds-apm/eslint-config"
   - "@solarwinds-apm/histogram"
   - "@solarwinds-apm/instrumentations"
   - "@solarwinds-apm/lazy"
