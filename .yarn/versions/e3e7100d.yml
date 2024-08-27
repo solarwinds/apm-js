@@ -1,0 +1,17 @@
+releases:
+  "@solarwinds-apm/module": patch
+  solarwinds-apm: patch
+
+declined:
+  - "@solarwinds-apm/bindings"
+  - "@solarwinds-apm/compat"
+  - "@solarwinds-apm/dependencies"
+  - "@solarwinds-apm/eslint-config"
+  - "@solarwinds-apm/histogram"
+  - "@solarwinds-apm/instrumentations"
+  - "@solarwinds-apm/lazy"
+  - "@solarwinds-apm/proto"
+  - "@solarwinds-apm/rollup-config"
+  - "@solarwinds-apm/sampling"
+  - "@solarwinds-apm/sdk"
+  - "@solarwinds-apm/test"

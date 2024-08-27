@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 export function load(file: string): unknown {
-  /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+  /* eslint-disable-next-line @typescript-eslint/no-require-imports */
   const required: unknown = require(file)
 
   const isObject = typeof required === "object" && required !== null

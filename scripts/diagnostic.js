@@ -45,8 +45,8 @@ function packageJson(id) {
 }
 
 function print(...vals) {
-  for (let i = 0; i < vals.length; i++) {
-    console.dir(vals[i], {
+  for (const val of vals) {
+    console.dir(val, {
       depth: Infinity,
       maxArrayLength: Infinity,
       maxStringLength: Infinity,
