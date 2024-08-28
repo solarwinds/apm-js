@@ -16,4 +16,4 @@ limitations under the License.
 
 const base = require("@solarwinds-apm/eslint-config")
 
-module.exports = [...base]
+module.exports = [...base({ allowDefaultProject: [] })]

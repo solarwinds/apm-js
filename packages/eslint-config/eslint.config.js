@@ -16,4 +16,4 @@ limitations under the License.
 
 const base = require(".")
 
-module.exports = [...base]
+module.exports = [...base()]

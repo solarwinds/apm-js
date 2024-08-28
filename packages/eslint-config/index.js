@@ -14,16 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+const path = require("node:path")
+
 const js = require("@eslint/js")
 const ts = require("typescript-eslint")
 const prettier = require("eslint-config-prettier")
 const imports = require("eslint-plugin-simple-import-sort")
-const header = require("eslint-plugin-header")
-const tsdoc = require("eslint-plugin-tsdoc")
-const deprecation = require("eslint-plugin-deprecation")
-const globals = require("globals")
+const notice = require("eslint-plugin-notice")
 
-const noticeTemplate = `
+const licenseTemplate = `
 Copyright [yyyy] [name of copyright owner]
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,82 +46,95 @@ const year =
 
 const holder = "SolarWinds Worldwide, LLC."
 
-const notice = noticeTemplate
+const license = licenseTemplate
   .replace("[yyyy]", year)
   .replace("[name of copyright owner]", holder)
+  .trim()
 
-// don't count variables starting with an underscore as unused
-const unusedOptions = {
-  vars: "all",
-  varsIgnorePattern: "^_",
-  args: "all",
-  argsIgnorePattern: "^_",
-  caughtErrors: "all",
-  caughtErrorsIgnorePattern: "^_",
-  ignoreRestSiblings: false,
-}
+module.exports = ({ allowDefaultProject = ["*.js", "*.cjs", "*.mjs"] } = {}) =>
+  ts.config(
+    // dist folder is always ignored
+    { ignores: ["dist/**"] },
+    // all files use typescript-eslint as a baseline
+    {
+      files: [
+        "**/*.js",
+        "**/*.cjs",
+        "**/*.mjs",
+        "**/*.ts",
+        "**/*.cts",
+        "**/*.mts",
+      ],
+      extends: [
+        js.configs.recommended,
+        ...ts.configs.stylistic,
+        ...ts.configs.strict,
+      ],
+      plugins: { imports, notice },
+      languageOptions: {
+        parserOptions: {
+          projectService: {
+            allowDefaultProject,
+            defaultProject: path.join(__dirname, "../../tsconfig.base.json"),
+          },
+        },
+      },
+      rules: {
+        "imports/imports": "warn",
+        "imports/exports": "warn",
+        "notice/notice": ["error", { template: `/*\n${license}\n*/\n\n` }],
 
-module.exports = ts.config(
-  // dist folder is always generated
-  { ignores: ["dist/**"] },
-  // extend from eslint's recommendations as a baseline
-  js.configs.recommended,
-  // js files assume node environment with es2022
-  {
-    files: ["**/*.js"],
-    languageOptions: {
-      ecmaVersion: 13,
-      globals: { ...globals.es2021, ...globals.node },
-    },
-    rules: {
-      "no-unused-vars": ["warn", unusedOptions],
-    },
-  },
-  // ts files use typescript-eslint and some extra rules
-  {
-    files: ["**/*.ts"],
-    extends: [
-      ...ts.configs.strictTypeChecked,
-      ...ts.configs.stylisticTypeChecked,
-    ],
-    languageOptions: {
-      parserOptions: {
-        EXPERIMENTAL_useProjectService: true,
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        // don't count variables starting with an underscore as unused
+        "@typescript-eslint/no-unused-vars": [
+          "warn",
+          {
+            vars: "all",
+            varsIgnorePattern: "^_",
+            args: "all",
+            argsIgnorePattern: "^_",
+            caughtErrors: "all",
+            caughtErrorsIgnorePattern: "^_",
+            ignoreRestSiblings: false,
+          },
+        ],
       },
     },
-    plugins: { tsdoc, deprecation },
-    rules: {
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-unused-vars": ["warn", unusedOptions],
-      "@typescript-eslint/consistent-type-imports": [
-        "warn",
-        {
-          prefer: "type-imports",
-          fixStyle: "inline-type-imports",
-          disallowTypeAnnotations: false,
-        },
+    // ts files use extra rules enabled by type checking
+    {
+      files: ["**/*.ts", "**/*.cts", "**/*.mts"],
+      extends: [
+        ...ts.configs.stylisticTypeCheckedOnly,
+        ...ts.configs.strictTypeCheckedOnly,
       ],
-      "@typescript-eslint/prefer-literal-enum-member": "off",
-      "@typescript-eslint/restrict-template-expressions": [
-        "warn",
-        {
-          allowNumber: true,
-        },
-      ],
-      "tsdoc/syntax": "warn",
-      "deprecation/deprecation": "warn",
+      rules: {
+        "@typescript-eslint/consistent-type-imports": [
+          "warn",
+          {
+            prefer: "type-imports",
+            fixStyle: "inline-type-imports",
+            disallowTypeAnnotations: false,
+          },
+        ],
+        "@typescript-eslint/prefer-literal-enum-member": "off",
+        "@typescript-eslint/restrict-template-expressions": [
+          "warn",
+          {
+            allowNumber: true,
+          },
+        ],
+        "@typescript-eslint/no-deprecated": "warn",
+        "@typescript-eslint/no-require-imports": "error",
+      },
     },
-  },
-  // imports and license notices
-  {
-    files: ["**/*.js", "**/*.ts"],
-    plugins: { imports, header },
-    rules: {
-      "imports/imports": "warn",
-      "imports/exports": "warn",
-      "header/header": ["error", "block", notice, 2],
+    // chai assertions in tests are treated as unused expressions
+    {
+      files: ["**/*.test.*"],
+      rules: {
+        "@typescript-eslint/no-unused-expressions": "off",
+      },
     },
-  },
-  // disable rules that conflict with prettier
-  prettier,
-)
+    // disable rules that conflict with prettier
+    prettier,
+  )
