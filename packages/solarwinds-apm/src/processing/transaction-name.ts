@@ -21,11 +21,12 @@ import {
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
 import {
-  SEMATTRS_HTTP_ROUTE,
-  SEMATTRS_HTTP_TARGET,
+  ATTR_HTTP_ROUTE,
+  ATTR_URL_PATH,
 } from "@opentelemetry/semantic-conventions"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
+import { ATTR_HTTP_TARGET } from "../semattrs.old.js"
 import { getRootOrEntry, isRootOrEntry } from "./parent-span.js"
 
 export const TRANSACTION_NAME_ATTRIBUTE = "sw.transaction"
@@ -98,12 +99,14 @@ export class TransactionNameProcessor
 export function computedTransactionName(span: ReadableSpan): string {
   if (typeof process.env.AWS_LAMBDA_FUNCTION_NAME === "string") {
     return process.env.AWS_LAMBDA_FUNCTION_NAME
-  } else if (typeof span.attributes[SEMATTRS_HTTP_ROUTE] === "string") {
-    return span.attributes[SEMATTRS_HTTP_ROUTE]
-  } else if (typeof span.attributes[SEMATTRS_HTTP_TARGET] === "string") {
+  } else if (typeof span.attributes[ATTR_HTTP_ROUTE] === "string") {
+    return span.attributes[ATTR_HTTP_ROUTE]
+  } else if (typeof span.attributes[ATTR_URL_PATH] === "string") {
     // split on slashes and keep the first 3 segments
     // where the first segment is an empty string before the first slash
-    return span.attributes[SEMATTRS_HTTP_TARGET].split("/", 3).join("/")
+    return span.attributes[ATTR_URL_PATH].split("/", 3).join("/")
+  } else if (typeof span.attributes[ATTR_HTTP_TARGET] === "string") {
+    return span.attributes[ATTR_HTTP_TARGET].split("/", 3).join("/")
   } else {
     return span.name
   }

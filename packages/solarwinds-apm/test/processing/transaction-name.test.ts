@@ -19,8 +19,8 @@ import { setTimeout } from "node:timers/promises"
 import { diag, trace } from "@opentelemetry/api"
 import type * as sdk from "@opentelemetry/sdk-trace-base"
 import {
-  SEMATTRS_HTTP_ROUTE,
-  SEMATTRS_HTTP_TARGET,
+  ATTR_HTTP_ROUTE,
+  ATTR_URL_PATH,
 } from "@opentelemetry/semantic-conventions"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
@@ -32,6 +32,7 @@ import {
   TransactionNamePool,
   TransactionNameProcessor,
 } from "../../src/processing/transaction-name.js"
+import { ATTR_HTTP_TARGET } from "../../src/semattrs.old.js"
 
 describe("TransactionNameProcessor", () => {
   it("sets transaction name on entry spans", async () => {
@@ -217,8 +218,20 @@ describe("computedTransactionName", () => {
   it("computes routed HTTP span name", () => {
     const span = trace.getTracer("test").startSpan("GET", {
       attributes: {
-        [SEMATTRS_HTTP_ROUTE]: "/hello/:name",
-        [SEMATTRS_HTTP_TARGET]: "/hello/world",
+        [ATTR_HTTP_ROUTE]: "/hello/:name",
+        [ATTR_URL_PATH]: "/hello/world",
+      },
+    }) as sdk.Span
+    span.end()
+
+    expect(computedTransactionName(span)).to.equal("/hello/:name")
+  })
+
+  it("computes deprecated routed HTTP span name", () => {
+    const span = trace.getTracer("test").startSpan("GET", {
+      attributes: {
+        [ATTR_HTTP_ROUTE]: "/hello/:name",
+        [ATTR_HTTP_TARGET]: "/hello/world",
       },
     }) as sdk.Span
     span.end()
@@ -228,7 +241,16 @@ describe("computedTransactionName", () => {
 
   it("computes short HTTP span name", () => {
     const span = trace.getTracer("test").startSpan("GET", {
-      attributes: { [SEMATTRS_HTTP_TARGET]: "/cart" },
+      attributes: { [ATTR_URL_PATH]: "/cart" },
+    }) as sdk.Span
+    span.end()
+
+    expect(computedTransactionName(span)).to.equal("/cart")
+  })
+
+  it("computes deprecated short HTTP span name", () => {
+    const span = trace.getTracer("test").startSpan("GET", {
+      attributes: { [ATTR_HTTP_TARGET]: "/cart" },
     }) as sdk.Span
     span.end()
 
@@ -237,7 +259,16 @@ describe("computedTransactionName", () => {
 
   it("computes long HTTP span name", () => {
     const span = trace.getTracer("test").startSpan("GET", {
-      attributes: { [SEMATTRS_HTTP_TARGET]: "/shop/products/293/detail" },
+      attributes: { [ATTR_URL_PATH]: "/shop/products/293/detail" },
+    }) as sdk.Span
+    span.end()
+
+    expect(computedTransactionName(span)).to.equal("/shop/products")
+  })
+
+  it("computes deprecated long HTTP span name", () => {
+    const span = trace.getTracer("test").startSpan("GET", {
+      attributes: { [ATTR_HTTP_TARGET]: "/shop/products/293/detail" },
     }) as sdk.Span
     span.end()
 
@@ -250,8 +281,8 @@ describe("computedTransactionName", () => {
 
     const span = trace.getTracer("test").startSpan("GET", {
       attributes: {
-        [SEMATTRS_HTTP_ROUTE]: "/hello/:name",
-        [SEMATTRS_HTTP_TARGET]: "/hello/world",
+        [ATTR_HTTP_ROUTE]: "/hello/:name",
+        [ATTR_URL_PATH]: "/hello/world",
       },
     }) as sdk.Span
     span.end()
