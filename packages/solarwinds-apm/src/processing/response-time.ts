@@ -29,11 +29,12 @@ import {
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
 import {
-  SEMATTRS_HTTP_METHOD,
-  SEMATTRS_HTTP_STATUS_CODE,
+  ATTR_HTTP_REQUEST_METHOD,
+  ATTR_HTTP_RESPONSE_STATUS_CODE,
 } from "@opentelemetry/semantic-conventions"
 import { lazy } from "@solarwinds-apm/lazy"
 
+import { ATTR_HTTP_METHOD, ATTR_HTTP_STATUS_CODE } from "../semattrs.old.js"
 import { isRootOrEntry } from "./parent-span.js"
 import { TRANSACTION_NAME_ATTRIBUTE } from "./transaction-name.js"
 
@@ -73,7 +74,12 @@ export class ResponseTimeProcessor
 
     const copy = [TRANSACTION_NAME_ATTRIBUTE]
     if (span.kind === SpanKind.SERVER) {
-      copy.push(SEMATTRS_HTTP_METHOD, SEMATTRS_HTTP_STATUS_CODE)
+      copy.push(
+        ATTR_HTTP_REQUEST_METHOD,
+        ATTR_HTTP_RESPONSE_STATUS_CODE,
+        ATTR_HTTP_METHOD,
+        ATTR_HTTP_STATUS_CODE,
+      )
     }
     for (const a of copy) {
       if (a in span.attributes) {

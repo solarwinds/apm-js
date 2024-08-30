@@ -21,10 +21,10 @@ import {
   type HistogramMetricData,
 } from "@opentelemetry/sdk-metrics"
 import {
-  SEMATTRS_HTTP_METHOD,
-  SEMATTRS_HTTP_ROUTE,
-  SEMATTRS_HTTP_STATUS_CODE,
-  SEMATTRS_HTTP_TARGET,
+  ATTR_HTTP_REQUEST_METHOD,
+  ATTR_HTTP_RESPONSE_STATUS_CODE,
+  ATTR_HTTP_ROUTE,
+  ATTR_URL_PATH,
 } from "@opentelemetry/semantic-conventions"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
@@ -32,6 +32,11 @@ import { describe, expect, it, otel } from "@solarwinds-apm/test"
 import { ParentSpanProcessor } from "../../src/processing/parent-span.js"
 import { ResponseTimeProcessor } from "../../src/processing/response-time.js"
 import { TransactionNameProcessor } from "../../src/processing/transaction-name.js"
+import {
+  ATTR_HTTP_METHOD,
+  ATTR_HTTP_STATUS_CODE,
+  ATTR_HTTP_TARGET,
+} from "../../src/semattrs.old.js"
 
 const responseTime = async () => {
   const metrics = await otel.metrics()
@@ -78,9 +83,9 @@ describe("ResponseTimeProcessor", () => {
       {
         kind: SpanKind.SERVER,
         attributes: {
-          [SEMATTRS_HTTP_METHOD]: "GET",
-          [SEMATTRS_HTTP_ROUTE]: "/hello/:name",
-          [SEMATTRS_HTTP_TARGET]: "/hello/world",
+          [ATTR_HTTP_REQUEST_METHOD]: "GET",
+          [ATTR_HTTP_ROUTE]: "/hello/:name",
+          [ATTR_URL_PATH]: "/hello/world",
         },
       },
       (span) => {
@@ -88,7 +93,7 @@ describe("ResponseTimeProcessor", () => {
           span.end()
         })
 
-        span.setAttribute(SEMATTRS_HTTP_STATUS_CODE, 200)
+        span.setAttribute(ATTR_HTTP_RESPONSE_STATUS_CODE, 200)
         span.end()
       },
     )
@@ -97,8 +102,40 @@ describe("ResponseTimeProcessor", () => {
     expect(attributes).to.deep.equal({
       "sw.is_error": false,
       "sw.transaction": "/hello/:name",
-      [SEMATTRS_HTTP_METHOD]: "GET",
-      [SEMATTRS_HTTP_STATUS_CODE]: 200,
+      [ATTR_HTTP_REQUEST_METHOD]: "GET",
+      [ATTR_HTTP_RESPONSE_STATUS_CODE]: 200,
+    })
+    expect(value).to.be.greaterThan(0)
+  })
+
+  it("records response time for deprecated server spans", async () => {
+    const tracer = trace.getTracer("test")
+    tracer.startActiveSpan(
+      "GET /hello/:name",
+      {
+        kind: SpanKind.SERVER,
+        attributes: {
+          [ATTR_HTTP_METHOD]: "GET",
+          [ATTR_HTTP_ROUTE]: "/hello/:name",
+          [ATTR_HTTP_TARGET]: "/hello/world",
+        },
+      },
+      (span) => {
+        tracer.startActiveSpan("operation", (span) => {
+          span.end()
+        })
+
+        span.setAttribute(ATTR_HTTP_STATUS_CODE, 200)
+        span.end()
+      },
+    )
+
+    const { value, attributes } = await responseTime()
+    expect(attributes).to.deep.equal({
+      "sw.is_error": false,
+      "sw.transaction": "/hello/:name",
+      [ATTR_HTTP_METHOD]: "GET",
+      [ATTR_HTTP_STATUS_CODE]: 200,
     })
     expect(value).to.be.greaterThan(0)
   })
@@ -109,11 +146,11 @@ describe("ResponseTimeProcessor", () => {
       {
         kind: SpanKind.CLIENT,
         attributes: {
-          [SEMATTRS_HTTP_METHOD]: "GET",
+          [ATTR_HTTP_REQUEST_METHOD]: "GET",
         },
       },
       (span) => {
-        span.setAttribute(SEMATTRS_HTTP_STATUS_CODE, 404)
+        span.setAttribute(ATTR_HTTP_RESPONSE_STATUS_CODE, 404)
         span.setStatus({ code: SpanStatusCode.ERROR })
         span.end()
       },

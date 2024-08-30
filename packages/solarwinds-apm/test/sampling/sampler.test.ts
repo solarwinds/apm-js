@@ -16,9 +16,9 @@ limitations under the License.
 
 import { context, diag, SpanKind, trace } from "@opentelemetry/api"
 import {
-  SEMATTRS_HTTP_SCHEME,
-  SEMATTRS_HTTP_TARGET,
-  SEMATTRS_NET_HOST_NAME,
+  ATTR_SERVER_ADDRESS,
+  ATTR_URL_PATH,
+  ATTR_URL_SCHEME,
 } from "@opentelemetry/semantic-conventions"
 import { BucketType, Flags, type Settings } from "@solarwinds-apm/sampling"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
@@ -26,6 +26,11 @@ import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import { HEADERS_STORAGE } from "../../src/propagation/headers.js"
 import { Sampler } from "../../src/sampling/sampler.js"
+import {
+  ATTR_HTTP_SCHEME,
+  ATTR_HTTP_TARGET,
+  ATTR_NET_HOST_NAME,
+} from "../../src/semattrs.old.js"
 
 class TestSampler extends Sampler {
   constructor(config: SwConfiguration, settings: Settings) {
@@ -268,9 +273,50 @@ describe("Sampler", () => {
       {
         kind: SpanKind.SERVER,
         attributes: {
-          [SEMATTRS_HTTP_SCHEME]: "http",
-          [SEMATTRS_NET_HOST_NAME]: "localhost",
-          [SEMATTRS_HTTP_TARGET]: "/test",
+          [ATTR_URL_SCHEME]: "http",
+          [ATTR_SERVER_ADDRESS]: "localhost",
+          [ATTR_URL_PATH]: "/test",
+        },
+      },
+      (span) => {
+        expect(span.isRecording()).to.be.true
+        span.end()
+      },
+    )
+
+    const spans = await otel.spans()
+    expect(spans).to.have.lengthOf(1)
+    expect(spans[0]!.attributes).to.include({
+      SampleRate: 1_000_000,
+      BucketCapacity: 10,
+      BucketRate: 1,
+    })
+  })
+
+  it("matches deprecated http spans properly", async () => {
+    const sampler = new TestSampler(
+      options({
+        tracing: false,
+        triggerTrace: false,
+        transactionSettings: [
+          {
+            tracing: true,
+            matcher: (name) => name === "http://localhost/test",
+          },
+        ],
+      }),
+      settings({ enabled: false }),
+    )
+    await otel.reset({ trace: { sampler } })
+
+    trace.getTracer("test").startActiveSpan(
+      "test",
+      {
+        kind: SpanKind.SERVER,
+        attributes: {
+          [ATTR_HTTP_SCHEME]: "http",
+          [ATTR_NET_HOST_NAME]: "localhost",
+          [ATTR_HTTP_TARGET]: "/test",
         },
       },
       (span) => {

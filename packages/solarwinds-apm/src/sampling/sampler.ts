@@ -21,9 +21,9 @@ import {
   SpanKind,
 } from "@opentelemetry/api"
 import {
-  SEMATTRS_HTTP_SCHEME,
-  SEMATTRS_HTTP_TARGET,
-  SEMATTRS_NET_HOST_NAME,
+  ATTR_SERVER_ADDRESS,
+  ATTR_URL_PATH,
+  ATTR_URL_SCHEME,
 } from "@opentelemetry/semantic-conventions"
 import {
   type LocalSettings,
@@ -35,6 +35,11 @@ import {
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
 import { HEADERS_STORAGE } from "../propagation/headers.js"
+import {
+  ATTR_HTTP_SCHEME,
+  ATTR_HTTP_TARGET,
+  ATTR_NET_HOST_NAME,
+} from "../semattrs.old.js"
 
 /**
  * Abstract core sampler to extend from other samplers
@@ -80,9 +85,15 @@ export abstract class Sampler extends OboeSampler {
 
     const kind = SpanKind[spanKind]
 
-    const scheme = attributes[SEMATTRS_HTTP_SCHEME]?.toString()
-    const address = attributes[SEMATTRS_NET_HOST_NAME]?.toString()
-    const path = attributes[SEMATTRS_HTTP_TARGET]?.toString()
+    const scheme = (
+      attributes[ATTR_URL_SCHEME] ?? attributes[ATTR_HTTP_SCHEME]
+    )?.toString()
+    const address = (
+      attributes[ATTR_SERVER_ADDRESS] ?? attributes[ATTR_NET_HOST_NAME]
+    )?.toString()
+    const path = (
+      attributes[ATTR_URL_PATH] ?? attributes[ATTR_HTTP_TARGET]
+    )?.toString()
 
     let identifier: string
     if (scheme && address && path) {
