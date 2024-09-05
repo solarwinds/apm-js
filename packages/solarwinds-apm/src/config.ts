@@ -29,7 +29,7 @@ import { load } from "@solarwinds-apm/module/load"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { z, ZodError, ZodIssueCode } from "zod"
 
-import aoCert from "./appoptics.crt.js"
+import aoCert from "./appoptics/certificate.js"
 
 const ENDPOINTS = {
   traces: "/v1/traces",

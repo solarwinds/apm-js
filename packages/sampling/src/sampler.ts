@@ -53,10 +53,11 @@ const TRACESTATE_REGEXP = /^[0-9a-f]{16}-[0-9a-f]{2}$/
 const BUCKET_INTERVAL = 1000
 const DICE_SCALE = 1_000_000
 
-const SW_KEYS_ATTRIBUTE = "SWKeys"
-const SAMPLE_RATE_ATTRIBUTE = "SampleRate"
-const BUCKET_CAPACITY_ATTRIBUTE = "BucketCapacity"
-const BUCKET_RATE_ATTRIBUTE = "BucketRate"
+export const SW_KEYS_ATTRIBUTE = "SWKeys"
+export const PARENT_ID_ATTRIBUTE = "sw.tracestate_parent_id"
+export const SAMPLE_RATE_ATTRIBUTE = "SampleRate"
+export const BUCKET_CAPACITY_ATTRIBUTE = "BucketCapacity"
+export const BUCKET_RATE_ATTRIBUTE = "BucketRate"
 
 export type SampleParams = Parameters<Sampler["shouldSample"]>
 
@@ -226,6 +227,9 @@ export abstract class OboeSampler implements Sampler {
 
   #parentBasedAlgo(s: SampleState) {
     const [context] = s.params
+
+    // this is guaranteed to be valid if the regexp matched
+    s.attributes[PARENT_ID_ATTRIBUTE] = s.traceState!.slice(0, 16)
 
     if (s.traceOptions?.triggerTrace) {
       this.logger.debug("trigger trace requested but ignored")

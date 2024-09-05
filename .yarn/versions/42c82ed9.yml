@@ -1,0 +1,10 @@
+releases:
+  "@solarwinds-apm/sampling": minor
+  "@solarwinds-apm/test": patch
+  solarwinds-apm: minor
+
+declined:
+  - "@solarwinds-apm/bindings"
+  - "@solarwinds-apm/compat"
+  - "@solarwinds-apm/dependencies"
+  - "@solarwinds-apm/sdk"

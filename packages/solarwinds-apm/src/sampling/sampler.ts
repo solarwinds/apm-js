@@ -18,6 +18,7 @@ import {
   type Attributes,
   type Context,
   type DiagLogger,
+  type Link,
   SpanKind,
 } from "@opentelemetry/api"
 import {
@@ -73,6 +74,7 @@ export abstract class Sampler extends OboeSampler {
     spanName: string,
     spanKind: SpanKind,
     attributes: Attributes,
+    _links: Link[],
   ): LocalSettings {
     const settings: LocalSettings = {
       tracingMode: this.#tracingMode,

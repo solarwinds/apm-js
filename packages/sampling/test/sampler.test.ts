@@ -528,6 +528,9 @@ describe("OboeSampler", () => {
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+        expect(sample.attributes).to.include({
+          "sw.tracestate_parent_id": parent.spanContext().spanId,
+        })
 
         await checkCounters([
           "trace.service.request_count",
@@ -542,6 +545,9 @@ describe("OboeSampler", () => {
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD)
+        expect(sample.attributes).to.include({
+          "sw.tracestate_parent_id": parent.spanContext().spanId,
+        })
 
         await checkCounters(["trace.service.request_count"])
       })
@@ -552,6 +558,9 @@ describe("OboeSampler", () => {
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+        expect(sample.attributes).to.include({
+          "sw.tracestate_parent_id": parent.spanContext().spanId,
+        })
 
         await checkCounters([
           "trace.service.request_count",
@@ -566,6 +575,9 @@ describe("OboeSampler", () => {
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD)
+        expect(sample.attributes).to.include({
+          "sw.tracestate_parent_id": parent.spanContext().spanId,
+        })
 
         await checkCounters(["trace.service.request_count"])
       })
