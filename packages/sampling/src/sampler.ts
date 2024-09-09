@@ -53,10 +53,13 @@ const TRACESTATE_REGEXP = /^[0-9a-f]{16}-[0-9a-f]{2}$/
 const BUCKET_INTERVAL = 1000
 const DICE_SCALE = 1_000_000
 
-const SW_KEYS_ATTRIBUTE = "SWKeys"
-const SAMPLE_RATE_ATTRIBUTE = "SampleRate"
-const BUCKET_CAPACITY_ATTRIBUTE = "BucketCapacity"
-const BUCKET_RATE_ATTRIBUTE = "BucketRate"
+export const SW_KEYS_ATTRIBUTE = "SWKeys"
+export const PARENT_ID_ATTRIBUTE = "sw.tracestate_parent_id"
+export const SAMPLE_RATE_ATTRIBUTE = "SampleRate"
+export const SAMPLE_SOURCE_ATTRIBUTE = "SampleSource"
+export const BUCKET_CAPACITY_ATTRIBUTE = "BucketCapacity"
+export const BUCKET_RATE_ATTRIBUTE = "BucketRate"
+export const TRIGGERED_TRACE_ATTRIBUTE = "TriggeredTrace"
 
 export type SampleParams = Parameters<Sampler["shouldSample"]>
 
@@ -227,6 +230,9 @@ export abstract class OboeSampler implements Sampler {
   #parentBasedAlgo(s: SampleState) {
     const [context] = s.params
 
+    // this is guaranteed to be valid if the regexp matched
+    s.attributes[PARENT_ID_ATTRIBUTE] = s.traceState!.slice(0, 16)
+
     if (s.traceOptions?.triggerTrace) {
       this.logger.debug("trigger trace requested but ignored")
       s.traceOptions.response.triggerTrace = TriggerTrace.IGNORED
@@ -280,6 +286,7 @@ export abstract class OboeSampler implements Sampler {
         bucket = this.#buckets[BucketType.TRIGGER_STRICT]
       }
 
+      s.attributes[TRIGGERED_TRACE_ATTRIBUTE] = true
       s.attributes[BUCKET_CAPACITY_ATTRIBUTE] = bucket.capacity
       s.attributes[BUCKET_RATE_ATTRIBUTE] = bucket.rate
 
@@ -311,6 +318,7 @@ export abstract class OboeSampler implements Sampler {
 
     const dice = new Dice({ rate: s.settings!.sampleRate, scale: DICE_SCALE })
     s.attributes[SAMPLE_RATE_ATTRIBUTE] = dice.rate
+    s.attributes[SAMPLE_SOURCE_ATTRIBUTE] = s.settings!.sampleSource
 
     counters.sampleCount.add(1, {}, context)
 

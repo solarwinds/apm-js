@@ -16,6 +16,8 @@ limitations under the License.
 
 import "./plugin.js"
 
+import { setTimeout } from "node:timers/promises"
+
 import {
   context,
   diag,
@@ -177,4 +179,14 @@ export const otel = Object.freeze({
   },
   /** Reset OTel, optionally with a custom config */
   reset: (config?: OtelConfig) => resetOtel(config),
+})
+
+beforeEach(async function () {
+  const CURRENT_RETRY = "currentRetry"
+  const currentRetry = this.currentTest?.[CURRENT_RETRY]()
+
+  if (currentRetry) {
+    this.timeout(1000 + this.timeout())
+    await setTimeout(currentRetry * 1000)
+  }
 })

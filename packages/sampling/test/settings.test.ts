@@ -20,15 +20,17 @@ import {
   Flags,
   type LocalSettings,
   merge,
+  SampleSource,
   type Settings,
   TracingMode,
 } from "../src/settings.js"
 
 describe("merge", () => {
   describe("OVERRIDE is unset", () => {
-    it("respects lower sample rate, tracing mode NEVER & trigger mode disabled", () => {
+    it("respects tracing mode NEVER & trigger mode disabled", () => {
       const remote: Settings = {
-        sampleRate: 2,
+        sampleRate: 1,
+        sampleSource: SampleSource.LocalDefault,
         flags:
           Flags.SAMPLE_START |
           Flags.SAMPLE_THROUGH_ALWAYS |
@@ -37,34 +39,31 @@ describe("merge", () => {
         ttl: 60,
       }
       const local: LocalSettings = {
-        sampleRate: 1,
         tracingMode: TracingMode.NEVER,
         triggerMode: false,
       }
 
       const merged = merge(remote, local)
       expect(merged).to.include({
-        sampleRate: 1,
         flags: 0x0,
       })
     })
 
-    it("respects higher sample rate, tracing mode ALWAYS & trigger mode enabled", () => {
+    it("respects tracing mode ALWAYS & trigger mode enabled", () => {
       const remote: Settings = {
         sampleRate: 1,
+        sampleSource: SampleSource.LocalDefault,
         flags: 0x0,
         buckets: {},
         ttl: 60,
       }
       const local: LocalSettings = {
-        sampleRate: 2,
         tracingMode: TracingMode.ALWAYS,
         triggerMode: true,
       }
 
       const merged = merge(remote, local)
       expect(merged).to.include({
-        sampleRate: 2,
         flags:
           Flags.SAMPLE_START |
           Flags.SAMPLE_THROUGH_ALWAYS |
@@ -75,6 +74,7 @@ describe("merge", () => {
     it("defaults to remote value when local is unset", () => {
       const remote: Settings = {
         sampleRate: 1,
+        sampleSource: SampleSource.LocalDefault,
         flags:
           Flags.SAMPLE_START |
           Flags.SAMPLE_THROUGH_ALWAYS |
@@ -92,9 +92,10 @@ describe("merge", () => {
   })
 
   describe("OVERRIDE is set", () => {
-    it("respects lower sample rate, tracing mode NEVER & trigger mode disabled", () => {
+    it("respects tracing mode NEVER & trigger mode disabled", () => {
       const remote: Settings = {
-        sampleRate: 2,
+        sampleRate: 1,
+        sampleSource: SampleSource.LocalDefault,
         flags:
           Flags.OVERRIDE |
           Flags.SAMPLE_START |
@@ -104,27 +105,25 @@ describe("merge", () => {
         ttl: 60,
       }
       const local: LocalSettings = {
-        sampleRate: 1,
         tracingMode: TracingMode.NEVER,
         triggerMode: false,
       }
 
       const merged = merge(remote, local)
       expect(merged).to.include({
-        sampleRate: 1,
         flags: Flags.OVERRIDE,
       })
     })
 
-    it("does not respect higher sample rate, tracing mode ALWAYS & trigger mode enabled", () => {
+    it("does not respect tracing mode ALWAYS & trigger mode enabled", () => {
       const remote: Settings = {
         sampleRate: 1,
+        sampleSource: SampleSource.LocalDefault,
         flags: Flags.OVERRIDE,
         buckets: {},
         ttl: 60,
       }
       const local: LocalSettings = {
-        sampleRate: 2,
         tracingMode: TracingMode.ALWAYS,
         triggerMode: true,
       }
@@ -136,6 +135,7 @@ describe("merge", () => {
     it("defaults to remote value when local is unset", () => {
       const remote: Settings = {
         sampleRate: 1,
+        sampleSource: SampleSource.LocalDefault,
         flags: Flags.OVERRIDE,
         buckets: {},
         ttl: 60,

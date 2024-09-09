@@ -18,7 +18,7 @@ import { DiagLogLevel } from "@opentelemetry/api"
 import { oboe } from "@solarwinds-apm/bindings"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
-import aoCert from "../src/appoptics.crt.js"
+import aoCert from "../src/appoptics/certificate.js"
 import { type ExtendedSwConfiguration, readConfig } from "../src/config.js"
 
 describe("readConfig", () => {
@@ -48,9 +48,6 @@ describe("readConfig", () => {
       instrumentations: {},
       metrics: { interval: 60_000, views: [] },
       otlp: {
-        tracesEndpoint: undefined,
-        metricsEndpoint: undefined,
-        logsEndpoint: undefined,
         headers: { authorization: "Bearer token" },
       },
       dev: {
@@ -64,7 +61,7 @@ describe("readConfig", () => {
       },
     }
 
-    expect(config).to.deep.include(expected)
+    expect(config).to.loosely.deep.include(expected)
   })
 
   it("properly sets OTLP endpoints", async () => {

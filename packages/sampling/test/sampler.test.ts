@@ -40,6 +40,7 @@ import {
   BucketType,
   Flags,
   type LocalSettings,
+  SampleSource,
   type Settings,
 } from "../src/settings.js"
 import {
@@ -252,7 +253,13 @@ describe("OboeSampler", () => {
   describe("LOCAL span", () => {
     it("respects parent sampled", async () => {
       const sampler = new TestSampler({
-        settings: { sampleRate: 0, flags: 0x0, buckets: {}, ttl: 10 },
+        settings: {
+          sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
+          flags: 0x0,
+          buckets: {},
+          ttl: 10,
+        },
         localSettings: { triggerMode: false },
         requestHeaders: {},
       })
@@ -268,7 +275,13 @@ describe("OboeSampler", () => {
 
     it("respects parent not sampled", async () => {
       const sampler = new TestSampler({
-        settings: { sampleRate: 0, flags: 0x0, buckets: {}, ttl: 10 },
+        settings: {
+          sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
+          flags: 0x0,
+          buckets: {},
+          ttl: 10,
+        },
         localSettings: { triggerMode: false },
         requestHeaders: {},
       })
@@ -288,6 +301,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
+          sampleSource: SampleSource.Remote,
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
           ttl: 10,
@@ -317,6 +331,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
+          sampleSource: SampleSource.Remote,
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
           signatureKey: Buffer.from("key"),
@@ -348,6 +363,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
+          sampleSource: SampleSource.Remote,
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
           signatureKey: Buffer.from("key1"),
@@ -396,6 +412,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
           ttl: 0,
@@ -461,6 +478,7 @@ describe("OboeSampler", () => {
         const sampler = new TestSampler({
           settings: {
             sampleRate: 0,
+            sampleSource: SampleSource.LocalDefault,
             flags: Flags.SAMPLE_THROUGH_ALWAYS,
             buckets: {},
             ttl: 10,
@@ -488,6 +506,7 @@ describe("OboeSampler", () => {
         const sampler = new TestSampler({
           settings: {
             sampleRate: 0,
+            sampleSource: SampleSource.LocalDefault,
             flags: Flags.SAMPLE_THROUGH_ALWAYS,
             buckets: {},
             ttl: 10,
@@ -514,6 +533,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
           ttl: 10,
@@ -528,6 +548,9 @@ describe("OboeSampler", () => {
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+        expect(sample.attributes).to.include({
+          "sw.tracestate_parent_id": parent.spanContext().spanId,
+        })
 
         await checkCounters([
           "trace.service.request_count",
@@ -542,6 +565,9 @@ describe("OboeSampler", () => {
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD)
+        expect(sample.attributes).to.include({
+          "sw.tracestate_parent_id": parent.spanContext().spanId,
+        })
 
         await checkCounters(["trace.service.request_count"])
       })
@@ -552,6 +578,9 @@ describe("OboeSampler", () => {
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
+        expect(sample.attributes).to.include({
+          "sw.tracestate_parent_id": parent.spanContext().spanId,
+        })
 
         await checkCounters([
           "trace.service.request_count",
@@ -566,6 +595,9 @@ describe("OboeSampler", () => {
 
         const sample = sampler.shouldSample(...params)
         expect(sample.decision).to.equal(SamplingDecision.RECORD)
+        expect(sample.attributes).to.include({
+          "sw.tracestate_parent_id": parent.spanContext().spanId,
+        })
 
         await checkCounters(["trace.service.request_count"])
       })
@@ -576,6 +608,7 @@ describe("OboeSampler", () => {
         const sampler = new TestSampler({
           settings: {
             sampleRate: 0,
+            sampleSource: SampleSource.LocalDefault,
             flags: Flags.SAMPLE_START,
             buckets: {},
             ttl: 10,
@@ -601,6 +634,7 @@ describe("OboeSampler", () => {
         const sampler = new TestSampler({
           settings: {
             sampleRate: 0,
+            sampleSource: SampleSource.LocalDefault,
             flags: 0x0,
             buckets: {},
             ttl: 10,
@@ -631,6 +665,7 @@ describe("OboeSampler", () => {
           const sampler = new TestSampler({
             settings: {
               sampleRate: 0,
+              sampleSource: SampleSource.LocalDefault,
               flags: Flags.SAMPLE_START | Flags.TRIGGERED_TRACE,
               buckets: {
                 TriggerStrict: { capacity: 10, rate: 5 },
@@ -671,6 +706,7 @@ describe("OboeSampler", () => {
           const sampler = new TestSampler({
             settings: {
               sampleRate: 0,
+              sampleSource: SampleSource.LocalDefault,
               flags: Flags.SAMPLE_START | Flags.TRIGGERED_TRACE,
               buckets: {
                 TriggerStrict: { capacity: 0, rate: 0 },
@@ -708,6 +744,7 @@ describe("OboeSampler", () => {
           const sampler = new TestSampler({
             settings: {
               sampleRate: 0,
+              sampleSource: SampleSource.LocalDefault,
               flags: Flags.SAMPLE_START | Flags.TRIGGERED_TRACE,
               buckets: {
                 TriggerStrict: { capacity: 0, rate: 0 },
@@ -751,6 +788,7 @@ describe("OboeSampler", () => {
           const sampler = new TestSampler({
             settings: {
               sampleRate: 0,
+              sampleSource: SampleSource.LocalDefault,
               flags: Flags.SAMPLE_START | Flags.TRIGGERED_TRACE,
               buckets: {
                 TriggerStrict: { capacity: 10, rate: 5 },
@@ -793,6 +831,7 @@ describe("OboeSampler", () => {
         const sampler = new TestSampler({
           settings: {
             sampleRate: 0,
+            sampleSource: SampleSource.LocalDefault,
             flags: Flags.SAMPLE_START,
             buckets: {},
             ttl: 10,
@@ -823,6 +862,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_START,
           buckets: {},
           ttl: 10,
@@ -850,6 +890,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
+          sampleSource: SampleSource.Remote,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 10, rate: 5 } },
           ttl: 10,
@@ -864,6 +905,7 @@ describe("OboeSampler", () => {
       expect(sample.decision).to.equal(SamplingDecision.RECORD_AND_SAMPLED)
       expect(sample.attributes).to.include({
         SampleRate: 1_000_000,
+        SampleSource: 6,
         BucketCapacity: 10,
         BucketRate: 5,
       })
@@ -879,6 +921,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 1_000_000,
+          sampleSource: SampleSource.Remote,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 0, rate: 0 } },
           ttl: 10,
@@ -893,6 +936,7 @@ describe("OboeSampler", () => {
       expect(sample.decision).to.equal(SamplingDecision.RECORD)
       expect(sample.attributes).to.include({
         SampleRate: 1_000_000,
+        SampleSource: 6,
         BucketCapacity: 0,
         BucketRate: 0,
       })
@@ -908,6 +952,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 10, rate: 5 } },
           ttl: 10,
@@ -920,7 +965,7 @@ describe("OboeSampler", () => {
       const sample = sampler.shouldSample(...params)
 
       expect(sample.decision).to.equal(SamplingDecision.RECORD)
-      expect(sample.attributes).to.include({ SampleRate: 0 })
+      expect(sample.attributes).to.include({ SampleRate: 0, SampleSource: 2 })
       expect(sample.attributes).not.to.have.property("BucketCapacity")
       expect(sample.attributes).not.to.have.property("BucketRate")
 
@@ -936,6 +981,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
           flags: 0x0,
           buckets: {},
           ttl: 10,
@@ -961,6 +1007,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
           ttl: 10,
@@ -982,6 +1029,7 @@ describe("OboeSampler", () => {
       const sampler = new TestSampler({
         settings: {
           sampleRate: 0,
+          sampleSource: SampleSource.LocalDefault,
           flags: 0x0,
           buckets: {},
           ttl: 10,

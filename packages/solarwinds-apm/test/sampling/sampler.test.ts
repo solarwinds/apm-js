@@ -20,7 +20,12 @@ import {
   ATTR_URL_PATH,
   ATTR_URL_SCHEME,
 } from "@opentelemetry/semantic-conventions"
-import { BucketType, Flags, type Settings } from "@solarwinds-apm/sampling"
+import {
+  BucketType,
+  Flags,
+  SampleSource,
+  type Settings,
+} from "@solarwinds-apm/sampling"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
@@ -62,6 +67,7 @@ const settings = (options: {
 
   return {
     sampleRate: 1_000_000,
+    sampleSource: SampleSource.Remote,
     flags: enabled
       ? Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS | Flags.TRIGGERED_TRACE
       : 0x0,
@@ -92,6 +98,7 @@ describe("Sampler", () => {
     expect(spans).to.have.lengthOf(1)
     expect(spans[0]!.attributes).to.include({
       SampleRate: 1_000_000,
+      SampleSource: 6,
       BucketCapacity: 10,
       BucketRate: 1,
     })
@@ -129,6 +136,7 @@ describe("Sampler", () => {
     expect(spans).to.have.lengthOf(1)
     expect(spans[0]!.attributes).to.include({
       SampleRate: 1_000_000,
+      SampleSource: 6,
       BucketCapacity: 10,
       BucketRate: 1,
     })
@@ -170,6 +178,7 @@ describe("Sampler", () => {
     expect(spans).to.have.lengthOf(1)
     expect(spans[0]!.attributes).to.include({
       SampleRate: 1_000_000,
+      SampleSource: 6,
       BucketCapacity: 10,
       BucketRate: 1,
     })
@@ -218,6 +227,7 @@ describe("Sampler", () => {
     expect(spans).to.have.lengthOf(1)
     expect(spans[0]!.attributes).to.include({
       SampleRate: 1_000_000,
+      SampleSource: 6,
       BucketCapacity: 10,
       BucketRate: 1,
     })
@@ -247,6 +257,7 @@ describe("Sampler", () => {
     expect(spans).to.have.lengthOf(1)
     expect(spans[0]!.attributes).to.include({
       SampleRate: 1_000_000,
+      SampleSource: 6,
       BucketCapacity: 10,
       BucketRate: 1,
     })
@@ -288,6 +299,7 @@ describe("Sampler", () => {
     expect(spans).to.have.lengthOf(1)
     expect(spans[0]!.attributes).to.include({
       SampleRate: 1_000_000,
+      SampleSource: 6,
       BucketCapacity: 10,
       BucketRate: 1,
     })
@@ -329,6 +341,7 @@ describe("Sampler", () => {
     expect(spans).to.have.lengthOf(1)
     expect(spans[0]!.attributes).to.include({
       SampleRate: 1_000_000,
+      SampleSource: 6,
       BucketCapacity: 10,
       BucketRate: 1,
     })

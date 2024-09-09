@@ -20,7 +20,7 @@ import { setTimeout } from "node:timers/promises"
 import { credentials, type ServiceError, status } from "@grpc/grpc-js"
 import { diag, trace } from "@opentelemetry/api"
 import { collector } from "@solarwinds-apm/proto"
-import { BucketType, Flags } from "@solarwinds-apm/sampling"
+import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import {
   before,
@@ -74,10 +74,11 @@ describe("GrpcSampler", () => {
       expect(span).not.to.be.undefined
       expect(span!.attributes).to.include.keys(
         "SampleRate",
+        "SampleSource",
         "BucketCapacity",
         "BucketRate",
       )
-    }).retries(16)
+    }).retries(10)
   })
 
   describe("invalid service key", () => {
@@ -169,7 +170,7 @@ describe("GrpcCollectorClient", () => {
 
     const setting = parseSettings(settings!.settings![0]!)
     expect(setting).not.to.be.undefined
-  }).retries(4)
+  }).retries(10)
 
   it("can be cancelled", async () => {
     const ac = new AbortController()
@@ -223,6 +224,7 @@ describe("parseSettings", () => {
     const setting = parseSettings(grpc)
     expect(setting).to.deep.equal({
       sampleRate: 500_000,
+      sampleSource: SampleSource.Remote,
       flags:
         Flags.SAMPLE_START |
         Flags.SAMPLE_THROUGH_ALWAYS |

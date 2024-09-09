@@ -33,24 +33,32 @@ function isBasicObject(o: unknown): o is object {
   return proto === Object.prototype || proto === null
 }
 
-function withoutUndefinedProperties(o: object): object {
-  const copy = Object.create(
-    Object.getPrototypeOf(o) as object | null,
-    Object.getOwnPropertyDescriptors(o),
-  ) as object
+function withoutUndefinedProperties(
+  source: object,
+  deep: boolean,
+  copy = true,
+): object {
+  const object = copy
+    ? (Object.create(
+        Object.getPrototypeOf(source) as object | null,
+        Object.getOwnPropertyDescriptors(source),
+      ) as object)
+    : source
 
-  for (const key of Reflect.ownKeys(copy)) {
-    const descriptor = Reflect.getOwnPropertyDescriptor(copy, key)!
+  for (const key of Reflect.ownKeys(object)) {
+    const descriptor = Reflect.getOwnPropertyDescriptor(object, key)!
     if (
       descriptor.enumerable &&
       descriptor.configurable &&
       descriptor.value === undefined
     ) {
-      Reflect.deleteProperty(copy, key)
+      Reflect.deleteProperty(object, key)
+    } else if (deep && isBasicObject(descriptor.value)) {
+      withoutUndefinedProperties(descriptor.value, true, false)
     }
   }
 
-  return copy
+  return object
 }
 
 Assertion.addChainableMethod(
@@ -65,27 +73,39 @@ Assertion.addChainableMethod(
 
 // By default Chai does not consider {} and { key: undefined } to be equal (which is reasonable),
 // however we sometimes want that behaviour in tests and patch the default assertion to add that option
-Assertion.overwriteMethod(
-  "equal",
-  (base: Chai.Equal): Chai.Equal =>
-    function equal(
-      this: Chai.AssertionPrototype & Chai.Assertion,
-      value: unknown,
-      message,
+
+function loosely<B extends Chai.Equal | Chai.Include>(base: B): B {
+  return new Proxy<B>(base, {
+    apply(
+      base: B,
+      assertion: Chai.AssertionPrototype & Chai.Assertion,
+      [value, message]: [unknown, string | undefined],
     ) {
-      if (!util.flag(this, "loose")) {
-        return base.call(this, value, message)
+      if (!util.flag(assertion, "loose")) {
+        return base.call(assertion, value, message)
+      }
+      if (!isBasicObject(assertion._obj) || !isBasicObject(value)) {
+        return base.call(assertion, value, message)
       }
 
-      if (!isBasicObject(this._obj) || !isBasicObject(value)) {
-        return base.call(this, value, message)
-      }
+      const deep = !!util.flag(assertion, "deep")
 
-      const obj = withoutUndefinedProperties(this._obj)
-      const assertion = new Assertion(withoutUndefinedProperties(obj))
-      util.transferFlags(this, assertion)
-      util.flag(assertion, "object", obj)
+      const object = withoutUndefinedProperties(assertion._obj, deep)
+      util.flag(assertion, "object", object)
 
-      return base.call(assertion, withoutUndefinedProperties(value), message)
+      return base.call(
+        assertion,
+        withoutUndefinedProperties(value, deep),
+        message,
+      )
     },
-)
+  })
+}
+const identity = <T>(v?: T): T | undefined => v
+
+Assertion.overwriteMethod("equal", loosely)
+Assertion.overwriteMethod("equals", loosely)
+Assertion.overwriteChainableMethod("include", loosely, identity)
+Assertion.overwriteChainableMethod("includes", loosely, identity)
+Assertion.overwriteChainableMethod("contain", loosely, identity)
+Assertion.overwriteChainableMethod("contains", loosely, identity)
