@@ -224,7 +224,7 @@ describe("fromOboeDecisionsResult", () => {
         auth: oboe.TRACING_DECISIONS_AUTH_NOT_PRESENT,
         auth_msg: "bad-signature",
       },
-      undefined,
+      { custom: {}, ignored: [] },
     )
 
     expect(result).to.loosely.deep.include({
