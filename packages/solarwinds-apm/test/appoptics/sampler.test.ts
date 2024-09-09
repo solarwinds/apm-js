@@ -116,7 +116,7 @@ describe("fromOboeDecisionsResult", () => {
         bucket_cap: 10,
         bucket_rate: 100,
         type: oboe.SETTINGS_TYPE_LAYER_SAMPLE_RATE,
-        sample_source: oboe.SAMPLE_RATE_SOURCE_OBOE,
+        sample_source: oboe.SAMPLE_RATE_SOURCE_OBOE_DEFAULT,
         status: oboe.TRACING_DECISIONS_OK,
         status_msg: "ok",
         auth: oboe.TRACING_DECISIONS_AUTH_NOT_PRESENT,
@@ -130,6 +130,7 @@ describe("fromOboeDecisionsResult", () => {
         decision: SamplingDecision.RECORD_AND_SAMPLED,
         attributes: {
           SampleRate: 50_000,
+          SampleSource: 6,
           BucketCapacity: 10,
           BucketRate: 100,
         },
@@ -147,7 +148,7 @@ describe("fromOboeDecisionsResult", () => {
         bucket_cap: 100,
         bucket_rate: 500,
         type: oboe.SETTINGS_TYPE_LAYER_SAMPLE_RATE,
-        sample_source: oboe.SAMPLE_RATE_SOURCE_OBOE,
+        sample_source: oboe.SAMPLE_RATE_SOURCE_OBOE_DEFAULT,
         status: oboe.TRACING_DECISIONS_OK,
         status_msg: "ok",
         auth: oboe.TRACING_DECISIONS_AUTH_OK,
@@ -166,7 +167,7 @@ describe("fromOboeDecisionsResult", () => {
       samplingResult: {
         decision: SamplingDecision.RECORD_AND_SAMPLED,
         attributes: {
-          SampleRate: 100_000,
+          TriggeredTrace: true,
           BucketCapacity: 100,
           BucketRate: 500,
           "custom-foo": "custom-bar",
@@ -190,7 +191,7 @@ describe("fromOboeDecisionsResult", () => {
         bucket_cap: 10,
         bucket_rate: 100,
         type: oboe.SETTINGS_TYPE_LAYER_SAMPLE_RATE,
-        sample_source: oboe.SAMPLE_RATE_SOURCE_OBOE,
+        sample_source: oboe.SAMPLE_RATE_SOURCE_OBOE_DEFAULT,
         status: oboe.TRACING_DECISIONS_OK,
         status_msg: "ok",
         auth: oboe.TRACING_DECISIONS_AUTH_NOT_PRESENT,
@@ -202,11 +203,6 @@ describe("fromOboeDecisionsResult", () => {
     expect(result).to.loosely.deep.equal({
       samplingResult: {
         decision: SamplingDecision.RECORD,
-        attributes: {
-          SampleRate: 50_000,
-          BucketCapacity: 10,
-          BucketRate: 100,
-        },
       },
       traceOptionsResponse: {},
     })
@@ -233,11 +229,6 @@ describe("fromOboeDecisionsResult", () => {
     expect(result).to.loosely.deep.include({
       samplingResult: {
         decision: SamplingDecision.NOT_RECORD,
-        attributes: {
-          SampleRate: 50_000,
-          BucketCapacity: 10,
-          BucketRate: 100,
-        },
       },
       traceOptionsResponse: {
         triggerTrace: undefined,

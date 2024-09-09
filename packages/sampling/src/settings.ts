@@ -16,6 +16,7 @@ limitations under the License.
 
 export interface Settings {
   sampleRate: number
+  sampleSource: SampleSource
   flags: number
   buckets: Partial<Record<BucketType, BucketSettings>>
   signatureKey?: Uint8Array
@@ -23,9 +24,13 @@ export interface Settings {
 }
 
 export interface LocalSettings {
-  sampleRate?: number
   tracingMode?: TracingMode
   triggerMode: boolean
+}
+
+export enum SampleSource {
+  LocalDefault = 2,
+  Remote = 6,
 }
 
 export enum Flags {
@@ -54,7 +59,6 @@ export interface BucketSettings {
 }
 
 export function merge(remote: Settings, local: LocalSettings): Settings {
-  let sampleRate = local.sampleRate ?? remote.sampleRate
   let flags = local.tracingMode ?? remote.flags
 
   if (local.triggerMode) {
@@ -64,11 +68,10 @@ export function merge(remote: Settings, local: LocalSettings): Settings {
   }
 
   if (remote.flags & Flags.OVERRIDE) {
-    sampleRate = Math.min(sampleRate, remote.sampleRate)
     flags &= remote.flags
     // remember OVERRIDE (it could be unset above)
     flags |= Flags.OVERRIDE
   }
 
-  return { ...remote, sampleRate, flags }
+  return { ...remote, flags }
 }

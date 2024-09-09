@@ -20,7 +20,7 @@ import { setTimeout } from "node:timers/promises"
 import { credentials, type ServiceError, status } from "@grpc/grpc-js"
 import { diag, trace } from "@opentelemetry/api"
 import { collector } from "@solarwinds-apm/proto"
-import { BucketType, Flags } from "@solarwinds-apm/sampling"
+import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import {
   before,
@@ -74,6 +74,7 @@ describe("GrpcSampler", () => {
       expect(span).not.to.be.undefined
       expect(span!.attributes).to.include.keys(
         "SampleRate",
+        "SampleSource",
         "BucketCapacity",
         "BucketRate",
       )
@@ -223,6 +224,7 @@ describe("parseSettings", () => {
     const setting = parseSettings(grpc)
     expect(setting).to.deep.equal({
       sampleRate: 500_000,
+      sampleSource: SampleSource.Remote,
       flags:
         Flags.SAMPLE_START |
         Flags.SAMPLE_THROUGH_ALWAYS |

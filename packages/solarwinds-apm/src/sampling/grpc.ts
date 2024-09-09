@@ -26,6 +26,7 @@ import {
   type BucketSettings,
   BucketType,
   Flags,
+  SampleSource,
   type Settings,
 } from "@solarwinds-apm/sampling"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
@@ -308,6 +309,7 @@ export function parseSettings(
 
   const settings: Settings = {
     sampleRate: unparsed.value ?? 0,
+    sampleSource: SampleSource.Remote,
     flags: Flags.OK,
     buckets: {},
     ttl: unparsed.ttl,

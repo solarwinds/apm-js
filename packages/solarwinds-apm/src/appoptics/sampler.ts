@@ -33,6 +33,7 @@ import {
   parseTraceOptions,
   type RequestHeaders,
   SAMPLE_RATE_ATTRIBUTE,
+  SAMPLE_SOURCE_ATTRIBUTE,
   type SampleParams,
   SpanType,
   spanType,
@@ -41,6 +42,7 @@ import {
   type TraceOptions,
   type TraceOptionsResponse,
   TracingMode,
+  TRIGGERED_TRACE_ATTRIBUTE,
   type TriggerTrace,
 } from "@solarwinds-apm/sampling"
 
@@ -128,7 +130,6 @@ export function intoOboeDecisionOptions(
   const custom_trigger_mode = customSettings.triggerMode
     ? oboe.TRIGGER_ENABLED
     : oboe.TRIGGER_DISABLED
-  const custom_sample_rate = customSettings.sampleRate
 
   const request_type = traceOptions?.triggerTrace
     ? oboe.REQUEST_TYPE_TRIGGER
@@ -143,7 +144,6 @@ export function intoOboeDecisionOptions(
     tracestate,
     custom_tracing_mode,
     custom_trigger_mode,
-    custom_sample_rate,
     request_type,
     header_options,
     header_signature,
@@ -164,11 +164,16 @@ export function fromOboeDecisionsResult(
       ? SamplingDecision.RECORD
       : SamplingDecision.NOT_RECORD
 
-  const attributes: Attributes = {
-    ...traceOptions?.custom,
-    [SAMPLE_RATE_ATTRIBUTE]: result.sample_rate,
-    [BUCKET_CAPACITY_ATTRIBUTE]: result.bucket_cap,
-    [BUCKET_RATE_ATTRIBUTE]: result.bucket_rate,
+  const attributes: Attributes = { ...traceOptions?.custom }
+  if (result.do_sample) {
+    attributes[BUCKET_CAPACITY_ATTRIBUTE] = result.bucket_cap
+    attributes[BUCKET_RATE_ATTRIBUTE] = result.bucket_rate
+    if (traceOptions?.triggerTrace) {
+      attributes[TRIGGERED_TRACE_ATTRIBUTE] = true
+    } else {
+      attributes[SAMPLE_RATE_ATTRIBUTE] = result.sample_rate
+      attributes[SAMPLE_SOURCE_ATTRIBUTE] = result.sample_source
+    }
   }
   if (traceOptions?.swKeys) {
     attributes[SW_KEYS_ATTRIBUTE] = traceOptions.swKeys
