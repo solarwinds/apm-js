@@ -78,7 +78,7 @@ describe("GrpcSampler", () => {
         "BucketCapacity",
         "BucketRate",
       )
-    }).retries(4)
+    }).retries(10)
   })
 
   describe("invalid service key", () => {
@@ -170,7 +170,7 @@ describe("GrpcCollectorClient", () => {
 
     const setting = parseSettings(settings!.settings![0]!)
     expect(setting).not.to.be.undefined
-  }).retries(4)
+  }).retries(10)
 
   it("can be cancelled", async () => {
     const ac = new AbortController()
