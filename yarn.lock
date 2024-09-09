@@ -491,7 +491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api-logs@npm:0.53.0, @opentelemetry/api-logs@npm:~0.53.0":
+"@opentelemetry/api-logs@npm:0.53.0, @opentelemetry/api-logs@npm:^0.53.0, @opentelemetry/api-logs@npm:~0.53.0":
   version: 0.53.0
   resolution: "@opentelemetry/api-logs@npm:0.53.0"
   dependencies:
@@ -1339,13 +1339,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/winston-transport@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@opentelemetry/winston-transport@npm:0.5.0"
+"@opentelemetry/winston-transport@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@opentelemetry/winston-transport@npm:0.6.0"
   dependencies:
-    "@opentelemetry/api-logs": "npm:^0.52.0"
+    "@opentelemetry/api-logs": "npm:^0.53.0"
     winston-transport: "npm:4.*"
-  checksum: 10c0/d2c8fa2ac8813839a24d3360363833b59ae883a75dec9d07dfa030851d2f14e994b378aa17d6acc17264e7f2d48b460db7338feceda8cd93b9462534c01aef45
+  checksum: 10c0/deba936b9449adc5ac0581944a98a4d6103c6e94d48118f2f2dd553ac6ab81c6e9e53b9025af5e2db0ccba8595d742503074f69c3212117d8120cd02a871a4c2
   languageName: node
   linkType: hard
 
@@ -1948,7 +1948,7 @@ __metadata:
     "@opentelemetry/resource-detector-azure": "npm:^0.2.4"
     "@opentelemetry/resource-detector-container": "npm:^0.4.0"
     "@opentelemetry/resources": "npm:~1.26.0"
-    "@opentelemetry/winston-transport": "npm:^0.5.0"
+    "@opentelemetry/winston-transport": "npm:^0.6.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/rollup-config": "workspace:^"
