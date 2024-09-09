@@ -203,6 +203,7 @@ describe("fromOboeDecisionsResult", () => {
     expect(result).to.loosely.deep.equal({
       samplingResult: {
         decision: SamplingDecision.RECORD,
+        attributes: {},
       },
       traceOptionsResponse: {},
     })
@@ -229,6 +230,7 @@ describe("fromOboeDecisionsResult", () => {
     expect(result).to.loosely.deep.include({
       samplingResult: {
         decision: SamplingDecision.NOT_RECORD,
+        attributes: {},
       },
       traceOptionsResponse: {
         triggerTrace: undefined,
