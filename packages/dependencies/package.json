@@ -47,7 +47,7 @@
     "eslint": "^9.9.1",
     "prettier": "^3.3.3",
     "rollup": "^4.3.0",
-    "typescript": "~5.5.3"
+    "typescript": "~5.6.2"
   },
   "engines": {
     "node": ">=16.13.0"
