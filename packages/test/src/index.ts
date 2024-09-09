@@ -184,7 +184,9 @@ export const otel = Object.freeze({
 beforeEach(async function () {
   const CURRENT_RETRY = "currentRetry"
   const currentRetry = this.currentTest?.[CURRENT_RETRY]()
+
   if (currentRetry) {
+    this.timeout(1000 + this.timeout())
     await setTimeout(currentRetry * 1000)
   }
 })
