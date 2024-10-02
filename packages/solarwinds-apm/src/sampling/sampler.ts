@@ -22,6 +22,8 @@ import {
   SpanKind,
 } from "@opentelemetry/api"
 import {
+  ATTR_HTTP_REQUEST_METHOD,
+  ATTR_HTTP_RESPONSE_STATUS_CODE,
   ATTR_SERVER_ADDRESS,
   ATTR_URL_PATH,
   ATTR_URL_SCHEME,
@@ -37,10 +39,59 @@ import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
 import { HEADERS_STORAGE } from "../propagation/headers.js"
 import {
+  ATTR_HTTP_METHOD,
   ATTR_HTTP_SCHEME,
+  ATTR_HTTP_STATUS_CODE,
   ATTR_HTTP_TARGET,
   ATTR_NET_HOST_NAME,
 } from "../semattrs.old.js"
+
+/**
+ * Returns whether a span represents an HTTP request, and if so
+ * some useful attributes of the request.
+ *
+ * @param kind - Span kind
+ * @param attributes - Span attributes
+ */
+export function httpSpanMetadata(kind: SpanKind, attributes: Attributes) {
+  // The method attribute is always required so we can tell whether this is HTTP from it
+  if (
+    kind !== SpanKind.SERVER ||
+    !(ATTR_HTTP_REQUEST_METHOD in attributes || ATTR_HTTP_METHOD in attributes)
+  ) {
+    return { http: false } as const
+  }
+
+  const method = String(
+    attributes[ATTR_HTTP_REQUEST_METHOD] ?? attributes[ATTR_HTTP_METHOD],
+  )
+  const status = Number(
+    attributes[ATTR_HTTP_RESPONSE_STATUS_CODE] ??
+      attributes[ATTR_HTTP_STATUS_CODE] ??
+      0,
+  )
+
+  const scheme = String(
+    attributes[ATTR_URL_SCHEME] ?? attributes[ATTR_HTTP_SCHEME] ?? "http",
+  )
+  const hostname = String(
+    attributes[ATTR_SERVER_ADDRESS] ??
+      attributes[ATTR_NET_HOST_NAME] ??
+      "localhost",
+  )
+  const path = String(attributes[ATTR_URL_PATH] ?? attributes[ATTR_HTTP_TARGET])
+  const url = `${scheme}://${hostname}${path}`
+
+  return {
+    http: true,
+    method,
+    status,
+    scheme,
+    hostname,
+    path,
+    url,
+  } as const
+}
 
 /**
  * Abstract core sampler to extend from other samplers
@@ -85,24 +136,10 @@ export abstract class Sampler extends OboeSampler {
       return settings
     }
 
-    const kind = SpanKind[spanKind]
-
-    const scheme = (
-      attributes[ATTR_URL_SCHEME] ?? attributes[ATTR_HTTP_SCHEME]
-    )?.toString()
-    const address = (
-      attributes[ATTR_SERVER_ADDRESS] ?? attributes[ATTR_NET_HOST_NAME]
-    )?.toString()
-    const path = (
-      attributes[ATTR_URL_PATH] ?? attributes[ATTR_HTTP_TARGET]
-    )?.toString()
-
-    let identifier: string
-    if (scheme && address && path) {
-      identifier = `${scheme}://${address}${path}`
-    } else {
-      identifier = `${kind}:${spanName}`
-    }
+    const meta = httpSpanMetadata(spanKind, attributes)
+    const identifier = meta.http
+      ? meta.url
+      : `${SpanKind[spanKind]}:${spanName}`
 
     for (const { tracing, matcher } of this.#transactionSettings) {
       if (matcher(identifier)) {

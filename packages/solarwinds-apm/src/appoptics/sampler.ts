@@ -50,6 +50,10 @@ import { HEADERS_STORAGE } from "../propagation/headers.js"
 import { swValue } from "../propagation/trace-context.js"
 import { Sampler } from "../sampling/sampler.js"
 
+export function traceParent(spanContext: SpanContext): string {
+  return `00-${spanContext.traceId}-${swValue(spanContext)}`
+}
+
 export class AppopticsSampler extends Sampler {
   override shouldSample(...params: SampleParams): SamplingResult {
     const [context, , , , attributes] = params
@@ -116,9 +120,7 @@ export function intoOboeDecisionOptions(
   traceOptions: TraceOptions | undefined,
 ): oboe.DecisionOptions {
   const in_xtrace =
-    type === SpanType.ENTRY
-      ? `00-${parentSpanContext!.traceId}-${swValue(parentSpanContext!)}`
-      : null
+    type === SpanType.ENTRY ? traceParent(parentSpanContext!) : null
   const tracestate = parentSpanContext?.traceState?.get("sw")
 
   const custom_tracing_mode =
