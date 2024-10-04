@@ -14,18 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type DiagLogger, SpanKind, SpanStatusCode } from "@opentelemetry/api"
+import { type DiagLogger, SpanStatusCode } from "@opentelemetry/api"
 import { hrTimeToMicroseconds } from "@opentelemetry/core"
 import {
   NoopSpanProcessor,
   type ReadableSpan,
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
-import {
-  ATTR_HTTP_REQUEST_METHOD,
-  ATTR_HTTP_RESPONSE_STATUS_CODE,
-  ATTR_URL_FULL,
-} from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
@@ -34,11 +29,7 @@ import {
   computedTransactionName,
   TRANSACTION_NAME_ATTRIBUTE,
 } from "../../processing/transaction-name.js"
-import {
-  ATTR_HTTP_METHOD,
-  ATTR_HTTP_STATUS_CODE,
-  ATTR_HTTP_URL,
-} from "../../semattrs.old.js"
+import { httpSpanMetadata } from "../../sampling/sampler.js"
 
 export class AppopticsInboundMetricsProcessor
   extends NoopSpanProcessor
@@ -59,7 +50,7 @@ export class AppopticsInboundMetricsProcessor
       return
     }
 
-    const { isHttp, method, status, url } = httpSpanMetadata(span)
+    const meta = httpSpanMetadata(span.kind, span.attributes)
     const has_error = span.status.code === SpanStatusCode.ERROR ? 1 : 0
     const duration = hrTimeToMicroseconds(span.duration)
 
@@ -70,15 +61,15 @@ export class AppopticsInboundMetricsProcessor
         this.#defaultTransactionName ?? computedTransactionName(span)
     }
 
-    if (isHttp) {
+    if (meta.http) {
       transaction = oboe.Span.createHttpSpan({
         transaction,
         duration,
         has_error,
-        method,
-        status,
-        url,
-        domain: null,
+        method: meta.method,
+        status: meta.status,
+        url: meta.url,
+        domain: meta.hostname,
       })
     } else {
       transaction = oboe.Span.createSpan({
@@ -92,36 +83,4 @@ export class AppopticsInboundMetricsProcessor
 
     span.attributes[TRANSACTION_NAME_ATTRIBUTE] = transaction
   }
-}
-
-export function httpSpanMetadata(span: ReadableSpan) {
-  if (
-    span.kind !== SpanKind.SERVER ||
-    !(
-      ATTR_HTTP_REQUEST_METHOD in span.attributes ||
-      ATTR_HTTP_METHOD in span.attributes
-    )
-  ) {
-    return { isHttp: false } as const
-  }
-
-  const method = String(
-    span.attributes[ATTR_HTTP_REQUEST_METHOD] ??
-      span.attributes[ATTR_HTTP_METHOD],
-  )
-  const status = Number(
-    span.attributes[ATTR_HTTP_RESPONSE_STATUS_CODE] ??
-      span.attributes[ATTR_HTTP_STATUS_CODE] ??
-      0,
-  )
-  const url = String(
-    span.attributes[ATTR_URL_FULL] ?? span.attributes[ATTR_HTTP_URL],
-  )
-
-  return {
-    isHttp: true,
-    method,
-    status,
-    url,
-  } as const
 }

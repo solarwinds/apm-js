@@ -16,6 +16,9 @@ limitations under the License.
 
 import { context, diag, SpanKind, trace } from "@opentelemetry/api"
 import {
+  ATTR_HTTP_REQUEST_METHOD,
+  ATTR_HTTP_RESPONSE_STATUS_CODE,
+  ATTR_NETWORK_TRANSPORT,
   ATTR_SERVER_ADDRESS,
   ATTR_URL_PATH,
   ATTR_URL_SCHEME,
@@ -30,9 +33,11 @@ import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import { HEADERS_STORAGE } from "../../src/propagation/headers.js"
-import { Sampler } from "../../src/sampling/sampler.js"
+import { httpSpanMetadata, Sampler } from "../../src/sampling/sampler.js"
 import {
+  ATTR_HTTP_METHOD,
   ATTR_HTTP_SCHEME,
+  ATTR_HTTP_STATUS_CODE,
   ATTR_HTTP_TARGET,
   ATTR_NET_HOST_NAME,
 } from "../../src/semattrs.old.js"
@@ -80,6 +85,82 @@ const settings = (options: {
     ttl: 60,
   }
 }
+
+describe("httpSpanMetadata", () => {
+  it("handles non-http spans properly", () => {
+    const span = {
+      kind: SpanKind.SERVER,
+      attributes: { [ATTR_NETWORK_TRANSPORT]: "udp" },
+    }
+
+    const output = httpSpanMetadata(span.kind, span.attributes)
+    expect(output).to.deep.equal({ http: false })
+  })
+
+  it("handles http client spans properly", () => {
+    const span = {
+      kind: SpanKind.CLIENT,
+      attributes: {
+        [ATTR_HTTP_REQUEST_METHOD]: "GET",
+        [ATTR_HTTP_RESPONSE_STATUS_CODE]: 200,
+        [ATTR_SERVER_ADDRESS]: "solarwinds.com",
+        [ATTR_URL_SCHEME]: "https",
+        [ATTR_URL_PATH]: "",
+      },
+    }
+
+    const output = httpSpanMetadata(span.kind, span.attributes)
+    expect(output).to.deep.equal({ http: false })
+  })
+
+  it("handles http server spans properly", () => {
+    const span = {
+      kind: SpanKind.SERVER,
+      attributes: {
+        [ATTR_HTTP_REQUEST_METHOD]: "GET",
+        [ATTR_HTTP_RESPONSE_STATUS_CODE]: 200,
+        [ATTR_SERVER_ADDRESS]: "solarwinds.com",
+        [ATTR_URL_SCHEME]: "https",
+        [ATTR_URL_PATH]: "",
+      },
+    }
+
+    const output = httpSpanMetadata(span.kind, span.attributes)
+    expect(output).to.deep.equal({
+      http: true,
+      method: "GET",
+      status: 200,
+      scheme: "https",
+      hostname: "solarwinds.com",
+      path: "",
+      url: "https://solarwinds.com",
+    })
+  })
+
+  it("handles legacy http server spans properly", () => {
+    const span = {
+      kind: SpanKind.SERVER,
+      attributes: {
+        [ATTR_HTTP_METHOD]: "GET",
+        [ATTR_HTTP_STATUS_CODE]: "200",
+        [ATTR_HTTP_SCHEME]: "https",
+        [ATTR_NET_HOST_NAME]: "solarwinds.com",
+        [ATTR_HTTP_TARGET]: "",
+      },
+    }
+
+    const output = httpSpanMetadata(span.kind, span.attributes)
+    expect(output).to.deep.equal({
+      http: true,
+      method: "GET",
+      status: 200,
+      scheme: "https",
+      hostname: "solarwinds.com",
+      path: "",
+      url: "https://solarwinds.com",
+    })
+  })
+})
 
 describe("Sampler", () => {
   it("respects enabled settings when no config or transaction settings", async () => {
@@ -284,6 +365,7 @@ describe("Sampler", () => {
       {
         kind: SpanKind.SERVER,
         attributes: {
+          [ATTR_HTTP_REQUEST_METHOD]: "GET",
           [ATTR_URL_SCHEME]: "http",
           [ATTR_SERVER_ADDRESS]: "localhost",
           [ATTR_URL_PATH]: "/test",
@@ -326,6 +408,7 @@ describe("Sampler", () => {
       {
         kind: SpanKind.SERVER,
         attributes: {
+          [ATTR_HTTP_METHOD]: "GET",
           [ATTR_HTTP_SCHEME]: "http",
           [ATTR_NET_HOST_NAME]: "localhost",
           [ATTR_HTTP_TARGET]: "/test",
