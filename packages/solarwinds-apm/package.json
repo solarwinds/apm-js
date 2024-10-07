@@ -32,8 +32,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/es/index.es.js",
-      "require": "./dist/cjs/index.cjs.js"
+      "import": "./dist/es/index.es.js"
     },
     "./loader": {
       "import": "./dist/es/hooks.es.js"
@@ -72,12 +71,14 @@
     "@opentelemetry/sdk-trace-node": "~1.26.0",
     "@opentelemetry/semantic-conventions": "~1.27.0",
     "@solarwinds-apm/bindings": "workspace:^",
+    "@solarwinds-apm/dependencies": "workspace:^",
     "@solarwinds-apm/instrumentations": "workspace:^",
     "@solarwinds-apm/lazy": "workspace:^",
     "@solarwinds-apm/module": "workspace:^",
     "@solarwinds-apm/proto": "workspace:^",
     "@solarwinds-apm/sampling": "workspace:^",
     "@solarwinds-apm/sdk": "workspace:^",
+    "json-stringify-safe": "^5.0.1",
     "semver": "^7.5.4",
     "zod": "^3.22.4"
   },

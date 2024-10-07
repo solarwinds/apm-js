@@ -15,17 +15,28 @@ limitations under the License.
 */
 
 import {
+  type Attributes,
   diag,
   type DiagLogFunction,
   type DiagLogger,
   DiagLogLevel,
 } from "@opentelemetry/api"
+import { type Resource } from "@opentelemetry/resources"
+import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
+import {
+  ATTR_PROCESS_COMMAND_ARGS,
+  ATTR_PROCESS_COMMAND_LINE,
+} from "@opentelemetry/semantic-conventions/incubating"
 import { oboe } from "@solarwinds-apm/bindings"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
+import { modules, VERSION } from "../metadata.js"
 import certificate from "./certificate.js"
 
-export function reporter(config: SwConfiguration): oboe.Reporter {
+export async function reporter(
+  config: SwConfiguration,
+  resource: Resource,
+): Promise<oboe.Reporter> {
   const reporter = new oboe.Reporter({
     service_key: `${config.token}:${config.serviceName}`,
     host: config.collector ?? "",
@@ -69,7 +80,42 @@ export function reporter(config: SwConfiguration): oboe.Reporter {
     }
   }, config.oboeLogLevel)
 
+  // Send init message
+  const md = oboe.Metadata.makeRandom(true)
+  oboe.Context.set(md)
+  const event = md.createEvent()
+  for (const [key, value] of await init(resource)) {
+    event.addInfo(key, value)
+  }
+  reporter.sendStatus(event)
+
   return reporter
+}
+
+export async function init(
+  resource: Resource,
+): Promise<[string, string | number | boolean | null][]> {
+  return Object.entries<Attributes>({
+    ...(await modules()),
+    ...resource.attributes,
+
+    __Init: true,
+    Layer: "nodejs",
+    Label: "single",
+
+    "APM.Version": VERSION,
+    "APM.Extension.Version": oboe.Config.getVersionString(),
+  })
+    .map(([name, value]): [string, string | number | boolean | null] => {
+      if (name == ATTR_PROCESS_COMMAND_ARGS && Array.isArray(value)) {
+        return [ATTR_PROCESS_COMMAND_LINE, value.join(" ")]
+      } else if (Array.isArray(value)) {
+        return [name, value.join(", ")]
+      } else {
+        return [name, value ?? null]
+      }
+    })
+    .filter(([name]) => name !== ATTR_SERVICE_NAME)
 }
 
 function otelLevelToOboeLevel(level: DiagLogLevel): number {
