@@ -7981,6 +7981,7 @@ __metadata:
     "@opentelemetry/sdk-trace-node": "npm:~1.26.0"
     "@opentelemetry/semantic-conventions": "npm:~1.27.0"
     "@solarwinds-apm/bindings": "workspace:^"
+    "@solarwinds-apm/dependencies": "workspace:^"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/instrumentations": "workspace:^"
     "@solarwinds-apm/lazy": "workspace:^"

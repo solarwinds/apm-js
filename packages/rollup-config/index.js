@@ -23,7 +23,7 @@ import typescript from "@rollup/plugin-typescript"
 import globby from "globby"
 import nodeExternals from "rollup-plugin-node-externals"
 
-const FORMATS = ["es", "cjs"]
+const FORMATS = ["es"]
 
 async function task(src, dist, format, sources) {
   const dir = path.join(dist, format)
