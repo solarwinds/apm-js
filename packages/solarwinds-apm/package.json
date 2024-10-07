@@ -32,8 +32,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/es/index.es.js",
-      "require": "./dist/cjs/index.cjs.js"
+      "import": "./dist/es/index.es.js"
     },
     "./loader": {
       "import": "./dist/es/hooks.es.js"
