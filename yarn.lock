@@ -7993,6 +7993,7 @@ __metadata:
     "@types/node": "npm:^18.19.43"
     "@types/semver": "npm:^7.5.3"
     eslint: "npm:^9.9.1"
+    json-stringify-safe: "npm:^5.0.1"
     prettier: "npm:^3.3.3"
     rollup: "npm:^4.3.0"
     semver: "npm:^7.5.4"

@@ -77,6 +77,7 @@
     "@solarwinds-apm/proto": "workspace:^",
     "@solarwinds-apm/sampling": "workspace:^",
     "@solarwinds-apm/sdk": "workspace:^",
+    "json-stringify-safe": "^5.0.1",
     "semver": "^7.5.4",
     "zod": "^3.22.4"
   },
