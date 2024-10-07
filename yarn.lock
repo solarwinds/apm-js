@@ -7983,6 +7983,7 @@ __metadata:
     "@solarwinds-apm/bindings": "workspace:^"
     "@solarwinds-apm/dependencies": "workspace:^"
     "@solarwinds-apm/eslint-config": "workspace:^"
+    "@solarwinds-apm/histogram": "workspace:^"
     "@solarwinds-apm/instrumentations": "workspace:^"
     "@solarwinds-apm/lazy": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
