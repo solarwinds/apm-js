@@ -6,13 +6,13 @@ SolarWinds is committed to taking our customers security and privacy concerns se
 
 Our security strategy covers all aspects of our business, including:
 
-* Corporate security policies
-* Organizational security
-* Physical and environmental security
-* Operational security processes and procedures
-* Incident management and response
-* Business continuity and disaster recovery
-* Data protection
+- Corporate security policies
+- Organizational security
+- Physical and environmental security
+- Operational security processes and procedures
+- Incident management and response
+- Business continuity and disaster recovery
+- Data protection
 
 ## Security Documents
 [Security Statement](https://www.solarwinds.com/security/security-statement)
