@@ -40,6 +40,8 @@ import {
   type Histogram,
 } from "@solarwinds-apm/histogram"
 
+const MAX_TAGS = 50
+
 export class AppopticsMetricExporter {
   readonly #reporter: oboe.Reporter
 
@@ -239,7 +241,8 @@ export class AppopticsMetricExporter {
     tags: Record<string, string>,
   ): [tags: oboe.MetricTags, count: number] {
     const entries = Object.entries(tags)
-    const count = entries.length
+    const count = Math.max(entries.length, MAX_TAGS)
+    entries.length = count
 
     const oboeTags = new oboe.MetricTags(count)
     for (const [i, [k, v]] of entries.entries()) {
