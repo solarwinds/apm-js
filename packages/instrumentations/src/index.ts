@@ -36,6 +36,7 @@ import { type GrpcInstrumentation } from "@opentelemetry/instrumentation-grpc"
 import { type HapiInstrumentation } from "@opentelemetry/instrumentation-hapi"
 import { type HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { type IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
+import { type KafkaJsInstrumentation } from "@opentelemetry/instrumentation-kafkajs"
 import { type KnexInstrumentation } from "@opentelemetry/instrumentation-knex"
 import { type KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 import { type LruMemoizerInstrumentation } from "@opentelemetry/instrumentation-lru-memoizer"
@@ -54,13 +55,13 @@ import { type RestifyInstrumentation } from "@opentelemetry/instrumentation-rest
 import { type RouterInstrumentation } from "@opentelemetry/instrumentation-router"
 import { type SocketIoInstrumentation } from "@opentelemetry/instrumentation-socket.io"
 import { type TediousInstrumentation } from "@opentelemetry/instrumentation-tedious"
+import { type UndiciInstrumentation } from "@opentelemetry/instrumentation-undici"
 import { type WinstonInstrumentation } from "@opentelemetry/instrumentation-winston"
 import {
+  type Detector,
   type DetectorSync,
-  detectResourcesSync,
-  type Resource,
+  Resource,
 } from "@opentelemetry/resources"
-import { load } from "@solarwinds-apm/module/load"
 
 // map of package names to their instrumentation type
 interface InstrumentationTypes {
@@ -82,6 +83,7 @@ interface InstrumentationTypes {
   "@opentelemetry/instrumentation-hapi": HapiInstrumentation
   "@opentelemetry/instrumentation-http": HttpInstrumentation
   "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation
+  "@opentelemetry/instrumentation-kafkajs": KafkaJsInstrumentation
   "@opentelemetry/instrumentation-knex": KnexInstrumentation
   "@opentelemetry/instrumentation-koa": KoaInstrumentation
   "@opentelemetry/instrumentation-lru-memoizer": LruMemoizerInstrumentation
@@ -100,10 +102,15 @@ interface InstrumentationTypes {
   "@opentelemetry/instrumentation-router": RouterInstrumentation
   "@opentelemetry/instrumentation-socket.io": SocketIoInstrumentation
   "@opentelemetry/instrumentation-tedious": TediousInstrumentation
+  "@opentelemetry/instrumentation-undici": UndiciInstrumentation
   "@opentelemetry/instrumentation-winston": WinstonInstrumentation
 }
-// map of instrumentation package names to the name of their exported instrumentation class
-const INSTRUMENTATION_NAMES: Record<string, string> = {
+
+// Maps of instrumentation module name to instrumentation class name
+const CORE_INSTRUMENTATIONS = {
+  "@opentelemetry/instrumentation-http": "HttpInstrumentation",
+} as const
+const INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-amqplib": "AmqplibInstrumentation",
   "@opentelemetry/instrumentation-aws-lambda": "AwsLambdaInstrumentation",
   "@opentelemetry/instrumentation-aws-sdk": "AwsInstrumentation",
@@ -121,8 +128,8 @@ const INSTRUMENTATION_NAMES: Record<string, string> = {
   "@opentelemetry/instrumentation-graphql": "GraphQLInstrumentation",
   "@opentelemetry/instrumentation-grpc": "GrpcInstrumentation",
   "@opentelemetry/instrumentation-hapi": "HapiInstrumentation",
-  "@opentelemetry/instrumentation-http": "HttpInstrumentation",
   "@opentelemetry/instrumentation-ioredis": "IORedisInstrumentation",
+  "@opentelemetry/instrumentation-kafkajs": "KafkaJsInstrumentation",
   "@opentelemetry/instrumentation-knex": "KnexInstrumentation",
   "@opentelemetry/instrumentation-koa": "KoaInstrumentation",
   "@opentelemetry/instrumentation-lru-memoizer": "LruMemoizerInstrumentation",
@@ -141,101 +148,162 @@ const INSTRUMENTATION_NAMES: Record<string, string> = {
   "@opentelemetry/instrumentation-router": "RouterInstrumentation",
   "@opentelemetry/instrumentation-socket.io": "SocketIoInstrumentation",
   "@opentelemetry/instrumentation-tedious": "TediousInstrumentation",
+  "@opentelemetry/instrumentation-undici": "UndiciInstrumentation",
   "@opentelemetry/instrumentation-winston": "WinstonInstrumentation",
-}
+} as const
 
-// map of resource detector package names to the names of their exported detectors
-const CORE_RESOURCE_DETECTOR_NAMES: Record<string, string[]> = {
+// Maps of resource detector module names to list of detector names
+const CORE_RESOURCE_DETECTORS = {
   "@opentelemetry/resources": [
     "envDetectorSync",
     "hostDetectorSync",
     "osDetectorSync",
     "processDetectorSync",
   ],
-}
-const EXTRA_RESOURCE_DETECTOR_NAMES: Record<string, string[]> = {
+} as const
+const RESOURCE_DETECTORS = {
   "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
   "@opentelemetry/resource-detector-azure": ["azureAppServiceDetector"],
   "@opentelemetry/resource-detector-container": ["containerDetector"],
-}
+  "@opentelemetry/resource-detector-gcp": ["gcpDetector"],
+} as const
 
 export type InstrumentationConfigMap = {
-  [I in keyof InstrumentationTypes]?: InstrumentationTypes[I] extends {
+  readonly [I in keyof InstrumentationTypes]?: InstrumentationTypes[I] extends {
     setConfig(config: infer C): unknown
   }
     ? C
     : never
 }
+export type ResourceDetectorConfigMap = {
+  [R in keyof (typeof CORE_RESOURCE_DETECTORS & typeof RESOURCE_DETECTORS)]?: {
+    [N in (typeof CORE_RESOURCE_DETECTORS &
+      typeof RESOURCE_DETECTORS)[R][number]]?: boolean
+  }
+}
+
+export type Set = "none" | "core" | "all"
 
 export function getInstrumentations(
   configs: InstrumentationConfigMap,
-  defaultDisabled: boolean,
-): Instrumentation[] | Promise<Instrumentation[]> {
-  const allConfigs = Object.assign(
-    // one entry per available instrumentations
-    Object.fromEntries(
-      Object.keys(INSTRUMENTATION_NAMES).map((name) => [name, {}]),
-    ),
-    // override defaults using the entries present in the config while
-    // filtering out entries from the config that are not available
-    Object.fromEntries(
-      Object.entries(configs).filter(([name]) =>
-        Object.keys(INSTRUMENTATION_NAMES).includes(name),
-      ),
-    ),
-  )
+  set: Set,
+): Promise<Instrumentation[]> {
+  const instrumentations = [
+    ...Object.entries(CORE_INSTRUMENTATIONS).map(([module, name]) => ({
+      module,
+      name,
+      // core instrumentations are enabled by default unless the set is "none"
+      enabled: set !== "none",
+    })),
+    ...Object.entries(INSTRUMENTATIONS).map(([module, name]) => ({
+      module,
+      name,
+      // other instrumentations are disabled by default unless the set is "all"
+      enabled: set === "all",
+    })),
+  ]
+    .map(({ module, name, enabled }) => {
+      // the user-provided config always takes precedence over our defaults
+      const config = configs[module as keyof InstrumentationConfigMap] ?? {}
+      config.enabled ??= enabled
 
-  const instrumentations = Object.entries(allConfigs)
-    .filter(([, config]: [unknown, InstrumentationConfig]) => {
-      // explicitly set "enabled" to false if that's the default
-      if (defaultDisabled) config.enabled ??= false
-      // filter out disabled instrumentations
-      return config.enabled !== false
+      return { module, name, config }
     })
-    .map(([name, config]) => {
-      // instantiate the instrumentation class exported from package
-      const instantiate = (loaded: unknown) => {
-        const Class =
-          typeof loaded === "function"
-            ? // instrumentation class is the single default export
-              (loaded as new (config: InstrumentationConfig) => Instrumentation)
-            : // multiple exports, retrieve by name
-              (
-                loaded as Record<
-                  string,
-                  new (config: InstrumentationConfig) => Instrumentation
-                >
-              )[INSTRUMENTATION_NAMES[name]!]!
+    // only load enabled instrumentations
+    .filter(({ config }) => config.enabled)
+
+  // Load and instantiate all of the instrumentations concurrently
+  return Promise.all(
+    instrumentations.map(async ({ module, name, config }) => {
+      const loaded = await load(module)
+
+      if (typeof loaded === "function") {
+        // there is a single export which we assume to be the instrumentation
+        const Class = loaded as new (
+          config: InstrumentationConfig,
+        ) => Instrumentation
+
+        return new Class(config)
+      } else {
+        // there are multiple exports so we retrieve the class by name
+        const Class = (
+          loaded as Record<
+            typeof name,
+            new (config: InstrumentationConfig) => Instrumentation
+          >
+        )[name]
+
         return new Class(config)
       }
-
-      // load is synchronous in CJS but async in ESM
-      const loaded = load(name)
-      if (loaded instanceof Promise) return loaded.then(instantiate)
-      else return instantiate(loaded)
-    })
-
-  if (instrumentations.length > 0 && instrumentations[0] instanceof Promise)
-    return Promise.all(instrumentations)
-  else return instrumentations as Instrumentation[]
-}
-
-export async function getDetectedResource(extra: boolean): Promise<Resource> {
-  let names = { ...CORE_RESOURCE_DETECTOR_NAMES }
-  if (extra) {
-    names = { ...names, ...EXTRA_RESOURCE_DETECTOR_NAMES }
-  }
-
-  const detectors = await Promise.all(
-    Object.entries(names).map(async ([name, detectors]) => {
-      const loaded = await load(name)
-      return Object.entries(loaded as object)
-        .filter(([name]) => detectors.includes(name))
-        .map(([, detector]) => detector as DetectorSync)
     }),
   )
+}
 
-  return detectResourcesSync({
-    detectors: detectors.flat(),
-  })
+export function getResource(
+  configs: ResourceDetectorConfigMap,
+  set: Set,
+): Resource {
+  const resourceDetectors = [
+    ...Object.entries(CORE_RESOURCE_DETECTORS).flatMap(([module, names]) =>
+      names.map((name) => ({
+        module,
+        name,
+        // core resource detectors are enabled by default unless the set is "none"
+        enabled: set !== "none",
+      })),
+    ),
+    ...Object.entries(RESOURCE_DETECTORS).flatMap(([module, names]) =>
+      names.map((name) => ({
+        module,
+        name,
+        // other resource detectors are disabled by default unless the set is "all"
+        enabled: set === "all",
+      })),
+    ),
+  ].filter(
+    ({ module, name, enabled }) =>
+      (configs as Record<string, Record<string, boolean>>)[module]?.[name] ??
+      enabled,
+  )
+
+  // The Resource constructor accepts a promise resolving to arguments,
+  // so we create one by loading each detector module, then calling its detector,
+  // then waiting for the resource attributes to be available, concurrently
+  // for every enabled detector. Once all of these concurrent tasks have completed
+  // we merge all of the resulting attributes.
+  const attributes = Promise.all(
+    resourceDetectors.map(async ({ module, name }) => {
+      try {
+        const loaded = await load(module)
+        const detector = (
+          loaded as Record<typeof name, Detector | DetectorSync>
+        )[name]
+
+        const resource = await detector.detect()
+        await resource.waitForAsyncAttributes?.()
+
+        return resource.attributes
+      } catch {
+        return {}
+      }
+    }),
+  ).then((attributes) =>
+    attributes.reduce((all, next) => ({ ...all, ...next })),
+  )
+
+  return new Resource({}, attributes)
+}
+
+async function load(file: string): Promise<unknown> {
+  const imported = (await import(file)) as object
+
+  const hasDefault = "default" in imported
+  const keyCount = Object.keys(imported).length
+
+  const useDefaultExport =
+    hasDefault &&
+    (keyCount === 1 || (keyCount === 2 && "__esModule" in imported))
+
+  if (useDefaultExport) return imported.default
+  else return imported
 }
