@@ -62,48 +62,49 @@ import {
   type DetectorSync,
   Resource,
 } from "@opentelemetry/resources"
+import { load } from "@solarwinds-apm/module/load"
 
 // map of package names to their instrumentation type
 interface InstrumentationTypes {
-  "@opentelemetry/instrumentation-amqplib": AmqplibInstrumentation
-  "@opentelemetry/instrumentation-aws-lambda": AwsLambdaInstrumentation
-  "@opentelemetry/instrumentation-aws-sdk": AwsInstrumentation
-  "@opentelemetry/instrumentation-bunyan": BunyanInstrumentation
-  "@opentelemetry/instrumentation-cassandra-driver": CassandraDriverInstrumentation
-  "@opentelemetry/instrumentation-connect": ConnectInstrumentation
-  "@opentelemetry/instrumentation-cucumber": CucumberInstrumentation
-  "@opentelemetry/instrumentation-dataloader": DataloaderInstrumentation
-  "@opentelemetry/instrumentation-dns": DnsInstrumentation
-  "@opentelemetry/instrumentation-express": ExpressInstrumentation
-  "@opentelemetry/instrumentation-fastify": FastifyInstrumentation
-  "@opentelemetry/instrumentation-fs": FsInstrumentation
-  "@opentelemetry/instrumentation-generic-pool": GenericPoolInstrumentation
-  "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation
-  "@opentelemetry/instrumentation-grpc": GrpcInstrumentation
-  "@opentelemetry/instrumentation-hapi": HapiInstrumentation
-  "@opentelemetry/instrumentation-http": HttpInstrumentation
-  "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation
-  "@opentelemetry/instrumentation-kafkajs": KafkaJsInstrumentation
-  "@opentelemetry/instrumentation-knex": KnexInstrumentation
-  "@opentelemetry/instrumentation-koa": KoaInstrumentation
-  "@opentelemetry/instrumentation-lru-memoizer": LruMemoizerInstrumentation
-  "@opentelemetry/instrumentation-memcached": MemcachedInstrumentation
-  "@opentelemetry/instrumentation-mongodb": MongoDBInstrumentation
-  "@opentelemetry/instrumentation-mongoose": MongooseInstrumentation
-  "@opentelemetry/instrumentation-mysql2": MySQL2Instrumentation
-  "@opentelemetry/instrumentation-mysql": MySQLInstrumentation
-  "@opentelemetry/instrumentation-nestjs-core": NestInstrumentation
-  "@opentelemetry/instrumentation-net": NetInstrumentation
-  "@opentelemetry/instrumentation-pg": PgInstrumentation
-  "@opentelemetry/instrumentation-pino": PinoInstrumentation
-  "@opentelemetry/instrumentation-redis": RedisInstrumentationV2
-  "@opentelemetry/instrumentation-redis-4": RedisInstrumentationV4
-  "@opentelemetry/instrumentation-restify": RestifyInstrumentation
-  "@opentelemetry/instrumentation-router": RouterInstrumentation
-  "@opentelemetry/instrumentation-socket.io": SocketIoInstrumentation
-  "@opentelemetry/instrumentation-tedious": TediousInstrumentation
-  "@opentelemetry/instrumentation-undici": UndiciInstrumentation
-  "@opentelemetry/instrumentation-winston": WinstonInstrumentation
+  "@opentelemetry/instrumentation-amqplib": typeof AmqplibInstrumentation
+  "@opentelemetry/instrumentation-aws-lambda": typeof AwsLambdaInstrumentation
+  "@opentelemetry/instrumentation-aws-sdk": typeof AwsInstrumentation
+  "@opentelemetry/instrumentation-bunyan": typeof BunyanInstrumentation
+  "@opentelemetry/instrumentation-cassandra-driver": typeof CassandraDriverInstrumentation
+  "@opentelemetry/instrumentation-connect": typeof ConnectInstrumentation
+  "@opentelemetry/instrumentation-cucumber": typeof CucumberInstrumentation
+  "@opentelemetry/instrumentation-dataloader": typeof DataloaderInstrumentation
+  "@opentelemetry/instrumentation-dns": typeof DnsInstrumentation
+  "@opentelemetry/instrumentation-express": typeof ExpressInstrumentation
+  "@opentelemetry/instrumentation-fastify": typeof FastifyInstrumentation
+  "@opentelemetry/instrumentation-fs": typeof FsInstrumentation
+  "@opentelemetry/instrumentation-generic-pool": typeof GenericPoolInstrumentation
+  "@opentelemetry/instrumentation-graphql": typeof GraphQLInstrumentation
+  "@opentelemetry/instrumentation-grpc": typeof GrpcInstrumentation
+  "@opentelemetry/instrumentation-hapi": typeof HapiInstrumentation
+  "@opentelemetry/instrumentation-http": typeof HttpInstrumentation
+  "@opentelemetry/instrumentation-ioredis": typeof IORedisInstrumentation
+  "@opentelemetry/instrumentation-kafkajs": typeof KafkaJsInstrumentation
+  "@opentelemetry/instrumentation-knex": typeof KnexInstrumentation
+  "@opentelemetry/instrumentation-koa": typeof KoaInstrumentation
+  "@opentelemetry/instrumentation-lru-memoizer": typeof LruMemoizerInstrumentation
+  "@opentelemetry/instrumentation-memcached": typeof MemcachedInstrumentation
+  "@opentelemetry/instrumentation-mongodb": typeof MongoDBInstrumentation
+  "@opentelemetry/instrumentation-mongoose": typeof MongooseInstrumentation
+  "@opentelemetry/instrumentation-mysql2": typeof MySQL2Instrumentation
+  "@opentelemetry/instrumentation-mysql": typeof MySQLInstrumentation
+  "@opentelemetry/instrumentation-nestjs-core": typeof NestInstrumentation
+  "@opentelemetry/instrumentation-net": typeof NetInstrumentation
+  "@opentelemetry/instrumentation-pg": typeof PgInstrumentation
+  "@opentelemetry/instrumentation-pino": typeof PinoInstrumentation
+  "@opentelemetry/instrumentation-redis": typeof RedisInstrumentationV2
+  "@opentelemetry/instrumentation-redis-4": typeof RedisInstrumentationV4
+  "@opentelemetry/instrumentation-restify": typeof RestifyInstrumentation
+  "@opentelemetry/instrumentation-router": typeof RouterInstrumentation
+  "@opentelemetry/instrumentation-socket.io": typeof SocketIoInstrumentation
+  "@opentelemetry/instrumentation-tedious": typeof TediousInstrumentation
+  "@opentelemetry/instrumentation-undici": typeof UndiciInstrumentation
+  "@opentelemetry/instrumentation-winston": typeof WinstonInstrumentation
 }
 
 // Maps of instrumentation module name to instrumentation class name
@@ -165,13 +166,12 @@ const RESOURCE_DETECTORS = {
   "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
   "@opentelemetry/resource-detector-azure": ["azureAppServiceDetector"],
   "@opentelemetry/resource-detector-container": ["containerDetector"],
-  "@opentelemetry/resource-detector-gcp": ["gcpDetector"],
 } as const
 
 export type InstrumentationConfigMap = {
-  readonly [I in keyof InstrumentationTypes]?: InstrumentationTypes[I] extends {
-    setConfig(config: infer C): unknown
-  }
+  [I in keyof InstrumentationTypes]?: InstrumentationTypes[I] extends new (
+    config: infer C,
+  ) => Instrumentation
     ? C
     : never
 }
@@ -292,18 +292,4 @@ export function getResource(
   )
 
   return new Resource({}, attributes)
-}
-
-async function load(file: string): Promise<unknown> {
-  const imported = (await import(file)) as object
-
-  const hasDefault = "default" in imported
-  const keyCount = Object.keys(imported).length
-
-  const useDefaultExport =
-    hasDefault &&
-    (keyCount === 1 || (keyCount === 2 && "__esModule" in imported))
-
-  if (useDefaultExport) return imported.default
-  else return imported
 }

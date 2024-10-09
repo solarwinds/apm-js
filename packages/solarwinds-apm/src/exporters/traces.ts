@@ -23,6 +23,9 @@ export class TraceExporter extends OTLPTraceExporter {
     super({
       url: config.otlp.tracesEndpoint,
       headers: config.otlp.headers,
+      httpAgentOptions: {
+        ca: config.certificate,
+      },
     })
   }
 }

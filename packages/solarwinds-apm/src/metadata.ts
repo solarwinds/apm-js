@@ -14,28 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import fs from "node:fs/promises"
 import process from "node:process"
 
 import { type Attributes } from "@opentelemetry/api"
 import { dependencies } from "@solarwinds-apm/dependencies"
 import semver from "semver"
-
-let version: string
-try {
-  const json = await fs.readFile("../package.json", { encoding: "utf-8" })
-  const parsed = JSON.parse(json) as Record<string, unknown>
-  if (typeof parsed.version === "string") {
-    version = parsed.version
-  } else {
-    // Should never happen
-    version = null!
-  }
-} catch {
-  // Should also never happen
-  version = null!
-}
-export const VERSION = version
 
 /**
  * Versions of the dependencies of Node.js itself

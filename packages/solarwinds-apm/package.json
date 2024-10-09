@@ -50,9 +50,9 @@
     "provenance": true
   },
   "scripts": {
-    "build": "rollup -c --forceExit",
-    "lint": "prettier --check . && eslint . --max-warnings=0",
-    "lint:fix": "eslint --fix . && prettier --write .",
+    "build": "node version.js && rollup -c --forceExit",
+    "lint": "node version.js && prettier --check . && eslint . --max-warnings=0",
+    "lint:fix": "node version.js && eslint --fix . && prettier --write .",
     "release": "node ../../scripts/publish.js",
     "test": "swtest -p test/tsconfig.json -c src"
   },

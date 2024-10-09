@@ -30,7 +30,8 @@ import {
 import { oboe } from "@solarwinds-apm/bindings"
 import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
-import { modules, VERSION } from "../metadata.js"
+import { modules } from "../metadata.js"
+import { VERSION } from "../version.js"
 import certificate from "./certificate.js"
 
 export async function reporter(
