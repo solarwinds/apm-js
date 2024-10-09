@@ -110,6 +110,7 @@ interface InstrumentationTypes {
 // Maps of instrumentation module name to instrumentation class name
 const CORE_INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-http": "HttpInstrumentation",
+  "@opentelemetry/instrumentation-undici": "UndiciInstrumentation",
 } as const
 const INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-amqplib": "AmqplibInstrumentation",
@@ -149,7 +150,6 @@ const INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-router": "RouterInstrumentation",
   "@opentelemetry/instrumentation-socket.io": "SocketIoInstrumentation",
   "@opentelemetry/instrumentation-tedious": "TediousInstrumentation",
-  "@opentelemetry/instrumentation-undici": "UndiciInstrumentation",
   "@opentelemetry/instrumentation-winston": "WinstonInstrumentation",
 } as const
 
