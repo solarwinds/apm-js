@@ -60,7 +60,9 @@ const PATCHERS = [
   }),
 
   patcher(["@opentelemetry/instrumentation-aws-sdk"], (config) => {
-    config.enabled ??= IS_AWS_LAMBDA
+    if (IS_AWS_LAMBDA) {
+      config.enabled ??= true
+    }
   }),
 
   patcher(["@opentelemetry/instrumentation-fs"], (config) => {
