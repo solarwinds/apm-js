@@ -29,6 +29,7 @@
 | `http`                      | `*`                | `@opentelemetry/instrumentation-http`             |
 | `https`                     | `*`                | `@opentelemetry/instrumentation-http`             |
 | `ioredis`                   | `>=2.0.0 <6.0.0`   | `@opentelemetry/instrumentation-ioredis`          |
+| `kafkajs`                   | `>=0.1.0 <3.0.0`   | `@opentelemetry/instrumentation-kafkajs`          |
 | `knex`                      | `>=0.10.0 <4.0.0`  | `@opentelemetry/instrumentation-knex`             |
 | `koa`                       | `>=2.0.0 <3.0.0`   | `@opentelemetry/instrumentation-koa`              |
 | `lru-memoizer`              | `>=1.3.0 <3.0.0`   | `@opentelemetry/instrumentation-lru-memoizer`     |

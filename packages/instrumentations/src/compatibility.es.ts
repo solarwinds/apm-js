@@ -25,7 +25,7 @@ import { getInstrumentations } from "./index.js"
 
 const instrumentations = (await getInstrumentations(
   {},
-  false,
+  "all",
 )) as InstrumentationBase[]
 
 const versions = new Map<
