@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type ServerResponse } from "node:http"
-
 import {
   ROOT_CONTEXT,
   type Span,
@@ -76,7 +74,11 @@ const PATCHERS = [
       if ("setHeader" in response) {
         const context = trace.setSpan(ROOT_CONTEXT, span)
         options.responsePropagator.inject(context, response, {
-          set: (res: ServerResponse, k, v) => res.setHeader(k, v),
+          set: (res: typeof response, k, v) => {
+            if (!res.hasHeader(k)) {
+              res.setHeader(k, v)
+            }
+          },
         })
       }
 
@@ -107,7 +109,7 @@ const PATCHERS = [
 
       const original = config.logHook
       config.logHook = (span: Span, record: Record<string, unknown>) => {
-        record["resource.service.name"] = options.serviceName
+        record["resource.service.name"] ??= options.serviceName
 
         original?.(span, record)
       }
