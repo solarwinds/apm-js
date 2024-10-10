@@ -29,6 +29,9 @@ export class MetricExporter extends OTLPMetricExporter {
     super({
       url: config.otlp.metricsEndpoint,
       headers: config.otlp.headers,
+      httpAgentOptions: {
+        ca: config.certificate,
+      },
     })
   }
 

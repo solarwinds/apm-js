@@ -14,19 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-proto"
+import fs from "node:fs/promises"
 
-import { type ExtendedSwConfiguration } from "../config.js"
+import eslint from "eslint"
+import prettier from "prettier"
 
-export class LogExporter extends OTLPLogExporter {
-  constructor(config: ExtendedSwConfiguration) {
-    super({
-      url: config.otlp.logsEndpoint,
-      headers: config.otlp.headers,
-      // @ts-expect-error https://github.com/open-telemetry/opentelemetry-js/issues/5057
-      httpAgentOptions: {
-        ca: config.certificate,
-      },
-    })
-  }
-}
+const ESLint = await eslint.loadESLint({ useFlatConfig: true })
+
+const version = JSON.parse(
+  await fs.readFile("package.json", { encoding: "utf-8" }),
+).version
+
+const code = `export const VERSION = "${version}"`
+const formatted = await prettier.format(code, { parser: "typescript" })
+const linted = await new ESLint({ fix: true }).lintText(formatted, {
+  filePath: "src/version.ts",
+})
+
+await fs.writeFile("src/version.ts", linted[0].output)
