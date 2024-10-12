@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
+import { register } from "module"
 
 import { init } from "./init.js"
 import { global } from "./storage.js"
@@ -26,6 +27,7 @@ if (!IS_SERVERLESS) {
 const first = Symbol()
 if (global("init", () => first) === first) {
   try {
+    register("./hooks.js", import.meta.url)
     await init()
   } catch (error) {
     console.error(error)
