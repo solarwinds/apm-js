@@ -48,6 +48,7 @@ import { type Configuration, printError, read } from "./config.js"
 import { componentLogger, Logger } from "./logger.js"
 import { patch } from "./patches.js"
 import { ParentSpanProcessor } from "./processing/parent-span.js"
+import { ResponseTimeProcessor } from "./processing/response-time.js"
 import { TransactionNameProcessor } from "./processing/transaction-name.js"
 import {
   RequestHeadersPropagator,
@@ -204,12 +205,10 @@ async function initTracing(
         Promise.resolve((sampler as AppopticsSampler).isReady(timeout)),
     })
   } else {
-    const [{ GrpcSampler }, { TraceExporter }, { ResponseTimeProcessor }] =
-      await Promise.all([
-        import("./sampling/grpc.js"),
-        import("./exporters/traces.js"),
-        import("./processing/response-time.js"),
-      ])
+    const [{ GrpcSampler }, { TraceExporter }] = await Promise.all([
+      import("./sampling/grpc.js"),
+      import("./exporters/traces.js"),
+    ])
 
     sampler = new GrpcSampler(config)
     processors = [
