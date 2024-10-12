@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { API } from "./init.js"
+import { api } from "./init.js"
 
 /**
  * Wait until the library is ready to sample traces
@@ -25,7 +25,6 @@ import { API } from "./init.js"
  * @returns Whether the library is ready
  */
 export async function waitUntilReady(timeout: number): Promise<boolean> {
-  const api = await API.value
   return api.waitUntilReady(timeout)
 }
 

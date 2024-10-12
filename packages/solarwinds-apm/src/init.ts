@@ -56,20 +56,15 @@ import {
 } from "./propagation/headers.js"
 import { TraceContextPropagator } from "./propagation/trace-context.js"
 import { type GrpcSampler } from "./sampling/grpc.js"
-import { global } from "./storage.js"
 import { VERSION } from "./version.js"
 
+// portion of the public API that depends on initialisation
 interface Api {
   waitUntilReady: (timeout: number) => Promise<boolean>
 }
-export const API = global("api", () => {
-  const api: { value: Promise<Api>; resolve: (value: Api) => void } = {
-    value: null!,
-    resolve: null!,
-  }
-  api.value = new Promise<Api>((resolve) => (api.resolve = resolve))
-  return api
-})
+export const api: Api = {
+  waitUntilReady: () => Promise.resolve(false),
+}
 
 export async function init() {
   let config: Configuration
@@ -200,10 +195,8 @@ async function initTracing(
       new ParentSpanProcessor(),
     ]
 
-    API.resolve({
-      waitUntilReady: (timeout) =>
-        Promise.resolve((sampler as AppopticsSampler).isReady(timeout)),
-    })
+    api.waitUntilReady = (timeout) =>
+      Promise.resolve((sampler as AppopticsSampler).isReady(timeout))
   } else {
     const [{ GrpcSampler }, { TraceExporter }] = await Promise.all([
       import("./sampling/grpc.js"),
@@ -218,17 +211,15 @@ async function initTracing(
       new ParentSpanProcessor(),
     ]
 
-    API.resolve({
-      waitUntilReady: (timeout) =>
-        new Promise((resolve) => {
-          void (sampler as GrpcSampler).ready.then(() => {
-            resolve(true)
-          })
-          void setTimeout(timeout).then(() => {
-            resolve(false)
-          })
-        }),
-    })
+    api.waitUntilReady = (timeout) =>
+      new Promise((resolve) => {
+        void (sampler as GrpcSampler).ready.then(() => {
+          resolve(true)
+        })
+        void setTimeout(timeout).then(() => {
+          resolve(false)
+        })
+      })
   }
 
   const provider = new NodeTracerProvider({
