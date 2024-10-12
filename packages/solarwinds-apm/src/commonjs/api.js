@@ -16,8 +16,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-module.exports.VERSION = "0.0.0-0";
-
 module.exports.setTransactionName = function setTransactionName(name) {
   if (api) {
     return api.setTransactionName(name);
