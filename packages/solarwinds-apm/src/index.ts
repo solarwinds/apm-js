@@ -14,21 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import fs from "node:fs/promises"
+import { IS_SERVERLESS } from "@solarwinds-apm/module"
 
-import eslint from "eslint"
-import prettier from "prettier"
+import { init } from "./init.js"
+import { global } from "./storage.js"
 
-const ESLint = await eslint.loadESLint({ useFlatConfig: true })
+if (!IS_SERVERLESS) {
+  await import("./commonjs/version.js")
+}
 
-const version = JSON.parse(
-  await fs.readFile("package.json", { encoding: "utf-8" }),
-).version
+const first = Symbol()
+if (global("init", () => first) === first) {
+  try {
+    await init()
+  } catch (error) {
+    console.error(error)
+  }
+}
 
-const code = `export const VERSION = "${version}"`
-const formatted = await prettier.format(code, { parser: "typescript" })
-const linted = await new ESLint({ fix: true }).lintText(formatted, {
-  filePath: "src/version.ts",
-})
-
-await fs.writeFile("src/version.ts", linted[0].output)
+export * from "./api.js"

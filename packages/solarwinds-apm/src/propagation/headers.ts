@@ -23,7 +23,6 @@ import {
 import type * as sampling from "@solarwinds-apm/sampling"
 
 import { contextStorage } from "../storage.js"
-import { firstIfArray, joinIfArray } from "../util.js"
 
 /** SolarWinds headers */
 export interface Headers {
@@ -103,5 +102,38 @@ export class ResponseHeadersPropagator implements TextMapPropagator<unknown> {
 
   extract(context: Context): Context {
     return context
+  }
+}
+
+/**
+ * Returns the first element if the value is an array
+ * or the value as-is otherwise
+ */
+export function firstIfArray<T>(value: T | T[] | undefined): T | undefined {
+  if (Array.isArray(value)) {
+    return value[0]
+  } else {
+    return value
+  }
+}
+
+/**
+ * Returns the result of {@link Array.join} if the value is an array
+ * or the value as-is otherwise
+ *
+ * @param separator - Separator used between elements
+ */
+export function joinIfArray(
+  value: string | string[] | undefined,
+  separator: string,
+): string | undefined {
+  if (Array.isArray(value)) {
+    if (value.length > 0) {
+      return value.join(separator)
+    } else {
+      return undefined
+    }
+  } else {
+    return value
   }
 }

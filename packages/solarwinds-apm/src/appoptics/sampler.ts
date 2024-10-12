@@ -108,7 +108,11 @@ export class AppopticsSampler extends Sampler {
   }
 
   override toString(): string {
-    return `Legacy Sampler`
+    return "AppOptics Sampler"
+  }
+
+  isReady(timeout: number): boolean {
+    return oboe.Context.isReady(timeout) === oboe.SERVER_RESPONSE_OK
   }
 }
 

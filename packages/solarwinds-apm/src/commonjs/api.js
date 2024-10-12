@@ -14,19 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-proto"
+module.exports.VERSION = "0.0.0-0";
 
-import { type Configuration } from "../config.js"
-
-export class LogExporter extends OTLPLogExporter {
-  constructor(config: Configuration) {
-    super({
-      url: config.otlp.logsEndpoint,
-      headers: config.otlp.headers,
-      // @ts-expect-error https://github.com/open-telemetry/opentelemetry-js/issues/5057
-      httpAgentOptions: {
-        ca: config.trustedpath,
-      },
-    })
+module.exports.setTransactionName = function setTransactionName(name) {
+  if (api) {
+    return api.setTransactionName(name);
+  } else {
+    return false;
   }
-}
+};
+
+module.exports.waitUntilReady = function waitUntilReady(timeout) {
+  return imported.then((api) => api.waitUntilReady(timeout));
+};
+
+/** @type{import("../api")} */
+let api = undefined;
+const imported = import("../api.js").then((imported) => {
+  module.exports.VERSION = imported.VERSION;
+  api = imported;
+  return imported;
+});
