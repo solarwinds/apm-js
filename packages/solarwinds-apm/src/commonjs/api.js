@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 Copyright 2023-2024 SolarWinds Worldwide, LLC.
 

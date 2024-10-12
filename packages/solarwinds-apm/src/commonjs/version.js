@@ -32,7 +32,7 @@ try {
         process.version +
         ") has reached End Of Life over one year ago (" +
         versions[major].end +
-        "). It is no longer supported by this library (solarwinds-apm) and things may break unexpectedly. " +
+        "). It is no longer supported by this library (solarwinds-apm) and the application will not be instrumented. " +
         "SolarWinds STRONGLY recommends customers use a non-EOL Node.js version receiving security updates.";
 
       throw message;
