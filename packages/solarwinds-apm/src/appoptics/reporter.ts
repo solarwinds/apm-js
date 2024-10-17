@@ -16,7 +16,6 @@ limitations under the License.
 
 import {
   type Attributes,
-  diag,
   type DiagLogFunction,
   type DiagLogger,
   DiagLogLevel,
@@ -30,6 +29,7 @@ import {
 import { oboe } from "@solarwinds-apm/bindings"
 
 import { type Configuration } from "../config.js"
+import { componentLogger } from "../logger.js"
 import { modules } from "../metadata.js"
 import { VERSION } from "../version.js"
 import certificate from "./certificate.js"
@@ -67,9 +67,7 @@ export async function reporter(
     token_bucket_rate: oboe.SETTINGS_UNSET,
   })
 
-  const logger = diag.createComponentLogger({
-    namespace: `[solarwinds-apm / oboe]`,
-  })
+  const logger = componentLogger({ name: "oboe" })
   oboe.debug_log_add((level, sourceName, sourceLine, message) => {
     const log = oboeLevelToOtelLogger(level, logger)
 

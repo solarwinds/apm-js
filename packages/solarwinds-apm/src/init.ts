@@ -185,10 +185,7 @@ async function initTracing(
       import("./appoptics/processing/inbound-metrics.js"),
     ])
 
-    sampler = new AppopticsSampler(
-      config,
-      diag.createComponentLogger({ namespace: "[solarwinds-apm / sampler]" }),
-    )
+    sampler = new AppopticsSampler(config)
     processors = [
       new AppopticsInboundMetricsProcessor(config),
       new BatchSpanProcessor(new AppopticsTraceExporter(oboe)),

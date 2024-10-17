@@ -46,6 +46,8 @@ import {
   type TriggerTrace,
 } from "@solarwinds-apm/sampling"
 
+import { type Configuration } from "../config.js"
+import { componentLogger } from "../logger.js"
 import { HEADERS_STORAGE } from "../propagation/headers.js"
 import { swValue } from "../propagation/trace-context.js"
 import { Sampler } from "../sampling/sampler.js"
@@ -55,6 +57,10 @@ export function traceParent(spanContext: SpanContext): string {
 }
 
 export class AppopticsSampler extends Sampler {
+  constructor(config: Configuration) {
+    super(config, componentLogger(AppopticsSampler))
+  }
+
   override shouldSample(...params: SampleParams): SamplingResult {
     const [context, , , , attributes] = params
 
