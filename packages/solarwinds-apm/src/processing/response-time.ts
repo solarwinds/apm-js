@@ -16,7 +16,6 @@ limitations under the License.
 
 import {
   type Attributes,
-  type DiagLogger,
   metrics,
   SpanKind,
   SpanStatusCode,
@@ -34,6 +33,7 @@ import {
 } from "@opentelemetry/semantic-conventions"
 import { lazy } from "@solarwinds-apm/lazy"
 
+import { componentLogger } from "../logger.js"
 import { ATTR_HTTP_METHOD, ATTR_HTTP_STATUS_CODE } from "../semattrs.old.js"
 import { isRootOrEntry } from "./parent-span.js"
 import { TRANSACTION_NAME_ATTRIBUTE } from "./transaction-name.js"
@@ -58,9 +58,7 @@ export class ResponseTimeProcessor
   extends NoopSpanProcessor
   implements SpanProcessor
 {
-  constructor(protected readonly logger: DiagLogger) {
-    super()
-  }
+  readonly #logger = componentLogger(ResponseTimeProcessor)
 
   override onEnd(span: ReadableSpan): void {
     if (!isRootOrEntry(span)) {
@@ -87,7 +85,7 @@ export class ResponseTimeProcessor
       }
     }
 
-    this.logger.debug("recording response time", time, attributes)
+    this.#logger.debug("recording response time", time, attributes)
     RESPONSE_TIME.record(time, attributes)
   }
 }

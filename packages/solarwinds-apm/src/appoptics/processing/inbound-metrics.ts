@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type DiagLogger, SpanStatusCode } from "@opentelemetry/api"
+import { SpanStatusCode } from "@opentelemetry/api"
 import { hrTimeToMicroseconds } from "@opentelemetry/core"
 import {
   NoopSpanProcessor,
@@ -22,8 +22,9 @@ import {
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
 import { oboe } from "@solarwinds-apm/bindings"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
+import { type Configuration } from "../../config.js"
+import { componentLogger } from "../../logger.js"
 import { isRootOrEntry } from "../../processing/parent-span.js"
 import {
   computedTransactionName,
@@ -35,12 +36,10 @@ export class AppopticsInboundMetricsProcessor
   extends NoopSpanProcessor
   implements SpanProcessor
 {
+  readonly #logger = componentLogger(AppopticsInboundMetricsProcessor)
   readonly #defaultTransactionName?: string
 
-  constructor(
-    config: SwConfiguration,
-    protected readonly logger: DiagLogger,
-  ) {
+  constructor(config: Configuration) {
     super()
     this.#defaultTransactionName = config.transactionName
   }
@@ -55,7 +54,7 @@ export class AppopticsInboundMetricsProcessor
     const duration = hrTimeToMicroseconds(span.duration)
 
     let transaction = span.attributes[TRANSACTION_NAME_ATTRIBUTE]
-    this.logger.debug("initial transaction name", transaction)
+    this.#logger.debug("initial transaction name", transaction)
     if (typeof transaction !== "string") {
       transaction =
         this.#defaultTransactionName ?? computedTransactionName(span)
@@ -79,7 +78,7 @@ export class AppopticsInboundMetricsProcessor
         domain: null,
       })
     }
-    this.logger.debug("final transaction name", transaction)
+    this.#logger.debug("final transaction name", transaction)
 
     span.attributes[TRANSACTION_NAME_ATTRIBUTE] = transaction
   }

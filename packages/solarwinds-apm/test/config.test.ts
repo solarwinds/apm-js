@@ -15,13 +15,11 @@ limitations under the License.
 */
 
 import { DiagLogLevel } from "@opentelemetry/api"
-import { oboe } from "@solarwinds-apm/bindings"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
-import aoCert from "../src/appoptics/certificate.js"
-import { type ExtendedSwConfiguration, readConfig } from "../src/config.js"
+import { type Configuration, read } from "../src/config.js"
 
-describe("readConfig", () => {
+describe("read", () => {
   beforeEach(() => {
     for (const key of Object.keys(process.env)) {
       if (key.startsWith("SW_APM_") || key.startsWith("OTEL_")) {
@@ -32,32 +30,32 @@ describe("readConfig", () => {
   })
 
   it("returns proper defaults", async () => {
-    const config = await readConfig()
-    const expected: ExtendedSwConfiguration = {
-      token: "token",
-      serviceName: "name",
+    const config = await read()
+    const expected: Configuration = {
+      service: "name",
+      serviceKey: {
+        name: "name",
+        token: "token",
+      },
       enabled: true,
-      otelLogLevel: DiagLogLevel.WARN,
-      oboeLogLevel: oboe.INIT_LOG_LEVEL_WARNING,
-      oboeLogType: oboe.INIT_LOG_TYPE_NULL,
+      legacy: false,
+      collector: "apm.collector.na-01.cloud.solarwinds.com",
+      logLevel: DiagLogLevel.WARN,
       triggerTraceEnabled: true,
       runtimeMetrics: true,
       insertTraceContextIntoLogs: false,
       insertTraceContextIntoQueries: false,
       exportLogsEnabled: false,
-      instrumentations: {},
-      metrics: { interval: 60_000, views: [] },
+      instrumentations: { set: "all" },
+      resourceDetectors: { set: "all" },
       otlp: {
+        tracesEndpoint:
+          "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
+        metricsEndpoint:
+          "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
         headers: { authorization: "Bearer token" },
-      },
-      dev: {
-        otlpTraces: false,
-        otlpMetrics: false,
-        swTraces: true,
-        swMetrics: true,
-        initMessage: true,
-        extraResourceDetection: true,
-        instrumentationsDefaultDisabled: false,
+        logsEndpoint:
+          "https://otel.collector.na-01.cloud.solarwinds.com/v1/logs",
       },
     }
 
@@ -67,7 +65,7 @@ describe("readConfig", () => {
   it("properly sets OTLP endpoints", async () => {
     process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
 
-    const config = await readConfig()
+    const config = await read()
     expect(config.otlp).to.include({
       tracesEndpoint:
         "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
@@ -80,90 +78,78 @@ describe("readConfig", () => {
   it("parses booleans", async () => {
     process.env.SW_APM_ENABLED = "0"
 
-    const config = await readConfig()
+    const config = await read()
     expect(config).to.include({ enabled: false })
   })
 
   it("parses tracing mode", async () => {
     process.env.SW_APM_TRACING_MODE = "enabled"
 
-    const config = await readConfig()
+    const config = await read()
     expect(config).to.include({ tracingMode: true })
   })
 
   it("parses trusted path", async () => {
     process.env.SW_APM_TRUSTEDPATH = "package.json"
 
-    const config = await readConfig()
-    expect(config.certificate).to.include("solarwinds-apm")
+    const config = await read()
+    expect(config.trustedpath).to.include("solarwinds-apm")
   })
 
   it("parses transaction settings", async () => {
-    process.env.SW_APM_CONFIG_FILE = "test/test.config.js"
+    process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-settings.js"
 
-    const config = await readConfig()
+    const config = await read()
     expect(config.transactionSettings).not.to.be.undefined
     expect(config.transactionSettings).to.have.length(3)
-  })
-
-  it("parses dev env", async () => {
-    process.env.SW_APM_DEV_OTLP_TRACES = "true"
-    process.env.SW_APM_DEV_SW_METRICS = "0"
-
-    const config = await readConfig()
-    expect(config.dev.otlpTraces).to.be.true
-    expect(config.dev.swMetrics).to.be.false
   })
 
   it("parses otel service name", async () => {
     process.env.OTEL_SERVICE_NAME = "otel-name"
 
-    const config = await readConfig()
-    expect(config.serviceName).to.equal("otel-name")
+    const config = await read()
+    expect(config.service).to.equal("otel-name")
   })
 
   it("properly disables logging", async () => {
     process.env.SW_APM_LOG_LEVEL = "none"
 
-    const config = await readConfig()
-    expect(config.otelLogLevel).to.equal(DiagLogLevel.NONE)
-    expect(config.oboeLogType).to.equal(oboe.INIT_LOG_TYPE_DISABLE)
+    const config = await read()
+    expect(config.logLevel).to.equal(DiagLogLevel.NONE)
   })
 
-  it("throws on bad boolean", () => {
+  it("throws on bad boolean", async () => {
     process.env.SW_APM_ENABLED = "foo"
 
-    expect(readConfig).to.throw()
+    await expect(read()).to.be.rejected
   })
 
-  it("throws on bad tracing mode", () => {
+  it("throws on bad tracing mode", async () => {
     process.env.SW_APM_TRACING_MODE = "foo"
 
-    expect(readConfig).to.throw()
+    await expect(read()).to.be.rejected
   })
 
-  it("throws on non-existent trusted path", () => {
+  it("throws on non-existent trusted path", async () => {
     process.env.SW_APM_TRUSTEDPATH = "foo"
 
-    expect(readConfig).to.throw()
+    await expect(read()).to.be.rejected
   })
 
   it("uses the right defaults for AppOptics", async () => {
     process.env.SW_APM_COLLECTOR = "collector.appoptics.com"
     process.env.SW_APM_EXPORT_LOGS_ENABLED = "true"
 
-    const config = await readConfig()
+    const config = await read()
     expect(config).to.include({
-      metricFormat: 1,
-      certificate: aoCert,
       exportLogsEnabled: false,
     })
   })
 
   it("supports cjs configs", async () => {
-    process.env.SW_APM_CONFIG_FILE = "test/test.config.cjs"
+    process.env.SW_APM_CONFIG_FILE = "test/configs/commonjs.cjs"
 
-    const config = await readConfig()
+    const config = await read()
     expect(config.transactionName).not.to.be.undefined
     expect(config.transactionName).to.equal("cjs")
   })

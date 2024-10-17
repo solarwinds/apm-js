@@ -14,363 +14,297 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { setTimeout } from "node:timers/promises"
+
 import {
   diag,
-  type DiagLogFunction,
   type DiagLogger,
   metrics,
-  type TextMapPropagator,
   type TracerProvider,
 } from "@opentelemetry/api"
-import { logs } from "@opentelemetry/api-logs"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
-import {
-  type Instrumentation,
-  registerInstrumentations,
-} from "@opentelemetry/instrumentation"
-import { Resource } from "@opentelemetry/resources"
-import {
-  BatchLogRecordProcessor,
-  LoggerProvider,
-  type LogRecordProcessor,
-} from "@opentelemetry/sdk-logs"
+import { registerInstrumentations } from "@opentelemetry/instrumentation"
+import { detectResourcesSync, Resource } from "@opentelemetry/resources"
 import {
   MeterProvider,
   type MetricReader,
   PeriodicExportingMetricReader,
 } from "@opentelemetry/sdk-metrics"
-import { type Sampler, type SpanProcessor } from "@opentelemetry/sdk-trace-base"
 import {
-  NodeTracerProvider,
-  ParentBasedSampler,
-} from "@opentelemetry/sdk-trace-node"
-import { SEMRESATTRS_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
-import { oboe } from "@solarwinds-apm/bindings"
+  BatchSpanProcessor,
+  type Sampler,
+  type SpanProcessor,
+} from "@opentelemetry/sdk-trace-base"
+import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
+import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
+import { type oboe } from "@solarwinds-apm/bindings"
 import {
-  getDetectedResource,
   getInstrumentations,
+  getResource,
 } from "@solarwinds-apm/instrumentations"
-import { IS_SERVERLESS } from "@solarwinds-apm/module"
-import * as sdk from "@solarwinds-apm/sdk"
 
+import { type AppopticsSampler } from "./appoptics/sampler.js"
+import { type Configuration, printError, read } from "./config.js"
+import { componentLogger, Logger } from "./logger.js"
+import { patch } from "./patches.js"
+import { ParentSpanProcessor } from "./processing/parent-span.js"
+import { ResponseTimeProcessor } from "./processing/response-time.js"
+import { TransactionNameProcessor } from "./processing/transaction-name.js"
 import {
-  type ExtendedSwConfiguration,
-  printError,
-  readConfig,
-} from "./config.js"
-import { FULL_VERSION } from "./version.js"
+  RequestHeadersPropagator,
+  ResponseHeadersPropagator,
+} from "./propagation/headers.js"
+import { TraceContextPropagator } from "./propagation/trace-context.js"
+import { type GrpcSampler } from "./sampling/grpc.js"
+import { VERSION } from "./version.js"
+
+// portion of the public API that depends on initialisation
+interface Api {
+  waitUntilReady: (timeout: number) => Promise<boolean>
+}
+export const api: Api = {
+  waitUntilReady: () => Promise.resolve(false),
+}
 
 export async function init() {
-  let config
+  let config: Configuration
   try {
-    config = readConfig()
-    if (config instanceof Promise) config = await config
+    config = await read()
   } catch (err) {
     console.warn(
-      "Invalid SolarWinds APM configuration, application will not be instrumented",
+      "Invalid SolarWinds APM configuration, application will not be instrumented.",
     )
     printError(err)
     return
   }
 
-  diag.setLogger(new sdk.SwDiagLogger(), config.otelLogLevel)
-  const logger = diag.createComponentLogger({ namespace: "[sw/init]" })
-  logger.debug(`CWD is ${process.cwd()}`)
-  logger.debug("SolarWinds APM configuration", config)
+  diag.setLogger(new Logger(), config.logLevel)
+  const logger = componentLogger(init)
+  logger.debug("working directory", process.cwd())
+  logger.debug("config", config)
 
   if (!config.enabled) {
-    logger.info("Library disabled, application will not be instrumented")
+    logger.warn("Library disabled, application will not be instrumented.")
     return
   }
-  if (sdk.OBOE_ERROR) {
-    logger.warn(
-      "Unsupported platform, application will not be instrumented",
-      sdk.OBOE_ERROR,
+
+  const registerInstrumentations = await initInstrumentations(config, logger)
+  const resource = Resource.default()
+    .merge(
+      new Resource({
+        [ATTR_SERVICE_NAME]: config.service,
+        "sw.data.module": "apm",
+        "sw.apm.version": VERSION,
+      }),
     )
-    return
-  }
-
-  // initialize instrumentations before any asynchronous code or imports
-  let registerInstrumentations = initInstrumentations(config)
-  if (registerInstrumentations instanceof Promise) {
-    registerInstrumentations = await registerInstrumentations
-  }
-
-  let resource = Resource.default().merge(
-    new Resource({
-      [SEMRESATTRS_SERVICE_NAME]: config.serviceName,
-      "sw.data.module": "apm",
-      "sw.apm.version": FULL_VERSION,
-    }),
-  )
-  resource = resource.merge(
-    await getDetectedResource(config.dev.extraResourceDetection),
-  )
-
-  const [reporter, serverlessApi] = IS_SERVERLESS
-    ? [undefined, sdk.createServerlessApi(config)]
-    : [sdk.createReporter(config), undefined]
-
-  oboe.debug_log_add((level, sourceName, sourceLine, message) => {
-    const logger = diag.createComponentLogger({
-      namespace: `[sw/oboe]`,
-    })
-    const log = oboeLevelToOtelLogger(level, logger)
-
-    if (sourceName && level > oboe.INIT_LOG_LEVEL_INFO) {
-      const source = { source: sourceName, line: sourceLine }
-      log(message, source)
-    } else {
-      log(message)
-    }
-  }, config.oboeLogLevel)
-
-  const [tracerProvider, meterProvider] = await Promise.all([
-    initTracing(config, resource, reporter, serverlessApi),
-    initMetrics(config, resource, logger, reporter),
-    initLogs(config, resource),
-    initMessage(config, resource, reporter),
-  ])
-  registerInstrumentations(tracerProvider, meterProvider)
-}
-
-function initInstrumentations(config: ExtendedSwConfiguration) {
-  const traceOptionsResponsePropagator =
-    new sdk.SwTraceOptionsResponsePropagator()
-
-  const registrer = (instrumentations: Instrumentation[]) => {
-    instrumentations = [
-      ...instrumentations,
-      ...(config.instrumentations.extra ?? []),
-    ]
-
-    return (tracerProvider: TracerProvider, meterProvider: MeterProvider) =>
-      registerInstrumentations({
-        instrumentations,
-        tracerProvider,
-        meterProvider,
-      })
-  }
-
-  const instrumentations = getInstrumentations(
-    sdk.patch(config.instrumentations.configs ?? {}, {
-      ...config,
-      responsePropagator: traceOptionsResponsePropagator,
-    }),
-    config.dev.instrumentationsDefaultDisabled,
-  )
-
-  if (instrumentations instanceof Promise)
-    return instrumentations.then(registrer)
-  else return registrer(instrumentations)
-}
-
-async function initTracing(
-  config: ExtendedSwConfiguration,
-  resource: Resource,
-  reporter: oboe.Reporter | undefined,
-  serverlessApi: oboe.OboeAPI | undefined,
-) {
-  const provider = new NodeTracerProvider({
-    sampler: sampler(config, serverlessApi),
-    resource,
-  })
-
-  const processors = await spanProcessors(config, reporter)
-  for (const processor of processors) {
-    provider.addSpanProcessor(processor)
-  }
-
-  provider.register({ propagator: propagator() })
-
-  return provider
-}
-
-async function initMetrics(
-  config: ExtendedSwConfiguration,
-  resource: Resource,
-  logger: DiagLogger,
-  reporter: oboe.Reporter | undefined,
-) {
-  const readers = await metricReaders(config, reporter)
-
-  const provider = new MeterProvider({
-    resource,
-    readers,
-    views: [...sdk.metrics.views, ...config.metrics.views],
-  })
-
-  metrics.setGlobalMeterProvider(provider)
-
-  if (config.runtimeMetrics) {
-    if (sdk.METRICS_ERROR) {
-      logger.warn(
-        "Unsupported platform, runtime metrics will not be collected",
-        sdk.METRICS_ERROR,
-      )
-    } else {
-      sdk.metrics.start()
-    }
-  }
-
-  return provider
-}
-
-async function initLogs(config: ExtendedSwConfiguration, resource: Resource) {
-  if (!config.exportLogsEnabled) return
-
-  const provider = new LoggerProvider({ resource })
-
-  const processors = await logRecordProcessors(config)
-  for (const processor of processors) {
-    provider.addLogRecordProcessor(processor)
-  }
-
-  logs.setGlobalLoggerProvider(provider)
-
-  return provider
-}
-
-async function initMessage(
-  config: ExtendedSwConfiguration,
-  resource: Resource,
-  reporter: oboe.Reporter | undefined,
-) {
-  if (!config.dev.initMessage || !reporter) return
+    .merge(
+      getResource(
+        config.resourceDetectors.configs ?? {},
+        config.resourceDetectors.set!,
+      ),
+    )
+    .merge(
+      detectResourcesSync({
+        detectors: config.resourceDetectors.extra,
+      }),
+    )
 
   if (resource.asyncAttributesPending) {
     await resource.waitForAsyncAttributes?.()
   }
-  sdk.sendStatus(reporter, await sdk.initMessage(resource, FULL_VERSION))
+
+  let oboe: oboe.Reporter | undefined
+  if (config.legacy) {
+    logger.debug("using oboe")
+
+    const { reporter, ERROR } = await import("./appoptics/reporter.js")
+    if (ERROR) {
+      logger.warn(
+        "Unsupported platform for AppOptics, application will not be instrumented.",
+        ERROR,
+      )
+      return
+    }
+
+    oboe = await reporter(config, resource)
+  }
+
+  const meterProvider = await initMetrics(config, resource, oboe, logger)
+  const [tracerProvider] = await Promise.all([
+    initTracing(config, resource, oboe, logger),
+    initLogs(config, resource, logger),
+  ])
+
+  registerInstrumentations(tracerProvider, meterProvider)
 }
 
-function sampler(
-  config: ExtendedSwConfiguration,
-  serverlessApi: oboe.OboeAPI | undefined,
-): Sampler {
-  const sampler = new sdk.SwSampler(
-    config,
-    diag.createComponentLogger({ namespace: "[sw/sampler]" }),
-    serverlessApi,
+async function initInstrumentations(config: Configuration, logger: DiagLogger) {
+  logger.debug("initialising instrumentations")
+
+  const provided = await getInstrumentations(
+    patch(config.instrumentations.configs ?? {}, {
+      ...config,
+      responsePropagator: new ResponseHeadersPropagator(),
+    }),
+    config.instrumentations.set!,
   )
-  return new ParentBasedSampler({
-    root: sampler,
-    remoteParentSampled: sampler,
-    remoteParentNotSampled: sampler,
-  })
-}
+  const extra = config.instrumentations.extra ?? []
 
-function propagator(): TextMapPropagator<unknown> {
-  const baggagePropagator = new W3CBaggagePropagator()
-  const traceContextOptionsPropagator = new sdk.SwTraceContextOptionsPropagator(
-    diag.createComponentLogger({ namespace: "[sw/propagator]" }),
-  )
-  return new CompositePropagator({
-    propagators: [traceContextOptionsPropagator, baggagePropagator],
-  })
-}
-
-async function spanProcessors(
-  config: ExtendedSwConfiguration,
-  reporter: oboe.Reporter | undefined,
-): Promise<SpanProcessor[]> {
-  const processors: SpanProcessor[] = []
-  const logger = diag.createComponentLogger({ namespace: "[sw/processor]" })
-
-  const parentInfoProcessor = new sdk.SwParentInfoSpanProcessor()
-
-  if (config.dev.swTraces) {
-    const exporter = new sdk.SwExporter(
-      config,
-      reporter!,
-      diag.createComponentLogger({ namespace: "[sw/exporter]" }),
-    )
-    const inboundMetricsProcessor = new sdk.SwInboundMetricsSpanProcessor()
-    processors.push(
-      new sdk.CompoundSpanProcessor(
-        exporter,
-        [parentInfoProcessor, inboundMetricsProcessor],
-        logger,
-      ),
-    )
+  return (tracerProvider: TracerProvider, meterProvider: MeterProvider) => {
+    registerInstrumentations({
+      instrumentations: [...provided, ...extra],
+      tracerProvider,
+      meterProvider,
+    })
+    logger.debug("initialised instrumentations")
   }
-
-  if (config.dev.otlpTraces) {
-    const { TraceExporter } = await import("./exporters/traces.js")
-    const exporter = new TraceExporter(config)
-
-    const responseTimeProcessor = new sdk.SwResponseTimeProcessor(config)
-    const transactionNameProcessor = new sdk.SwTransactionNameProcessor()
-
-    processors.push(
-      new sdk.CompoundSpanProcessor(
-        exporter,
-        [parentInfoProcessor, responseTimeProcessor, transactionNameProcessor],
-        logger,
-      ),
-    )
-  }
-
-  return processors
 }
 
-async function metricReaders(
-  config: ExtendedSwConfiguration,
-  reporter: oboe.Reporter | undefined,
-): Promise<MetricReader[]> {
-  const readers: MetricReader[] = []
-
-  if (config.dev.swMetrics) {
-    const exporter = new sdk.SwMetricsExporter(
-      reporter!,
-      diag.createComponentLogger({ namespace: "[sw/metrics]" }),
-    )
-    readers.push(
-      new PeriodicExportingMetricReader({
-        exporter,
-        exportIntervalMillis: config.metrics.interval,
-      }),
-    )
-  }
-
-  if (config.dev.otlpMetrics) {
-    const { MetricExporter } = await import("./exporters/metrics.js")
-    const exporter = new MetricExporter(config)
-    readers.push(
-      new PeriodicExportingMetricReader({
-        exporter,
-        exportIntervalMillis: config.metrics.interval,
-      }),
-    )
-  }
-
-  return readers
-}
-
-async function logRecordProcessors(
-  config: ExtendedSwConfiguration,
-): Promise<LogRecordProcessor[]> {
-  const { LogExporter } = await import("./exporters/logs.js")
-  return [new BatchLogRecordProcessor(new LogExporter(config))]
-}
-
-// https://github.com/boostorg/log/blob/boost-1.82.0/include/boost/log/trivial.hpp#L42-L50
-export function oboeLevelToOtelLogger(
-  level: number,
+async function initTracing(
+  config: Configuration,
+  resource: Resource,
+  oboe: oboe.Reporter | undefined,
   logger: DiagLogger,
-): DiagLogFunction {
-  switch (level) {
-    case 0:
-      return logger.verbose.bind(logger)
-    case 1:
-      return logger.debug.bind(logger)
-    case 2:
-      return logger.info.bind(logger)
-    case 3:
-      return logger.warn.bind(logger)
-    case 4:
-    case 5:
-    default:
-      return logger.error.bind(logger)
+) {
+  logger.debug("initialising tracing")
+
+  let sampler: Sampler
+  let processors: SpanProcessor[]
+  const propagator = new CompositePropagator({
+    propagators: [
+      new RequestHeadersPropagator(),
+      new TraceContextPropagator(),
+      new W3CBaggagePropagator(),
+    ],
+  })
+
+  if (oboe) {
+    const [
+      { AppopticsSampler },
+      { AppopticsTraceExporter },
+      { AppopticsInboundMetricsProcessor },
+    ] = await Promise.all([
+      import("./appoptics/sampler.js"),
+      import("./appoptics/exporters/traces.js"),
+      import("./appoptics/processing/inbound-metrics.js"),
+    ])
+
+    sampler = new AppopticsSampler(config)
+    processors = [
+      new AppopticsInboundMetricsProcessor(config),
+      new BatchSpanProcessor(new AppopticsTraceExporter(oboe)),
+      new ParentSpanProcessor(),
+    ]
+
+    api.waitUntilReady = (timeout) =>
+      Promise.resolve((sampler as AppopticsSampler).isReady(timeout))
+  } else {
+    const [{ GrpcSampler }, { TraceExporter }] = await Promise.all([
+      import("./sampling/grpc.js"),
+      import("./exporters/traces.js"),
+    ])
+
+    sampler = new GrpcSampler(config)
+    processors = [
+      new TransactionNameProcessor(config),
+      new ResponseTimeProcessor(),
+      new BatchSpanProcessor(new TraceExporter(config)),
+      new ParentSpanProcessor(),
+    ]
+
+    api.waitUntilReady = (timeout) =>
+      new Promise((resolve) => {
+        void (sampler as GrpcSampler).ready.then(() => {
+          resolve(true)
+        })
+        void setTimeout(timeout).then(() => {
+          resolve(false)
+        })
+      })
   }
+
+  const provider = new NodeTracerProvider({
+    sampler,
+    resource,
+  })
+  for (const processor of processors) {
+    provider.addSpanProcessor(processor)
+  }
+  provider.register({ propagator })
+
+  logger.debug("initialised tracing")
+  return provider
+}
+
+async function initMetrics(
+  config: Configuration,
+  resource: Resource,
+  oboe: oboe.Reporter | undefined,
+  logger: DiagLogger,
+) {
+  logger.debug("initialiing metrics")
+
+  let readers: MetricReader[]
+
+  if (oboe) {
+    const { AppopticsMetricExporter } = await import(
+      "./appoptics/exporters/metrics.js"
+    )
+    readers = [
+      new PeriodicExportingMetricReader({
+        exporter: new AppopticsMetricExporter(oboe),
+      }),
+    ]
+  } else {
+    const { MetricExporter } = await import("./exporters/metrics.js")
+    readers = [
+      new PeriodicExportingMetricReader({
+        exporter: new MetricExporter(config),
+      }),
+    ]
+  }
+
+  const provider = new MeterProvider({
+    resource,
+    readers,
+  })
+  metrics.setGlobalMeterProvider(provider)
+
+  if (config.runtimeMetrics) {
+    logger.debug("initialising runtime metrics")
+
+    const { enable } = await import("./metrics/runtime.js")
+    enable()
+  }
+
+  logger.debug("initialised metrics")
+  return provider
+}
+
+async function initLogs(
+  config: Configuration,
+  resource: Resource,
+  logger: DiagLogger,
+) {
+  if (!config.exportLogsEnabled) return
+  logger.debug("initialising logs")
+
+  const [
+    { logs },
+    { BatchLogRecordProcessor, LoggerProvider },
+    { LogExporter },
+  ] = await Promise.all([
+    import("@opentelemetry/api-logs"),
+    import("@opentelemetry/sdk-logs"),
+    import("./exporters/logs.js"),
+  ])
+
+  const provider = new LoggerProvider({ resource })
+  provider.addLogRecordProcessor(
+    new BatchLogRecordProcessor(new LogExporter(config)),
+  )
+  logs.setGlobalLoggerProvider(provider)
+
+  logger.debug("logs initialised")
+  return provider
 }

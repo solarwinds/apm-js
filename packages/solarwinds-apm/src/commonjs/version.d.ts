@@ -14,6 +14,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import config from "@solarwinds-apm/rollup-config"
-
-export default config()
+declare const supported: boolean;
+export = supported;

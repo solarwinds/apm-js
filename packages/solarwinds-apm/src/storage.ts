@@ -31,7 +31,7 @@ import * as sdk from "@opentelemetry/sdk-trace-base"
  * @returns Shared global
  */
 export function global<const T>(id: string, init: () => T): T {
-  const key = Symbol.for(`solarwinds-apm global storage / ${id}`)
+  const key = Symbol.for(`solarwinds-apm / ${id}`)
   let storage = Reflect.get(globalThis, key) as T | undefined
 
   if (!storage) {
@@ -101,7 +101,7 @@ export interface SpanStorage<T> {
 }
 
 const GLOBAL_SPAN_STORAGE = global(
-  "solarwinds-apm span storage",
+  "span storage",
   () => new WeakMap<sdk.Span, Map<symbol, unknown>>(),
 )
 

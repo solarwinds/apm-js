@@ -25,7 +25,7 @@ import {
 import { spanStorage } from "../storage.js"
 
 /** Parent storage where false means no parent */
-const PARENT_STORAGE = spanStorage<Span | false>("solarwinds-apm parent span")
+const PARENT_STORAGE = spanStorage<Span | false>("parent")
 
 /** Returns true if this span has no parent or its parent is remote */
 export function isRootOrEntry(span: Span | sdk.Span | ReadableSpan): boolean {

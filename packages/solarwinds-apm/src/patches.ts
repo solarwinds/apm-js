@@ -22,19 +22,21 @@ import {
 } from "@opentelemetry/api"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
 import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
-export interface Options extends SwConfiguration {
+import { type Configuration } from "./config.js"
+
+export interface Options extends Configuration {
   responsePropagator: TextMapPropagator<unknown>
 }
 
 export function patch(
   configs: InstrumentationConfigMap,
   options: Options,
-): void {
+): InstrumentationConfigMap {
   for (const patcher of PATCHERS) {
     patcher(configs, options)
   }
+  return configs
 }
 
 function patcher<const Name extends keyof InstrumentationConfigMap>(
@@ -109,7 +111,7 @@ const PATCHERS = [
 
       const original = config.logHook
       config.logHook = (span: Span, record: Record<string, unknown>) => {
-        record["resource.service.name"] ??= options.serviceName
+        record["resource.service.name"] ??= options.service
 
         original?.(span, record)
       }

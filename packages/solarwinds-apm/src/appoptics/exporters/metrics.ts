@@ -16,7 +16,7 @@ limitations under the License.
 
 import util from "node:util"
 
-import { type Attributes, type DiagLogger } from "@opentelemetry/api"
+import { type Attributes } from "@opentelemetry/api"
 import {
   type ExportResult,
   ExportResultCode,
@@ -40,15 +40,15 @@ import {
   type Histogram,
 } from "@solarwinds-apm/histogram"
 
+import { componentLogger } from "../../logger.js"
+
 const MAX_TAGS = 50
 
 export class AppopticsMetricExporter {
+  readonly #logger = componentLogger(AppopticsMetricExporter)
   readonly #reporter: oboe.Reporter
 
-  constructor(
-    reporter: oboe.Reporter,
-    protected readonly logger: DiagLogger,
-  ) {
+  constructor(reporter: oboe.Reporter) {
     this.#reporter = reporter
   }
 
@@ -100,7 +100,7 @@ export class AppopticsMetricExporter {
                   tagCount,
                 )
               } else {
-                this.logger.warn(
+                this.#logger.warn(
                   "gauges with delta aggregation are not supported",
                 )
               }
@@ -113,7 +113,7 @@ export class AppopticsMetricExporter {
                 )
                 this.#exportHistogram(histogram, name, tags, tagCount)
               } else {
-                this.logger.warn(
+                this.#logger.warn(
                   "histograms with cumulative aggregation are not supported",
                 )
               }
@@ -126,7 +126,7 @@ export class AppopticsMetricExporter {
                 )
                 this.#exportHistogram(histogram, name, tags, tagCount)
               } else {
-                this.logger.warn(
+                this.#logger.warn(
                   "histograms with cumulative aggregation are not supported",
                 )
               }

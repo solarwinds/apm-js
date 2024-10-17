@@ -35,8 +35,8 @@ import {
   type ResponseHeaders,
   TracingMode,
 } from "@solarwinds-apm/sampling"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
+import { type Configuration } from "../config.js"
 import { HEADERS_STORAGE } from "../propagation/headers.js"
 import {
   ATTR_HTTP_METHOD,
@@ -104,9 +104,9 @@ export function httpSpanMetadata(kind: SpanKind, attributes: Attributes) {
 export abstract class Sampler extends OboeSampler {
   readonly #tracingMode: TracingMode | undefined
   readonly #triggerMode: boolean
-  readonly #transactionSettings: SwConfiguration["transactionSettings"]
+  readonly #transactionSettings: Configuration["transactionSettings"]
 
-  constructor(config: SwConfiguration, logger: DiagLogger) {
+  constructor(config: Configuration, logger: DiagLogger) {
     super(logger)
 
     if (config.tracingMode !== undefined) {

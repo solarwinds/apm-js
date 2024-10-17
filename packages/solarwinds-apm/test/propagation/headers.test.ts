@@ -22,7 +22,9 @@ import {
 import { describe, expect, it } from "@solarwinds-apm/test"
 
 import {
+  firstIfArray,
   HEADERS_STORAGE,
+  joinIfArray,
   RequestHeadersPropagator,
   ResponseHeadersPropagator,
 } from "../../src/propagation/headers.js"
@@ -92,5 +94,41 @@ describe("ResponseHeadersPropagator", () => {
 
   it("lists proper fields", () => {
     expect(propagator.fields()).to.have.members(["X-Trace-Options-Response"])
+  })
+})
+
+describe("firstIfArray", () => {
+  it("returns undefined if undefined", () => {
+    expect(firstIfArray<string>(undefined)).to.be.undefined
+  })
+
+  it("returns value if not array", () => {
+    expect(firstIfArray("value")).to.equal("value")
+  })
+
+  it("returns undefined if empty array", () => {
+    expect(firstIfArray<number>([])).to.be.undefined
+  })
+
+  it("returns first element if array", () => {
+    expect(firstIfArray([1, 2])).to.equal(1)
+  })
+})
+
+describe("joinIfArray", () => {
+  it("returns undefined if undefined", () => {
+    expect(joinIfArray(undefined, ";")).to.be.undefined
+  })
+
+  it("returns value if not array", () => {
+    expect(joinIfArray("value", ";")).to.equal("value")
+  })
+
+  it("returns undefined if empty array", () => {
+    expect(joinIfArray([], ";")).to.be.undefined
+  })
+
+  it("returns joined if array", () => {
+    expect(joinIfArray(["foo", "bar"], ";")).to.equal("foo;bar")
   })
 })

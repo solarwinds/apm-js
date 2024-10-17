@@ -19,7 +19,7 @@ import { hostname } from "node:os"
 import { TextDecoder } from "node:util"
 
 import { type CallOptions, Client, credentials, Metadata } from "@grpc/grpc-js"
-import { context, type DiagLogger } from "@opentelemetry/api"
+import { context } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
 import { collector } from "@solarwinds-apm/proto"
 import {
@@ -29,9 +29,10 @@ import {
   SampleSource,
   type Settings,
 } from "@solarwinds-apm/sampling"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
 import { Backoff } from "../backoff.js"
+import { type Configuration } from "../config.js"
+import { componentLogger } from "../logger.js"
 import { Sampler } from "./sampler.js"
 
 const CLIENT_VERSION = "2"
@@ -77,13 +78,13 @@ export class GrpcSampler extends Sampler {
   readonly ready: Promise<void>
   #ready!: () => void
 
-  constructor(config: SwConfiguration, logger: DiagLogger) {
-    super(config, logger)
+  constructor(config: Configuration) {
+    super(config, componentLogger(GrpcSampler))
 
-    this.#key = `${config.token}:${config.serviceName}`
+    this.#key = `${config.serviceKey?.token}:${config.service}`
 
     // convert the collector string into a valid full URL
-    let collector = config.collector!
+    let collector = config.collector
     if (!/:{0-9}+$/.test(collector)) {
       collector = `${collector}:443`
     }
@@ -94,7 +95,7 @@ export class GrpcSampler extends Sampler {
     const invalidCollectorClient = (cause?: unknown): CollectorClient => ({
       getSettings: () =>
         Promise.reject(
-          new Error(`Invalid collector "${config.collector!}"`, { cause }),
+          new Error(`Invalid collector "${config.collector}"`, { cause }),
         ),
     })
 
@@ -109,8 +110,8 @@ export class GrpcSampler extends Sampler {
         dns.resolve6(this.#address.hostname),
       ])
         .then(() => {
-          const cred = config.certificate
-            ? credentials.createSsl(Buffer.from(config.certificate))
+          const cred = config.trustedpath
+            ? credentials.createSsl(Buffer.from(config.trustedpath))
             : credentials.createSsl()
           this.#client = new GrpcCollectorClient(this.#address.host, cred)
         })
