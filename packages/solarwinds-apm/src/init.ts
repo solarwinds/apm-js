@@ -109,6 +109,10 @@ export async function init() {
       }),
     )
 
+  if (resource.asyncAttributesPending) {
+    await resource.waitForAsyncAttributes?.()
+  }
+
   let oboe: oboe.Reporter | undefined
   if (config.legacy) {
     logger.debug("using oboe")
