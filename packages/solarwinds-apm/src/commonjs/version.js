@@ -10,8 +10,7 @@ try {
     typeof process.version !== "string" ||
     process.version.substring(0, 2) === "v0"
   ) {
-    console.error("UPDATE YOUR NODE.JS VERSION IMMEDIATELY.");
-    process.exit(1);
+    throw "UPDATE YOUR NODE.JS VERSION IMMEDIATELY.";
   }
 
   var file = require.resolve(
