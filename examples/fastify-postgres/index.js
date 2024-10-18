@@ -74,6 +74,7 @@ app.get(
       params: {
         type: "object",
         properties: { id: { type: "integer", minimum: 0 } },
+        required: ["id"],
       },
     },
   },
@@ -96,6 +97,7 @@ app.patch(
       params: {
         type: "object",
         properties: { id: { type: "integer", minimum: 0 } },
+        required: ["id"],
       },
       body: {
         type: "object",
