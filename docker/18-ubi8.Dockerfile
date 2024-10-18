@@ -8,7 +8,7 @@ RUN dnf install -y \
     xz
 
 RUN dnf module disable -y nodejs && \
-    curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
+    curl -fsSL https://rpm.nodesource.com/setup_18.x | bash - && \
     dnf install -y nodejs && \
     dnf clean -y all
 

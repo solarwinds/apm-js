@@ -42,8 +42,7 @@ if (collector) {
   env.SW_APM_COLLECTOR = "apm-collector:12224"
   env.SW_APM_TRUSTED_PATH =
     "/solarwinds-apm/docker/apm-collector/server-grpc.crt"
-  env.OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
-  env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
+  env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4318"
 }
 
 // run example inside container
