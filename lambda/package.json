@@ -5,8 +5,6 @@
   "dependencies": {
     "{{name}}": "{{version}}",
     "@opentelemetry/api": "{{api-version}}",
-    "@opentelemetry/exporter-trace-otlp-grpc": "{{exporters-version}}",
-    "@opentelemetry/exporter-metrics-otlp-grpc": "{{exporters-version}}",
     "semver": "^7"
   }
 }
