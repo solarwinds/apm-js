@@ -46,7 +46,7 @@ describe("GrpcSampler", () => {
     before(async () => {
       const config = {
         collector: COLLECTOR,
-        token,
+        serviceKey: { token },
         serviceName,
       } as unknown as Configuration
 
@@ -78,7 +78,7 @@ describe("GrpcSampler", () => {
     before(async () => {
       const config = {
         collector: COLLECTOR,
-        token: "woops",
+        serviceKey: { token: "woops" },
         serviceName,
       } as unknown as Configuration
 
@@ -104,7 +104,7 @@ describe("GrpcSampler", () => {
     before(async () => {
       const config = {
         collector: "woops",
-        token,
+        serviceKey: { token },
         serviceName,
       } as unknown as Configuration
 
