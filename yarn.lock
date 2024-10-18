@@ -227,7 +227,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grpc/grpc-js@npm:^1.10.6, @grpc/grpc-js@npm:^1.7.1":
+"@grpc/grpc-js@npm:^1.10.6":
   version: 1.11.2
   resolution: "@grpc/grpc-js@npm:1.11.2"
   dependencies:
@@ -544,24 +544,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/exporter-metrics-otlp-grpc@npm:~0.53.0":
-  version: 0.53.0
-  resolution: "@opentelemetry/exporter-metrics-otlp-grpc@npm:0.53.0"
-  dependencies:
-    "@grpc/grpc-js": "npm:^1.7.1"
-    "@opentelemetry/core": "npm:1.26.0"
-    "@opentelemetry/exporter-metrics-otlp-http": "npm:0.53.0"
-    "@opentelemetry/otlp-exporter-base": "npm:0.53.0"
-    "@opentelemetry/otlp-grpc-exporter-base": "npm:0.53.0"
-    "@opentelemetry/otlp-transformer": "npm:0.53.0"
-    "@opentelemetry/resources": "npm:1.26.0"
-    "@opentelemetry/sdk-metrics": "npm:1.26.0"
-  peerDependencies:
-    "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/c270e3ccde4bd3ed51ecdb41c1514b9f8084236be751600ab3ae33d9404b03d047a755fc8454fcace0d3d5abfddec89c795e2960811fe3a667ec639b65fc63e7
-  languageName: node
-  linkType: hard
-
 "@opentelemetry/exporter-metrics-otlp-http@npm:0.53.0":
   version: 0.53.0
   resolution: "@opentelemetry/exporter-metrics-otlp-http@npm:0.53.0"
@@ -590,22 +572,6 @@ __metadata:
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
   checksum: 10c0/267b8df6653a158d0671c30e991f03be969c7a21effe4fe95e417252a3eb5f282b10d87be7663224307b0d4dca7e48672808f3283116e4dd217abb741d6dd54d
-  languageName: node
-  linkType: hard
-
-"@opentelemetry/exporter-trace-otlp-grpc@npm:~0.53.0":
-  version: 0.53.0
-  resolution: "@opentelemetry/exporter-trace-otlp-grpc@npm:0.53.0"
-  dependencies:
-    "@grpc/grpc-js": "npm:^1.7.1"
-    "@opentelemetry/core": "npm:1.26.0"
-    "@opentelemetry/otlp-grpc-exporter-base": "npm:0.53.0"
-    "@opentelemetry/otlp-transformer": "npm:0.53.0"
-    "@opentelemetry/resources": "npm:1.26.0"
-    "@opentelemetry/sdk-trace-base": "npm:1.26.0"
-  peerDependencies:
-    "@opentelemetry/api": ^1.0.0
-  checksum: 10c0/7933e1d4ed2ea8c470a7d7783de0ed84adcbf125a11420c67842f17f5d68baefdb6e7db9635287b22eb3cec6f2fd791ab4f5c7eb22152a4c0c2ce9a201b0b110
   languageName: node
   linkType: hard
 
@@ -1161,20 +1127,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/otlp-grpc-exporter-base@npm:0.53.0":
-  version: 0.53.0
-  resolution: "@opentelemetry/otlp-grpc-exporter-base@npm:0.53.0"
-  dependencies:
-    "@grpc/grpc-js": "npm:^1.7.1"
-    "@opentelemetry/core": "npm:1.26.0"
-    "@opentelemetry/otlp-exporter-base": "npm:0.53.0"
-    "@opentelemetry/otlp-transformer": "npm:0.53.0"
-  peerDependencies:
-    "@opentelemetry/api": ^1.0.0
-  checksum: 10c0/8a1b616d8b5026998c3744fdb76c6ee986ca6cfd8efb30d51bf6ed8bd6a58fa73f0e433a9074d0e8c2af9138ad25be451fbd0a3be1c90772417ecec2a269cfb0
-  languageName: node
-  linkType: hard
-
 "@opentelemetry/otlp-transformer@npm:0.53.0":
   version: 0.53.0
   resolution: "@opentelemetry/otlp-transformer@npm:0.53.0"
@@ -1522,179 +1474,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-json@npm:^6.0.1":
-  version: 6.1.0
-  resolution: "@rollup/plugin-json@npm:6.1.0"
-  dependencies:
-    "@rollup/pluginutils": "npm:^5.1.0"
-  peerDependencies:
-    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-  peerDependenciesMeta:
-    rollup:
-      optional: true
-  checksum: 10c0/9400c431b5e0cf3088ba2eb2d038809a2b0fb2a84ed004997da85582f48cd64958ed3168893c4f2c8109e38652400ed68282d0c92bf8ec07a3b2ef2e1ceab0b7
-  languageName: node
-  linkType: hard
-
-"@rollup/plugin-typescript@npm:^11.1.5":
-  version: 11.1.6
-  resolution: "@rollup/plugin-typescript@npm:11.1.6"
-  dependencies:
-    "@rollup/pluginutils": "npm:^5.1.0"
-    resolve: "npm:^1.22.1"
-  peerDependencies:
-    rollup: ^2.14.0||^3.0.0||^4.0.0
-    tslib: "*"
-    typescript: ">=3.7.0"
-  peerDependenciesMeta:
-    rollup:
-      optional: true
-    tslib:
-      optional: true
-  checksum: 10c0/5347cd73ac28d4cf2401a3e689864a1a0df8f3ae029abd9c38525cbc84bcfa16c3a32a0ac5698dac65ec531ba7cf8332e14f5fc7f8fa501193da23320a134c5c
-  languageName: node
-  linkType: hard
-
-"@rollup/pluginutils@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@rollup/pluginutils@npm:5.1.0"
-  dependencies:
-    "@types/estree": "npm:^1.0.0"
-    estree-walker: "npm:^2.0.2"
-    picomatch: "npm:^2.3.1"
-  peerDependencies:
-    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-  peerDependenciesMeta:
-    rollup:
-      optional: true
-  checksum: 10c0/c7bed15711f942d6fdd3470fef4105b73991f99a478605e13d41888963330a6f9e32be37e6ddb13f012bc7673ff5e54f06f59fd47109436c1c513986a8a7612d
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-android-arm-eabi@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-android-arm-eabi@npm:4.21.2"
-  conditions: os=android & cpu=arm
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-android-arm64@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-android-arm64@npm:4.21.2"
-  conditions: os=android & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-darwin-arm64@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-darwin-arm64@npm:4.21.2"
-  conditions: os=darwin & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-darwin-x64@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-darwin-x64@npm:4.21.2"
-  conditions: os=darwin & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-arm-gnueabihf@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-arm-gnueabihf@npm:4.21.2"
-  conditions: os=linux & cpu=arm & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-arm-musleabihf@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-arm-musleabihf@npm:4.21.2"
-  conditions: os=linux & cpu=arm & libc=musl
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-arm64-gnu@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-arm64-gnu@npm:4.21.2"
-  conditions: os=linux & cpu=arm64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-arm64-musl@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-arm64-musl@npm:4.21.2"
-  conditions: os=linux & cpu=arm64 & libc=musl
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-powerpc64le-gnu@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-powerpc64le-gnu@npm:4.21.2"
-  conditions: os=linux & cpu=ppc64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-riscv64-gnu@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-riscv64-gnu@npm:4.21.2"
-  conditions: os=linux & cpu=riscv64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-s390x-gnu@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-s390x-gnu@npm:4.21.2"
-  conditions: os=linux & cpu=s390x & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-x64-gnu@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-x64-gnu@npm:4.21.2"
-  conditions: os=linux & cpu=x64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-linux-x64-musl@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-linux-x64-musl@npm:4.21.2"
-  conditions: os=linux & cpu=x64 & libc=musl
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-win32-arm64-msvc@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-win32-arm64-msvc@npm:4.21.2"
-  conditions: os=win32 & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-win32-ia32-msvc@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-win32-ia32-msvc@npm:4.21.2"
-  conditions: os=win32 & cpu=ia32
-  languageName: node
-  linkType: hard
-
-"@rollup/rollup-win32-x64-msvc@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rollup/rollup-win32-x64-msvc@npm:4.21.2"
-  conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
 "@rushstack/eslint-patch@npm:^1.3.3":
   version: 1.7.2
   resolution: "@rushstack/eslint-patch@npm:1.7.2"
   checksum: 10c0/bfb3e2110bfaf4cf9f900db2626bec62f5cd492907de0c5e43feaac0aa8c1fb13d6c89978dc60f6d7a1bc5d6906e8a3bf009aa2cd79d031b70ab1d8026a0975d
   languageName: node
   linkType: hard
-
-"@solarwinds-apm/bindings-linux-arm64-gnu-serverless@workspace:*, @solarwinds-apm/bindings-linux-arm64-gnu-serverless@workspace:packages/bindings/npm/linux-arm64-gnu-serverless":
-  version: 0.0.0-use.local
-  resolution: "@solarwinds-apm/bindings-linux-arm64-gnu-serverless@workspace:packages/bindings/npm/linux-arm64-gnu-serverless"
-  languageName: unknown
-  linkType: soft
 
 "@solarwinds-apm/bindings-linux-arm64-gnu@workspace:*, @solarwinds-apm/bindings-linux-arm64-gnu@workspace:packages/bindings/npm/linux-arm64-gnu":
   version: 0.0.0-use.local
@@ -1705,12 +1490,6 @@ __metadata:
 "@solarwinds-apm/bindings-linux-arm64-musl@workspace:*, @solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/bindings-linux-arm64-musl@workspace:packages/bindings/npm/linux-arm64-musl"
-  languageName: unknown
-  linkType: soft
-
-"@solarwinds-apm/bindings-linux-x64-gnu-serverless@workspace:*, @solarwinds-apm/bindings-linux-x64-gnu-serverless@workspace:packages/bindings/npm/linux-x64-gnu-serverless":
-  version: 0.0.0-use.local
-  resolution: "@solarwinds-apm/bindings-linux-x64-gnu-serverless@workspace:packages/bindings/npm/linux-x64-gnu-serverless"
   languageName: unknown
   linkType: soft
 
@@ -1731,15 +1510,12 @@ __metadata:
   resolution: "@solarwinds-apm/bindings@workspace:packages/bindings"
   dependencies:
     "@solarwinds-apm/bindings-linux-arm64-gnu": "workspace:*"
-    "@solarwinds-apm/bindings-linux-arm64-gnu-serverless": "workspace:*"
     "@solarwinds-apm/bindings-linux-arm64-musl": "workspace:*"
     "@solarwinds-apm/bindings-linux-x64-gnu": "workspace:*"
-    "@solarwinds-apm/bindings-linux-x64-gnu-serverless": "workspace:*"
     "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
     "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
-    "@types/node": "npm:^16.13.0"
+    "@types/node": "npm:^18.19.0"
     eslint: "npm:^9.9.1"
     node-addon-api: "npm:^8.1.0"
     prettier: "npm:^3.3.3"
@@ -1748,13 +1524,9 @@ __metadata:
   dependenciesMeta:
     "@solarwinds-apm/bindings-linux-arm64-gnu":
       optional: true
-    "@solarwinds-apm/bindings-linux-arm64-gnu-serverless":
-      optional: true
     "@solarwinds-apm/bindings-linux-arm64-musl":
       optional: true
     "@solarwinds-apm/bindings-linux-x64-gnu":
-      optional: true
-    "@solarwinds-apm/bindings-linux-x64-gnu-serverless":
       optional: true
     "@solarwinds-apm/bindings-linux-x64-musl":
       optional: true
@@ -1768,12 +1540,10 @@ __metadata:
     "@opentelemetry/api": "npm:^1.3.0"
     "@opentelemetry/semantic-conventions": "npm:~1.27.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
-    "@types/node": "npm:^16.13.0"
+    "@types/node": "npm:^18.19.0"
     eslint: "npm:^9.9.1"
     prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
     typescript: "npm:~5.5.3"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
@@ -1789,12 +1559,10 @@ __metadata:
   dependencies:
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
-    "@types/node": "npm:^16.13.0"
+    "@types/node": "npm:^18.19.0"
     eslint: "npm:^9.9.1"
     prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
     typescript: "npm:~5.5.3"
   languageName: unknown
   linkType: soft
@@ -1885,7 +1653,7 @@ __metadata:
     "@opentelemetry/api": "npm:^1.3.0"
     "@prisma/client": "npm:^5.4.1"
     "@prisma/instrumentation": "npm:^5.4.1"
-    "@types/node": "npm:^16.13.0"
+    "@types/node": "npm:^18.19.0"
     "@types/react": "npm:^18.2.25"
     eslint: "npm:^8.57.0"
     eslint-config-next: "npm:^14.0.3"
@@ -1916,11 +1684,9 @@ __metadata:
     "@opentelemetry/api": "npm:^1.3.0"
     "@opentelemetry/sdk-metrics": "npm:~1.26.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
-    "@types/node": "npm:^16.13.0"
+    "@types/node": "npm:^18.19.0"
     eslint: "npm:^9.9.1"
     prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
     typescript: "npm:~5.5.3"
   languageName: unknown
   linkType: soft
@@ -1977,11 +1743,9 @@ __metadata:
     "@opentelemetry/winston-transport": "npm:^0.6.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
     "@types/semver": "npm:^7.5.3"
     eslint: "npm:^9.9.1"
     prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
     semver: "npm:^7.5.4"
     typescript: "npm:~5.5.3"
   peerDependencies:
@@ -1992,29 +1756,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@solarwinds-apm/lazy@workspace:^, @solarwinds-apm/lazy@workspace:packages/lazy":
-  version: 0.0.0-use.local
-  resolution: "@solarwinds-apm/lazy@workspace:packages/lazy"
-  dependencies:
-    "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
-    eslint: "npm:^9.9.1"
-    prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
-    typescript: "npm:~5.5.3"
-  languageName: unknown
-  linkType: soft
-
 "@solarwinds-apm/module@workspace:^, @solarwinds-apm/module@workspace:packages/module":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/module@workspace:packages/module"
   dependencies:
     "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
-    "@types/node": "npm:^16.13.0"
+    "@types/node": "npm:^18.19.0"
     eslint: "npm:^9.9.1"
     prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
     typescript: "npm:~5.5.3"
   languageName: unknown
   linkType: soft
@@ -2032,31 +1781,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@solarwinds-apm/rollup-config@workspace:^, @solarwinds-apm/rollup-config@workspace:packages/rollup-config":
-  version: 0.0.0-use.local
-  resolution: "@solarwinds-apm/rollup-config@workspace:packages/rollup-config"
-  dependencies:
-    "@rollup/plugin-json": "npm:^6.0.1"
-    "@rollup/plugin-typescript": "npm:^11.1.5"
-    "@solarwinds-apm/eslint-config": "workspace:^"
-    eslint: "npm:^9.9.1"
-    globby: "npm:^11.1.0"
-    prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
-    rollup-plugin-node-externals: "npm:^7.0.0"
-    tslib: "npm:^2.6.2"
-    typescript: "npm:~5.5.3"
-  peerDependencies:
-    rollup: "*"
-    typescript: "*"
-  peerDependenciesMeta:
-    rollup:
-      optional: false
-    typescript:
-      optional: false
-  languageName: unknown
-  linkType: soft
-
 "@solarwinds-apm/sampling@workspace:^, @solarwinds-apm/sampling@workspace:packages/sampling":
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/sampling@workspace:packages/sampling"
@@ -2065,12 +1789,10 @@ __metadata:
     "@opentelemetry/sdk-metrics": "npm:~1.26.0"
     "@opentelemetry/sdk-trace-base": "npm:~1.26.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
-    "@types/node": "npm:^16.13.0"
+    "@types/node": "npm:^18.19.0"
     eslint: "npm:^9.9.1"
     prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
     typescript: "npm:~5.5.3"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
@@ -2091,49 +1813,6 @@ __metadata:
     ora: "npm:^5.4.1"
     prettier: "npm:^3.3.3"
     typescript: "npm:~5.5.3"
-  languageName: unknown
-  linkType: soft
-
-"@solarwinds-apm/sdk@workspace:packages/sdk":
-  version: 0.0.0-use.local
-  resolution: "@solarwinds-apm/sdk@workspace:packages/sdk"
-  dependencies:
-    "@opentelemetry/api": "npm:^1.3.0"
-    "@opentelemetry/core": "npm:~1.26.0"
-    "@opentelemetry/exporter-metrics-otlp-grpc": "npm:~0.53.0"
-    "@opentelemetry/exporter-trace-otlp-grpc": "npm:~0.53.0"
-    "@opentelemetry/instrumentation": "npm:~0.53.0"
-    "@opentelemetry/resources": "npm:~1.26.0"
-    "@opentelemetry/sdk-metrics": "npm:~1.26.0"
-    "@opentelemetry/sdk-trace-base": "npm:~1.26.0"
-    "@opentelemetry/sdk-trace-node": "npm:~1.26.0"
-    "@opentelemetry/semantic-conventions": "npm:~1.27.0"
-    "@solarwinds-apm/bindings": "workspace:^"
-    "@solarwinds-apm/dependencies": "workspace:^"
-    "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/histogram": "workspace:^"
-    "@solarwinds-apm/lazy": "workspace:^"
-    "@solarwinds-apm/module": "workspace:^"
-    "@solarwinds-apm/test": "workspace:^"
-    "@types/json-stringify-safe": "npm:^5.0.3"
-    "@types/node": "npm:^16.13.0"
-    "@types/semver": "npm:^7.5.3"
-    eslint: "npm:^9.9.1"
-    json-stringify-safe: "npm:^5.0.1"
-    prettier: "npm:^3.3.3"
-    semver: "npm:^7.5.4"
-    typescript: "npm:~5.5.3"
-  peerDependencies:
-    "@opentelemetry/api": ^1.3.0
-    "@opentelemetry/exporter-metrics-otlp-grpc": ">=0.34.0"
-    "@opentelemetry/exporter-trace-otlp-grpc": ">=0.34.0"
-  peerDependenciesMeta:
-    "@opentelemetry/api":
-      optional: false
-    "@opentelemetry/exporter-metrics-otlp-grpc":
-      optional: true
-    "@opentelemetry/exporter-trace-otlp-grpc":
-      optional: true
   languageName: unknown
   linkType: soft
 
@@ -2158,12 +1837,10 @@ __metadata:
     "@opentelemetry/sdk-trace-base": "npm:~1.26.0"
     "@opentelemetry/sdk-trace-node": "npm:~1.26.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
-    "@solarwinds-apm/module": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
     "@types/chai": "npm:^4.3.6"
     "@types/chai-as-promised": "npm:^7.1.6"
     "@types/mocha": "npm:^10.0.7"
-    "@types/node": "npm:^18.19.0 || >=20.6.0"
+    "@types/node": "npm:^18.19.0"
     c8: "npm:^10.1.2"
     chai: "npm:^4.3.10"
     chai-as-promised: "npm:^7.1.1"
@@ -2172,12 +1849,11 @@ __metadata:
     globby: "npm:^11.1.0"
     mocha: "npm:^10.3.0"
     prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
     semver: "npm:^7.5.4"
     ts-node: "npm:^11.0.0-beta.1"
     typescript: "npm:~5.5.3"
   bin:
-    swtest: ./dist/es/bin.js
+    swtest: ./dist/bin.js
   languageName: unknown
   linkType: soft
 
@@ -2267,13 +1943,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/estree@npm:1.0.5, @types/estree@npm:^1.0.0":
-  version: 1.0.5
-  resolution: "@types/estree@npm:1.0.5"
-  checksum: 10c0/b3b0e334288ddb407c7b3357ca67dbee75ee22db242ca7c56fe27db4e1a31989cb8af48a84dd401deb787fe10cc6b2ab1ee82dc4783be87ededbe3d53c79c70d
-  languageName: node
-  linkType: hard
-
 "@types/istanbul-lib-coverage@npm:^2.0.1":
   version: 2.0.6
   resolution: "@types/istanbul-lib-coverage@npm:2.0.6"
@@ -2351,7 +2020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^18.19.0 || >=20.6.0":
+"@types/node@npm:*, @types/node@npm:>=13.7.0":
   version: 20.11.24
   resolution: "@types/node@npm:20.11.24"
   dependencies:
@@ -2360,19 +2029,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.13.0":
-  version: 16.18.86
-  resolution: "@types/node@npm:16.18.86"
-  checksum: 10c0/7280efb4ee49b10c34a456d4d0d89872c099a721093439e001ff3b5e3569167305fba4a578a30a087fdfa06bf55f4a98aa65e9e2c31589e66ddeca1460de1dd0
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.19.43":
-  version: 18.19.43
-  resolution: "@types/node@npm:18.19.43"
+"@types/node@npm:^18.19.0":
+  version: 18.19.56
+  resolution: "@types/node@npm:18.19.56"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/8be49897596d7641941d21d943b10a7b907af714617f9e3d1c69d735850de0c0a8d04f1428277c2b2451b4eda6ab1a3c05bfadfe66b4a30cd9ca51200814c647
+  checksum: 10c0/4cc4a6e9051d2d4458bfef4cbaee3c5f920dd318f6e940a5e0c378b1b2ec5e716d0973a406270cc51096a682069524d8a5aeee02046d4430addf56f41af47375
   languageName: node
   linkType: hard
 
@@ -4523,13 +4185,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"estree-walker@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "estree-walker@npm:2.0.2"
-  checksum: 10c0/53a6c54e2019b8c914dc395890153ffdc2322781acf4bd7d1a32d7aedc1710807bdcd866ac133903d5629ec601fbb50abe8c2e5553c7f5a0afdd9b6af6c945af
-  languageName: node
-  linkType: hard
-
 "esutils@npm:^2.0.2":
   version: 2.0.3
   resolution: "esutils@npm:2.0.3"
@@ -5300,14 +4955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.2.0, ignore@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "ignore@npm:5.3.1"
-  checksum: 10c0/703f7f45ffb2a27fb2c5a8db0c32e7dee66b33a225d28e8db4e1be6474795f606686a6e3bcc50e1aa12f2042db4c9d4a7d60af3250511de74620fbed052ea4cd
-  languageName: node
-  linkType: hard
-
-"ignore@npm:^5.2.4":
+"ignore@npm:^5.2.0, ignore@npm:^5.2.4, ignore@npm:^5.3.1":
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
   checksum: 10c0/f9f652c957983634ded1e7f02da3b559a0d4cc210fca3792cb67f1b153623c9c42efdc1c4121af171e295444459fc4a9201101fb041b1104a3c000bccb188337
@@ -7622,78 +7270,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup-plugin-node-externals@npm:^7.0.0":
-  version: 7.1.3
-  resolution: "rollup-plugin-node-externals@npm:7.1.3"
-  peerDependencies:
-    rollup: ^3.0.0 || ^4.0.0
-  checksum: 10c0/79d0a964cb488d442f571dd7ce29c53099ca40a76cb71fd985b9978d52efad31346b11138dced9c974e9881b4a56dce384afc0e6d42d9740cebb58120028a37a
-  languageName: node
-  linkType: hard
-
-"rollup@npm:^4.3.0":
-  version: 4.21.2
-  resolution: "rollup@npm:4.21.2"
-  dependencies:
-    "@rollup/rollup-android-arm-eabi": "npm:4.21.2"
-    "@rollup/rollup-android-arm64": "npm:4.21.2"
-    "@rollup/rollup-darwin-arm64": "npm:4.21.2"
-    "@rollup/rollup-darwin-x64": "npm:4.21.2"
-    "@rollup/rollup-linux-arm-gnueabihf": "npm:4.21.2"
-    "@rollup/rollup-linux-arm-musleabihf": "npm:4.21.2"
-    "@rollup/rollup-linux-arm64-gnu": "npm:4.21.2"
-    "@rollup/rollup-linux-arm64-musl": "npm:4.21.2"
-    "@rollup/rollup-linux-powerpc64le-gnu": "npm:4.21.2"
-    "@rollup/rollup-linux-riscv64-gnu": "npm:4.21.2"
-    "@rollup/rollup-linux-s390x-gnu": "npm:4.21.2"
-    "@rollup/rollup-linux-x64-gnu": "npm:4.21.2"
-    "@rollup/rollup-linux-x64-musl": "npm:4.21.2"
-    "@rollup/rollup-win32-arm64-msvc": "npm:4.21.2"
-    "@rollup/rollup-win32-ia32-msvc": "npm:4.21.2"
-    "@rollup/rollup-win32-x64-msvc": "npm:4.21.2"
-    "@types/estree": "npm:1.0.5"
-    fsevents: "npm:~2.3.2"
-  dependenciesMeta:
-    "@rollup/rollup-android-arm-eabi":
-      optional: true
-    "@rollup/rollup-android-arm64":
-      optional: true
-    "@rollup/rollup-darwin-arm64":
-      optional: true
-    "@rollup/rollup-darwin-x64":
-      optional: true
-    "@rollup/rollup-linux-arm-gnueabihf":
-      optional: true
-    "@rollup/rollup-linux-arm-musleabihf":
-      optional: true
-    "@rollup/rollup-linux-arm64-gnu":
-      optional: true
-    "@rollup/rollup-linux-arm64-musl":
-      optional: true
-    "@rollup/rollup-linux-powerpc64le-gnu":
-      optional: true
-    "@rollup/rollup-linux-riscv64-gnu":
-      optional: true
-    "@rollup/rollup-linux-s390x-gnu":
-      optional: true
-    "@rollup/rollup-linux-x64-gnu":
-      optional: true
-    "@rollup/rollup-linux-x64-musl":
-      optional: true
-    "@rollup/rollup-win32-arm64-msvc":
-      optional: true
-    "@rollup/rollup-win32-ia32-msvc":
-      optional: true
-    "@rollup/rollup-win32-x64-msvc":
-      optional: true
-    fsevents:
-      optional: true
-  bin:
-    rollup: dist/bin/rollup
-  checksum: 10c0/c9d97f7a21cde110371b2e890a31a996fee09b81e639e79372b962a9638ae653d2d24186b94632fc5dfab8a0582e1d0639dfe34b8b75051facd86915a9585a5f
-  languageName: node
-  linkType: hard
-
 "run-parallel@npm:^1.1.9":
   version: 1.2.0
   resolution: "run-parallel@npm:1.2.0"
@@ -8020,16 +7596,14 @@ __metadata:
     "@solarwinds-apm/instrumentations": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/proto": "workspace:^"
-    "@solarwinds-apm/rollup-config": "workspace:^"
     "@solarwinds-apm/sampling": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
-    "@types/node": "npm:^18.19.43"
-    "@types/semver": "npm:^7.5.3"
+    "@types/json-stringify-safe": "npm:^5.0.3"
+    "@types/node": "npm:^18.19.0"
     eslint: "npm:^9.9.1"
     json-stringify-safe: "npm:^5.0.1"
     node-releases: "npm:^2.0.18"
     prettier: "npm:^3.3.3"
-    rollup: "npm:^4.3.0"
     typescript: "npm:~5.5.3"
     zod: "npm:^3.22.4"
   peerDependencies:
@@ -8466,7 +8040,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.6.2":
+"tslib@npm:^2.1.0, tslib@npm:^2.4.0":
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
   checksum: 10c0/469e1d5bf1af585742128827000711efa61010b699cb040ab1800bcd3ccdd37f63ec30642c9e07c4439c1db6e46345582614275daca3e0f4abae29b0083f04a6

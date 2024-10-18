@@ -31,21 +31,11 @@ import {
   ATTR_HTTP_REQUEST_METHOD,
   ATTR_HTTP_RESPONSE_STATUS_CODE,
 } from "@opentelemetry/semantic-conventions"
-import { lazy } from "@solarwinds-apm/lazy"
 
 import { componentLogger } from "../logger.js"
 import { ATTR_HTTP_METHOD, ATTR_HTTP_STATUS_CODE } from "../semattrs.old.js"
 import { isRootOrEntry } from "./parent-span.js"
 import { TRANSACTION_NAME_ATTRIBUTE } from "./transaction-name.js"
-
-const RESPONSE_TIME = lazy(() =>
-  metrics
-    .getMeter("sw.apm.request.metrics")
-    .createHistogram("trace.service.response_time", {
-      valueType: ValueType.DOUBLE,
-      unit: "ms",
-    }),
-)
 
 /**
  * Processor that records response time metrics
@@ -59,6 +49,12 @@ export class ResponseTimeProcessor
   implements SpanProcessor
 {
   readonly #logger = componentLogger(ResponseTimeProcessor)
+  readonly #responseTime = metrics
+    .getMeter("sw.apm.request.metrics")
+    .createHistogram("trace.service.response_time", {
+      valueType: ValueType.DOUBLE,
+      unit: "ms",
+    })
 
   override onEnd(span: ReadableSpan): void {
     if (!isRootOrEntry(span)) {
@@ -86,6 +82,6 @@ export class ResponseTimeProcessor
     }
 
     this.#logger.debug("recording response time", time, attributes)
-    RESPONSE_TIME.record(time, attributes)
+    this.#responseTime.record(time, attributes)
   }
 }

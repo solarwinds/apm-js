@@ -61,7 +61,7 @@ This project aims to support all currently maintained and future LTS Node versio
 
 When a new future LTS is released (any even-numbered Node versions) the project should be updated to support it so that by the time it becomes an LTS it has already been well-tested. In most cases this doesn't require any change apart from updating the Docker images. It is however possible, although unlikely, that a future release may break native code or a dependency, which should be kept in mind.
 
-When a current LTS goes out of maintenance, support for it should be removed. This project should not support its dependents in using unsupported, potentially insecure Node versions. The version of `@types/node` depended on by all packages should be updated to the next LTS version, for instance going from `^14.0.0` to `^16.0.0`. The `target` in the [base tsconfig](./tsconfig.base.json) should be updated to the highest standard supported by the next LTS version (check [`node.green`](https://node.green) for this) and the same should be done for the `languageOptions` in the ESLint configuration package. The Docker images for the old LTS should be removed, and the distro versions used by the Docker images for the next LTS should be changed to the lowest supported versions if necessary, for instance removing `14-alpine3.12` and moving from `16-alpine` to `16-alpine:3.12`. All `package.json` `engines` fields should also be updated to the next LTS version.
+When a version has been EOL for over a year, support for it should be removed. This project should not encourage customers to use unsupported, potentially insecure Node versions. The version of `@types/node` depended on by all packages should be updated to the next LTS version, for instance going from `^14.0.0` to `^16.0.0`. The `target` in the [base tsconfig](./tsconfig.base.json) should be updated to the highest standard supported by the next LTS version (check [`node.green`](https://node.green) for this). The Docker images for the old LTS should be removed, and the distro versions used by the Docker images for the next LTS should be changed to the lowest supported versions if necessary, for instance removing `14-alpine3.12` and moving from `16-alpine` to `16-alpine:3.12`. All `package.json` `engines` fields should also be updated to the next LTS version.
 
 ## Upgrading dependencies
 
@@ -99,11 +99,7 @@ This is especially important given this repo uses Turborepo to run commands in a
 
 ## ES Modules vs CommonJS
 
-We explicitly aim to support ESM
-
-Packages should optimally target both ESM and CJS unless they have a good reason not to, in which case they should target CJS only for compatibility. At the moment the two CJS-only packages are the SDK because it's internal and has a lot of stateful components, and the bindings because they are internal and `.node` files can't be imported from ESM.
-
-Dual targeting is made simple by the project's [Rollup configuration](./packages/rollup-config/), which should work without being extended pretty much all the time. Files ending in `.es.{ts, js}` will only be included for ESM `.cjs.{ts, js}` only for CJS. We don't use `.m{ts, js}` and `.c{ts, js}` because they have poor TypeScript support (and I, the original author, think they are Ugly and Bad). Projects should always specify `"type": "module"` when dual targeting (or an explicit `"commonjs"`) in their `package.json`.
+We target ESM wherever possible, but all public facing API functions must be callable from either ESM or CommonJS.
 
 Internal code (like scripts and examples) should attempt to use ESM as much as possible unless they are meant to demonstrate usage of the library from CJS.
 

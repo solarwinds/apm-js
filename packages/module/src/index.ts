@@ -16,26 +16,18 @@ limitations under the License.
 
 import { env } from "node:process"
 
-/**
- * Finds the current call site. Useful to replace `import.meta.url` or `__dirname`,
- * or to get more than just a file name.
- *
- * @returns The {@link NodeJS.CallSite} this function was called from
- */
-export function callsite(): NodeJS.CallSite {
-  const prepareStackTrace = Error.prepareStackTrace
-  try {
-    const callsites: NodeJS.CallSite[] = []
-    Error.prepareStackTrace = (_err, cs) => {
-      callsites.push(...cs)
-    }
-    void new Error().stack
+export async function load(file: string): Promise<unknown> {
+  const imported = (await import(file)) as object
 
-    const current = callsites[0]!
-    return callsites.find((cs) => cs.getFileName() !== current.getFileName())!
-  } finally {
-    Error.prepareStackTrace = prepareStackTrace
-  }
+  const hasDefault = "default" in imported
+  const keyCount = Object.keys(imported).length
+
+  const useDefaultExport =
+    hasDefault &&
+    (keyCount === 1 || (keyCount === 2 && "__esModule" in imported))
+
+  if (useDefaultExport) return imported.default
+  else return imported
 }
 
 export const IS_AWS_LAMBDA = "AWS_LAMBDA_FUNCTION_NAME" in env

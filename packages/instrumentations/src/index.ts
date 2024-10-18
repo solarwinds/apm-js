@@ -62,7 +62,7 @@ import {
   type DetectorSync,
   Resource,
 } from "@opentelemetry/resources"
-import { load } from "@solarwinds-apm/module/load"
+import { load } from "@solarwinds-apm/module"
 
 // map of package names to their instrumentation type
 interface InstrumentationTypes {

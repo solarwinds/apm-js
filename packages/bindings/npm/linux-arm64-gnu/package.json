@@ -21,7 +21,6 @@
   ],
   "files": [
     "oboe.node",
-    "metrics.node",
     "liboboe.so"
   ],
   "publishConfig": {
@@ -29,6 +28,6 @@
     "provenance": true
   },
   "engines": {
-    "node": ">=16.13.0"
+    "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
   }
 }

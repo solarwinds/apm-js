@@ -18,6 +18,7 @@ import { env } from "node:process"
 
 import pg from "@fastify/postgres"
 import fastify from "fastify"
+import { setTransactionName } from "solarwinds-apm"
 
 const schema = `
 CREATE TABLE IF NOT EXISTS items (
@@ -60,6 +61,11 @@ app.post(
     return rows[0]
   },
 )
+
+app.get("/error", () => {
+  setTransactionName("woops")
+  throw new Error("woops")
+})
 
 app.get(
   "/:id",

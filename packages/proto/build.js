@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { mkdir, writeFile } from "node:fs/promises"
+import { mkdir } from "node:fs/promises"
 import { promisify } from "node:util"
 
 import { main as pbjsMain } from "protobufjs-cli/pbjs.js"
@@ -23,40 +23,23 @@ import { main as pbtsMain } from "protobufjs-cli/pbts.js"
 const pbjs = promisify(pbjsMain)
 const pbts = promisify(pbtsMain)
 
-const targets = {
-  es: {
-    wrapper: "./es.wrapper",
-    dependency: "protobufjs/minimal.js",
-  },
-  cjs: {
-    wrapper: "./cjs.wrapper",
-    dependency: "protobufjs/minimal",
-  },
-}
-
-for (const [target, options] of Object.entries(targets)) {
-  await mkdir(`dist/${target}`, { recursive: true })
-
-  const type = target === "es" ? "module" : "commonjs"
-  await writeFile(`dist/${target}/package.json`, JSON.stringify({ type }))
-
-  await pbjs([
-    "-t",
-    "static-module",
-    "-w",
-    options.wrapper,
-    "--dependency",
-    options.dependency,
-    "-o",
-    `./dist/${target}/index.js`,
-    "--es6",
-    "--force-number",
-    "--no-create",
-    "--no-verify",
-    "--no-convert",
-    "--no-delimited",
-    "--no-service",
-    "src/collector.proto",
-  ])
-  await pbts(["-o", `./dist/${target}/index.d.ts`, `dist/${target}/index.js`])
-}
+await mkdir(`dist`, { recursive: true })
+await pbjs([
+  "-t",
+  "static-module",
+  "-w",
+  "./wrapper",
+  "--dependency",
+  "protobufjs/minimal.js",
+  "-o",
+  `./dist/index.js`,
+  "--es6",
+  "--force-number",
+  "--no-create",
+  "--no-verify",
+  "--no-convert",
+  "--no-delimited",
+  "--no-service",
+  "src/collector.proto",
+])
+await pbts(["-o", `./dist/index.d.ts`, `dist/index.js`])

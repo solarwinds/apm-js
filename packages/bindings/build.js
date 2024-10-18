@@ -26,13 +26,6 @@ const targets = [
     glibc: "2.27",
   },
   {
-    name: "linux-arm64-gnu-serverless",
-    oboe: "liboboe-1.0-lambda-aarch64.so",
-    target: "aarch64-linux-gnu",
-    cpu: "generic",
-    glibc: "2.27",
-  },
-  {
     name: "linux-arm64-musl",
     oboe: "liboboe-1.0-alpine-aarch64.so",
     target: "aarch64-linux-musl",
@@ -46,54 +39,37 @@ const targets = [
     glibc: "2.27",
   },
   {
-    name: "linux-x64-gnu-serverless",
-    oboe: "liboboe-1.0-lambda-x86_64.so",
-    target: "x86_64-linux-gnu",
-    cpu: "x86_64_v3",
-    glibc: "2.27",
-  },
-  {
     name: "linux-x64-musl",
     oboe: "liboboe-1.0-alpine-x86_64.so",
     target: "x86_64-linux-musl",
     cpu: "x86_64_v3",
   },
 ]
-const configs = targets.flatMap(({ name, oboe, target, cpu, glibc }) => {
+
+const configs = targets.map(({ name, oboe, target, cpu, glibc }) => {
   fs.copyFileSync(`oboe/${oboe}`, `npm/${name}/liboboe.so`)
 
-  // only build serverless api for serverless
-  const oboeSources = name.includes("serverless")
-    ? [
-        "src/oboe/oboe.serverless.cc",
-        "src/oboe/oboe_api.cc",
-        "oboe/include/oboe_api.cpp",
-      ]
-    : [
-        "src/oboe/oboe.cc",
-        "src/oboe/config.cc",
-        "src/oboe/context.cc",
-        "src/oboe/custom_metrics.cc",
-        "src/oboe/event.cc",
-        "src/oboe/metadata.cc",
-        "src/oboe/metric_tags.cc",
-        "src/oboe/reporter.cc",
-        "src/oboe/span.cc",
-        "oboe/include/oboe_api.cpp",
-      ]
-  // optimize for size for serverless
-  const oboeMode = name.includes("serverless") ? "small" : "fast"
-
-  const oboeConfig = {
+  const config = {
     target,
     cpu,
     glibc,
     output: `npm/${name}/oboe.node`,
     type: "shared",
-    mode: oboeMode,
+    mode: "fast",
 
-    sources: oboeSources,
-    napiVersion: 8,
+    sources: [
+      "src/oboe/oboe.cc",
+      "src/oboe/config.cc",
+      "src/oboe/context.cc",
+      "src/oboe/custom_metrics.cc",
+      "src/oboe/event.cc",
+      "src/oboe/metadata.cc",
+      "src/oboe/metric_tags.cc",
+      "src/oboe/reporter.cc",
+      "src/oboe/span.cc",
+      "oboe/include/oboe_api.cpp",
+    ],
+    napiVersion: 9,
     std: "c++17",
     exceptions: true,
 
@@ -104,29 +80,7 @@ const configs = targets.flatMap(({ name, oboe, target, cpu, glibc }) => {
 
     rpath: "$ORIGIN",
   }
-
-  const metricsConfig = {
-    target,
-    cpu,
-    glibc,
-    output: `npm/${name}/metrics.node`,
-    type: "shared",
-
-    sources: ["src/metrics/metrics.cc"],
-    napiVersion: 8,
-    std: "c++17",
-    exceptions: true,
-
-    cflags: ["-Wall", "-Wextra", "-Werror"],
-  }
-
-  // don't build metrics for serverless
-  return name.includes("serverless")
-    ? [[`${name}:oboe`, oboeConfig]]
-    : [
-        [`${name}:oboe`, oboeConfig],
-        [`${name}:metrics`, metricsConfig],
-      ]
+  return [name, config]
 })
 
 build(Object.fromEntries(configs), __dirname, true)
