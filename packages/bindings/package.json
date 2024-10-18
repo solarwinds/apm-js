@@ -38,28 +38,23 @@
     "test": "swtest",
     "oboe": "node oboe.js"
   },
-  "dependencies": {
-    "@solarwinds-apm/module": "workspace:^"
-  },
   "optionalDependencies": {
     "@solarwinds-apm/bindings-linux-arm64-gnu": "workspace:*",
-    "@solarwinds-apm/bindings-linux-arm64-gnu-serverless": "workspace:*",
     "@solarwinds-apm/bindings-linux-arm64-musl": "workspace:*",
     "@solarwinds-apm/bindings-linux-x64-gnu": "workspace:*",
-    "@solarwinds-apm/bindings-linux-x64-gnu-serverless": "workspace:*",
     "@solarwinds-apm/bindings-linux-x64-musl": "workspace:*"
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
-    "@types/node": "^16.13.0",
-    "eslint": "^9.9.1",
-    "node-addon-api": "^8.1.0",
+    "@types/node": "^18.19.0",
+    "eslint": "^9.12.0",
+    "node-addon-api": "^8.2.1",
     "prettier": "^3.3.3",
-    "typescript": "~5.5.3",
+    "typescript": "~5.6.3",
     "zig-build": "^0.3.0"
   },
   "engines": {
-    "node": ">=16.13.0"
+    "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
   }
 }

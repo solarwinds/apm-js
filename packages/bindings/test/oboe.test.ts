@@ -18,9 +18,11 @@ import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { oboe } from ".."
 
+const lit = process.platform === "linux" ? it : it.skip.bind(it)
+
 describe("Metadata", () => {
   describe("makeRandom", () => {
-    it("should produce valid metadata", () => {
+    lit("should produce valid metadata", () => {
       const random = oboe.Metadata.makeRandom()
       expect(random.isValid()).to.be.true
     })

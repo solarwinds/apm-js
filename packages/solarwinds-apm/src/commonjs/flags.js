@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 Copyright 2023-2024 SolarWinds Worldwide, LLC.
 
@@ -14,6 +16,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const base = require("@solarwinds-apm/eslint-config")
-
-module.exports = [...base()]
+module.exports.INIT = "solarwinds-apm / init";

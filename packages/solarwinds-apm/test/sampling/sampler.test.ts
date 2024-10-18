@@ -29,9 +29,9 @@ import {
   SampleSource,
   type Settings,
 } from "@solarwinds-apm/sampling"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
+import { type Configuration } from "../../src/config.js"
 import { HEADERS_STORAGE } from "../../src/propagation/headers.js"
 import { httpSpanMetadata, Sampler } from "../../src/sampling/sampler.js"
 import {
@@ -43,7 +43,7 @@ import {
 } from "../../src/semattrs.old.js"
 
 class TestSampler extends Sampler {
-  constructor(config: SwConfiguration, settings: Settings) {
+  constructor(config: Configuration, settings: Settings) {
     super(config, diag)
     this.updateSettings(settings)
   }
@@ -56,13 +56,13 @@ class TestSampler extends Sampler {
 const options = (options: {
   tracing?: boolean
   triggerTrace: boolean
-  transactionSettings?: SwConfiguration["transactionSettings"]
-}): SwConfiguration =>
+  transactionSettings?: Configuration["transactionSettings"]
+}): Configuration =>
   ({
     tracingMode: options.tracing,
     triggerTraceEnabled: options.triggerTrace,
     transactionSettings: options.transactionSettings,
-  }) as SwConfiguration
+  }) as Configuration
 
 const settings = (options: {
   enabled: boolean

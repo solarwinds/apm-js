@@ -18,4 +18,5 @@ limitations under the License.
 export default {
   insertTraceContextIntoQueries: true,
   insertTraceContextIntoLogs: true,
+  exportLogsEnabled: true,
 }

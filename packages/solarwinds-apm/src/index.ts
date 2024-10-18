@@ -17,18 +17,31 @@ limitations under the License.
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import { register } from "module"
 
+import { INIT } from "./commonjs/flags.js"
 import { init } from "./init.js"
-import { global } from "./storage.js"
 
 if (!IS_SERVERLESS) {
   await import("./commonjs/version.js")
 }
 
-const first = Symbol()
-if (global("init", () => first) === first) {
+if (!Reflect.has(globalThis, INIT)) {
   try {
+    Reflect.defineProperty(globalThis, INIT, {
+      value: false,
+      enumerable: false,
+      configurable: true,
+      writable: true,
+    })
+
     register("./hooks.js", import.meta.url)
     await init()
+
+    Reflect.defineProperty(globalThis, INIT, {
+      value: true,
+      enumerable: false,
+      configurable: false,
+      writable: false,
+    })
   } catch (error) {
     console.error(error)
   }

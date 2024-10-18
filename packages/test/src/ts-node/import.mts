@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export function firstIfArray<T>(value: T | T[] | undefined): T | undefined {
-  if (Array.isArray(value)) {
-    return value[0]
-  } else {
-    return value
-  }
-}
+import "ts-node/register"
+
+import { register } from "node:module"
+
+register("./loader.mjs", import.meta.url)

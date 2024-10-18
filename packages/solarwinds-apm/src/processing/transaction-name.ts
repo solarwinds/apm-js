@@ -95,6 +95,7 @@ export class TransactionNameProcessor
 }
 
 /** Computes a transaction name from a span and its attributes */
+/* eslint-disable @typescript-eslint/no-deprecated */
 export function computedTransactionName(span: ReadableSpan): string {
   if (typeof process.env.AWS_LAMBDA_FUNCTION_NAME === "string") {
     return process.env.AWS_LAMBDA_FUNCTION_NAME
@@ -110,6 +111,7 @@ export function computedTransactionName(span: ReadableSpan): string {
     return span.name
   }
 }
+/* eslint-enable @typescript-eslint/no-deprecated */
 
 /**
  * A pool that prevents explosion of cardinality in transaction names

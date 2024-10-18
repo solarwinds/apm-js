@@ -8,7 +8,7 @@ module.exports = {
   // it is not necessary to include in your own config
   webpack: (config) => {
     config.externals.push({
-      "solarwinds-apm": "commonjs solarwinds-apm",
+      "solarwinds-apm": "module solarwinds-apm",
     })
     return config
   },

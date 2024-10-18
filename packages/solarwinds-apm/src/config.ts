@@ -28,7 +28,7 @@ import {
   type Set,
 } from "@solarwinds-apm/instrumentations"
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
-import { load } from "@solarwinds-apm/module/load"
+import { load } from "@solarwinds-apm/module"
 import { z, ZodError, ZodIssueCode } from "zod"
 
 const PREFIX = "SW_APM_"
@@ -139,6 +139,7 @@ interface Instrumentations {
 
 interface ResourceDetectors {
   configs?: ResourceDetectorConfigMap
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   extra?: (DetectorSync | Detector)[]
   set?: Set
 }

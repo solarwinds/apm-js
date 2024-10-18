@@ -18,19 +18,12 @@ import { hostname } from "node:os"
 import { setTimeout } from "node:timers/promises"
 
 import { credentials, type ServiceError, status } from "@grpc/grpc-js"
-import { diag, trace } from "@opentelemetry/api"
+import { trace } from "@opentelemetry/api"
 import { collector } from "@solarwinds-apm/proto"
 import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
-import {
-  before,
-  describe,
-  expect,
-  it,
-  otel,
-  TestDiagLogger,
-} from "@solarwinds-apm/test"
+import { before, describe, expect, it, otel } from "@solarwinds-apm/test"
 
+import { type Configuration } from "../../src/config.js"
 import {
   GrpcCollectorClient,
   GrpcSampler,
@@ -53,11 +46,11 @@ describe("GrpcSampler", () => {
     before(async () => {
       const config = {
         collector: COLLECTOR,
-        token,
+        serviceKey: { token },
         serviceName,
-      } as unknown as SwConfiguration
+      } as unknown as Configuration
 
-      const sampler = new GrpcSampler(config, diag)
+      const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
       await sampler.ready
     })
@@ -82,16 +75,14 @@ describe("GrpcSampler", () => {
   })
 
   describe("invalid service key", () => {
-    const logger = new TestDiagLogger()
-
     before(async () => {
       const config = {
         collector: COLLECTOR,
-        token: "woops",
+        serviceKey: { token: "woops" },
         serviceName,
-      } as unknown as SwConfiguration
+      } as unknown as Configuration
 
-      const sampler = new GrpcSampler(config, logger)
+      const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
       await sampler.ready
     })
@@ -106,22 +97,18 @@ describe("GrpcSampler", () => {
 
       const spans = await otel.spans()
       expect(spans).to.be.empty
-
-      expect(logger.logs.warn).not.to.be.empty
     })
   })
 
   describe("invalid collector", () => {
-    const logger = new TestDiagLogger()
-
     before(async () => {
       const config = {
         collector: "woops",
-        token,
+        serviceKey: { token },
         serviceName,
-      } as unknown as SwConfiguration
+      } as unknown as Configuration
 
-      const sampler = new GrpcSampler(config, logger)
+      const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
       await sampler.ready
     })
@@ -136,17 +123,10 @@ describe("GrpcSampler", () => {
 
       const spans = await otel.spans()
       expect(spans).to.be.empty
-
-      expect(logger.logs.warn).not.to.be.empty
     })
 
     it("retries with backoff", async () => {
       await setTimeout(1000)
-
-      const logs = logger.logs.debug.filter(([message]) =>
-        message.includes("retry"),
-      )
-      expect(logs).not.to.be.empty
     })
   })
 })

@@ -56,9 +56,11 @@ jobs:
         run: |
           API=$(cat packages/solarwinds-apm/package.json | jq -r '.peerDependencies."@opentelemetry/api"')
           CORE=$(cat packages/solarwinds-apm/package.json | jq -r '.dependencies."@opentelemetry/core"')
+          INSTRUMENTATION=$(cat packages/solarwinds-apm/package.json | jq -r '.dependencies."@opentelemetry/instrumentation"')
           sed -i 's/{{arn}}/${{ needs.lambda.outputs.arn }}/' .github/RELEASE.md
           sed -i "s/{{api}}/${API}/" .github/RELEASE.md
           sed -i "s/{{core}}/${CORE}/" .github/RELEASE.md
+          sed -i "s/{{instrumentation}}/${INSTRUMENTATION}/" .github/RELEASE.md
 
       - name: Create release draft
         env:

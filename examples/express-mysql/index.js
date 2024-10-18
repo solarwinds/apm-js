@@ -18,6 +18,7 @@ const process = require("node:process")
 
 const express = require("express")
 const mysql = require("mysql2")
+const apm = require("solarwinds-apm")
 const winston = require("winston")
 
 const logger = winston.createLogger({
@@ -83,6 +84,11 @@ app.post("/", (req, res) => {
       }
     },
   )
+})
+
+app.get("/error", () => {
+  apm.setTransactionName("woops")
+  throw new Error("woops")
 })
 
 app.get("/:id", (req, res) => {

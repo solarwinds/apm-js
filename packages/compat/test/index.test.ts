@@ -16,12 +16,12 @@ limitations under the License.
 
 import { SpanStatusCode, trace } from "@opentelemetry/api"
 import {
-  SEMATTRS_EXCEPTION_MESSAGE,
-  SEMATTRS_EXCEPTION_STACKTRACE,
+  ATTR_EXCEPTION_MESSAGE,
+  ATTR_EXCEPTION_STACKTRACE,
 } from "@opentelemetry/semantic-conventions"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
-import { instrument, pInstrument } from "../src/index.js"
+import { instrument, pInstrument } from "../src/index"
 
 function inParent(f: () => void | Promise<void>) {
   return trace.getTracer("test").startActiveSpan("parent", async (span) => {
@@ -94,10 +94,10 @@ describe("instrument", () => {
       message: "error",
     })
     expect(span?.events[0]!.attributes).to.include({
-      [SEMATTRS_EXCEPTION_MESSAGE]: "error",
+      [ATTR_EXCEPTION_MESSAGE]: "error",
     })
     expect(span?.events[0]!.attributes).to.have.property(
-      SEMATTRS_EXCEPTION_STACKTRACE,
+      ATTR_EXCEPTION_STACKTRACE,
     )
   })
 
@@ -142,10 +142,10 @@ describe("instrument", () => {
       message: "error",
     })
     expect(span?.events[0]!.attributes).to.include({
-      [SEMATTRS_EXCEPTION_MESSAGE]: "error",
+      [ATTR_EXCEPTION_MESSAGE]: "error",
     })
     expect(span?.events[0]!.attributes).to.have.property(
-      SEMATTRS_EXCEPTION_STACKTRACE,
+      ATTR_EXCEPTION_STACKTRACE,
     )
   })
 
@@ -237,10 +237,10 @@ describe("pInstrument", () => {
       message: "error",
     })
     expect(span?.events[0]!.attributes).to.include({
-      [SEMATTRS_EXCEPTION_MESSAGE]: "error",
+      [ATTR_EXCEPTION_MESSAGE]: "error",
     })
     expect(span?.events[0]!.attributes).to.have.property(
-      SEMATTRS_EXCEPTION_STACKTRACE,
+      ATTR_EXCEPTION_STACKTRACE,
     )
   })
 })

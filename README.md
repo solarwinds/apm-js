@@ -22,7 +22,7 @@ This project contains a few examples of how to use the library in the [`examples
 
 ## Node.js Version Support
 
-The packages in this project support all currently maintained LTS versions. At the moment this means Node.js 16, 18 and 20 are supported.
+The packages in this project support all LTS Node.js versions up until their End Of Life plus 1 year. At the moment this means Node.js 18, 20 and 22 are supported.
 
 ## License
 
