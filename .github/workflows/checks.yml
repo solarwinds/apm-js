@@ -6,13 +6,7 @@ on:
 
 jobs:
   checks:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,7 +46,7 @@ jobs:
       # we can force it to be the root of the repo by including an empty file present at the root
       # see https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
       - run: touch .root
-      - if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
+      - if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: build
@@ -88,7 +82,7 @@ jobs:
 
       - run: yarn version check
 
-  tests:
+  linux:
     if: github.event_name == 'pull_request'
     needs:
       - checks
@@ -135,7 +129,36 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
-          submodules: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: ./
+
+      - uses: actions/cache@v4
+        with:
+          path: .yarn/cache
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-
+
+      - run: yarn install --immutable
+      - run: yarn test --only
+        env:
+          SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
+          SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
+
+  windows:
+    if: github.event_name == 'pull_request'
+    needs:
+      - checks
+    runs-on: windows-latest
+    env:
+      YARN_IGNORE_NODE: 1
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
       - uses: actions/download-artifact@v4
         with:
           name: build
