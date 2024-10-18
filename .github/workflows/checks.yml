@@ -153,6 +153,12 @@ jobs:
     needs:
       - checks
     runs-on: windows-latest
+    strategy:
+      matrix:
+        node:
+          - 18
+          - 20
+          - 22
     env:
       YARN_IGNORE_NODE: 1
 
@@ -164,6 +170,10 @@ jobs:
         with:
           name: build
           path: ./
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: corepack enable
 
       - uses: actions/cache@v4
         with:
