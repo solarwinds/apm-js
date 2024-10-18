@@ -139,6 +139,7 @@ interface Instrumentations {
 
 interface ResourceDetectors {
   configs?: ResourceDetectorConfigMap
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   extra?: (DetectorSync | Detector)[]
   set?: Set
 }

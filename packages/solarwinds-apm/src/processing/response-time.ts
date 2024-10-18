@@ -71,7 +71,9 @@ export class ResponseTimeProcessor
       copy.push(
         ATTR_HTTP_REQUEST_METHOD,
         ATTR_HTTP_RESPONSE_STATUS_CODE,
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         ATTR_HTTP_METHOD,
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         ATTR_HTTP_STATUS_CODE,
       )
     }

@@ -48,8 +48,8 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^18.19.0",
-    "eslint": "^9.9.1",
-    "node-addon-api": "^8.1.0",
+    "eslint": "^9.12.0",
+    "node-addon-api": "^8.2.1",
     "prettier": "^3.3.3",
     "typescript": "~5.5.3",
     "zig-build": "^0.3.0"

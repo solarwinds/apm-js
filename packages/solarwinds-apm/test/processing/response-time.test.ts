@@ -125,6 +125,7 @@ describe("ResponseTimeProcessor", () => {
           span.end()
         })
 
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         span.setAttribute(ATTR_HTTP_STATUS_CODE, 200)
         span.end()
       },

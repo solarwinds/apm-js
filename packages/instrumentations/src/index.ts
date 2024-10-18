@@ -275,9 +275,9 @@ export function getResource(
     resourceDetectors.map(async ({ module, name }) => {
       try {
         const loaded = await load(module)
-        const detector = (
-          loaded as Record<typeof name, Detector | DetectorSync>
-        )[name]
+        const detector =
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          (loaded as Record<typeof name, Detector | DetectorSync>)[name]
 
         const resource = await detector.detect()
         await resource.waitForAsyncAttributes?.()

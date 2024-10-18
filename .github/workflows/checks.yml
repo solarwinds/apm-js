@@ -35,8 +35,8 @@ jobs:
       - run: yarn install --immutable
 
       - run: yarn build
-      - run: yarn lint
-      - run: yarn test
+      - run: yarn lint --affected
+      - run: yarn test --affected
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
