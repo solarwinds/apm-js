@@ -18,7 +18,6 @@ import { inspect } from "node:util"
 
 import {
   type AttributeValue,
-  type DiagLogger,
   type SpanContext,
   SpanKind,
   SpanStatusCode,
@@ -40,17 +39,16 @@ import {
 } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 
+import { componentLogger } from "../../logger.js"
 import { TRANSACTION_NAME_ATTRIBUTE } from "../../processing/transaction-name.js"
 import { traceParent } from "../sampler.js"
 
 export class AppopticsTraceExporter implements SpanExporter {
+  readonly #logger = componentLogger(AppopticsTraceExporter)
   readonly #reporter: oboe.Reporter
   #error: Error | undefined = undefined
 
-  constructor(
-    reporter: oboe.Reporter,
-    protected readonly logger: DiagLogger,
-  ) {
+  constructor(reporter: oboe.Reporter) {
     this.#reporter = reporter
   }
 
@@ -195,8 +193,8 @@ export class AppopticsTraceExporter implements SpanExporter {
       this.#error = new Error(
         `Reporter::sendReport returned with error status ${status}`,
       )
-      this.logger.warn("error sending report", this.#error)
-      this.logger.debug(evt.metadataString())
+      this.#logger.warn("error sending report", this.#error)
+      this.#logger.debug(evt.metadataString())
     }
   }
 }

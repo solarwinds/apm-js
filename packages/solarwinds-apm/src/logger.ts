@@ -17,13 +17,21 @@ limitations under the License.
 import process from "node:process"
 import util from "node:util"
 
-import { type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
+import { diag, type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
 import stringify from "json-stringify-safe"
 
 const COLOURS = {
   red: "\x1b[1;31m",
   yellow: "\x1b[1;33m",
   cyan: "\x1b[1;36m",
+}
+
+export function componentLogger(component: {
+  readonly name: string
+}): DiagLogger {
+  return diag.createComponentLogger({
+    namespace: `solarwinds-apm/${component.name}`,
+  })
 }
 
 export class Logger implements DiagLogger {
@@ -53,7 +61,8 @@ export class Logger implements DiagLogger {
 
         line += `) ${message}`
         for (const arg of args) {
-          const string = util.inspect(arg, false, Infinity, true)
+          const string =
+            typeof arg === "string" ? arg : util.inspect(arg, false, 4, true)
           line += ` ${string}`
         }
 

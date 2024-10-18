@@ -14,27 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { IS_SERVERLESS } from "@solarwinds-apm/module"
+import { register } from "module"
+
 import { init } from "./init.js"
-import { setter } from "./symbols.js"
-import { versionCheck } from "./version.js"
+import { global } from "./storage.js"
 
-// init only once
-const setInit = setter("init")
-if (setInit && versionCheck()) {
-  setInit()
+if (!IS_SERVERLESS) {
+  await import("./commonjs/version.js")
+}
 
-  console.warn(
-    "It looks like you're initialising solarwinds-apm using a require call or flag.",
-    "This initialisation method is not recommended and may be removed in a future release.",
-    "See https://github.com/solarwinds/apm-js/tree/main/packages/solarwinds-apm#installation-and-setup",
-  )
-
+const first = Symbol()
+if (global("init", () => first) === first) {
   try {
-    init().catch((err: unknown) => {
-      console.warn(err)
-    })
-  } catch (err) {
-    console.warn(err)
+    register("./hooks.js", import.meta.url)
+    await init()
+  } catch (error) {
+    console.error(error)
   }
 }
 

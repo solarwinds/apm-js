@@ -32,13 +32,11 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/es/index.es.js"
-    },
-    "./loader": {
-      "import": "./dist/es/hooks.es.js"
+      "import": "./dist/index.js",
+      "require": "./dist/commonjs/index.js"
     }
   },
-  "main": "./dist/cjs/index.cjs.js",
+  "main": "./dist/commonjs/index.js",
   "files": [
     "./src/",
     "./dist/",
@@ -50,9 +48,9 @@
     "provenance": true
   },
   "scripts": {
-    "build": "node version.js && rollup -c --forceExit",
-    "lint": "node version.js && prettier --check . && eslint . --max-warnings=0",
-    "lint:fix": "node version.js && eslint --fix . && prettier --write .",
+    "build": "node build.js && tsc",
+    "lint": "node build.js && prettier --check . && eslint . --max-warnings=0",
+    "lint:fix": "node build.js && eslint --fix . && prettier --write .",
     "release": "node ../../scripts/publish.js",
     "test": "swtest -p test/tsconfig.json -c src"
   },
@@ -74,13 +72,11 @@
     "@solarwinds-apm/dependencies": "workspace:^",
     "@solarwinds-apm/histogram": "workspace:^",
     "@solarwinds-apm/instrumentations": "workspace:^",
-    "@solarwinds-apm/lazy": "workspace:^",
     "@solarwinds-apm/module": "workspace:^",
     "@solarwinds-apm/proto": "workspace:^",
     "@solarwinds-apm/sampling": "workspace:^",
-    "@solarwinds-apm/sdk": "workspace:^",
     "json-stringify-safe": "^5.0.1",
-    "semver": "^7.5.4",
+    "node-releases": "^2.0.18",
     "zod": "^3.22.4"
   },
   "peerDependencies": {

@@ -32,3 +32,6 @@ const linted = await new ESLint({ fix: true }).lintText(formatted, {
 })
 
 await fs.writeFile("src/version.ts", linted[0].output)
+
+await fs.mkdir("dist/commonjs", { recursive: true })
+await fs.cp("src/commonjs/package.json", "dist/commonjs/package.json")

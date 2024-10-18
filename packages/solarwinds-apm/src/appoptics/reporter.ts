@@ -16,7 +16,6 @@ limitations under the License.
 
 import {
   type Attributes,
-  diag,
   type DiagLogFunction,
   type DiagLogger,
   DiagLogLevel,
@@ -28,27 +27,30 @@ import {
   ATTR_PROCESS_COMMAND_LINE,
 } from "@opentelemetry/semantic-conventions/incubating"
 import { oboe } from "@solarwinds-apm/bindings"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
+import { type Configuration } from "../config.js"
+import { componentLogger } from "../logger.js"
 import { modules } from "../metadata.js"
 import { VERSION } from "../version.js"
 import certificate from "./certificate.js"
 
+export const ERROR: Error | undefined = oboe instanceof Error ? oboe : undefined
+
 export async function reporter(
-  config: SwConfiguration,
+  config: Configuration,
   resource: Resource,
 ): Promise<oboe.Reporter> {
   const reporter = new oboe.Reporter({
-    service_key: `${config.token}:${config.serviceName}`,
-    host: config.collector ?? "",
-    certificates: config.certificate ?? certificate,
+    service_key: `${config.serviceKey?.token}:${config.service}`,
+    host: config.collector,
+    certificates: config.trustedpath ?? certificate,
     grpc_proxy: config.proxy ?? "",
     reporter: "ssl",
     metric_format: 1,
     trace_metrics: 1,
 
-    log_level: otelLevelToOboeLevel(config.otelLogLevel),
-    log_type: otelLevelToOboeType(config.otelLogLevel),
+    log_level: otelLevelToOboeLevel(config.logLevel),
+    log_type: otelLevelToOboeType(config.logLevel),
     log_file_path: "",
 
     buffer_size: oboe.SETTINGS_UNSET,
@@ -65,9 +67,7 @@ export async function reporter(
     token_bucket_rate: oboe.SETTINGS_UNSET,
   })
 
-  const logger = diag.createComponentLogger({
-    namespace: `[sw/oboe]`,
-  })
+  const logger = componentLogger({ name: "oboe" })
   oboe.debug_log_add((level, sourceName, sourceLine, message) => {
     const log = oboeLevelToOtelLogger(level, logger)
 
@@ -79,7 +79,7 @@ export async function reporter(
     } else {
       log(message)
     }
-  }, config.oboeLogLevel)
+  }, otelLevelToOboeLevel(config.logLevel))
 
   // Send init message
   const md = oboe.Metadata.makeRandom(true)

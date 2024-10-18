@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 Copyright 2023-2024 SolarWinds Worldwide, LLC.
 
@@ -14,20 +16,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { api } from "./init.js"
+module.exports.setTransactionName = function setTransactionName(name) {
+  if (api) {
+    return api.setTransactionName(name);
+  } else {
+    return false;
+  }
+};
 
-/**
- * Wait until the library is ready to sample traces
- *
- * Note that when exporting to AppOptics this function will block the event loop.
- *
- * @param timeout - Wait timeout in milliseconds
- * @returns Whether the library is ready
- */
-export async function waitUntilReady(timeout: number): Promise<boolean> {
-  return api.waitUntilReady(timeout)
-}
+module.exports.waitUntilReady = function waitUntilReady(timeout) {
+  return imported.then((api) => api.waitUntilReady(timeout));
+};
 
-export { type Config } from "./config.js"
-export { setTransactionName } from "./processing/transaction-name.js"
-export { VERSION } from "./version.js"
+/** @type{import("../api")} */
+let api = undefined;
+const imported = import("../api.js").then((imported) => {
+  module.exports.VERSION = imported.VERSION;
+  api = imported;
+  return imported;
+});
