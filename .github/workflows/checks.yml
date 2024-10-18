@@ -53,6 +53,7 @@ jobs:
           path: |
             .root
             packages/**/dist/
+            packages/solarwinds-apm/src/version.ts
             packages/bindings/npm/*/*.node
             packages/bindings/npm/*/liboboe.so
           retention-days: 1
