@@ -2,7 +2,7 @@
   "name": "@solarwinds-apm/example-next-prisma",
   "private": true,
   "scripts": {
-    "build:skip": "prisma generate && prisma migrate deploy && next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "lint": "next lint",
     "start": "prisma generate && prisma migrate deploy && next start"
   },
