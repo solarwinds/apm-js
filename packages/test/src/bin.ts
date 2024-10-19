@@ -95,7 +95,11 @@ argv = [
 ]
 
 const envs = []
-for (let dir = process.cwd(); dir !== "/"; dir = path.dirname(dir)) {
+for (
+  let dir = process.cwd();
+  dir !== path.dirname(dir);
+  dir = path.dirname(dir)
+) {
   envs.push(`${dir}/.env`)
 }
 dotenv.configDotenv({ path: envs })
