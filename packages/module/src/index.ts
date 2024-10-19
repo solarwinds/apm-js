@@ -16,8 +16,8 @@ limitations under the License.
 
 import { env } from "node:process"
 
-export async function load(file: string): Promise<unknown> {
-  const imported = (await import(file)) as object
+export async function load(url: string): Promise<unknown> {
+  const imported = (await import(url)) as object
 
   const hasDefault = "default" in imported
   const keyCount = Object.keys(imported).length

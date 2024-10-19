@@ -17,6 +17,7 @@ limitations under the License.
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
 import * as process from "node:process"
+import { pathToFileURL } from "node:url"
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { getEnvWithoutDefaults } from "@opentelemetry/core"
@@ -233,7 +234,7 @@ export async function read(): Promise<Configuration> {
         const read: unknown =
           path.extname(option) === ".json"
             ? JSON.parse(await fs.readFile(option, { encoding: "utf-8" }))
-            : await load(option)
+            : await load(pathToFileURL(option).href)
 
         if (typeof read !== "object" || read === null) {
           throw new Error(`Expected config object, got ${typeof read}.`)
