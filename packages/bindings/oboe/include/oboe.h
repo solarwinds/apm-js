@@ -919,6 +919,9 @@ bool oboe_consume_triggered_trace_count(unsigned int* value);
 bool oboe_get_last_used_sample_rate(unsigned int* value);
 bool oboe_get_last_used_sample_source(unsigned int* value);
 
+void oboe_metrics_attributes_upsert(const char* key, const char* value);
+bool oboe_metrics_attributes_remove(const char* key);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
