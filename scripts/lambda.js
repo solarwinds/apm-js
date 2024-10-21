@@ -31,8 +31,6 @@ const [name, version] = argv.slice(2)
 
 const sdkPackage = JSON.parse(readFileSync("packages/sdk/package.json"))
 const apiVersion = sdkPackage.peerDependencies["@opentelemetry/api"]
-const exportersVersion =
-  sdkPackage.devDependencies["@opentelemetry/exporter-trace-otlp-grpc"]
 
 const rm = (...args) => {
   try {
@@ -48,7 +46,6 @@ const replace = (file) => {
     .replaceAll("{{name}}", name)
     .replaceAll("{{version}}", version)
     .replaceAll("{{api-version}}", apiVersion)
-    .replaceAll("{{exporters-version}}", exportersVersion)
   writeFileSync(file, contents)
 }
 

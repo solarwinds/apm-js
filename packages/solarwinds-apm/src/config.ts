@@ -17,6 +17,7 @@ limitations under the License.
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
 import * as process from "node:process"
+import { pathToFileURL } from "node:url"
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { getEnvWithoutDefaults } from "@opentelemetry/core"
@@ -28,7 +29,7 @@ import {
   type Set,
 } from "@solarwinds-apm/instrumentations"
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
-import { load } from "@solarwinds-apm/module/load"
+import { load } from "@solarwinds-apm/module"
 import { z, ZodError, ZodIssueCode } from "zod"
 
 const PREFIX = "SW_APM_"
@@ -139,6 +140,7 @@ interface Instrumentations {
 
 interface ResourceDetectors {
   configs?: ResourceDetectorConfigMap
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   extra?: (DetectorSync | Detector)[]
   set?: Set
 }
@@ -232,7 +234,7 @@ export async function read(): Promise<Configuration> {
         const read: unknown =
           path.extname(option) === ".json"
             ? JSON.parse(await fs.readFile(option, { encoding: "utf-8" }))
-            : await load(option)
+            : await load(pathToFileURL(option).href)
 
         if (typeof read !== "object" || read === null) {
           throw new Error(`Expected config object, got ${typeof read}.`)

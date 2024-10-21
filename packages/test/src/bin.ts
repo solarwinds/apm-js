@@ -16,11 +16,9 @@ limitations under the License.
 */
 
 import { spawnSync } from "node:child_process"
-import { createRequire } from "node:module"
 import * as path from "node:path"
 import * as process from "node:process"
 
-import { callsite } from "@solarwinds-apm/module"
 import * as dotenv from "dotenv"
 import globby from "globby"
 import semver from "semver"
@@ -34,8 +32,6 @@ const DEFAULTS = [
   "*.test.mjs",
   "*.test.mts",
 ]
-
-const resolve = createRequire(callsite().getFileName()!).resolve
 
 // Skip Node executable and current script path
 let argv = process.argv.slice(2)
@@ -77,7 +73,7 @@ if (argv.length === 0) {
   argv = DEFAULTS.map((p) => `**/${p}`)
 }
 
-const mocha = resolve("mocha/bin/mocha.js")
+const mocha = require.resolve("mocha/bin/mocha.js")
 
 // We are not going through a shell to start the process so glob extension is done manually
 argv = globby.sync(argv, { gitignore: true, expandDirectories: DEFAULTS })
@@ -99,7 +95,11 @@ argv = [
 ]
 
 const envs = []
-for (let dir = process.cwd(); dir !== "/"; dir = path.dirname(dir)) {
+for (
+  let dir = process.cwd();
+  dir !== path.dirname(dir);
+  dir = path.dirname(dir)
+) {
   envs.push(`${dir}/.env`)
 }
 dotenv.configDotenv({ path: envs })
@@ -118,7 +118,7 @@ if (coverage) {
     ".coverage",
   )
 
-  const c8 = resolve("c8/bin/c8.js")
+  const c8 = require.resolve("c8/bin/c8.js")
   argv = [
     c8,
     // count all files in the coverage directory

@@ -10,6 +10,7 @@
 
 - `opentelemetry/api {{api}}`
 - `opentelemetry/core {{core}}`
+- `opentelemetry/instrumentation {{instrumentation}}`
 
 ## Breaking changes
 

@@ -16,11 +16,9 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/es/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/index.js"
     }
   },
-  "main": "./dist/cjs/index.js",
   "files": [
     "./src/",
     "./dist/"
@@ -30,7 +28,7 @@
     "provenance": true
   },
   "scripts": {
-    "build": "rollup -c --forceExit",
+    "build": "tsc",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "release": "node ../../scripts/publish.js",
@@ -41,15 +39,13 @@
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "@solarwinds-apm/rollup-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
-    "@types/node": "^16.13.0",
-    "eslint": "^9.9.1",
+    "@types/node": "^18.19.0",
+    "eslint": "^9.12.0",
     "prettier": "^3.3.3",
-    "rollup": "^4.3.0",
-    "typescript": "~5.5.3"
+    "typescript": "~5.6.3"
   },
   "engines": {
-    "node": ">=16.13.0"
+    "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
   }
 }

@@ -7,7 +7,7 @@ RUN dnf install -y \
     tar \
     xz
 
-RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
+RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash - && \
     dnf install -y nodejs && \
     dnf clean -y all
 

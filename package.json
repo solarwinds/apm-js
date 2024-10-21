@@ -2,7 +2,7 @@
   "name": "@solarwinds-apm/solarwinds-apm",
   "private": true,
   "license": "Apache-2.0",
-  "packageManager": "yarn@4.3.0",
+  "packageManager": "yarn@4.5.1",
   "workspaces": [
     "examples",
     "examples/*",
@@ -27,10 +27,10 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "eslint": "^9.9.1",
-    "husky": "^9.0.11",
+    "eslint": "^9.12.0",
+    "husky": "^9.1.6",
     "prettier": "^3.3.3",
-    "turbo": "^2.0.9",
-    "typescript": "~5.5.3"
+    "turbo": "^2.2.0",
+    "typescript": "~5.6.3"
   }
 }

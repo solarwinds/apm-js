@@ -18,15 +18,13 @@ import { type Dirent, promises as fs } from "node:fs"
 import { createRequire } from "node:module"
 import * as path from "node:path"
 
-import { callsite } from "@solarwinds-apm/module"
-
 import { type Dependencies, type Package } from "./index.js"
 
 export function collectNodeModulesDependencies(dependencies: Dependencies) {
   // node_modules is not a real package we just want all the paths looked up by
   // package resolution
   const roots =
-    createRequire(callsite().getFileName()!).resolve.paths("node_modules") ?? []
+    createRequire(import.meta.url).resolve.paths("node_modules") ?? []
   const tasks = roots.map((root) => collectRoot(dependencies, root))
   return Promise.all(tasks)
 }

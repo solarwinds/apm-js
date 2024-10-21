@@ -1,65 +1,11 @@
 version: "3"
 services:
-  16-alpine:
-    build:
-      context: .
-      dockerfile: 16-alpine3.16.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-  16-amazonlinux:
-    build:
-      context: .
-      dockerfile: 16-amazonlinux2023.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-  16-debian:
-    build:
-      context: .
-      dockerfile: 16-debian10.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-  16-ubi:
-    build:
-      context: .
-      dockerfile: 16-ubi8.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-  16-ubuntu:
-    build:
-      context: .
-      dockerfile: 16-ubuntu20.04.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-
   18-alpine:
     build:
       context: .
-      dockerfile: 18-alpine.Dockerfile
+      dockerfile: 18-alpine3.17.Dockerfile
+    environment:
+      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -68,7 +14,9 @@ services:
   18-amazonlinux:
     build:
       context: .
-      dockerfile: 18-amazonlinux.Dockerfile
+      dockerfile: 18-amazonlinux2023.Dockerfile
+    environment:
+      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -77,7 +25,9 @@ services:
   18-debian:
     build:
       context: .
-      dockerfile: 18-debian.Dockerfile
+      dockerfile: 18-debian10.Dockerfile
+    environment:
+      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -86,7 +36,9 @@ services:
   18-ubi:
     build:
       context: .
-      dockerfile: 18-ubi.Dockerfile
+      dockerfile: 18-ubi8.Dockerfile
+    environment:
+      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -95,7 +47,9 @@ services:
   18-ubuntu:
     build:
       context: .
-      dockerfile: 18-ubuntu.Dockerfile
+      dockerfile: 18-ubuntu20.04.Dockerfile
+    environment:
+      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -228,7 +182,7 @@ services:
       - 12225
 
   otel-collector:
-    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector:0.97.0}
+    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector:0.111.0}
     command: [--config=/solarwinds-apm/docker/otel-collector/config.yml]
     volumes:
       - ..:/solarwinds-apm

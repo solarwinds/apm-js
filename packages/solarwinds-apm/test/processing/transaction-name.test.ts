@@ -16,15 +16,15 @@ limitations under the License.
 
 import { setTimeout } from "node:timers/promises"
 
-import { diag, trace } from "@opentelemetry/api"
+import { trace } from "@opentelemetry/api"
 import type * as sdk from "@opentelemetry/sdk-trace-base"
 import {
   ATTR_HTTP_ROUTE,
   ATTR_URL_PATH,
 } from "@opentelemetry/semantic-conventions"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
+import { type Configuration } from "../../src/config.js"
 import { ParentSpanProcessor } from "../../src/processing/parent-span.js"
 import {
   computedTransactionName,
@@ -39,7 +39,7 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({} as SwConfiguration, diag),
+          new TransactionNameProcessor({} as Configuration),
           new ParentSpanProcessor(),
         ],
       },
@@ -71,12 +71,9 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor(
-            {
-              transactionName: "default",
-            } as SwConfiguration,
-            diag,
-          ),
+          new TransactionNameProcessor({
+            transactionName: "default",
+          } as Configuration),
           new ParentSpanProcessor(),
         ],
       },
@@ -108,12 +105,9 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor(
-            {
-              transactionName: "default",
-            } as SwConfiguration,
-            diag,
-          ),
+          new TransactionNameProcessor({
+            transactionName: "default",
+          } as Configuration),
           new ParentSpanProcessor(),
         ],
       },
@@ -148,7 +142,7 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({} as SwConfiguration, diag),
+          new TransactionNameProcessor({} as Configuration),
           new ParentSpanProcessor(),
         ],
       },
@@ -173,7 +167,7 @@ describe("TransactionNameProcessor", () => {
     await otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({} as SwConfiguration, diag),
+          new TransactionNameProcessor({} as Configuration),
           new ParentSpanProcessor(),
         ],
       },
