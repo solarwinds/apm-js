@@ -29,12 +29,13 @@
 | `http`                      | `*`                | `@opentelemetry/instrumentation-http`             |
 | `https`                     | `*`                | `@opentelemetry/instrumentation-http`             |
 | `ioredis`                   | `>=2.0.0 <6.0.0`   | `@opentelemetry/instrumentation-ioredis`          |
+| `kafkajs`                   | `>=0.1.0 <3.0.0`   | `@opentelemetry/instrumentation-kafkajs`          |
 | `knex`                      | `>=0.10.0 <4.0.0`  | `@opentelemetry/instrumentation-knex`             |
 | `koa`                       | `>=2.0.0 <3.0.0`   | `@opentelemetry/instrumentation-koa`              |
 | `lru-memoizer`              | `>=1.3.0 <3.0.0`   | `@opentelemetry/instrumentation-lru-memoizer`     |
 | `memcached`                 | `>=2.2.0 <3.0.0`   | `@opentelemetry/instrumentation-memcached`        |
 | `mongodb`                   | `>=3.3.0 <7.0.0`   | `@opentelemetry/instrumentation-mongodb`          |
-| `mongoose`                  | `>=5.9.7 <7.0.0`   | `@opentelemetry/instrumentation-mongoose`         |
+| `mongoose`                  | `>=5.9.7 <9.0.0`   | `@opentelemetry/instrumentation-mongoose`         |
 | `mysql`                     | `>=2.0.0 <3.0.0`   | `@opentelemetry/instrumentation-mysql`            |
 | `mysql2`                    | `>=1.4.2 <4.0.0`   | `@opentelemetry/instrumentation-mysql2`           |
 | `net`                       | `*`                | `@opentelemetry/instrumentation-net`              |
@@ -45,5 +46,5 @@
 | `restify`                   | `>=4.0.0 <12.0.0`  | `@opentelemetry/instrumentation-restify`          |
 | `router`                    | `>=1.0.0 <2.0.0`   | `@opentelemetry/instrumentation-router`           |
 | `socket.io`                 | `>=2.0.0 <5.0.0`   | `@opentelemetry/instrumentation-socket.io`        |
-| `tedious`                   | `>=1.11.0 <18.0.0` | `@opentelemetry/instrumentation-tedious`          |
+| `tedious`                   | `>=1.11.0 <20.0.0` | `@opentelemetry/instrumentation-tedious`          |
 | `winston`                   | `>=1.0.0 <4.0.0`   | `@opentelemetry/instrumentation-winston`          |

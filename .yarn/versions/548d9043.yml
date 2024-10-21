@@ -1,0 +1,12 @@
+releases:
+  "@solarwinds-apm/bindings": major
+  "@solarwinds-apm/compat": patch
+  "@solarwinds-apm/dependencies": major
+  "@solarwinds-apm/eslint-config": patch
+  "@solarwinds-apm/histogram": major
+  "@solarwinds-apm/instrumentations": major
+  "@solarwinds-apm/module": major
+  "@solarwinds-apm/proto": major
+  "@solarwinds-apm/sampling": major
+  "@solarwinds-apm/test": minor
+  solarwinds-apm: major

@@ -62,7 +62,7 @@ export class TokenBucket {
     this.#t = Math.max(0, Math.min(this.capacity, n))
   }
 
-  #timer: NodeJS.Timer | undefined = undefined
+  #timer: NodeJS.Timeout | undefined = undefined
 
   constructor(settings: TokenBucketSettings = {}) {
     this.#capacity = settings.capacity ?? 0

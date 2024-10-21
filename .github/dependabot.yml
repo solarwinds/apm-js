@@ -35,11 +35,7 @@ updates:
         patterns:
           - "turbo"
           - "typescript"
-          - "tslib"
           - "zig-build"
-          - "rollup"
-          - "@rollup/*"
-          - "rollup-*"
         update-types:
           - minor
           - patch
@@ -51,8 +47,6 @@ updates:
           - "typescript-eslint"
           - "@eslint/*"
           - "eslint-*"
-          - "@typescript-eslint/*"
-          - "globals"
         update-types:
           - minor
           - patch

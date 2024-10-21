@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { type DiagLogger, trace } from "@opentelemetry/api"
+import { trace } from "@opentelemetry/api"
 import {
   NoopSpanProcessor,
   type ReadableSpan,
@@ -24,8 +24,9 @@ import {
   ATTR_HTTP_ROUTE,
   ATTR_URL_PATH,
 } from "@opentelemetry/semantic-conventions"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
+import { type Configuration } from "../config.js"
+import { componentLogger } from "../logger.js"
 import { ATTR_HTTP_TARGET } from "../semattrs.old.js"
 import { getRootOrEntry, isRootOrEntry } from "./parent-span.js"
 
@@ -62,6 +63,7 @@ export class TransactionNameProcessor
   extends NoopSpanProcessor
   implements SpanProcessor
 {
+  readonly #logger = componentLogger(TransactionNameProcessor)
   readonly #pool = new TransactionNamePool({
     max: TRANSACTION_NAME_POOL_MAX,
     ttl: TRANSACTION_NAME_POOL_TTL,
@@ -70,10 +72,7 @@ export class TransactionNameProcessor
   })
   readonly #defaultName?: string
 
-  constructor(
-    config: SwConfiguration,
-    protected readonly logger: DiagLogger,
-  ) {
+  constructor(config: Configuration) {
     super()
     this.#defaultName = config.transactionName
   }
@@ -84,18 +83,19 @@ export class TransactionNameProcessor
     }
 
     let name = span.attributes[TRANSACTION_NAME_ATTRIBUTE]
-    this.logger.debug("initial transaction name", name)
+    this.#logger.debug("initial transaction name", name, span.attributes)
     if (typeof name !== "string") {
       name = this.#defaultName ?? computedTransactionName(span)
     }
     name = this.#pool.registered(name)
-    this.logger.debug("final transaction name", name)
+    this.#logger.debug("final transaction name", name)
 
     span.attributes[TRANSACTION_NAME_ATTRIBUTE] = name
   }
 }
 
 /** Computes a transaction name from a span and its attributes */
+/* eslint-disable @typescript-eslint/no-deprecated */
 export function computedTransactionName(span: ReadableSpan): string {
   if (typeof process.env.AWS_LAMBDA_FUNCTION_NAME === "string") {
     return process.env.AWS_LAMBDA_FUNCTION_NAME
@@ -111,6 +111,7 @@ export function computedTransactionName(span: ReadableSpan): string {
     return span.name
   }
 }
+/* eslint-enable @typescript-eslint/no-deprecated */
 
 /**
  * A pool that prevents explosion of cardinality in transaction names

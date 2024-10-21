@@ -35,8 +35,8 @@ import {
   type ResponseHeaders,
   TracingMode,
 } from "@solarwinds-apm/sampling"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 
+import { type Configuration } from "../config.js"
 import { HEADERS_STORAGE } from "../propagation/headers.js"
 import {
   ATTR_HTTP_METHOD,
@@ -57,29 +57,44 @@ export function httpSpanMetadata(kind: SpanKind, attributes: Attributes) {
   // The method attribute is always required so we can tell whether this is HTTP from it
   if (
     kind !== SpanKind.SERVER ||
-    !(ATTR_HTTP_REQUEST_METHOD in attributes || ATTR_HTTP_METHOD in attributes)
+    !(
+      ATTR_HTTP_REQUEST_METHOD in attributes ||
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      ATTR_HTTP_METHOD in attributes
+    )
   ) {
     return { http: false } as const
   }
 
   const method = String(
-    attributes[ATTR_HTTP_REQUEST_METHOD] ?? attributes[ATTR_HTTP_METHOD],
+    attributes[ATTR_HTTP_REQUEST_METHOD] ??
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      attributes[ATTR_HTTP_METHOD],
   )
   const status = Number(
     attributes[ATTR_HTTP_RESPONSE_STATUS_CODE] ??
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       attributes[ATTR_HTTP_STATUS_CODE] ??
       0,
   )
 
   const scheme = String(
-    attributes[ATTR_URL_SCHEME] ?? attributes[ATTR_HTTP_SCHEME] ?? "http",
+    attributes[ATTR_URL_SCHEME] ??
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      attributes[ATTR_HTTP_SCHEME] ??
+      "http",
   )
   const hostname = String(
     attributes[ATTR_SERVER_ADDRESS] ??
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       attributes[ATTR_NET_HOST_NAME] ??
       "localhost",
   )
-  const path = String(attributes[ATTR_URL_PATH] ?? attributes[ATTR_HTTP_TARGET])
+  const path = String(
+    attributes[ATTR_URL_PATH] ??
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      attributes[ATTR_HTTP_TARGET],
+  )
   const url = `${scheme}://${hostname}${path}`
 
   return {
@@ -104,9 +119,9 @@ export function httpSpanMetadata(kind: SpanKind, attributes: Attributes) {
 export abstract class Sampler extends OboeSampler {
   readonly #tracingMode: TracingMode | undefined
   readonly #triggerMode: boolean
-  readonly #transactionSettings: SwConfiguration["transactionSettings"]
+  readonly #transactionSettings: Configuration["transactionSettings"]
 
-  constructor(config: SwConfiguration, logger: DiagLogger) {
+  constructor(config: Configuration, logger: DiagLogger) {
     super(logger)
 
     if (config.tracingMode !== undefined) {

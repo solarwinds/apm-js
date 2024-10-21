@@ -72,7 +72,7 @@ describe("TokenBucket", () => {
     bucket.start()
 
     bucket.update({ rate: 2, interval: 5 })
-    await setTimeout(50)
+    await setTimeout(100)
     bucket.stop()
     expect(bucket.consume(8)).to.be.true
   })

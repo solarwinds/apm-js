@@ -14,15 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { context } from "@opentelemetry/api"
-import * as sdk from "@solarwinds-apm/sdk"
+import { api } from "./init.js"
 
-export function setTransactionName(name: string): boolean {
-  return sdk.setTransactionName(context.active(), name)
-}
-export function waitUntilReady(timeout: number): number {
-  return sdk.waitUntilReady(timeout)
+/**
+ * Wait until the library is ready to sample traces
+ *
+ * Note that when exporting to AppOptics this function will block the event loop.
+ *
+ * @param timeout - Wait timeout in milliseconds
+ * @returns Whether the library is ready
+ */
+export async function waitUntilReady(timeout: number): Promise<boolean> {
+  return api.waitUntilReady(timeout)
 }
 
 export { type Config } from "./config.js"
-export { FULL_VERSION, VERSION } from "./version.js"
+export { setTransactionName } from "./processing/transaction-name.js"
+export { VERSION } from "./version.js"

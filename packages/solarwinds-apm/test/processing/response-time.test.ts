@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { diag, SpanKind, SpanStatusCode, trace } from "@opentelemetry/api"
+import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api"
 import {
   DataPointType,
   type ExponentialHistogramMetricData,
@@ -26,9 +26,9 @@ import {
   ATTR_HTTP_ROUTE,
   ATTR_URL_PATH,
 } from "@opentelemetry/semantic-conventions"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
+import { type Configuration } from "../../src/config.js"
 import { ParentSpanProcessor } from "../../src/processing/parent-span.js"
 import { ResponseTimeProcessor } from "../../src/processing/response-time.js"
 import { TransactionNameProcessor } from "../../src/processing/transaction-name.js"
@@ -68,8 +68,8 @@ describe("ResponseTimeProcessor", () => {
     otel.reset({
       trace: {
         processors: [
-          new TransactionNameProcessor({} as SwConfiguration, diag),
-          new ResponseTimeProcessor(diag),
+          new TransactionNameProcessor({} as Configuration),
+          new ResponseTimeProcessor(),
           new ParentSpanProcessor(),
         ],
       },
@@ -125,6 +125,7 @@ describe("ResponseTimeProcessor", () => {
           span.end()
         })
 
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         span.setAttribute(ATTR_HTTP_STATUS_CODE, 200)
         span.end()
       },

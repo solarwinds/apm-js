@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const { IS_SERVERLESS } = require("@solarwinds-apm/module")
-
 function triple() {
   const platform = process.platform
   const arch = process.arch
@@ -29,25 +27,10 @@ function triple() {
     return `${platform}-${arch}`
   }
 }
-
-function serverless() {
-  if (IS_SERVERLESS) {
-    return "-serverless"
-  } else {
-    return ""
-  }
-}
-
-const t = `${triple()}${serverless()}`
+const t = triple()
 
 try {
   module.exports.oboe = require(`@solarwinds-apm/bindings-${t}/oboe.node`)
 } catch (cause) {
   module.exports.oboe = new Error(`unsupported platform ${t}`, { cause })
-}
-
-try {
-  module.exports.metrics = require(`@solarwinds-apm/bindings-${t}/metrics.node`)
-} catch (cause) {
-  module.exports.metrics = new Error(`unsupported platform ${t}`, { cause })
 }

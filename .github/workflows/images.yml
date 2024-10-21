@@ -13,16 +13,11 @@ jobs:
     strategy:
       matrix:
         image:
-          - 16-alpine3.16
-          - 16-amazonlinux2023
-          - 16-debian10
-          - 16-ubi8
-          - 16-ubuntu20.04
-          - 18-alpine
-          - 18-amazonlinux
-          - 18-debian
-          - 18-ubi
-          - 18-ubuntu
+          - 18-alpine3.17
+          - 18-amazonlinux2023
+          - 18-debian10
+          - 18-ubi8
+          - 18-ubuntu20.04
           - 20-alpine
           - 20-amazonlinux
           - 20-debian

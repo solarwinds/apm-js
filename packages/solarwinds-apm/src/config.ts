@@ -14,23 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import * as fs from "node:fs"
+import * as fs from "node:fs/promises"
 import * as path from "node:path"
 import * as process from "node:process"
+import { pathToFileURL } from "node:url"
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { getEnvWithoutDefaults } from "@opentelemetry/core"
 import { type Instrumentation } from "@opentelemetry/instrumentation"
-import { View } from "@opentelemetry/sdk-metrics"
-import { oboe } from "@solarwinds-apm/bindings"
-import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
+import { type Detector, type DetectorSync } from "@opentelemetry/resources"
+import {
+  type InstrumentationConfigMap,
+  type ResourceDetectorConfigMap,
+  type Set,
+} from "@solarwinds-apm/instrumentations"
 import { IS_SERVERLESS } from "@solarwinds-apm/module"
-import { load } from "@solarwinds-apm/module/load"
-import { type SwConfiguration } from "@solarwinds-apm/sdk"
+import { load } from "@solarwinds-apm/module"
 import { z, ZodError, ZodIssueCode } from "zod"
 
-import aoCert from "./appoptics/certificate.js"
-
+const PREFIX = "SW_APM_"
 const ENDPOINTS = {
   traces: "/v1/traces",
   metrics: "/v1/metrics",
@@ -72,7 +74,7 @@ const serviceKey = z
 
 const trustedpath = z.string().transform((p, ctx) => {
   try {
-    return fs.readFileSync(p, "utf-8")
+    return fs.readFile(p, "utf-8")
   } catch (err) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -128,20 +130,26 @@ const transactionSettings = z.array(
     })),
 )
 
+const set = z.enum(["none", "core", "all"])
+
 interface Instrumentations {
   configs?: InstrumentationConfigMap
   extra?: Instrumentation[]
+  set?: Set
 }
 
-interface Metrics {
-  views: View[]
-  interval: number
+interface ResourceDetectors {
+  configs?: ResourceDetectorConfigMap
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  extra?: (DetectorSync | Detector)[]
+  set?: Set
 }
 
 const schema = z.object({
   serviceKey: serviceKey.optional(),
   enabled: boolean.default(true),
-  collector: z.string().optional(),
+  legacy: boolean.optional(),
+  collector: z.string().default("apm.collector.na-01.cloud.solarwinds.com"),
   trustedpath: trustedpath.optional(),
   proxy: z.string().optional(),
   logLevel: logLevel.default("warn"),
@@ -157,37 +165,30 @@ const schema = z.object({
     .object({
       configs: z.record(z.unknown()).optional(),
       extra: z.array(z.unknown()).optional(),
+      set: set.default(IS_SERVERLESS ? "core" : "all"),
     })
     .transform((i) => i as Instrumentations)
     .default({}),
-  metrics: z
+  resourceDetectors: z
     .object({
-      views: z.array(z.instanceof(View)).default([]),
-      interval: z.number().int().default(60_000),
+      configs: z.record(z.record(z.string(), z.boolean())).optional(),
+      extra: z.array(z.unknown()).optional(),
+      set: set.default(IS_SERVERLESS ? "core" : "all"),
     })
-    .default({}),
-
-  dev: z
-    .object({
-      otlpTraces: boolean.default(IS_SERVERLESS),
-      otlpMetrics: boolean.default(IS_SERVERLESS),
-      swTraces: boolean.default(!IS_SERVERLESS),
-      swMetrics: boolean.default(!IS_SERVERLESS),
-      initMessage: boolean.default(!IS_SERVERLESS),
-      extraResourceDetection: boolean.default(!IS_SERVERLESS),
-      instrumentationsDefaultDisabled: boolean.default(IS_SERVERLESS),
-    })
+    .transform((i) => i as ResourceDetectors)
     .default({}),
 })
 
+/** User provided configuration for solarwinds-apm */
 export interface Config extends z.input<typeof schema> {
   instrumentations?: Instrumentations
-  metrics?: Metrics
+  resourceDetectors?: ResourceDetectors
 }
 
-export interface ExtendedSwConfiguration extends SwConfiguration {
-  instrumentations: Instrumentations
-  metrics: Metrics
+/** Processed configuration for solarwinds-apm */
+export interface Configuration extends z.output<typeof schema> {
+  service: string
+  legacy: boolean
 
   otlp: {
     tracesEndpoint?: string
@@ -195,99 +196,113 @@ export interface ExtendedSwConfiguration extends SwConfiguration {
     logsEndpoint?: string
     headers: Record<string, string>
   }
-  dev: z.infer<typeof schema>["dev"]
 
   source?: string
 }
 
-const ENV_PREFIX = "SW_APM_"
-const ENV_PREFIX_DEV = `${ENV_PREFIX}DEV_`
-const DEFAULT_FILE_NAME = "solarwinds.apm.config"
-
-export function readConfig():
-  | ExtendedSwConfiguration
-  | Promise<ExtendedSwConfiguration> {
-  const env = envObject()
-  const devEnv = envObject(ENV_PREFIX_DEV)
-
-  const path = filePath()
-  const file = path ? readConfigFile(path) : {}
-
-  const processFile = (file: object): ExtendedSwConfiguration => {
-    const devFile =
-      "dev" in file && typeof file.dev === "object" && file.dev !== null
-        ? file.dev
-        : {}
-
-    const raw = schema.parse({
-      ...file,
-      ...env,
-      dev: { ...devFile, ...devEnv },
-    })
-
-    const otelEnv = getEnvWithoutDefaults()
-
-    const serviceName = otelEnv.OTEL_SERVICE_NAME ?? raw.serviceKey?.name
-    if (
-      !serviceName ||
-      (!raw.serviceKey && (raw.dev.swTraces || raw.dev.swMetrics))
-    ) {
-      throw new ZodError([
-        {
-          path: ["serviceKey"],
-          message: "Missing service key",
-          code: ZodIssueCode.custom,
-        },
-      ])
-    }
-
-    const config: ExtendedSwConfiguration = {
-      ...raw,
-      serviceName,
-      token: raw.serviceKey?.token ?? "",
-      certificate: raw.trustedpath,
-      oboeLogLevel: otelLevelToOboeLevel(raw.logLevel),
-      oboeLogType: otelLevelToOboeType(raw.logLevel),
-      otelLogLevel: otelEnv.OTEL_LOG_LEVEL ?? raw.logLevel,
-      source: path,
-
-      otlp: {
-        tracesEndpoint:
-          otelEnv.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.traces) ??
-          raw.collector
-            ?.replace(/^apm\.collector\./, "https://otel.collector.")
-            .concat(ENDPOINTS.traces),
-        metricsEndpoint:
-          otelEnv.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.metrics) ??
-          raw.collector
-            ?.replace(/^apm\.collector\./, "https://otel.collector.")
-            .concat(ENDPOINTS.metrics),
-        logsEndpoint:
-          otelEnv.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
-          otelEnv.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.logs) ??
-          raw.collector
-            ?.replace(/^apm\.collector\./, "https://otel.collector.")
-            .concat(ENDPOINTS.logs),
-
-        headers: raw.serviceKey?.token
-          ? { authorization: `Bearer ${raw.serviceKey.token}` }
-          : {},
-      },
-    }
-
-    if (config.collector?.includes("appoptics.com")) {
-      config.metricFormat ??= 1
-      config.certificate ??= aoCert
-      config.exportLogsEnabled = false
-    }
-
-    return config
+export async function read(): Promise<Configuration> {
+  const paths: string[] = []
+  if (typeof process.env.SW_APM_CONFIG_FILE === "string") {
+    paths.push(process.env.SW_APM_CONFIG_FILE)
+  } else {
+    paths.push(
+      "solarwinds.apm.config.ts",
+      "solarwinds.apm.config.mts",
+      "solarwinds.apm.config.cts",
+      "solarwinds.apm.config.js",
+      "solarwinds.apm.config.mjs",
+      "solarwinds.apm.config.cjs",
+      "solarwinds.apm.config.json",
+    )
   }
 
-  if (file instanceof Promise) return file.then(processFile)
-  else return processFile(file)
+  const exists = (path: string) =>
+    fs
+      .stat(path)
+      .then((stat) => stat.isFile())
+      .catch(() => false)
+
+  const env = envObject()
+  let file: object = {}
+  let source: string | undefined
+
+  for (let option of paths) {
+    option = path.resolve(option)
+
+    if (await exists(option)) {
+      try {
+        const read: unknown =
+          path.extname(option) === ".json"
+            ? JSON.parse(await fs.readFile(option, { encoding: "utf-8" }))
+            : await load(pathToFileURL(option).href)
+
+        if (typeof read !== "object" || read === null) {
+          throw new Error(`Expected config object, got ${typeof read}.`)
+        }
+
+        file = read
+        source = option
+      } catch (error) {
+        console.warn(`The config file (${option}) could not be read.`, error)
+      }
+    } else if (paths.length === 1) {
+      console.warn(`The config file (${option}) could not be found.`)
+    }
+  }
+
+  const raw = await schema.parseAsync({ ...file, ...env })
+  const otel = getEnvWithoutDefaults()
+
+  const service = otel.OTEL_SERVICE_NAME ?? raw.serviceKey?.name
+  if (!service || (!IS_SERVERLESS && !raw.serviceKey?.token)) {
+    throw new ZodError([
+      {
+        path: ["serviceKey"],
+        message: "Missing service key",
+        code: ZodIssueCode.custom,
+      },
+    ])
+  }
+
+  const legacy = raw.legacy ?? raw.collector.includes("appoptics")
+  if (legacy && raw.exportLogsEnabled) {
+    console.warn("Logs export is not supported when exporting to AppOptics.")
+    raw.exportLogsEnabled = false
+  }
+
+  return {
+    ...raw,
+
+    service,
+    legacy,
+
+    otlp: {
+      tracesEndpoint:
+        otel.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
+        otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.traces) ??
+        raw.collector
+          .replace(/^apm\.collector\./, "https://otel.collector.")
+          .concat(ENDPOINTS.traces),
+      metricsEndpoint:
+        otel.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
+        otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.metrics) ??
+        raw.collector
+          .replace(/^apm\.collector\./, "https://otel.collector.")
+          .concat(ENDPOINTS.metrics),
+      logsEndpoint:
+        otel.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
+        otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.logs) ??
+        raw.collector
+          .replace(/^apm\.collector\./, "https://otel.collector.")
+          .concat(ENDPOINTS.logs),
+
+      headers: raw.serviceKey?.token
+        ? { authorization: `Bearer ${raw.serviceKey.token}` }
+        : {},
+    },
+
+    source,
+  }
 }
 
 export function printError(err: unknown) {
@@ -329,82 +344,21 @@ export function printError(err: unknown) {
   }
 }
 
-function fromEnvKey(k: string, prefix = ENV_PREFIX) {
+function fromEnvKey(k: string, prefix = PREFIX) {
   return k
     .slice(prefix.length)
     .toLowerCase()
     .replace(/_[a-z]/g, (c) => c.slice(1).toUpperCase())
 }
 
-function toEnvKey(k: string, prefix = ENV_PREFIX) {
+function toEnvKey(k: string, prefix = PREFIX) {
   return `${prefix}${k.replace(/[A-Z]/g, (c) => `_${c}`).toUpperCase()}`
 }
 
-function envObject(prefix = ENV_PREFIX) {
+function envObject(prefix = PREFIX) {
   return Object.fromEntries(
     Object.entries(process.env)
       .filter(([k]) => k.startsWith(prefix))
       .map(([k, v]) => [fromEnvKey(k, prefix), v]),
   )
-}
-
-function filePath() {
-  const cwd = process.cwd()
-  let override = process.env.SW_APM_CONFIG_FILE
-
-  if (override) {
-    if (!path.isAbsolute(override)) {
-      override = path.join(cwd, override)
-    }
-    if (!fs.existsSync(override)) {
-      console.warn(`couldn't read config file at ${override}`)
-      return
-    }
-
-    return override
-  } else {
-    const fullName = path.join(cwd, DEFAULT_FILE_NAME)
-    const options = [
-      `${fullName}.ts`,
-      `${fullName}.cjs`,
-      `${fullName}.js`,
-      `${fullName}.json`,
-    ]
-    for (const option of options) {
-      if (fs.existsSync(option)) return option
-    }
-  }
-}
-
-function readConfigFile(path: string): object | Promise<object> {
-  if (path.endsWith(".json")) {
-    const contents = fs.readFileSync(path, { encoding: "utf-8" })
-    return JSON.parse(contents) as object
-  }
-
-  return load(path) as object | Promise<object>
-}
-
-function otelLevelToOboeLevel(level: DiagLogLevel): number {
-  switch (level) {
-    case DiagLogLevel.NONE:
-      return oboe.INIT_LOG_LEVEL_FATAL
-    case DiagLogLevel.ERROR:
-      return oboe.INIT_LOG_LEVEL_ERROR
-    case DiagLogLevel.WARN:
-      return oboe.INIT_LOG_LEVEL_WARNING
-    case DiagLogLevel.INFO:
-      return oboe.INIT_LOG_LEVEL_INFO
-    case DiagLogLevel.DEBUG:
-      return oboe.INIT_LOG_LEVEL_DEBUG
-    case DiagLogLevel.VERBOSE:
-    case DiagLogLevel.ALL:
-    default:
-      return oboe.INIT_LOG_LEVEL_TRACE
-  }
-}
-
-function otelLevelToOboeType(level: DiagLogLevel): number {
-  if (level === DiagLogLevel.NONE) return oboe.INIT_LOG_TYPE_DISABLE
-  else return oboe.INIT_LOG_TYPE_NULL
 }

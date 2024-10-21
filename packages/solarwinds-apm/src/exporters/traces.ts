@@ -16,13 +16,16 @@ limitations under the License.
 
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
 
-import { type ExtendedSwConfiguration } from "../config.js"
+import { type Configuration } from "../config.js"
 
 export class TraceExporter extends OTLPTraceExporter {
-  constructor(config: ExtendedSwConfiguration) {
+  constructor(config: Configuration) {
     super({
       url: config.otlp.tracesEndpoint,
       headers: config.otlp.headers,
+      httpAgentOptions: {
+        ca: config.trustedpath,
+      },
     })
   }
 }
