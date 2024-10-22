@@ -80,7 +80,7 @@ describe("JsonSampler", () => {
 
   describe("invalid file", () => {
     before(async () => {
-      await fs.writeFile(PATH, "woops")
+      await fs.writeFile(PATH, JSON.stringify({ hello: "world" }))
     })
 
     it("does not sample created spans", async () => {
