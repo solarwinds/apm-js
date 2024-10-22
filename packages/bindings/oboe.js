@@ -28,10 +28,10 @@ const root = `https://ssp-${SOURCE}-global-agent-binaries.s3.amazonaws.com/apm/c
 const libs = [
   "liboboe-1.0-aarch64.so",
   "liboboe-1.0-alpine-aarch64.so",
-  "liboboe-1.0-lambda-aarch64.so",
+  // "liboboe-1.0-lambda-aarch64.so",
   "liboboe-1.0-x86_64.so",
   "liboboe-1.0-alpine-x86_64.so",
-  "liboboe-1.0-lambda-x86_64.so",
+  // "liboboe-1.0-lambda-x86_64.so",
 ]
 const files = [
   "VERSION",
