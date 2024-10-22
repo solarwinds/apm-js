@@ -42,6 +42,7 @@ import {
   getInstrumentations,
   getResource,
 } from "@solarwinds-apm/instrumentations"
+import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
 import { type AppopticsSampler } from "./appoptics/sampler.js"
 import { type Configuration, printError, read } from "./config.js"
@@ -178,7 +179,22 @@ async function initTracing(
     ],
   })
 
-  if (oboe) {
+  if (IS_AWS_LAMBDA) {
+    const [{ JsonSampler }, { TraceExporter }] = await Promise.all([
+      import("./sampling/json.js"),
+      import("./exporters/traces.js"),
+    ])
+
+    sampler = new JsonSampler(config)
+    processors = [
+      new TransactionNameProcessor(config),
+      new ResponseTimeProcessor(),
+      new BatchSpanProcessor(new TraceExporter(config)),
+      new ParentSpanProcessor(),
+    ]
+
+    api.waitUntilReady = () => Promise.resolve(true)
+  } else if (oboe) {
     const [
       { AppopticsSampler },
       { AppopticsTraceExporter },

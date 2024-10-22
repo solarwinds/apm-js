@@ -20,6 +20,7 @@ export interface Settings {
   flags: number
   buckets: Partial<Record<BucketType, BucketSettings>>
   signatureKey?: Uint8Array
+  timestamp: number
   ttl: number
 }
 

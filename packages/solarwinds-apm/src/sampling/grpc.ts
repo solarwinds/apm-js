@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import * as dns from "node:dns/promises"
+import dns from "node:dns/promises"
 import { hostname } from "node:os"
 import { TextDecoder } from "node:util"
 
@@ -304,7 +304,7 @@ export class GrpcCollectorClient extends Client implements CollectorClient {
 export function parseSettings(
   unparsed: collector.IOboeSetting,
 ): Settings | undefined {
-  if (!unparsed.ttl) {
+  if (!unparsed.timestamp || !unparsed.ttl) {
     return undefined
   }
 
@@ -313,6 +313,7 @@ export function parseSettings(
     sampleSource: SampleSource.Remote,
     flags: Flags.OK,
     buckets: {},
+    timestamp: unparsed.timestamp,
     ttl: unparsed.ttl,
   }
   const decoder = new TextDecoder("utf-8", { fatal: false })

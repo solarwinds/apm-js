@@ -82,6 +82,7 @@ const settings = (options: {
       [BucketType.TRIGGER_STRICT]: { capacity: 1, rate: 0.1 },
     },
     signatureKey,
+    timestamp: Math.round(Date.now() / 1000),
     ttl: 60,
   }
 }

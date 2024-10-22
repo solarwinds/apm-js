@@ -94,6 +94,7 @@ interface SampleState {
  * By extending this class neither needs to reimplement shared sampling logic.
  */
 export abstract class OboeSampler implements Sampler {
+  readonly #counters = counters()
   readonly #buckets: Record<BucketType, TokenBucket> = {
     [BucketType.DEFAULT]: new TokenBucket({
       interval: BUCKET_INTERVAL,
@@ -106,7 +107,6 @@ export abstract class OboeSampler implements Sampler {
     }),
   }
   #settings: Settings | undefined = undefined
-  #updated: number = Date.now()
 
   constructor(protected readonly logger: DiagLogger) {
     for (const bucket of Object.values(this.#buckets)) {
@@ -202,7 +202,7 @@ export abstract class OboeSampler implements Sampler {
       return { decision: SamplingDecision.NOT_RECORD, attributes: s.attributes }
     }
 
-    counters.requestCount.add(1, {}, context)
+    this.#counters.requestCount.add(1, {}, context)
 
     // https://swicloud.atlassian.net/wiki/spaces/NIT/pages/3815473156/Tracing+Decision+Tree
     if (s.traceState && TRACESTATE_REGEXP.test(s.traceState)) {
@@ -248,8 +248,8 @@ export abstract class OboeSampler implements Sampler {
       if (sampled) {
         this.logger.debug("parent is sampled; record and sample")
 
-        counters.traceCount.add(1, {}, context)
-        counters.throughTraceCount.add(1, {}, context)
+        this.#counters.traceCount.add(1, {}, context)
+        this.#counters.throughTraceCount.add(1, {}, context)
 
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
@@ -293,8 +293,8 @@ export abstract class OboeSampler implements Sampler {
       if (bucket.consume()) {
         this.logger.debug("sufficient capacity; record and sample")
 
-        counters.triggeredTraceCount.add(1, {}, context)
-        counters.traceCount.add(1, {}, context)
+        this.#counters.triggeredTraceCount.add(1, {}, context)
+        this.#counters.traceCount.add(1, {}, context)
 
         s.traceOptions!.response.triggerTrace = TriggerTrace.OK
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
@@ -320,7 +320,7 @@ export abstract class OboeSampler implements Sampler {
     s.attributes[SAMPLE_RATE_ATTRIBUTE] = dice.rate
     s.attributes[SAMPLE_SOURCE_ATTRIBUTE] = s.settings!.sampleSource
 
-    counters.sampleCount.add(1, {}, context)
+    this.#counters.sampleCount.add(1, {}, context)
 
     if (dice.roll()) {
       this.logger.debug("dice roll success; checking capacity")
@@ -332,13 +332,13 @@ export abstract class OboeSampler implements Sampler {
       if (bucket.consume()) {
         this.logger.debug("sufficient capacity; record and sample")
 
-        counters.traceCount.add(1, {}, context)
+        this.#counters.traceCount.add(1, {}, context)
 
         s.decision = SamplingDecision.RECORD_AND_SAMPLED
       } else {
         this.logger.debug("insufficient capacity; record only")
 
-        counters.tokenBucketExhaustionCount.add(1, {}, context)
+        this.#counters.tokenBucketExhaustionCount.add(1, {}, context)
 
         s.decision = SamplingDecision.RECORD
       }
@@ -370,13 +370,14 @@ export abstract class OboeSampler implements Sampler {
   protected updateSettings(settings: Settings): void {
     this.logger.debug("settings updated", settings)
 
-    this.#settings = settings
-    this.#updated = Date.now()
+    if (settings.timestamp > (this.#settings?.timestamp ?? 0)) {
+      this.#settings = settings
 
-    for (const [type, bucket] of Object.entries(this.#buckets)) {
-      const settings = this.#settings.buckets[type as BucketType]
-      if (settings) {
-        bucket.update(settings)
+      for (const [type, bucket] of Object.entries(this.#buckets)) {
+        const settings = this.#settings.buckets[type as BucketType]
+        if (settings) {
+          bucket.update(settings)
+        }
       }
     }
   }
@@ -428,7 +429,7 @@ export abstract class OboeSampler implements Sampler {
       return
     }
 
-    const expiry = this.#updated + this.#settings.ttl * 1000
+    const expiry = (this.#settings.timestamp + this.#settings.ttl) * 1000
     if (Date.now() > expiry) {
       this.logger.debug("settings expired, removing")
       this.#settings = undefined

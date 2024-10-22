@@ -16,10 +16,10 @@ limitations under the License.
 */
 
 import { spawnSync } from "node:child_process"
-import * as path from "node:path"
-import * as process from "node:process"
+import path from "node:path"
+import process from "node:process"
 
-import * as dotenv from "dotenv"
+import dotenv from "dotenv"
 import globby from "globby"
 import semver from "semver"
 
