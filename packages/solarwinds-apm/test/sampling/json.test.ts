@@ -30,6 +30,11 @@ import {
 import { type Configuration } from "../../src/config.js"
 import { JsonSampler, parseSettings } from "../../src/sampling/json.js"
 
+const PATH =
+  process.platform === "win32"
+    ? "%SystemRoot%\\temp\\solarwinds-apm-settings.json"
+    : "/tmp/solarwinds-apm-settings.json"
+
 describe("JsonSampler", () => {
   beforeEach(async () => {
     const sampler = new JsonSampler({} as Configuration)
@@ -39,7 +44,7 @@ describe("JsonSampler", () => {
   describe("valid file", () => {
     before(async () => {
       await fs.writeFile(
-        "/tmp/solarwinds-apm-settings.json",
+        PATH,
         JSON.stringify([
           {
             flags: "SAMPLE_START,SAMPLE_THROUGH_ALWAYS,TRIGGER_TRACE,OVERRIDE",
@@ -76,7 +81,7 @@ describe("JsonSampler", () => {
 
   describe("invalid file", () => {
     before(async () => {
-      await fs.writeFile("/tmp/solarwinds-apm-settings.json", "woops")
+      await fs.writeFile(PATH, "woops")
     })
 
     it("does not sample created spans", async () => {
@@ -95,7 +100,7 @@ describe("JsonSampler", () => {
   describe("missing file", () => {
     before(async () => {
       try {
-        await fs.rm("/tmp/solarwinds-apm-settings.json")
+        await fs.rm(PATH)
       } catch {
         // didn't exist
       }
@@ -117,7 +122,7 @@ describe("JsonSampler", () => {
   describe("expired file", () => {
     before(async () => {
       await fs.writeFile(
-        "/tmp/solarwinds-apm-settings.json",
+        PATH,
         JSON.stringify([
           {
             flags: "SAMPLE_START,SAMPLE_THROUGH_ALWAYS,TRIGGER_TRACE,OVERRIDE",
@@ -147,7 +152,7 @@ describe("JsonSampler", () => {
 
     it("samples created span after reading new settings", async () => {
       await fs.writeFile(
-        "/tmp/solarwinds-apm-settings.json",
+        PATH,
         JSON.stringify([
           {
             flags: "SAMPLE_START,SAMPLE_THROUGH_ALWAYS,TRIGGER_TRACE,OVERRIDE",
