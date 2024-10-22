@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 import fs from "node:fs"
+import os from "node:os"
 import path from "node:path"
-import process from "node:process"
 
 import { context } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
@@ -33,10 +33,7 @@ import { type Configuration } from "../config.js"
 import { componentLogger } from "../logger.js"
 import { Sampler } from "./sampler.js"
 
-const PATH = path.join(
-  process.platform === "win32" ? "%SystemRoot%\\temp" : "/tmp",
-  "solarwinds-apm-settings.json",
-)
+const PATH = path.join(os.tmpdir(), "solarwinds-apm-settings.json")
 
 export class JsonSampler extends Sampler {
   readonly #path: string

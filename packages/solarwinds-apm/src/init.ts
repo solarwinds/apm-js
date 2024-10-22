@@ -185,7 +185,7 @@ async function initTracing(
       import("./exporters/traces.js"),
     ])
 
-    sampler = new JsonSampler(config)
+    sampler = new JsonSampler(config, "/tmp/solarwinds-apm-settings.json")
     processors = [
       new TransactionNameProcessor(config),
       new ResponseTimeProcessor(),

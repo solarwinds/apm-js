@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 import fs from "node:fs/promises"
+import os from "node:os"
+import path from "node:path"
 
 import { trace } from "@opentelemetry/api"
 import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
@@ -30,10 +32,7 @@ import {
 import { type Configuration } from "../../src/config.js"
 import { JsonSampler, parseSettings } from "../../src/sampling/json.js"
 
-const PATH =
-  process.platform === "win32"
-    ? "%SystemRoot%\\temp\\solarwinds-apm-settings.json"
-    : "/tmp/solarwinds-apm-settings.json"
+const PATH = path.join(os.tmpdir(), "solarwinds-apm-settings.json")
 
 describe("JsonSampler", () => {
   beforeEach(async () => {
