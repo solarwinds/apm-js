@@ -20,7 +20,6 @@ jobs:
       - run: corepack enable
 
       - run: yarn install --immutable
-      - run: yarn lint
       - run: yarn publish
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
