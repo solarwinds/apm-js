@@ -36,6 +36,7 @@ describe("merge", () => {
           Flags.SAMPLE_THROUGH_ALWAYS |
           Flags.TRIGGERED_TRACE,
         buckets: {},
+        timestamp: Math.round(Date.now() / 1000),
         ttl: 60,
       }
       const local: LocalSettings = {
@@ -55,6 +56,7 @@ describe("merge", () => {
         sampleSource: SampleSource.LocalDefault,
         flags: 0x0,
         buckets: {},
+        timestamp: Math.round(Date.now() / 1000),
         ttl: 60,
       }
       const local: LocalSettings = {
@@ -80,6 +82,7 @@ describe("merge", () => {
           Flags.SAMPLE_THROUGH_ALWAYS |
           Flags.TRIGGERED_TRACE,
         buckets: {},
+        timestamp: Math.round(Date.now() / 1000),
         ttl: 60,
       }
       const local: LocalSettings = {
@@ -102,6 +105,7 @@ describe("merge", () => {
           Flags.SAMPLE_THROUGH_ALWAYS |
           Flags.TRIGGERED_TRACE,
         buckets: {},
+        timestamp: Math.round(Date.now() / 1000),
         ttl: 60,
       }
       const local: LocalSettings = {
@@ -121,6 +125,7 @@ describe("merge", () => {
         sampleSource: SampleSource.LocalDefault,
         flags: Flags.OVERRIDE,
         buckets: {},
+        timestamp: Math.round(Date.now() / 1000),
         ttl: 60,
       }
       const local: LocalSettings = {
@@ -138,6 +143,7 @@ describe("merge", () => {
         sampleSource: SampleSource.LocalDefault,
         flags: Flags.OVERRIDE,
         buckets: {},
+        timestamp: Math.round(Date.now() / 1000),
         ttl: 60,
       }
       const local: LocalSettings = {

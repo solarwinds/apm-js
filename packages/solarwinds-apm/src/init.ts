@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { setTimeout } from "node:timers/promises"
-
 import {
   diag,
   type DiagLogger,
@@ -32,7 +30,6 @@ import {
 } from "@opentelemetry/sdk-metrics"
 import {
   BatchSpanProcessor,
-  type Sampler,
   type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
@@ -42,8 +39,8 @@ import {
   getInstrumentations,
   getResource,
 } from "@solarwinds-apm/instrumentations"
+import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
-import { type AppopticsSampler } from "./appoptics/sampler.js"
 import { type Configuration, printError, read } from "./config.js"
 import { componentLogger, Logger } from "./logger.js"
 import { patch } from "./patches.js"
@@ -55,16 +52,15 @@ import {
   ResponseHeadersPropagator,
 } from "./propagation/headers.js"
 import { TraceContextPropagator } from "./propagation/trace-context.js"
-import { type GrpcSampler } from "./sampling/grpc.js"
+import { type Sampler } from "./sampling/sampler.js"
+import { global } from "./storage.js"
 import { VERSION } from "./version.js"
 
-// portion of the public API that depends on initialisation
-interface Api {
-  waitUntilReady: (timeout: number) => Promise<boolean>
-}
-export const api: Api = {
-  waitUntilReady: () => Promise.resolve(false),
-}
+export const SAMPLER = global("sampler", () => {
+  let resolve!: (instance: Sampler) => void
+  const promise = new Promise<Sampler>((r) => (resolve = r))
+  return Object.assign(promise, { resolve })
+})
 
 export async function init() {
   let config: Configuration
@@ -178,7 +174,20 @@ async function initTracing(
     ],
   })
 
-  if (oboe) {
+  if (IS_AWS_LAMBDA) {
+    const [{ JsonSampler }, { TraceExporter }] = await Promise.all([
+      import("./sampling/json.js"),
+      import("./exporters/traces.js"),
+    ])
+
+    sampler = new JsonSampler(config, "/tmp/solarwinds-apm-settings.json")
+    processors = [
+      new TransactionNameProcessor(config),
+      new ResponseTimeProcessor(),
+      new BatchSpanProcessor(new TraceExporter(config)),
+      new ParentSpanProcessor(),
+    ]
+  } else if (oboe) {
     const [
       { AppopticsSampler },
       { AppopticsTraceExporter },
@@ -195,9 +204,6 @@ async function initTracing(
       new BatchSpanProcessor(new AppopticsTraceExporter(oboe)),
       new ParentSpanProcessor(),
     ]
-
-    api.waitUntilReady = (timeout) =>
-      Promise.resolve((sampler as AppopticsSampler).isReady(timeout))
   } else {
     const [{ GrpcSampler }, { TraceExporter }] = await Promise.all([
       import("./sampling/grpc.js"),
@@ -211,17 +217,9 @@ async function initTracing(
       new BatchSpanProcessor(new TraceExporter(config)),
       new ParentSpanProcessor(),
     ]
-
-    api.waitUntilReady = (timeout) =>
-      new Promise((resolve) => {
-        void (sampler as GrpcSampler).ready.then(() => {
-          resolve(true)
-        })
-        void setTimeout(timeout).then(() => {
-          resolve(false)
-        })
-      })
   }
+
+  SAMPLER.resolve(sampler)
 
   const provider = new NodeTracerProvider({
     sampler,

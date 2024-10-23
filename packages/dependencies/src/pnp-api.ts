@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import * as fs from "node:fs/promises"
-import * as path from "node:path"
+import fs from "node:fs/promises"
+import path from "node:path"
 
 import { type Dependencies, type Package } from "./index.js"
 

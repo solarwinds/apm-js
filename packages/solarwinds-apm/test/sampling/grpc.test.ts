@@ -52,7 +52,7 @@ describe("GrpcSampler", () => {
 
       const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
-      await sampler.ready
+      await sampler.waitUntilReady(1000)
     })
 
     it("samples created spans", async () => {
@@ -84,7 +84,7 @@ describe("GrpcSampler", () => {
 
       const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
-      await sampler.ready
+      await sampler.waitUntilReady(1000)
     })
 
     it("does not sample created spans", async () => {
@@ -110,7 +110,7 @@ describe("GrpcSampler", () => {
 
       const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
-      await sampler.ready
+      await sampler.waitUntilReady(1000)
     })
 
     it("does not sample created spans", async () => {
@@ -181,12 +181,13 @@ describe("GrpcCollectorClient", () => {
 
 describe("parseSettings", () => {
   it("correctly parses gRPC settings", () => {
+    const timestamp = Math.round(Date.now() / 1000)
+
     const grpc: collector.IOboeSetting = {
       type: collector.OboeSettingType.DEFAULT_SAMPLE_RATE,
       flags: Buffer.from(
         "SAMPLE_START,SAMPLE_THROUGH_ALWAYS,TRIGGER_TRACE,OVERRIDE",
       ),
-      timestamp: Math.round(Date.now() / 1000),
       value: 500_000,
       layer: null,
       arguments: {
@@ -198,6 +199,7 @@ describe("parseSettings", () => {
         TriggerStrictBucketRate: numberBuffer(1),
         SignatureKey: Buffer.from("key"),
       },
+      timestamp,
       ttl: 120,
     }
 
@@ -225,6 +227,7 @@ describe("parseSettings", () => {
         },
       },
       signatureKey: Buffer.from("key"),
+      timestamp,
       ttl: 120,
     })
   })

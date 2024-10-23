@@ -258,6 +258,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: 0x0,
           buckets: {},
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
@@ -280,6 +281,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: 0x0,
           buckets: {},
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
@@ -304,6 +306,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.Remote,
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: true },
@@ -324,7 +327,7 @@ describe("OboeSampler", () => {
         "auth=no-signature-key",
       )
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
 
     it("rejects bad timestamp", async () => {
@@ -335,6 +338,7 @@ describe("OboeSampler", () => {
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
           signatureKey: Buffer.from("key"),
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: true },
@@ -356,7 +360,7 @@ describe("OboeSampler", () => {
         "auth=bad-timestamp",
       )
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
 
     it("rejects bad signature", async () => {
@@ -367,6 +371,7 @@ describe("OboeSampler", () => {
           flags: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
           signatureKey: Buffer.from("key1"),
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: true },
@@ -388,7 +393,7 @@ describe("OboeSampler", () => {
         "auth=bad-signature",
       )
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
   })
 
@@ -405,7 +410,7 @@ describe("OboeSampler", () => {
       const sample = sampler.shouldSample(...params)
       expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
 
     it("expires after ttl", async () => {
@@ -415,7 +420,8 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
-          ttl: 0,
+          timestamp: Math.round(Date.now() / 1000) - 60,
+          ttl: 10,
         },
         localSettings: { triggerMode: false },
         requestHeaders: {},
@@ -428,7 +434,7 @@ describe("OboeSampler", () => {
       const sample = sampler.shouldSample(...params)
       expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
 
     it("respects X-Trace-Options keys and values", () => {
@@ -481,6 +487,7 @@ describe("OboeSampler", () => {
             sampleSource: SampleSource.LocalDefault,
             flags: Flags.SAMPLE_THROUGH_ALWAYS,
             buckets: {},
+            timestamp: Math.round(Date.now() / 1000),
             ttl: 10,
           },
           localSettings: { triggerMode: false },
@@ -509,6 +516,7 @@ describe("OboeSampler", () => {
             sampleSource: SampleSource.LocalDefault,
             flags: Flags.SAMPLE_THROUGH_ALWAYS,
             buckets: {},
+            timestamp: Math.round(Date.now() / 1000),
             ttl: 10,
           },
           localSettings: { triggerMode: true },
@@ -536,6 +544,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
@@ -611,6 +620,7 @@ describe("OboeSampler", () => {
             sampleSource: SampleSource.LocalDefault,
             flags: Flags.SAMPLE_START,
             buckets: {},
+            timestamp: Math.round(Date.now() / 1000),
             ttl: 10,
           },
           localSettings: { triggerMode: false },
@@ -637,6 +647,7 @@ describe("OboeSampler", () => {
             sampleSource: SampleSource.LocalDefault,
             flags: 0x0,
             buckets: {},
+            timestamp: Math.round(Date.now() / 1000),
             ttl: 10,
           },
           localSettings: { triggerMode: false },
@@ -671,6 +682,7 @@ describe("OboeSampler", () => {
                 TriggerStrict: { capacity: 10, rate: 5 },
                 TriggerRelaxed: { capacity: 0, rate: 0 },
               },
+              timestamp: Math.round(Date.now() / 1000),
               ttl: 10,
             },
             localSettings: { triggerMode: true },
@@ -712,6 +724,7 @@ describe("OboeSampler", () => {
                 TriggerStrict: { capacity: 0, rate: 0 },
                 TriggerRelaxed: { capacity: 20, rate: 10 },
               },
+              timestamp: Math.round(Date.now() / 1000),
               ttl: 10,
             },
             localSettings: { triggerMode: true },
@@ -751,6 +764,7 @@ describe("OboeSampler", () => {
                 TriggerRelaxed: { capacity: 20, rate: 10 },
               },
               signatureKey: Buffer.from("key"),
+              timestamp: Math.round(Date.now() / 1000),
               ttl: 10,
             },
             localSettings: { triggerMode: true },
@@ -795,6 +809,7 @@ describe("OboeSampler", () => {
                 TriggerRelaxed: { capacity: 0, rate: 0 },
               },
               signatureKey: Buffer.from("key"),
+              timestamp: Math.round(Date.now() / 1000),
               ttl: 10,
             },
             localSettings: { triggerMode: true },
@@ -834,6 +849,7 @@ describe("OboeSampler", () => {
             sampleSource: SampleSource.LocalDefault,
             flags: Flags.SAMPLE_START,
             buckets: {},
+            timestamp: Math.round(Date.now() / 1000),
             ttl: 10,
           },
           localSettings: { triggerMode: false },
@@ -865,6 +881,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_START,
           buckets: {},
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
@@ -893,6 +910,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.Remote,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 10, rate: 5 } },
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
@@ -924,6 +942,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.Remote,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 0, rate: 0 } },
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
@@ -955,6 +974,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_START,
           buckets: { [BucketType.DEFAULT]: { capacity: 10, rate: 5 } },
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
@@ -984,6 +1004,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: 0x0,
           buckets: {},
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: true },
@@ -1010,6 +1031,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: Flags.SAMPLE_THROUGH_ALWAYS,
           buckets: {},
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
@@ -1032,6 +1054,7 @@ describe("OboeSampler", () => {
           sampleSource: SampleSource.LocalDefault,
           flags: 0x0,
           buckets: {},
+          timestamp: Math.round(Date.now() / 1000),
           ttl: 10,
         },
         localSettings: { triggerMode: false },
