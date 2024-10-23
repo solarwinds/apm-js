@@ -3,7 +3,6 @@ releases:
   "@solarwinds-apm/histogram": minor
   "@solarwinds-apm/instrumentations": minor
   "@solarwinds-apm/sampling": minor
-  "@solarwinds-apm/sdk": minor
   "@solarwinds-apm/test": minor
   solarwinds-apm: minor
 
