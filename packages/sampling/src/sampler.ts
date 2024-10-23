@@ -142,6 +142,8 @@ export abstract class OboeSampler implements Sampler {
       headers: this.requestHeaders(...params),
     }
 
+    this.#counters.requestCount.add(1, {}, context)
+
     if (s.headers["X-Trace-Options"]) {
       s.traceOptions = {
         ...parseTraceOptions(s.headers["X-Trace-Options"], this.logger),
@@ -201,8 +203,6 @@ export abstract class OboeSampler implements Sampler {
       this.#setResponseHeaders(s)
       return { decision: SamplingDecision.NOT_RECORD, attributes: s.attributes }
     }
-
-    this.#counters.requestCount.add(1, {}, context)
 
     // https://swicloud.atlassian.net/wiki/spaces/NIT/pages/3815473156/Tracing+Decision+Tree
     if (s.traceState && TRACESTATE_REGEXP.test(s.traceState)) {

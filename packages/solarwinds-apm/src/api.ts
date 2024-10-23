@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { api } from "./init.js"
+import { SAMPLER } from "./init.js"
 
 /**
  * Wait until the library is ready to sample traces
@@ -24,8 +24,8 @@ import { api } from "./init.js"
  * @param timeout - Wait timeout in milliseconds
  * @returns Whether the library is ready
  */
-export async function waitUntilReady(timeout: number): Promise<boolean> {
-  return api.waitUntilReady(timeout)
+export function waitUntilReady(timeout: number): Promise<boolean> {
+  return SAMPLER.then((sampler) => sampler.waitUntilReady(timeout))
 }
 
 export { type Config } from "./config.js"

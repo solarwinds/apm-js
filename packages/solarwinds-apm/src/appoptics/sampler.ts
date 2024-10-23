@@ -117,8 +117,10 @@ export class AppopticsSampler extends Sampler {
     return "AppOptics Sampler"
   }
 
-  isReady(timeout: number): boolean {
-    return oboe.Context.isReady(timeout) === oboe.SERVER_RESPONSE_OK
+  override waitUntilReady(timeout: number): Promise<boolean> {
+    return Promise.resolve(
+      oboe.Context.isReady(timeout) === oboe.SERVER_RESPONSE_OK,
+    )
   }
 }
 

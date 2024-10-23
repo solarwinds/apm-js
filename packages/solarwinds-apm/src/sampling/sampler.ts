@@ -33,6 +33,7 @@ import {
   OboeSampler,
   type RequestHeaders,
   type ResponseHeaders,
+  type Settings,
   TracingMode,
 } from "@solarwinds-apm/sampling"
 
@@ -121,6 +122,10 @@ export abstract class Sampler extends OboeSampler {
   readonly #triggerMode: boolean
   readonly #transactionSettings: Configuration["transactionSettings"]
 
+  /** Resolves once the sampler has received settings */
+  readonly #ready: Promise<void>
+  #resolve!: () => void
+
   constructor(config: Configuration, logger: DiagLogger) {
     super(logger)
 
@@ -131,6 +136,23 @@ export abstract class Sampler extends OboeSampler {
     }
     this.#triggerMode = config.triggerTraceEnabled
     this.#transactionSettings = config.transactionSettings
+
+    this.#ready = new Promise((resolve) => (this.#resolve = resolve))
+  }
+
+  waitUntilReady(timeout: number): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.#ready
+        .then(() => {
+          resolve(true)
+        })
+        .catch(() => {
+          resolve(false)
+        })
+      setTimeout(() => {
+        resolve(false)
+      }, timeout)
+    })
   }
 
   /** Computes local settings for the current configuration */
@@ -180,5 +202,10 @@ export abstract class Sampler extends OboeSampler {
     if (storage) {
       Object.assign(storage.response, headers)
     }
+  }
+
+  protected override updateSettings(settings: Settings): void {
+    super.updateSettings(settings)
+    this.#resolve()
   }
 }

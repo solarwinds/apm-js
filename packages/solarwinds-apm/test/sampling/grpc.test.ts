@@ -52,7 +52,7 @@ describe("GrpcSampler", () => {
 
       const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
-      await sampler.ready
+      await sampler.#ready
     })
 
     it("samples created spans", async () => {
@@ -84,7 +84,7 @@ describe("GrpcSampler", () => {
 
       const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
-      await sampler.ready
+      await sampler.#ready
     })
 
     it("does not sample created spans", async () => {
@@ -110,7 +110,7 @@ describe("GrpcSampler", () => {
 
       const sampler = new GrpcSampler(config)
       await otel.reset({ trace: { sampler } })
-      await sampler.ready
+      await sampler.#ready
     })
 
     it("does not sample created spans", async () => {

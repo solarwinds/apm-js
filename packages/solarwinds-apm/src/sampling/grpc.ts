@@ -74,10 +74,6 @@ export class GrpcSampler extends Sampler {
   #client: CollectorClient
   #lastWarningMessage: string | undefined = undefined
 
-  /** Resolves once the sampler has received settings */
-  readonly ready: Promise<void>
-  #ready!: () => void
-
   constructor(config: Configuration) {
     super(config, componentLogger(GrpcSampler))
 
@@ -131,8 +127,6 @@ export class GrpcSampler extends Sampler {
       this.#client = invalidCollectorClient(cause)
     }
 
-    this.ready = new Promise((resolve) => (this.#ready = resolve))
-
     setImmediate(() => {
       this.#loop()
     }).unref()
@@ -158,8 +152,6 @@ export class GrpcSampler extends Sampler {
 
   #loop() {
     const retry = () => {
-      this.#ready()
-
       const timeout = this.#backoff.backoff()
       if (timeout) {
         this.logger.debug(`retrying in ${(timeout / 1000).toFixed(1)}s`)
@@ -225,7 +217,6 @@ export class GrpcSampler extends Sampler {
         this.updateSettings(parsed)
         this.#backoff.reset()
         this.#resetWarn()
-        this.#ready()
 
         // this is pretty arbitrary but the goal is to update the settings
         // before the previous ones expire with some time to spare

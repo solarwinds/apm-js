@@ -327,7 +327,7 @@ describe("OboeSampler", () => {
         "auth=no-signature-key",
       )
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
 
     it("rejects bad timestamp", async () => {
@@ -360,7 +360,7 @@ describe("OboeSampler", () => {
         "auth=bad-timestamp",
       )
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
 
     it("rejects bad signature", async () => {
@@ -393,7 +393,7 @@ describe("OboeSampler", () => {
         "auth=bad-signature",
       )
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
   })
 
@@ -410,7 +410,7 @@ describe("OboeSampler", () => {
       const sample = sampler.shouldSample(...params)
       expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
 
     it("expires after ttl", async () => {
@@ -434,7 +434,7 @@ describe("OboeSampler", () => {
       const sample = sampler.shouldSample(...params)
       expect(sample.decision).to.equal(SamplingDecision.NOT_RECORD)
 
-      await checkCounters([])
+      await checkCounters(["trace.service.request_count"])
     })
 
     it("respects X-Trace-Options keys and values", () => {
