@@ -28,9 +28,9 @@ const archiver = require("archiver")
 const ora = require("ora")
 
 const [name, version] = argv.slice(2)
-
-const sdkPackage = JSON.parse(readFileSync("packages/sdk/package.json"))
-const apiVersion = sdkPackage.peerDependencies["@opentelemetry/api"]
+const apiVersion = JSON.parse(
+  readFileSync("packages/solarwinds-apm/package.json"),
+).peerDependencies["@opentelemetry/api"]
 
 const rm = (...args) => {
   try {
