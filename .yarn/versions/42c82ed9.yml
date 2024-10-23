@@ -7,4 +7,3 @@ declined:
   - "@solarwinds-apm/bindings"
   - "@solarwinds-apm/compat"
   - "@solarwinds-apm/dependencies"
-  - "@solarwinds-apm/sdk"

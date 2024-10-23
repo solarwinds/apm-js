@@ -6,5 +6,4 @@ declined:
   - "@solarwinds-apm/compat"
   - "@solarwinds-apm/dependencies"
   - "@solarwinds-apm/sampling"
-  - "@solarwinds-apm/sdk"
   - solarwinds-apm
