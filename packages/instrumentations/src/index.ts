@@ -160,6 +160,7 @@ const CORE_RESOURCE_DETECTORS = {
     "hostDetectorSync",
     "osDetectorSync",
     "processDetectorSync",
+    "serviceInstanceIdDetectorSync",
   ],
 } as const
 const RESOURCE_DETECTORS = {
