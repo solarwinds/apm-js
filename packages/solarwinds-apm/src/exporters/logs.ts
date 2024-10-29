@@ -23,7 +23,6 @@ export class LogExporter extends OTLPLogExporter {
     super({
       url: config.otlp.logsEndpoint,
       headers: config.otlp.headers,
-      // @ts-expect-error https://github.com/open-telemetry/opentelemetry-js/issues/5057
       httpAgentOptions: {
         ca: config.trustedpath,
       },

@@ -132,6 +132,7 @@ export async function init() {
   ])
 
   registerInstrumentations(tracerProvider, meterProvider)
+  logger.debug("resource", resource.attributes)
 }
 
 async function initInstrumentations(config: Configuration, logger: DiagLogger) {
