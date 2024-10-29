@@ -41,7 +41,7 @@ import { oboe } from "@solarwinds-apm/bindings"
 
 import { componentLogger } from "../../logger.js"
 import { TRANSACTION_NAME_ATTRIBUTE } from "../../processing/transaction-name.js"
-import { traceParent } from "../sampler.js"
+import { traceParent } from "../../propagation/headers.js"
 
 export class AppopticsTraceExporter implements SpanExporter {
   readonly #logger = componentLogger(AppopticsTraceExporter)
