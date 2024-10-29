@@ -48,6 +48,22 @@ try {
     }
   }
 
+  if (process.versions.ares) {
+    if (
+      process.versions.ares &&
+      process.env.GRPC_DNS_RESOLVER &&
+      process.env.GRPC_DNS_RESOLVER.toLowerCase() === "ares"
+    ) {
+      var message =
+        "The current Node.js version is incompatible with the c-ares gRPC DNS resolver, " +
+        "which this application explicitly specifies.";
+
+      throw message;
+    } else {
+      process.env.GRPC_DNS_RESOLVER = "native";
+    }
+  }
+
   module.exports = true;
 } catch (error) {
   console.warn(error);

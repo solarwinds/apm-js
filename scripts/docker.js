@@ -39,10 +39,21 @@ if (image === "collector") {
 } else if (process.argv[3] === "build") {
   exec(`docker compose -f docker/docker-compose.yml build ${image}`)
 } else {
+  require("./env.js")
+  const env = Object.entries(process.env)
+    .filter(
+      ([key]) =>
+        key.startsWith("SW_APM_") ||
+        key.startsWith("OTEL_") ||
+        key.startsWith("AWS_LAMBDA_"),
+    )
+    .map(([k, v]) => `-e ${k}=${v}`)
+    .join(" ")
+
   // first run yarn install in the context of the container so that platform specific modules get installed
   // then start a shell session with `|| true` so that if the last ran command in the shell errors node doesn't throw
   // finally run yarn install back on the host to reset the platform specific modules
   exec(
-    `docker compose -f docker/docker-compose.yml run --rm ${image} '(yarn install) && (${shell} || true)'; yarn install`,
+    `docker compose -f docker/docker-compose.yml run ${env} --rm ${image} '(yarn install) && (${shell} || true)'; yarn install`,
   )
 }
