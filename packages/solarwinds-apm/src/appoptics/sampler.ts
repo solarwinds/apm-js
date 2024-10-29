@@ -48,13 +48,8 @@ import {
 
 import { type Configuration } from "../config.js"
 import { componentLogger } from "../logger.js"
-import { HEADERS_STORAGE } from "../propagation/headers.js"
-import { swValue } from "../propagation/trace-context.js"
+import { HEADERS_STORAGE, traceParent } from "../propagation/headers.js"
 import { Sampler } from "../sampling/sampler.js"
-
-export function traceParent(spanContext: SpanContext): string {
-  return `00-${spanContext.traceId}-${swValue(spanContext)}`
-}
 
 export class AppopticsSampler extends Sampler {
   constructor(config: Configuration) {

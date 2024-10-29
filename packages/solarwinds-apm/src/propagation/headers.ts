@@ -16,13 +16,17 @@ limitations under the License.
 
 import {
   type Context,
+  isSpanContextValid,
+  type SpanContext,
   type TextMapGetter,
   type TextMapPropagator,
   type TextMapSetter,
+  trace,
 } from "@opentelemetry/api"
 import type * as sampling from "@solarwinds-apm/sampling"
 
 import { contextStorage } from "../storage.js"
+import { swValue } from "./trace-context.js"
 
 /** SolarWinds headers */
 export interface Headers {
@@ -33,15 +37,25 @@ export interface Headers {
 }
 
 export type RequestHeader = keyof Headers["request"]
-export type ResponseHeader = keyof Headers["response"]
+export type ResponseHeader =
+  | keyof Headers["response"]
+  | typeof X_TRACE
+  | typeof ACCESS_CONTROL_EXPOSE_HEADERS
 export type Header = RequestHeader | ResponseHeader
 
 /** Storage for headers inside the OTel Context */
 export const HEADERS_STORAGE = contextStorage<Headers>("solarwinds-apm headers")
 
+export function traceParent(spanContext: SpanContext): string {
+  return `00-${spanContext.traceId}-${swValue(spanContext)}`
+}
+
+const X_TRACE = "X-Trace"
 const X_TRACE_OPTIONS = "X-Trace-Options" satisfies Header
 const X_TRACE_OPTIONS_RESPONSE = "X-Trace-Options-Response" satisfies Header
 const X_TRACE_OPTIONS_SIGNATURE = "X-Trace-Options-Signature" satisfies Header
+
+const ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers"
 
 /**
  * Propagator that extracts SolarWinds request headers
@@ -89,15 +103,26 @@ export class ResponseHeadersPropagator implements TextMapPropagator<unknown> {
     carrier: unknown,
     setter: TextMapSetter<unknown>,
   ): void {
+    const exposed: string[] = []
+
+    const spanContext = trace.getSpanContext(context)
+    if (spanContext && isSpanContextValid(spanContext)) {
+      setter.set(carrier, X_TRACE, traceParent(spanContext))
+      exposed.push(X_TRACE)
+    }
+
     const headers = HEADERS_STORAGE.get(context)?.response ?? {}
     for (const [name, value] of Object.entries(headers)) {
       if (!value) continue
       setter.set(carrier, name, value as string)
+      exposed.push(name)
     }
+
+    setter.set(carrier, ACCESS_CONTROL_EXPOSE_HEADERS, exposed.join(", "))
   }
 
   fields(): ResponseHeader[] {
-    return [X_TRACE_OPTIONS_RESPONSE]
+    return [X_TRACE, X_TRACE_OPTIONS_RESPONSE, ACCESS_CONTROL_EXPOSE_HEADERS]
   }
 
   extract(context: Context): Context {

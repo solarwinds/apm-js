@@ -18,6 +18,9 @@ import {
   defaultTextMapGetter,
   defaultTextMapSetter,
   ROOT_CONTEXT,
+  type Span,
+  trace,
+  TraceFlags,
 } from "@opentelemetry/api"
 import { describe, expect, it } from "@solarwinds-apm/test"
 
@@ -82,18 +85,34 @@ describe("ResponseHeadersPropagator", () => {
 
   it("injects headers", () => {
     const headers = {}
-    const context = HEADERS_STORAGE.set(ROOT_CONTEXT, {
-      request: {},
-      response: { "X-Trace-Options-Response": "response" },
-    })
+    const context = HEADERS_STORAGE.set(
+      trace.setSpan(ROOT_CONTEXT, {
+        spanContext: () => ({
+          traceId: "0123456789abcdef0123456789abcdef",
+          spanId: "0123456789abcdef",
+          traceFlags: TraceFlags.SAMPLED,
+        }),
+      } as Span),
+      {
+        request: {},
+        response: { "X-Trace-Options-Response": "response" },
+      },
+    )
+
     propagator.inject(context, headers, defaultTextMapSetter)
     expect(headers).to.loosely.deep.equal({
+      "X-Trace": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01",
       "X-Trace-Options-Response": "response",
+      "Access-Control-Expose-Headers": "X-Trace, X-Trace-Options-Response",
     })
   })
 
   it("lists proper fields", () => {
-    expect(propagator.fields()).to.have.members(["X-Trace-Options-Response"])
+    expect(propagator.fields()).to.have.members([
+      "X-Trace",
+      "X-Trace-Options-Response",
+      "Access-Control-Expose-Headers",
+    ])
   })
 })
 
