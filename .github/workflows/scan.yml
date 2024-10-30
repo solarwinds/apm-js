@@ -1,0 +1,27 @@
+name: Scan packages
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      RLPORTAL_ACCESS_TOKEN:
+        required: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    env:
+      RLPORTAL_ACCESS_TOKEN: ${{ secrets.RLPORTAL_ACCESS_TOKEN }}
+      YARN_ENABLE_IMMUTABLE_INSTALLS: false
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: corepack enable
+
+      - run: yarn install
+      - run: yarn scan
