@@ -31,7 +31,8 @@
     "build": "tsc",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
-    "release": "node ../../scripts/publish.js"
+    "release": "node ../../scripts/publish.js",
+    "scan": "node ../../scripts/scan.js"
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.3.0",

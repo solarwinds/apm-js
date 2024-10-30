@@ -35,6 +35,7 @@
     "lint": "prettier --check . && eslint . --max-warnings=0 && clang-format src/*.hh src/*/* -n --Werror",
     "lint:fix": "eslint --fix . && prettier --write . && clang-format src/*.hh src/*/* -i --Werror",
     "release": "node ../../scripts/publish.js",
+    "scan": "node ../../scripts/scan.js",
     "test": "swtest",
     "oboe": "node oboe.js"
   },

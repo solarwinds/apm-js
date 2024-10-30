@@ -27,10 +27,10 @@ const { argv } = require("node:process")
 const archiver = require("archiver")
 const ora = require("ora")
 
-const [name, version] = argv.slice(2)
-const apiVersion = JSON.parse(
-  readFileSync("packages/solarwinds-apm/package.json"),
-).peerDependencies["@opentelemetry/api"]
+const json = JSON.parse(readFileSync("packages/solarwinds-apm/package.json"))
+
+const [name, version = json.version] = argv.slice(2)
+const apiVersion = json.peerDependencies["@opentelemetry/api"]
 
 const rm = (...args) => {
   try {

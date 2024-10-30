@@ -26,6 +26,11 @@
     "release": {
       "dependsOn": ["^release"]
     },
+    "scan": {
+      "dependsOn": [],
+      "inputs": ["package.json"],
+      "outputs": ["*.tgz"]
+    },
     "start": {
       "dependsOn": ["build"]
     },
