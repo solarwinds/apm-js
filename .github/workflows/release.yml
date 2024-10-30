@@ -38,6 +38,11 @@ jobs:
       version: ${{ needs.publish.outputs.version }}
     secrets: inherit
 
+  scan:
+    needs: publish
+    uses: ./.github/workflows/scan.yml
+    secrets: inherit
+
   draft:
     needs:
       - publish

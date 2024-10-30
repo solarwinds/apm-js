@@ -52,6 +52,7 @@
     "lint": "node build.js && prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "node build.js && eslint --fix . && prettier --write .",
     "release": "node ../../scripts/publish.js",
+    "scan": "node ../../scripts/scan.js",
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {

@@ -19,6 +19,7 @@
     "lint": "prettier --check *.json *.md .github && turbo run lint --continue",
     "lint:fix": "prettier --write *.json *.md .github && turbo run lint:fix --continue",
     "publish": "turbo run build && turbo run release",
+    "scan": "turbo run scan && node scripts/lambda.js solarwinds-apm && node scripts/scan.js",
     "test": "turbo run test --continue",
     "test:watch": "turbo watch test",
     "version:latest": "node scripts/version.js",
