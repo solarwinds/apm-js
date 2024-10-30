@@ -26,7 +26,7 @@ import semver from "semver"
 export const VERSIONS: Attributes = Object.fromEntries(
   Object.entries(process.versions)
     .filter(([name]) => name !== "node")
-    .map(([name, version]) => [`node.${name}.version`, version]),
+    .map(([name, version]) => [`nodejs.${name}.version`, version]),
 )
 
 /**
@@ -36,7 +36,7 @@ export async function modules(): Promise<Attributes> {
   const modules = await dependencies()
   return Object.fromEntries(
     [...modules].map(([name, versions]) => [
-      `node.${name}.versions`,
+      `node_modules.${name}.versions`,
       [...versions].sort(semver.compare),
     ]),
   )

@@ -50,8 +50,6 @@ export class MetricExporter extends OTLPMetricExporter {
     instrumentType: InstrumentType,
   ): AggregationTemporality {
     switch (instrumentType) {
-      case InstrumentType.COUNTER:
-      case InstrumentType.OBSERVABLE_COUNTER:
       case InstrumentType.HISTOGRAM: {
         return AggregationTemporality.DELTA
       }

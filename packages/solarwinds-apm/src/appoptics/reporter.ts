@@ -30,7 +30,7 @@ import { oboe } from "@solarwinds-apm/bindings"
 
 import { type Configuration } from "../config.js"
 import { componentLogger } from "../logger.js"
-import { modules } from "../metadata.js"
+import { modules, VERSIONS } from "../metadata.js"
 import { VERSION } from "../version.js"
 import certificate from "./certificate.js"
 
@@ -43,7 +43,9 @@ export async function reporter(
   const reporter = new oboe.Reporter({
     service_key: `${config.serviceKey?.token}:${config.service}`,
     host: config.collector,
-    certificates: config.trustedpath ?? certificate,
+    certificates:
+      config.trustedpath ??
+      (config.collector.includes("appoptics.com") ? certificate : ""),
     grpc_proxy: config.proxy ?? "",
     reporter: "ssl",
     metric_format: 1,
@@ -67,7 +69,7 @@ export async function reporter(
     token_bucket_rate: oboe.SETTINGS_UNSET,
   })
 
-  const logger = componentLogger({ name: "oboe" })
+  const logger = componentLogger({ name: "liboboe.so" })
   oboe.debug_log_add((level, sourceName, sourceLine, message) => {
     const log = oboeLevelToOtelLogger(level, logger)
 
@@ -98,6 +100,7 @@ export async function init(
 ): Promise<[string, string | number | boolean | null][]> {
   return Object.entries<Attributes>({
     ...(await modules()),
+    ...VERSIONS,
     ...resource.attributes,
 
     __Init: true,
