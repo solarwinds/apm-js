@@ -1,0 +1,9 @@
+declined:
+  - "@solarwinds-apm/bindings"
+  - "@solarwinds-apm/dependencies"
+  - "@solarwinds-apm/histogram"
+  - "@solarwinds-apm/instrumentations"
+  - "@solarwinds-apm/module"
+  - "@solarwinds-apm/proto"
+  - "@solarwinds-apm/sampling"
+  - solarwinds-apm
