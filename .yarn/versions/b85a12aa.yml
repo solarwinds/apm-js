@@ -1,9 +1,0 @@
-releases:
-  "@solarwinds-apm/histogram": patch
-  "@solarwinds-apm/instrumentations": patch
-  "@solarwinds-apm/sdk": patch
-  solarwinds-apm: patch
-
-declined:
-  - "@solarwinds-apm/compat"
-  - "@solarwinds-apm/sampling"
