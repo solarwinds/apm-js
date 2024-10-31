@@ -43,6 +43,7 @@ import { type DetectorSync, Resource } from "@opentelemetry/resources"
 export const ATTR_UAMS_CLIENT_ID = "sw.uams.client.id"
 
 const UAMS_CLIENT_URL = new URL("http://127.0.0.1:2113/info/uamsclient")
+const UAMS_CLIENT_ID_FIELD = "uamsclient_id"
 
 class UamsDetector implements DetectorSync {
   readonly #logger = diag.createComponentLogger({
@@ -73,13 +74,13 @@ class UamsDetector implements DetectorSync {
                 if (
                   typeof data !== "object" ||
                   data === null ||
-                  !("uamsclient_id" in data) ||
-                  typeof data.uamsclient_id !== "string"
+                  !(UAMS_CLIENT_ID_FIELD in data) ||
+                  typeof data[UAMS_CLIENT_ID_FIELD] !== "string"
                 ) {
                   throw new Error("Invalid response format")
                 }
 
-                resolve({ "sw.uams.client.id": data.uamsclient_id })
+                resolve({ [ATTR_UAMS_CLIENT_ID]: data[UAMS_CLIENT_ID_FIELD] })
               } catch (error) {
                 this.#logger.debug("parsing error", error)
                 resolve({})
