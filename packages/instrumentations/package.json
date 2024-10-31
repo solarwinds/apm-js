@@ -32,9 +32,11 @@
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "release": "node ../../scripts/publish.js",
-    "scan": "node ../../scripts/scan.js"
+    "scan": "node ../../scripts/scan.js",
+    "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
+    "@opentelemetry/core": "~1.27.0",
     "@opentelemetry/instrumentation": "~0.54.0",
     "@opentelemetry/instrumentation-amqplib": "^0.43.0",
     "@opentelemetry/instrumentation-aws-lambda": "^0.46.0",
@@ -93,6 +95,7 @@
   "devDependencies": {
     "@opentelemetry/api": "^1.3.0",
     "@solarwinds-apm/eslint-config": "workspace:^",
+    "@solarwinds-apm/test": "workspace:^",
     "@types/semver": "^7.5.8",
     "eslint": "^9.12.0",
     "prettier": "^3.3.3",

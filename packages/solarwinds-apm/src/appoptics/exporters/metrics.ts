@@ -60,7 +60,7 @@ export class AppopticsMetricExporter {
       const scopeTags = this.#scopeTags(scopeMetric.scope)
 
       for (const metric of scopeMetric.metrics) {
-        const name = `trace.node.${metric.descriptor.name}`
+        const name = metric.descriptor.name
         const temporality = metric.aggregationTemporality
         const descriptorTags = this.#descriptorTags(metric.descriptor)
 
