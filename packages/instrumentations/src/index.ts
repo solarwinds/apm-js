@@ -177,10 +177,13 @@ export type InstrumentationConfigMap = {
     : never
 }
 export type ResourceDetectorConfigMap = {
-  [R in keyof (typeof CORE_RESOURCE_DETECTORS & typeof RESOURCE_DETECTORS)]?: {
-    [N in (typeof CORE_RESOURCE_DETECTORS &
-      typeof RESOURCE_DETECTORS)[R][number]]?: boolean
-  }
+  [R in keyof (typeof CORE_RESOURCE_DETECTORS &
+    typeof RESOURCE_DETECTORS)]?: Partial<
+    Record<
+      (typeof CORE_RESOURCE_DETECTORS & typeof RESOURCE_DETECTORS)[R][number],
+      boolean
+    >
+  >
 }
 
 export type Set = "none" | "core" | "all"
