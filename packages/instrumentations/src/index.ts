@@ -167,6 +167,7 @@ const RESOURCE_DETECTORS = {
   "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
   "@opentelemetry/resource-detector-azure": ["azureAppServiceDetector"],
   "@opentelemetry/resource-detector-container": ["containerDetector"],
+  "./resource-detector-uams": ["uamsDetector"],
 } as const
 
 export type InstrumentationConfigMap = {
@@ -278,6 +279,11 @@ export function getResource(
   const attributes = Promise.all(
     resourceDetectors.map(async ({ module, name }) => {
       try {
+        // Resolve relative imports
+        if (module.startsWith(".")) {
+          module = new URL(`${module}.js`, import.meta.url).href
+        }
+
         const loaded = await load(module)
         const detector =
           // eslint-disable-next-line @typescript-eslint/no-deprecated
