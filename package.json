@@ -17,7 +17,7 @@
     "lambda": "node scripts/lambda.js",
     "lint": "prettier --check *.json *.md .github && turbo run lint --continue",
     "lint:fix": "prettier --write *.json *.md .github && turbo run lint:fix --continue",
-    "publish": "turbo run build && turbo run release",
+    "publish": "turbo run build && turbo run --env-mode=loose release",
     "test": "turbo run test --continue",
     "version:latest": "node scripts/version.js",
     "version:prerelease": "node scripts/version.js pre",
