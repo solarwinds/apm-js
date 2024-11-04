@@ -1,3 +1,9 @@
+# [14.0.4](https://github.com/solarwinds/apm-js/releases/tag/v14.0.3)
+
+## Fixes
+
+- Update `import-in-the-middle` transitive dependency to fix ESM loader issues.
+
 # [14.0.3](https://github.com/solarwinds/apm-js/releases/tag/v14.0.3)
 
 ## Fixes
