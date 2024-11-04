@@ -23,14 +23,17 @@
     },
     "release": {
       "dependsOn": ["^release"],
+      "env": ["YARN_*", "GITHUB_*"],
       "outputs": []
     },
     "start": {
       "dependsOn": ["build"],
+      "env": ["SW_APM_*"],
       "outputs": []
     },
     "test": {
       "dependsOn": ["@solarwinds-apm/test#build", "build"],
+      "env": ["SW_APM_*"],
       "inputs": ["package.json", "tsconfig.json", "src/**", "test/**"],
       "outputs": []
     }
