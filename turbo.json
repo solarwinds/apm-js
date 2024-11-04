@@ -51,9 +51,10 @@
   "globalPassThroughEnv": [
     "SW_APM_*",
     "OTEL_*",
-    "AWS_LAMBDA_*",
     "YARN_*",
-    "NODE_ENV",
-    "GITHUB_TOKEN"
+    "GITHUB_*",
+    "AWS_LAMBDA_*",
+    "NODE_*",
+    "CI"
   ]
 }
