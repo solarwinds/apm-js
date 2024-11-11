@@ -32,7 +32,6 @@ describe("patch", () => {
     patch(configs, options)
     expect(configs["@opentelemetry/instrumentation-aws-lambda"]).to.deep.equal({
       enabled: false,
-      disableAwsContextPropagation: true,
     })
     expect(configs["@opentelemetry/instrumentation-aws-sdk"]).to.deep.equal({})
     expect(configs["@opentelemetry/instrumentation-fs"]).to.deep.equal({
@@ -64,7 +63,6 @@ describe("patch", () => {
     const configs: InstrumentationConfigMap = {
       "@opentelemetry/instrumentation-aws-lambda": {
         enabled: true,
-        disableAwsContextPropagation: false,
       },
       "@opentelemetry/instrumentation-aws-sdk": {
         enabled: false,
@@ -93,7 +91,6 @@ describe("patch", () => {
     patch(configs, options)
     expect(configs["@opentelemetry/instrumentation-aws-lambda"]).to.deep.equal({
       enabled: true,
-      disableAwsContextPropagation: false,
     })
     expect(configs["@opentelemetry/instrumentation-aws-sdk"]).to.deep.equal({
       enabled: false,
