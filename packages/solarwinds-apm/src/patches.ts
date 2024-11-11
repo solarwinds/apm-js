@@ -56,7 +56,6 @@ function patcher<const Name extends keyof InstrumentationConfigMap>(
 const PATCHERS = [
   patcher(["@opentelemetry/instrumentation-aws-lambda"], (config) => {
     config.enabled ??= IS_AWS_LAMBDA
-    config.disableAwsContextPropagation ??= true
   }),
 
   patcher(["@opentelemetry/instrumentation-aws-sdk"], (config) => {
