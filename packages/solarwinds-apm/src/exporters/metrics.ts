@@ -45,7 +45,6 @@ export class MetricExporter extends OTLPMetricExporter {
       }
     }
   }
-
   override selectAggregationTemporality(
     instrumentType: InstrumentType,
   ): AggregationTemporality {

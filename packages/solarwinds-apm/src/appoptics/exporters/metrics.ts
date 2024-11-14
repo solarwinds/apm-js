@@ -142,20 +142,6 @@ export class AppopticsMetricExporter {
     })
   }
 
-  selectAggregationTemporality(
-    instrumentType: InstrumentType,
-  ): AggregationTemporality {
-    switch (instrumentType) {
-      case InstrumentType.UP_DOWN_COUNTER:
-      case InstrumentType.OBSERVABLE_UP_DOWN_COUNTER:
-      case InstrumentType.OBSERVABLE_GAUGE: {
-        return AggregationTemporality.CUMULATIVE
-      }
-      default: {
-        return AggregationTemporality.DELTA
-      }
-    }
-  }
   selectAggregation(instrumentType: InstrumentType): Aggregation {
     switch (instrumentType) {
       case InstrumentType.HISTOGRAM: {
@@ -163,6 +149,18 @@ export class AppopticsMetricExporter {
       }
       default: {
         return Aggregation.Default()
+      }
+    }
+  }
+  selectAggregationTemporality(
+    instrumentType: InstrumentType,
+  ): AggregationTemporality {
+    switch (instrumentType) {
+      case InstrumentType.HISTOGRAM: {
+        return AggregationTemporality.DELTA
+      }
+      default: {
+        return AggregationTemporality.CUMULATIVE
       }
     }
   }
