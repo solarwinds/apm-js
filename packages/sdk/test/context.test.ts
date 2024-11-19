@@ -119,6 +119,7 @@ describe("setTransactionName", () => {
     const txname = "foo"
 
     const provider = new NodeTracerProvider()
+    // eslint-disable-next-line deprecation/deprecation
     provider.addSpanProcessor(new SwParentInfoSpanProcessor())
     provider.register()
 

@@ -171,6 +171,7 @@ async function initTracing(
 
   const processors = await spanProcessors(config, reporter)
   for (const processor of processors) {
+    // eslint-disable-next-line deprecation/deprecation
     provider.addSpanProcessor(processor)
   }
 
