@@ -12,6 +12,8 @@
       ],
       "outputs": [
         "dist/**",
+        ".next/**",
+        ".prisma/**",
         "npm/*/*.node",
         "npm/*/liboboe.so",
         "COMPATIBILITY.md"
