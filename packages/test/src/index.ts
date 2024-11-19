@@ -39,7 +39,6 @@ import {
   InMemorySpanExporter,
   type SDKRegistrationConfig,
   SimpleSpanProcessor,
-  type SpanProcessor,
 } from "@opentelemetry/sdk-trace-base"
 import {
   type NodeTracerConfig,
@@ -110,8 +109,7 @@ let meterProvider: MeterProvider
 let shouldResetMetrics = true
 
 export interface OtelConfig {
-  trace?: NodeTracerConfig &
-    SDKRegistrationConfig & { processors?: SpanProcessor[] }
+  trace?: NodeTracerConfig & SDKRegistrationConfig
   metrics?: MeterProviderOptions
 }
 
@@ -125,14 +123,9 @@ async function resetOtel(config: OtelConfig = {}) {
 
     spanExporter = new InMemorySpanExporter()
     spanProcessor = new SimpleSpanProcessor(spanExporter)
+    ;((config.trace ??= {}).spanProcessors ??= []).push(spanProcessor)
 
     tracerProvider = new NodeTracerProvider(config.trace)
-    for (const processor of [
-      ...(config.trace?.processors ?? []),
-      spanProcessor,
-    ]) {
-      tracerProvider.addSpanProcessor(processor)
-    }
     tracerProvider.register(config.trace)
   } else {
     await spanProcessor.forceFlush()

@@ -67,7 +67,7 @@ describe("ResponseTimeProcessor", () => {
   beforeEach(() =>
     otel.reset({
       trace: {
-        processors: [
+        spanProcessors: [
           new TransactionNameProcessor({} as Configuration),
           new ResponseTimeProcessor(),
           new ParentSpanProcessor(),

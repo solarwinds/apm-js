@@ -38,7 +38,7 @@ describe("TransactionNameProcessor", () => {
   it("sets transaction name on entry spans", async () => {
     await otel.reset({
       trace: {
-        processors: [
+        spanProcessors: [
           new TransactionNameProcessor({} as Configuration),
           new ParentSpanProcessor(),
         ],
@@ -70,7 +70,7 @@ describe("TransactionNameProcessor", () => {
   it("respects configured transaction name", async () => {
     await otel.reset({
       trace: {
-        processors: [
+        spanProcessors: [
           new TransactionNameProcessor({
             transactionName: "default",
           } as Configuration),
@@ -104,7 +104,7 @@ describe("TransactionNameProcessor", () => {
   it("respects custom transaction name", async () => {
     await otel.reset({
       trace: {
-        processors: [
+        spanProcessors: [
           new TransactionNameProcessor({
             transactionName: "default",
           } as Configuration),
@@ -141,7 +141,7 @@ describe("TransactionNameProcessor", () => {
   it("has a max cardinality of 200 + 1", async () => {
     await otel.reset({
       trace: {
-        processors: [
+        spanProcessors: [
           new TransactionNameProcessor({} as Configuration),
           new ParentSpanProcessor(),
         ],
@@ -166,7 +166,7 @@ describe("TransactionNameProcessor", () => {
   it("trims transaction names to 256 characters", async () => {
     await otel.reset({
       trace: {
-        processors: [
+        spanProcessors: [
           new TransactionNameProcessor({} as Configuration),
           new ParentSpanProcessor(),
         ],

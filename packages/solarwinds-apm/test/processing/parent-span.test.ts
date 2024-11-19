@@ -25,7 +25,7 @@ import {
 
 describe("ParentSpanProcessor", () => {
   before(async () => {
-    await otel.reset({ trace: { processors: [new ParentSpanProcessor()] } })
+    await otel.reset({ trace: { spanProcessors: [new ParentSpanProcessor()] } })
   })
 
   it("registers parent span information", () => {

@@ -223,12 +223,10 @@ async function initTracing(
   SAMPLER.resolve(sampler)
 
   const provider = new NodeTracerProvider({
-    sampler,
     resource,
+    sampler,
+    spanProcessors: processors,
   })
-  for (const processor of processors) {
-    provider.addSpanProcessor(processor)
-  }
   provider.register({ propagator })
 
   logger.debug("initialised tracing")
