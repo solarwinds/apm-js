@@ -1,3 +1,14 @@
+# [14.1.0](https://github.com/solarwinds/apm-js/releases/tag/v14.0.3)
+
+## New features and improvements
+
+- Support ESM handlers in AWS Lambda.
+
+## Fixes
+
+- Do not insert invalid trace context in prepared PostgreSQL statements.
+- Properly handle custom gauge metrics.
+
 # [14.0.4](https://github.com/solarwinds/apm-js/releases/tag/v14.0.3)
 
 ## Fixes
