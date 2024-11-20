@@ -32,6 +32,7 @@ const exporter = new InMemorySpanExporter()
 const processor = new SimpleSpanProcessor(exporter)
 const provider = new NodeTracerProvider()
 
+// eslint-disable-next-line deprecation/deprecation
 provider.addSpanProcessor(processor)
 provider.register()
 

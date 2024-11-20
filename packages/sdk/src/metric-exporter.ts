@@ -142,6 +142,7 @@ export class SwMetricsExporter implements PushMetricExporter {
   ): AggregationTemporality {
     switch (instrumentType) {
       case InstrumentType.UP_DOWN_COUNTER:
+      case InstrumentType.GAUGE:
       case InstrumentType.OBSERVABLE_UP_DOWN_COUNTER:
       case InstrumentType.OBSERVABLE_GAUGE:
         return AggregationTemporality.CUMULATIVE

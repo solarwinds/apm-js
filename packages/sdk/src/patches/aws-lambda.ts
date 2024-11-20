@@ -22,5 +22,4 @@ import { type Patch } from "."
 export const patch: Patch<AwsLambdaInstrumentationConfig> = (config) => ({
   ...config,
   enabled: config.enabled ?? IS_AWS_LAMBDA,
-  disableAwsContextPropagation: config.disableAwsContextPropagation ?? true,
 })

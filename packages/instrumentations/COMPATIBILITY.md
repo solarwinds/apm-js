@@ -21,7 +21,7 @@
 | `dns`                       | `*`                | `@opentelemetry/instrumentation-dns`              |
 | `dns/promises`              | `*`                | `@opentelemetry/instrumentation-dns`              |
 | `express`                   | `>=4.0.0 <5.0.0`   | `@opentelemetry/instrumentation-express`          |
-| `fastify`                   | `>=3.0.0 <5.0.0`   | `@opentelemetry/instrumentation-fastify`          |
+| `fastify`                   | `>=3.0.0 <6.0.0`   | `@opentelemetry/instrumentation-fastify`          |
 | `fs`                        | `*`                | `@opentelemetry/instrumentation-fs`               |
 | `fs/promises`               | `*`                | `@opentelemetry/instrumentation-fs`               |
 | `generic-pool`              | `>=2.0.0 <4.0.0`   | `@opentelemetry/instrumentation-generic-pool`     |
@@ -38,11 +38,11 @@
 | `mysql`                     | `>=2.0.0 <3.0.0`   | `@opentelemetry/instrumentation-mysql`            |
 | `mysql2`                    | `>=1.4.2 <4.0.0`   | `@opentelemetry/instrumentation-mysql2`           |
 | `net`                       | `*`                | `@opentelemetry/instrumentation-net`              |
-| `pg`                        | `>=8.0.0 <9.0.0`   | `@opentelemetry/instrumentation-pg`               |
+| `pg`                        | `>=8.0.3 <9.0.0`   | `@opentelemetry/instrumentation-pg`               |
 | `pg-pool`                   | `>=2.0.0 <4.0.0`   | `@opentelemetry/instrumentation-pg`               |
 | `pino`                      | `>=5.14.0 <10.0.0` | `@opentelemetry/instrumentation-pino`             |
 | `redis`                     | `>=2.6.0 <4.0.0`   | `@opentelemetry/instrumentation-redis`            |
-| `restify`                   | `>=4.0.0 <12.0.0`  | `@opentelemetry/instrumentation-restify`          |
+| `restify`                   | `>=4.1.0 <12.0.0`  | `@opentelemetry/instrumentation-restify`          |
 | `router`                    | `>=1.0.0 <2.0.0`   | `@opentelemetry/instrumentation-router`           |
 | `socket.io`                 | `>=2.0.0 <5.0.0`   | `@opentelemetry/instrumentation-socket.io`        |
 | `tedious`                   | `>=1.11.0 <20.0.0` | `@opentelemetry/instrumentation-tedious`          |

@@ -1,0 +1,6 @@
+releases:
+  "@solarwinds-apm/compat": patch
+  "@solarwinds-apm/histogram": patch
+  "@solarwinds-apm/instrumentations": patch
+  "@solarwinds-apm/sdk": patch
+  solarwinds-apm: patch
