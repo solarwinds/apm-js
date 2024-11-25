@@ -1311,10 +1311,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/semantic-conventions@npm:1.27.0, @opentelemetry/semantic-conventions@npm:^1.27.0, @opentelemetry/semantic-conventions@npm:~1.27.0":
+"@opentelemetry/semantic-conventions@npm:1.27.0, @opentelemetry/semantic-conventions@npm:^1.27.0":
   version: 1.27.0
   resolution: "@opentelemetry/semantic-conventions@npm:1.27.0"
   checksum: 10c0/b859773ba06b7e53dd9c6b45a171bf3000e405733adbf462ae91004ed011bc80edb5beecb817fb344a085adfd06045ab5b729c9bd0f1479650ad377134fb798c
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/semantic-conventions@npm:~1.28.0":
+  version: 1.28.0
+  resolution: "@opentelemetry/semantic-conventions@npm:1.28.0"
+  checksum: 10c0/deb8a0f744198071e70fea27143cf7c9f7ecb7e4d7b619488c917834ea09b31543c1c2bcea4ec5f3cf68797f0ef3549609c14e859013d9376400ac1499c2b9cb
   languageName: node
   linkType: hard
 
@@ -1559,7 +1566,7 @@ __metadata:
   resolution: "@solarwinds-apm/compat@workspace:packages/compat"
   dependencies:
     "@opentelemetry/api": "npm:^1.3.0"
-    "@opentelemetry/semantic-conventions": "npm:~1.27.0"
+    "@opentelemetry/semantic-conventions": "npm:~1.28.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^18.19.0"
@@ -7636,7 +7643,7 @@ __metadata:
     "@opentelemetry/sdk-metrics": "npm:~1.28.0"
     "@opentelemetry/sdk-trace-base": "npm:~1.28.0"
     "@opentelemetry/sdk-trace-node": "npm:~1.28.0"
-    "@opentelemetry/semantic-conventions": "npm:~1.27.0"
+    "@opentelemetry/semantic-conventions": "npm:~1.28.0"
     "@solarwinds-apm/bindings": "workspace:^"
     "@solarwinds-apm/dependencies": "workspace:^"
     "@solarwinds-apm/eslint-config": "workspace:^"
