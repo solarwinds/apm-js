@@ -27,10 +27,8 @@ const version = JSON.parse(
 
 const code = `export const VERSION = "${version}"`
 const formatted = await prettier.format(code, { parser: "typescript" })
-const linted = await new ESLint({ fix: true }).lintText(formatted, {
-  filePath: "src/version.ts",
-})
-
+await fs.writeFile("src/version.ts", formatted)
+const linted = await new ESLint({ fix: true }).lintFiles("src/version.ts")
 await fs.writeFile("src/version.ts", linted[0].output)
 
 await fs.mkdir("dist/commonjs", { recursive: true })
