@@ -89,6 +89,7 @@ for (const { range } of ranges) {
 
   // sort the set of ranges in ascending number based on their lower bound
   range.set = [...range.set].sort((a, b) =>
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     compare(minVersion(a.join(" "))!, minVersion(b.join(" "))!),
   )
 
@@ -123,6 +124,7 @@ const supported = ranges
   .map(({ name, range, instrumentation }) => ({
     name,
     versions: range.set
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       .map((comparators) => comparators.join(" "))
       .join(" || ")
       .replace(/^$/, "*"),
