@@ -1353,15 +1353,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:^5.21.1":
-  version: 5.22.0
-  resolution: "@prisma/client@npm:5.22.0"
+"@prisma/client@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@prisma/client@npm:6.0.1"
   peerDependencies:
     prisma: "*"
   peerDependenciesMeta:
     prisma:
       optional: true
-  checksum: 10c0/ad111b931f184249794f811637456eb38dcfd0d7047e5a1f64804e5256f462fa3ee7c7a552fc8fa181e8daacc2b958af7426cb57bf0dc66605c3ef7c4aef4afb
+  checksum: 10c0/7c40dc6bd04dab8fa6ef6bb743b396c6e8e56d4e848e884f2a5d7816cff6b339acf24c15f39d6480d6ac7e3ccb7e0723feb7d4672fe30fee7cce2c174e121d7b
   languageName: node
   linkType: hard
 
@@ -1679,7 +1679,7 @@ __metadata:
   resolution: "@solarwinds-apm/example-next-prisma@workspace:examples/next-prisma"
   dependencies:
     "@opentelemetry/api": "npm:^1.3.0"
-    "@prisma/client": "npm:^5.21.1"
+    "@prisma/client": "npm:^6.0.1"
     "@prisma/instrumentation": "npm:^5.21.1"
     "@types/node": "npm:^18.19.0"
     "@types/react": "npm:^18.3.11"
