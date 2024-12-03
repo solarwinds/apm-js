@@ -9,7 +9,7 @@ All configuration options are optional except for the service key which is alway
 When required, the package will look for the file in the current working directory under three possible formats, in the following order:
 
 - `solarwinds.apm.config.ts` - TypeScript config, supports all options, requires a TypeScript loader such as `ts-node` or `tsx`
-- `solarwinds.apm.config.js` - JavaScript config, supports all options, `.cjs` extension also accepted
+- `solarwinds.apm.config.js` - JavaScript config, supports all options, `.cjs` and `.mjs` extensions also accepted
 - `solarwinds.apm.config.json` - JSON config, doesn't support option settings such as functions or custom classes since only valid JSON syntax is accepted
 
 It's also possible to use a custom name for the configuration file using the `SW_APM_CONFIG_FILE` environment variable. The file must have one of the three supported extensions or it will be ignored.

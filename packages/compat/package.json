@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/compat",
-  "version": "1.1.0-pre.3",
+  "version": "2.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -34,7 +34,7 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "peerDependencies": {
-    "@opentelemetry/api": "^1.3.0"
+    "@opentelemetry/api": "^1.9.0"
   },
   "peerDependenciesMeta": {
     "@opentelemetry/api": {
@@ -42,7 +42,7 @@
     }
   },
   "devDependencies": {
-    "@opentelemetry/api": "^1.3.0",
+    "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/semantic-conventions": "~1.28.0",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
@@ -53,6 +53,5 @@
   },
   "engines": {
     "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
-  },
-  "stableVersion": "1.0.2"
+  }
 }

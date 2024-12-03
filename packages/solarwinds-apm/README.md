@@ -1,34 +1,32 @@
 # solarwinds-apm
 
-The new OpenTelemetry-based SolarWinds APM Node.js library. Currently supports Node.js 16 LTS, 18 LTS and 20.
+The new OpenTelemetry-based SolarWinds APM Node.js library. Currently supports Node.js `^18.19.0`, `^20.8.0` and `22` or any later LTS release.
 
 This library automatically instruments a wide set of frameworks and libraries, see the [Module Compatibility table](../instrumentations/COMPATIBILITY.md) for details.
 
 ## Installation and Setup
 
 ```sh
-npm install --save "solarwinds-apm" "@opentelemetry/api@^1.3.0"
+npm install --save "solarwinds-apm" "@opentelemetry/api@^1.9.0"
 ```
 
 Install using your package manager then follow the [configuration guide](./CONFIGURATION.md). Make sure to install the matching version of `@opentelmetry/api` as it is required for the library to work. The two packages should be updated at the same time and kept in sync.
 
-The library can then be initialised either from the command line or the environment. Depending on the Node version the `--loader solarwinds-apm/loader` (<`18.19.0` | <`20.6.0`) or `--import solarwinds-apm` (>=`18.19.0` | >=`20.6.0`) flag should be used.
+The library can then be initialised either from the command line or the environment.
 
 ```sh
-# <18.19.0 | <20.6.0
-node --loader solarwinds-apm/loader script.js
-# >=18.19.0 | >=20.6.0
 node --import solarwinds-apm script.js
 ```
 
 ```sh
-# <18.19.0 | <20.6.0
-export NODE_OPTIONS="--loader solarwinds-apm/loader"
-# >=18.19.0 | >=20.6.0
 export NODE_OPTIONS="--import solarwinds-apm"
 
 npm start
 ```
+
+## Legacy mode
+
+With the 15.0.0 release, major parts of the library were rewritten in pure JavaScript to replace the previously used native library. The new codebase makes it possible to run the library on platforms other than Linux, however it is not compatible with AppOptics and some niche features might be unimplemented. The legacy code can be turned back on manually by setting the `SW_APM_LEGACY` environment variable to `true`.
 
 ## Custom Instrumentation and Metrics
 
@@ -46,7 +44,7 @@ import { waitUntilReady } from "solarwinds-apm"
 const { waitUntilReady } = require("solarwinds-apm")
 
 // wait up to 10 seconds
-waitUntilReady(10_000)
+await waitUntilReady(10_000)
 ```
 
 ## Custom Transaction Names
@@ -63,9 +61,13 @@ function calledFromWithinTransaction() {
 }
 ```
 
+## Migrating from 14.x.x
+
+Any use of the `--require solarwinds-apm` or `--loader solarwinds-apm/loader` flags must be replaced by `--import solarwinds-apm`. The `waitUntilReady` function now returns a promise instead of blocking, which might require code which uses it to be refactored.
+
 ## Migrating from legacy versions
 
-When migrating from older versions not built on top of OTel, `@opentelemetry/api@^1.3.0` must be added as an extra dependency. The config file will also need to be renamed and updated as some of the fields have changed, see the [configuration guide](./CONFIGURATION.md) for details. Manual instrumentation and metrics will also need to be migrated to use the OTel API, except for the `instrument` and `pInstrument` methods which are provided by the `@solarwinds-apm/compat` package to facilitate migrating.
+When migrating from older versions not built on top of OTel, `@opentelemetry/api@^1.9.0` must be added as an extra dependency. The config file will also need to be renamed and updated as some of the fields have changed, see the [configuration guide](./CONFIGURATION.md) for details. Manual instrumentation and metrics will also need to be migrated to use the OTel API, except for the `instrument` and `pInstrument` methods which are provided by the `@solarwinds-apm/compat` package to facilitate migrating.
 
 ```diff
 - const { instrument, pInstrument } = require("solarwinds-apm")
