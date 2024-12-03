@@ -1,9 +1,0 @@
-releases:
-  "@solarwinds-apm/bindings": patch
-  "@solarwinds-apm/compat": major
-  "@solarwinds-apm/dependencies": patch
-  "@solarwinds-apm/histogram": major
-  "@solarwinds-apm/instrumentations": major
-  "@solarwinds-apm/sampling": major
-  "@solarwinds-apm/test": major
-  solarwinds-apm: major

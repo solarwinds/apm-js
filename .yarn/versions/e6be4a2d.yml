@@ -1,5 +1,0 @@
-releases:
-  "@solarwinds-apm/proto": patch
-
-declined:
-  - solarwinds-apm
