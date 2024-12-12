@@ -3,23 +3,23 @@
   "private": true,
   "scripts": {
     "build": "prisma generate && prisma migrate deploy && next build",
-    "lint": "next lint",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false next lint",
     "start": "prisma generate && prisma migrate deploy && next start"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
     "@prisma/client": "^6.0.1",
     "@prisma/instrumentation": "^6.0.1",
-    "next": "^14.2.15",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^18.19.0",
-    "@types/react": "^18.3.11",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "^14.2.15",
+    "@types/react": "^19.0.1",
+    "eslint": "^9.12.0",
+    "eslint-config-next": "^15.1.0",
     "prisma": "^6.0.1",
     "typescript": "~5.7.2"
   }

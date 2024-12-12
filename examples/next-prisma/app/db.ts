@@ -21,7 +21,7 @@ export async function newOrDone(data: FormData) {
     revalidatePath("/@todo")
     revalidatePath("/@done")
   } else {
-    const description = data.get("description").toString()
+    const description = data.get("description")!.toString()
     await db().item.create({ data: { description } })
 
     revalidatePath("/@todo")
