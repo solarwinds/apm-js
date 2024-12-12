@@ -56,7 +56,6 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.12.2",
     "@opentelemetry/api-logs": "~0.56.0",
     "@opentelemetry/core": "~1.29.0",
     "@opentelemetry/exporter-logs-otlp-proto": "~0.56.0",
@@ -74,7 +73,6 @@
     "@solarwinds-apm/histogram": "workspace:^",
     "@solarwinds-apm/instrumentations": "workspace:^",
     "@solarwinds-apm/module": "workspace:^",
-    "@solarwinds-apm/proto": "workspace:^",
     "@solarwinds-apm/sampling": "workspace:^",
     "json-stringify-safe": "^5.0.1",
     "node-releases": "^2.0.18",

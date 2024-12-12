@@ -23,17 +23,16 @@ import {
   ATTR_URL_PATH,
   ATTR_URL_SCHEME,
 } from "@opentelemetry/semantic-conventions"
-import {
-  BucketType,
-  Flags,
-  SampleSource,
-  type Settings,
-} from "@solarwinds-apm/sampling"
+import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import { type Configuration } from "../../src/config.js"
 import { HEADERS_STORAGE } from "../../src/propagation/headers.js"
-import { httpSpanMetadata, Sampler } from "../../src/sampling/sampler.js"
+import {
+  httpSpanMetadata,
+  parseSettings,
+  Sampler,
+} from "../../src/sampling/sampler.js"
 import {
   ATTR_HTTP_METHOD,
   ATTR_HTTP_SCHEME,
@@ -43,7 +42,7 @@ import {
 } from "../../src/semattrs.old.js"
 
 class TestSampler extends Sampler {
-  constructor(config: Configuration, settings: Settings) {
+  constructor(config: Configuration, settings: unknown) {
     super(config, diag)
     this.updateSettings(settings)
   }
@@ -67,27 +66,27 @@ const options = (options: {
 const settings = (options: {
   enabled: boolean
   signatureKey?: Uint8Array
-}): Settings => {
+}): unknown => {
   const { enabled, signatureKey } = options
 
   return {
-    sampleRate: 1_000_000,
-    sampleSource: SampleSource.Remote,
-    flags: enabled
-      ? Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS | Flags.TRIGGERED_TRACE
-      : 0x0,
-    buckets: {
-      [BucketType.DEFAULT]: { capacity: 10, rate: 1 },
-      [BucketType.TRIGGER_RELAXED]: { capacity: 100, rate: 10 },
-      [BucketType.TRIGGER_STRICT]: { capacity: 1, rate: 0.1 },
+    value: 1_000_000,
+    flags: enabled ? "SAMPLE_START,SAMPLE_THROUGH_ALWAYS,TRIGGER_TRACE" : "",
+    arguments: {
+      BucketCapacity: 10,
+      BucketRate: 1,
+      TriggerRelaxedBucketCapacity: 100,
+      TriggerRelaxedBucketRate: 10,
+      TriggerStrictBucketCapacity: 1,
+      TriggerStrictBucketRate: 0.1,
+      SignatureKey: new TextDecoder().decode(signatureKey),
     },
-    signatureKey,
     timestamp: Math.round(Date.now() / 1000),
     ttl: 60,
   }
 }
 
-describe("httpSpanMetadata", () => {
+describe(httpSpanMetadata.name, () => {
   it("handles non-http spans properly", () => {
     const span = {
       kind: SpanKind.SERVER,
@@ -163,7 +162,59 @@ describe("httpSpanMetadata", () => {
   })
 })
 
-describe("Sampler", () => {
+describe(parseSettings.name, () => {
+  it("correctly parses JSON settings", () => {
+    const timestamp = Math.round(Date.now() / 1000)
+
+    const json = {
+      flags: "SAMPLE_START,SAMPLE_THROUGH_ALWAYS,TRIGGER_TRACE,OVERRIDE",
+      value: 500_000,
+      arguments: {
+        BucketCapacity: 0.2,
+        BucketRate: 0.1,
+        TriggerRelaxedBucketCapacity: 20,
+        TriggerRelaxedBucketRate: 10,
+        TriggerStrictBucketCapacity: 2,
+        TriggerStrictBucketRate: 1,
+        SignatureKey: "key",
+      },
+      timestamp,
+      ttl: 120,
+      warning: "warning",
+    }
+
+    const setting = parseSettings(json)
+    expect(setting).to.deep.equal({
+      sampleRate: 500_000,
+      sampleSource: SampleSource.Remote,
+      flags:
+        Flags.SAMPLE_START |
+        Flags.SAMPLE_THROUGH_ALWAYS |
+        Flags.TRIGGERED_TRACE |
+        Flags.OVERRIDE,
+      buckets: {
+        [BucketType.DEFAULT]: {
+          capacity: 0.2,
+          rate: 0.1,
+        },
+        [BucketType.TRIGGER_RELAXED]: {
+          capacity: 20,
+          rate: 10,
+        },
+        [BucketType.TRIGGER_STRICT]: {
+          capacity: 2,
+          rate: 1,
+        },
+      },
+      signatureKey: Buffer.from("key"),
+      timestamp,
+      ttl: 120,
+      warning: "warning",
+    })
+  })
+})
+
+describe(Sampler.name, () => {
   it("respects enabled settings when no config or transaction settings", async () => {
     const sampler = new TestSampler(
       options({ triggerTrace: false }),

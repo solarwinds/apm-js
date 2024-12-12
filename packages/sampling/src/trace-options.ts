@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { hmac } from "@noble/hashes/hmac"
+import { sha1 } from "@noble/hashes/sha1"
 import { diag, type DiagLogger } from "@opentelemetry/api"
-import { createHmac } from "crypto"
 
 const TRIGGER_TRACE_KEY = "trigger-trace"
 const TIMESTAMP_KEY = "ts"
@@ -174,10 +175,12 @@ export function validateSignature(
     return Auth.BAD_TIMESTAMP
   }
 
-  const hmac = createHmac("sha1", key)
-  const digest = hmac.update(header).digest()
+  const digest = hmac(sha1, key, header).reduce(
+    (hex, byte) => hex + byte.toString(16).padStart(2, "0"),
+    "",
+  )
 
-  if (signature === digest.toString("hex")) {
+  if (signature === digest) {
     return Auth.OK
   } else {
     return Auth.BAD_SIGNATURE

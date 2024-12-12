@@ -22,7 +22,7 @@ export class LogExporter extends OTLPLogExporter {
   constructor(config: Configuration) {
     super({
       url: config.otlp.logsEndpoint,
-      headers: config.otlp.headers,
+      headers: config.headers,
       httpAgentOptions: {
         ca: config.trustedpath,
       },

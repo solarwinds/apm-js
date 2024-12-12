@@ -19,7 +19,6 @@ import os from "node:os"
 import path from "node:path"
 
 import { trace } from "@opentelemetry/api"
-import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
 import {
   before,
   beforeEach,
@@ -30,11 +29,11 @@ import {
 } from "@solarwinds-apm/test"
 
 import { type Configuration } from "../../src/config.js"
-import { JsonSampler, parseSettings } from "../../src/sampling/json.js"
+import { JsonSampler } from "../../src/sampling/json.js"
 
 const PATH = path.join(os.tmpdir(), "solarwinds-apm-settings.json")
 
-describe("JsonSampler", () => {
+describe(JsonSampler.name, () => {
   beforeEach(async () => {
     const sampler = new JsonSampler({} as Configuration)
     await otel.reset({ trace: { sampler } })
@@ -181,58 +180,6 @@ describe("JsonSampler", () => {
         "BucketCapacity",
         "BucketRate",
       )
-    })
-  })
-})
-
-describe("parseSettings", () => {
-  it("correctly parses JSON settings", () => {
-    const timestamp = Math.round(Date.now() / 1000)
-
-    const json = [
-      {
-        flags: "SAMPLE_START,SAMPLE_THROUGH_ALWAYS,TRIGGER_TRACE,OVERRIDE",
-        value: 500_000,
-        arguments: {
-          BucketCapacity: 0.2,
-          BucketRate: 0.1,
-          TriggerRelaxedBucketCapacity: 20,
-          TriggerRelaxedBucketRate: 10,
-          TriggerStrictBucketCapacity: 2,
-          TriggerStrictBucketRate: 1,
-          SignatureKey: "key",
-        },
-        timestamp,
-        ttl: 120,
-      },
-    ]
-
-    const setting = parseSettings(json)
-    expect(setting).to.deep.equal({
-      sampleRate: 500_000,
-      sampleSource: SampleSource.Remote,
-      flags:
-        Flags.SAMPLE_START |
-        Flags.SAMPLE_THROUGH_ALWAYS |
-        Flags.TRIGGERED_TRACE |
-        Flags.OVERRIDE,
-      buckets: {
-        [BucketType.DEFAULT]: {
-          capacity: 0.2,
-          rate: 0.1,
-        },
-        [BucketType.TRIGGER_RELAXED]: {
-          capacity: 20,
-          rate: 10,
-        },
-        [BucketType.TRIGGER_STRICT]: {
-          capacity: 2,
-          rate: 1,
-        },
-      },
-      signatureKey: Buffer.from("key"),
-      timestamp,
-      ttl: 120,
     })
   })
 })

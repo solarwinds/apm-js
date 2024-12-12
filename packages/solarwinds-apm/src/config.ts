@@ -72,9 +72,24 @@ const serviceKey = z
     }
   })
 
-const trustedpath = z.string().transform((p, ctx) => {
+const collector = z.string().transform((c, ctx) => {
+  if (!/^https?:/.test(c)) {
+    c = `https://${c}`
+  }
   try {
-    return fs.readFile(p, "utf-8")
+    return new URL(c)
+  } catch (err) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: (err as Error).message,
+    })
+    return z.NEVER
+  }
+})
+
+const trustedpath = z.string().transform((tp, ctx) => {
+  try {
+    return fs.readFile(tp, "utf-8")
   } catch (err) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -149,7 +164,7 @@ const schema = z.object({
   serviceKey: serviceKey.optional(),
   enabled: boolean.default(true),
   legacy: boolean.optional(),
-  collector: z.string().default("apm.collector.na-01.cloud.solarwinds.com"),
+  collector: collector.default("apm.collector.na-01.cloud.solarwinds.com"),
   trustedpath: trustedpath.optional(),
   proxy: z.string().optional(),
   logLevel: logLevel.default("warn"),
@@ -188,13 +203,14 @@ export interface Config extends z.input<typeof schema> {
 /** Processed configuration for solarwinds-apm */
 export interface Configuration extends z.output<typeof schema> {
   service: string
+  appoptics: boolean
   legacy: boolean
 
+  headers: Record<string, string>
   otlp: {
     tracesEndpoint?: string
     metricsEndpoint?: string
     logsEndpoint?: string
-    headers: Record<string, string>
   }
 
   source?: string
@@ -264,7 +280,8 @@ export async function read(): Promise<Configuration> {
     ])
   }
 
-  const legacy = raw.legacy ?? raw.collector.includes("appoptics")
+  const appoptics = raw.collector.hostname.includes("appoptics")
+  const legacy = raw.legacy ?? appoptics
   if (legacy && raw.exportLogsEnabled) {
     console.warn("Logs export is not supported when exporting to AppOptics.")
     raw.exportLogsEnabled = false
@@ -274,31 +291,31 @@ export async function read(): Promise<Configuration> {
     ...raw,
 
     service,
+    appoptics,
     legacy,
 
+    headers: raw.serviceKey?.token
+      ? { authorization: `Bearer ${raw.serviceKey.token}` }
+      : {},
     otlp: {
       tracesEndpoint:
         otel.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.traces) ??
-        raw.collector
+        raw.collector.hostname
           .replace(/^apm\.collector\./, "https://otel.collector.")
           .concat(ENDPOINTS.traces),
       metricsEndpoint:
         otel.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.metrics) ??
-        raw.collector
+        raw.collector.hostname
           .replace(/^apm\.collector\./, "https://otel.collector.")
           .concat(ENDPOINTS.metrics),
       logsEndpoint:
         otel.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.logs) ??
-        raw.collector
+        raw.collector.hostname
           .replace(/^apm\.collector\./, "https://otel.collector.")
           .concat(ENDPOINTS.logs),
-
-      headers: raw.serviceKey?.token
-        ? { authorization: `Bearer ${raw.serviceKey.token}` }
-        : {},
     },
 
     source,

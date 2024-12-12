@@ -29,10 +29,13 @@ import {
   ATTR_URL_SCHEME,
 } from "@opentelemetry/semantic-conventions"
 import {
+  BucketType,
+  Flags,
   type LocalSettings,
   OboeSampler,
   type RequestHeaders,
   type ResponseHeaders,
+  SampleSource,
   type Settings,
   TracingMode,
 } from "@solarwinds-apm/sampling"
@@ -107,6 +110,124 @@ export function httpSpanMetadata(kind: SpanKind, attributes: Attributes) {
     path,
     url,
   } as const
+}
+
+/**
+ * Parses sampling settings from a raw JSON object
+ *
+ * @param unparsed - Raw JSON object
+ * @returns - Valid parsed settings object or undefined
+ */
+export function parseSettings(
+  unparsed: unknown,
+): (Settings & { warning?: string }) | undefined {
+  if (typeof unparsed !== "object" || unparsed === null) {
+    return undefined
+  }
+
+  let sampleRate: number
+  let timestamp: number
+  let ttl: number
+  if (
+    "value" in unparsed &&
+    typeof unparsed.value === "number" &&
+    "timestamp" in unparsed &&
+    typeof unparsed.timestamp === "number" &&
+    "ttl" in unparsed &&
+    typeof unparsed.ttl === "number"
+  ) {
+    sampleRate = unparsed.value
+    timestamp = unparsed.timestamp
+    ttl = unparsed.ttl
+  } else {
+    return undefined
+  }
+
+  let flags: Flags
+  if ("flags" in unparsed && typeof unparsed.flags === "string") {
+    flags = unparsed.flags.split(",").reduce((flags, f) => {
+      const flag = {
+        OVERRIDE: Flags.OVERRIDE,
+        SAMPLE_START: Flags.SAMPLE_START,
+        SAMPLE_THROUGH_ALWAYS: Flags.SAMPLE_THROUGH_ALWAYS,
+        TRIGGER_TRACE: Flags.TRIGGERED_TRACE,
+      }[f]
+
+      if (flag) {
+        flags |= flag
+      }
+      return flags
+    }, Flags.OK)
+  } else {
+    return undefined
+  }
+
+  const buckets: Settings["buckets"] = {}
+  let signatureKey: Uint8Array | undefined = undefined
+  if (
+    "arguments" in unparsed &&
+    typeof unparsed.arguments === "object" &&
+    unparsed.arguments !== null
+  ) {
+    if (
+      "BucketCapacity" in unparsed.arguments &&
+      typeof unparsed.arguments.BucketCapacity === "number" &&
+      "BucketRate" in unparsed.arguments &&
+      typeof unparsed.arguments.BucketRate === "number"
+    ) {
+      buckets[BucketType.DEFAULT] = {
+        capacity: unparsed.arguments.BucketCapacity,
+        rate: unparsed.arguments.BucketRate,
+      }
+    }
+
+    if (
+      "TriggerRelaxedBucketCapacity" in unparsed.arguments &&
+      typeof unparsed.arguments.TriggerRelaxedBucketCapacity === "number" &&
+      "TriggerRelaxedBucketRate" in unparsed.arguments &&
+      typeof unparsed.arguments.TriggerRelaxedBucketRate === "number"
+    ) {
+      buckets[BucketType.TRIGGER_RELAXED] = {
+        capacity: unparsed.arguments.TriggerRelaxedBucketCapacity,
+        rate: unparsed.arguments.TriggerRelaxedBucketRate,
+      }
+    }
+
+    if (
+      "TriggerStrictBucketCapacity" in unparsed.arguments &&
+      typeof unparsed.arguments.TriggerStrictBucketCapacity === "number" &&
+      "TriggerStrictBucketRate" in unparsed.arguments &&
+      typeof unparsed.arguments.TriggerStrictBucketRate === "number"
+    ) {
+      buckets[BucketType.TRIGGER_STRICT] = {
+        capacity: unparsed.arguments.TriggerStrictBucketCapacity,
+        rate: unparsed.arguments.TriggerStrictBucketRate,
+      }
+    }
+
+    if (
+      "SignatureKey" in unparsed.arguments &&
+      typeof unparsed.arguments.SignatureKey === "string"
+    ) {
+      signatureKey = new TextEncoder().encode(unparsed.arguments.SignatureKey)
+    }
+  }
+
+  let warning: string | undefined = undefined
+  if ("warning" in unparsed && typeof unparsed.warning === "string") {
+    warning = unparsed.warning
+  }
+
+  return {
+    sampleSource: SampleSource.Remote,
+    sampleRate,
+    flags,
+    timestamp,
+    ttl,
+    buckets,
+    signatureKey,
+    warning,
+  }
 }
 
 /**
@@ -204,8 +325,22 @@ export abstract class Sampler extends OboeSampler {
     }
   }
 
-  protected override updateSettings(settings: Settings): void {
-    super.updateSettings(settings)
-    this.#resolve()
+  protected override updateSettings(settings: unknown): Settings | undefined {
+    const parsed = parseSettings(settings)
+    if (parsed) {
+      this.logger.debug("valid settings", parsed, settings)
+
+      super.updateSettings(parsed)
+      this.#resolve()
+
+      if (parsed.warning) {
+        this.logger.warn(parsed.warning)
+      }
+
+      return parsed
+    } else {
+      this.logger.warn("invalid settings", settings)
+      return undefined
+    }
   }
 }
