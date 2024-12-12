@@ -339,7 +339,7 @@ export abstract class Sampler extends OboeSampler {
 
       return parsed
     } else {
-      this.logger.warn("invalid settings", settings)
+      this.logger.debug("invalid settings", settings)
       return undefined
     }
   }
