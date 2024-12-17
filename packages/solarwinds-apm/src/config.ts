@@ -48,9 +48,9 @@ const boolean = z.union([
 
 const regex = z.union([
   z.instanceof(RegExp),
-  z.string().transform((s, ctx) => {
+  z.string().transform((string, ctx) => {
     try {
-      return new RegExp(s)
+      return new RegExp(string)
     } catch (err) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -64,20 +64,20 @@ const regex = z.union([
 const serviceKey = z
   .string()
   .includes(":")
-  .transform((k) => {
-    const [token, ...name] = k.split(":")
+  .transform((string) => {
+    const [token, ...name] = string.split(":")
     return {
       token: token!,
       name: name.join(":"),
     }
   })
 
-const collector = z.string().transform((c, ctx) => {
-  if (!/^https?:/.test(c)) {
-    c = `https://${c}`
+const collector = z.string().transform((string, ctx) => {
+  if (!/^https?:/.test(string)) {
+    string = `https://${string}`
   }
   try {
-    return new URL(c)
+    return new URL(string)
   } catch (err) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -301,21 +301,15 @@ export async function read(): Promise<Configuration> {
       tracesEndpoint:
         otel.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.traces) ??
-        raw.collector.hostname
-          .replace(/^apm\.collector\./, "https://otel.collector.")
-          .concat(ENDPOINTS.traces),
+        otelUrl(raw.collector, ENDPOINTS.traces),
       metricsEndpoint:
         otel.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.metrics) ??
-        raw.collector.hostname
-          .replace(/^apm\.collector\./, "https://otel.collector.")
-          .concat(ENDPOINTS.metrics),
+        otelUrl(raw.collector, ENDPOINTS.metrics),
       logsEndpoint:
         otel.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.logs) ??
-        raw.collector.hostname
-          .replace(/^apm\.collector\./, "https://otel.collector.")
-          .concat(ENDPOINTS.logs),
+        otelUrl(raw.collector, ENDPOINTS.logs),
     },
 
     source,
@@ -378,4 +372,14 @@ function envObject(prefix = PREFIX) {
       .filter(([k]) => k.startsWith(prefix))
       .map(([k, v]) => [fromEnvKey(k, prefix), v]),
   )
+}
+
+function otelUrl(apmUrl: URL, endpoint: string) {
+  const otelUrl = new URL(apmUrl)
+  otelUrl.hostname = apmUrl.hostname.replace(
+    /^apm\.collector\./,
+    "otel.collector.",
+  )
+  otelUrl.pathname = endpoint
+  return otelUrl.href
 }
