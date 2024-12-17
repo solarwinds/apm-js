@@ -206,12 +206,12 @@ async function initTracing(
       new ParentSpanProcessor(),
     ]
   } else {
-    const [{ GrpcSampler }, { TraceExporter }] = await Promise.all([
-      import("./sampling/grpc.js"),
+    const [{ HttpSampler }, { TraceExporter }] = await Promise.all([
+      import("./sampling/http.js"),
       import("./exporters/traces.js"),
     ])
 
-    sampler = new GrpcSampler(config)
+    sampler = new HttpSampler(config)
     processors = [
       new TransactionNameProcessor(config),
       new ResponseTimeProcessor(),

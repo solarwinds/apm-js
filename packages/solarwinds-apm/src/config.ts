@@ -48,9 +48,9 @@ const boolean = z.union([
 
 const regex = z.union([
   z.instanceof(RegExp),
-  z.string().transform((s, ctx) => {
+  z.string().transform((string, ctx) => {
     try {
-      return new RegExp(s)
+      return new RegExp(string)
     } catch (err) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -64,17 +64,32 @@ const regex = z.union([
 const serviceKey = z
   .string()
   .includes(":")
-  .transform((k) => {
-    const [token, ...name] = k.split(":")
+  .transform((string) => {
+    const [token, ...name] = string.split(":")
     return {
       token: token!,
       name: name.join(":"),
     }
   })
 
-const trustedpath = z.string().transform((p, ctx) => {
+const collector = z.string().transform((string, ctx) => {
+  if (!/^https?:/.test(string)) {
+    string = `https://${string}`
+  }
   try {
-    return fs.readFile(p, "utf-8")
+    return new URL(string)
+  } catch (err) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: (err as Error).message,
+    })
+    return z.NEVER
+  }
+})
+
+const trustedpath = z.string().transform((tp, ctx) => {
+  try {
+    return fs.readFile(tp, "utf-8")
   } catch (err) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -149,7 +164,7 @@ const schema = z.object({
   serviceKey: serviceKey.optional(),
   enabled: boolean.default(true),
   legacy: boolean.optional(),
-  collector: z.string().default("apm.collector.na-01.cloud.solarwinds.com"),
+  collector: collector.default("apm.collector.na-01.cloud.solarwinds.com"),
   trustedpath: trustedpath.optional(),
   proxy: z.string().optional(),
   logLevel: logLevel.default("warn"),
@@ -188,13 +203,14 @@ export interface Config extends z.input<typeof schema> {
 /** Processed configuration for solarwinds-apm */
 export interface Configuration extends z.output<typeof schema> {
   service: string
+  appoptics: boolean
   legacy: boolean
 
+  headers: Record<string, string>
   otlp: {
     tracesEndpoint?: string
     metricsEndpoint?: string
     logsEndpoint?: string
-    headers: Record<string, string>
   }
 
   source?: string
@@ -264,7 +280,8 @@ export async function read(): Promise<Configuration> {
     ])
   }
 
-  const legacy = raw.legacy ?? raw.collector.includes("appoptics")
+  const appoptics = raw.collector.hostname.includes("appoptics")
+  const legacy = raw.legacy ?? appoptics
   if (legacy && raw.exportLogsEnabled) {
     console.warn("Logs export is not supported when exporting to AppOptics.")
     raw.exportLogsEnabled = false
@@ -274,31 +291,25 @@ export async function read(): Promise<Configuration> {
     ...raw,
 
     service,
+    appoptics,
     legacy,
 
+    headers: raw.serviceKey?.token
+      ? { authorization: `Bearer ${raw.serviceKey.token}` }
+      : {},
     otlp: {
       tracesEndpoint:
         otel.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.traces) ??
-        raw.collector
-          .replace(/^apm\.collector\./, "https://otel.collector.")
-          .concat(ENDPOINTS.traces),
+        otelUrl(raw.collector, ENDPOINTS.traces),
       metricsEndpoint:
         otel.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.metrics) ??
-        raw.collector
-          .replace(/^apm\.collector\./, "https://otel.collector.")
-          .concat(ENDPOINTS.metrics),
+        otelUrl(raw.collector, ENDPOINTS.metrics),
       logsEndpoint:
         otel.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
         otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.logs) ??
-        raw.collector
-          .replace(/^apm\.collector\./, "https://otel.collector.")
-          .concat(ENDPOINTS.logs),
-
-      headers: raw.serviceKey?.token
-        ? { authorization: `Bearer ${raw.serviceKey.token}` }
-        : {},
+        otelUrl(raw.collector, ENDPOINTS.logs),
     },
 
     source,
@@ -361,4 +372,14 @@ function envObject(prefix = PREFIX) {
       .filter(([k]) => k.startsWith(prefix))
       .map(([k, v]) => [fromEnvKey(k, prefix), v]),
   )
+}
+
+function otelUrl(apmUrl: URL, endpoint: string) {
+  const otelUrl = new URL(apmUrl)
+  otelUrl.hostname = apmUrl.hostname.replace(
+    /^apm\.collector\./,
+    "otel.collector.",
+  )
+  otelUrl.pathname = endpoint
+  return otelUrl.href
 }

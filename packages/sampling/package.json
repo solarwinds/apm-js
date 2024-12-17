@@ -36,6 +36,7 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
+    "@noble/hashes": "^1.6.1",
     "@opentelemetry/sdk-trace-base": "~1.29.0"
   },
   "peerDependencies": {

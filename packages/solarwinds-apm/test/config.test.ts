@@ -38,8 +38,9 @@ describe("read", () => {
         token: "token",
       },
       enabled: true,
+      appoptics: false,
       legacy: false,
-      collector: "apm.collector.na-01.cloud.solarwinds.com",
+      collector: new URL("https://apm.collector.na-01.cloud.solarwinds.com"),
       logLevel: DiagLogLevel.WARN,
       triggerTraceEnabled: true,
       runtimeMetrics: true,
@@ -48,12 +49,12 @@ describe("read", () => {
       exportLogsEnabled: false,
       instrumentations: { set: "all" },
       resourceDetectors: { set: "all" },
+      headers: { authorization: "Bearer token" },
       otlp: {
         tracesEndpoint:
           "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
         metricsEndpoint:
           "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
-        headers: { authorization: "Bearer token" },
         logsEndpoint:
           "https://otel.collector.na-01.cloud.solarwinds.com/v1/logs",
       },
@@ -142,6 +143,8 @@ describe("read", () => {
 
     const config = await read()
     expect(config).to.include({
+      appoptics: true,
+      legacy: true,
       exportLogsEnabled: false,
     })
   })

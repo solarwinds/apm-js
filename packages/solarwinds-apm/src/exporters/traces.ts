@@ -22,7 +22,7 @@ export class TraceExporter extends OTLPTraceExporter {
   constructor(config: Configuration) {
     super({
       url: config.otlp.tracesEndpoint,
-      headers: config.otlp.headers,
+      headers: config.headers,
       httpAgentOptions: {
         ca: config.trustedpath,
       },

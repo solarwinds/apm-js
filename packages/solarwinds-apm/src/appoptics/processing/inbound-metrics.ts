@@ -68,7 +68,7 @@ export class AppopticsInboundMetricsProcessor
         method: meta.method,
         status: meta.status,
         url: meta.url,
-        domain: meta.hostname,
+        domain: null,
       })
     } else {
       transaction = oboe.Span.createSpan({

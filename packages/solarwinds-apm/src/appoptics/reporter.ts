@@ -42,13 +42,11 @@ export async function reporter(
 ): Promise<oboe.Reporter> {
   const reporter = new oboe.Reporter({
     service_key: `${config.serviceKey?.token}:${config.service}`,
-    host: config.collector,
-    certificates:
-      config.trustedpath ??
-      (config.collector.includes("appoptics.com") ? certificate : ""),
+    host: config.collector.hostname,
+    certificates: config.trustedpath ?? (config.appoptics ? certificate : ""),
     grpc_proxy: config.proxy ?? "",
     reporter: "ssl",
-    metric_format: 1,
+    metric_format: config.appoptics ? 1 : 2,
     trace_metrics: 1,
 
     log_level: otelLevelToOboeLevel(config.logLevel),
