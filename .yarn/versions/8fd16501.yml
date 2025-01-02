@@ -1,0 +1,13 @@
+releases:
+  "@solarwinds-apm/sampling": patch
+  solarwinds-apm: minor
+
+declined:
+  - "@solarwinds-apm/bindings"
+  - "@solarwinds-apm/compat"
+  - "@solarwinds-apm/dependencies"
+  - "@solarwinds-apm/eslint-config"
+  - "@solarwinds-apm/histogram"
+  - "@solarwinds-apm/instrumentations"
+  - "@solarwinds-apm/module"
+  - "@solarwinds-apm/test"
