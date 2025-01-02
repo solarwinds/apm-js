@@ -1,5 +1,5 @@
 /*
-Copyright 2023-2024 SolarWinds Worldwide, LLC.
+Copyright 2023-2025 SolarWinds Worldwide, LLC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -73,8 +73,6 @@ export class JsonSampler extends Sampler {
     const parsed = this.updateSettings(unparsed[0])
     if (parsed) {
       this.#expiry = (parsed.timestamp + parsed.ttl) * 1000
-    } else {
-      this.logger.debug("invalid settings file", unparsed)
     }
   }
 }

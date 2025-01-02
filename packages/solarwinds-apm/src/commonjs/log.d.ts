@@ -14,9 +14,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import base from "@solarwinds-apm/eslint-config"
-
-export default [
-  ...base({ allowDefaultProject: [] }),
-  { ignores: ["next-prisma/**"] },
-]
+declare const log: typeof console.log | typeof console.error;
+export = log;

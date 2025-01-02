@@ -1,5 +1,5 @@
 /*
-Copyright 2023-2024 SolarWinds Worldwide, LLC.
+Copyright 2023-2025 SolarWinds Worldwide, LLC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import { register } from "module"
 
 import { INIT } from "./commonjs/flags.js"
+import log from "./commonjs/log.js"
 import { init } from "./init.js"
 
 if (!IS_SERVERLESS) {
@@ -43,7 +44,7 @@ if (!Reflect.has(globalThis, INIT)) {
       writable: false,
     })
   } catch (error) {
-    console.error(error)
+    log(error)
   }
 }
 

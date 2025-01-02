@@ -1,5 +1,5 @@
 /*
-Copyright 2023-2024 SolarWinds Worldwide, LLC.
+Copyright 2023-2025 SolarWinds Worldwide, LLC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-import assert from "node:assert"
 
 export interface BackoffOptions {
   /** Initial backoff time */
@@ -41,15 +39,14 @@ export class Backoff {
   }
 
   constructor(options: BackoffOptions) {
-    assert(options.initial > 0, "initial backup value should be positive")
-    if (options.max) {
-      assert(
-        options.max >= options.initial,
-        "max backoff should be greater than initial",
-      )
+    if (options.initial <= 0) {
+      throw new TypeError("initial backup value should be positive")
     }
-    if (options.retries) {
-      assert(options.retries > 0, "max retries should be positive")
+    if (options.max !== undefined && options.max < options.initial) {
+      throw new TypeError("max backoff should be greater than initial")
+    }
+    if (options.retries !== undefined && options.retries <= 0) {
+      throw new Error("max retries should be positive")
     }
 
     this.#backoff = {

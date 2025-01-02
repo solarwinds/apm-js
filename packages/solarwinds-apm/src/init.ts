@@ -1,5 +1,5 @@
 /*
-Copyright 2023-2024 SolarWinds Worldwide, LLC.
+Copyright 2023-2025 SolarWinds Worldwide, LLC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import {
 } from "@solarwinds-apm/instrumentations"
 import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
+import log from "./commonjs/log.js"
 import { type Configuration, printError, read } from "./config.js"
 import { componentLogger, Logger } from "./logger.js"
 import { patch } from "./patches.js"
@@ -67,7 +68,7 @@ export async function init() {
   try {
     config = await read()
   } catch (err) {
-    console.warn(
+    log(
       "Invalid SolarWinds APM configuration, application will not be instrumented.",
     )
     printError(err)

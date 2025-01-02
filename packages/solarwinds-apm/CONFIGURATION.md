@@ -70,6 +70,8 @@ The following log levels are available in increasing order of verbosity.
 - `verbose`
 - `all`
 
+By default the instrumentation logs are printed to stdout, but it's possible to direct them to stderr instead by setting the `SW_APM_LOG_STDERR` environment variable to any value, or even drop all logs entirely by setting the `SW_APM_LOG_NULL` environment variable.
+
 ### Logs Export
 
 It is possible to export logs to the collector by explicitly enabling the feature. This feature integrates directly with select logging libraries listed below. Support will be added to more libraries in the future if requested.

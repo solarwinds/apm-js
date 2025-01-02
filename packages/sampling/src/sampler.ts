@@ -1,5 +1,5 @@
 /*
-Copyright 2023-2024 SolarWinds Worldwide, LLC.
+Copyright 2023-2025 SolarWinds Worldwide, LLC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -368,8 +368,6 @@ export abstract class OboeSampler implements Sampler {
    * the subclass whenever the remote settings are updated.
    */
   protected updateSettings(settings: Settings): void {
-    this.logger.debug("settings updated", settings)
-
     if (settings.timestamp > (this.#settings?.timestamp ?? 0)) {
       this.#settings = settings
 
