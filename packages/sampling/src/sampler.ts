@@ -368,8 +368,6 @@ export abstract class OboeSampler implements Sampler {
    * the subclass whenever the remote settings are updated.
    */
   protected updateSettings(settings: Settings): void {
-    this.logger.debug("settings updated", settings)
-
     if (settings.timestamp > (this.#settings?.timestamp ?? 0)) {
       this.#settings = settings
 

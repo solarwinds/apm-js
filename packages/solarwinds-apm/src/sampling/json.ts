@@ -73,8 +73,6 @@ export class JsonSampler extends Sampler {
     const parsed = this.updateSettings(unparsed[0])
     if (parsed) {
       this.#expiry = (parsed.timestamp + parsed.ttl) * 1000
-    } else {
-      this.logger.debug("invalid settings file", unparsed)
     }
   }
 }

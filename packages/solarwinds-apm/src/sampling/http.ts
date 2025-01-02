@@ -92,9 +92,10 @@ export class HttpSampler extends Sampler {
     }
   }
 
-  /** Resets last memorised warning */
-  #resetWarn() {
+  /** Resets last memorised warning and backoff */
+  #reset() {
     this.#lastWarningMessage = undefined
+    this.#backoff.reset()
   }
 
   /** Retries the request after an exponential backoff timeout */
@@ -147,7 +148,7 @@ export class HttpSampler extends Sampler {
           this.#retry()
           return
         }
-        this.#resetWarn()
+        this.#reset()
 
         // this is pretty arbitrary but the goal is to update the settings
         // before the previous ones expire with some time to spare
