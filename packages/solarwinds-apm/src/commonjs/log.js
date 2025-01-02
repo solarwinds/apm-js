@@ -14,5 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-module.exports =
-  "SW_APM_LOG_STDERR" in process.env ? console.error : console.log;
+if ("SW_APM_LOG_STDERR" in process.env) {
+  module.exports = console.error;
+} else if ("SW_APM_LOG_NULL" in process.env) {
+  module.exports = function () {
+    // drop the logs
+  };
+} else {
+  module.exports = console.log;
+}
