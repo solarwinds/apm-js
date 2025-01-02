@@ -4,6 +4,7 @@
 var fs = require("fs");
 var path = require("path");
 var process = require("process");
+var log = require("./log");
 
 try {
   if (
@@ -66,21 +67,21 @@ try {
 
   module.exports = true;
 } catch (error) {
-  console.warn(error);
+  log(error);
   module.exports = false;
 }
 
 try {
   var node = process.versions.node;
-  console.log("Node.js " + node);
+  log("Node.js " + node);
 
   var solarwinds = JSON.parse(
     fs.readFileSync(path.join(__dirname, "../../package.json"), {
       encoding: "utf8"
     })
   ).version;
-  console.log("solarwinds-apm " + solarwinds);
+  log("solarwinds-apm " + solarwinds);
 
   var otel = require("@opentelemetry/core").VERSION;
-  console.log("@opentelemetry/core " + otel);
+  log("@opentelemetry/core " + otel);
 } catch (_error) {}

@@ -20,6 +20,8 @@ import util from "node:util"
 import { diag, type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
 import stringify from "json-stringify-safe"
 
+import log from "./commonjs/log.js"
+
 const COLOURS = {
   red: "\x1b[1;31m",
   yellow: "\x1b[1;33m",
@@ -35,8 +37,8 @@ export function componentLogger(component: {
 }
 
 export class Logger implements DiagLogger {
-  readonly error = Logger.makeLogger("error", "red")
-  readonly warn = Logger.makeLogger("warn", "yellow")
+  readonly error = Logger.makeLogger("error", "red", console.error)
+  readonly warn = Logger.makeLogger("warn", "yellow", console.warn)
   readonly info = Logger.makeLogger("info", "cyan")
   readonly debug = Logger.makeLogger("debug")
   readonly verbose = Logger.makeLogger("verbose")
@@ -44,6 +46,7 @@ export class Logger implements DiagLogger {
   private static makeLogger(
     level: string,
     colour?: keyof typeof COLOURS,
+    pretty: typeof console.log = console.log,
   ): DiagLogFunction {
     if (process.stdout.isTTY && process.stdout.hasColors(16)) {
       const colourCode = colour && COLOURS[colour]
@@ -66,7 +69,7 @@ export class Logger implements DiagLogger {
           line += ` ${string}`
         }
 
-        console.log(line)
+        pretty(line)
       }
     } else {
       return (message, ...args) => {
@@ -74,7 +77,7 @@ export class Logger implements DiagLogger {
           message += ` ${args.shift() as string}`
         }
 
-        console.log(stringify({ time: new Date(), level, message, args }))
+        log(stringify({ time: new Date(), level, message, args }))
       }
     }
   }

@@ -32,6 +32,8 @@ import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import { load } from "@solarwinds-apm/module"
 import { z, ZodError, ZodIssueCode } from "zod"
 
+import log from "./commonjs/log.js"
+
 const PREFIX = "SW_APM_"
 const ENDPOINTS = {
   traces: "/v1/traces",
@@ -259,10 +261,10 @@ export async function read(): Promise<Configuration> {
         file = read
         source = option
       } catch (error) {
-        console.warn(`The config file (${option}) could not be read.`, error)
+        log(`The config file (${option}) could not be read.`, error)
       }
     } else if (paths.length === 1) {
-      console.warn(`The config file (${option}) could not be found.`)
+      log(`The config file (${option}) could not be found.`)
     }
   }
 
@@ -283,7 +285,7 @@ export async function read(): Promise<Configuration> {
   const appoptics = raw.collector.hostname.includes("appoptics")
   const legacy = raw.legacy ?? appoptics
   if (legacy && raw.exportLogsEnabled) {
-    console.warn("Logs export is not supported when exporting to AppOptics.")
+    log("Logs export is not supported when exporting to AppOptics.")
     raw.exportLogsEnabled = false
   }
 
@@ -348,10 +350,10 @@ export function printError(err: unknown) {
       }
 
     for (const issue of err.issues.flatMap(formatIssue(1))) {
-      console.warn(issue)
+      log(issue)
     }
   } else {
-    console.warn(err)
+    log(err)
   }
 }
 
