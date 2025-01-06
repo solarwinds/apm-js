@@ -1,0 +1,8 @@
+releases:
+  "@solarwinds-apm/histogram": patch
+  "@solarwinds-apm/instrumentations": minor
+  "@solarwinds-apm/sampling": minor
+  solarwinds-apm: minor
+
+declined:
+  - "@solarwinds-apm/test"
