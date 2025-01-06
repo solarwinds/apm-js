@@ -28,8 +28,7 @@ import {
   type ResourceDetectorConfigMap,
   type Set,
 } from "@solarwinds-apm/instrumentations"
-import { IS_SERVERLESS } from "@solarwinds-apm/module"
-import { ref } from "@solarwinds-apm/module"
+import { IS_SERVERLESS, load } from "@solarwinds-apm/module"
 import { z, ZodError, ZodIssueCode } from "zod"
 
 import log from "./commonjs/log.js"
@@ -252,7 +251,7 @@ export async function read(): Promise<Configuration> {
         const read: unknown =
           path.extname(option) === ".json"
             ? JSON.parse(await fs.readFile(option, { encoding: "utf-8" }))
-            : await ref(pathToFileURL(option).href)
+            : await load(pathToFileURL(option).href)
 
         if (typeof read !== "object" || read === null) {
           throw new Error(`Expected config object, got ${typeof read}.`)
