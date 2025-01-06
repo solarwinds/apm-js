@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { unref } from "@solarwinds-apm/module"
+
 /** Maximum value of a signed 32 bit integer */
 const MAX_INTERVAL = 2 ** 31 - 1
 
@@ -62,7 +64,7 @@ export class TokenBucket {
     this.#t = Math.max(0, Math.min(this.capacity, n))
   }
 
-  #timer: NodeJS.Timeout | undefined = undefined
+  #timer: NodeJS.Timeout | number | undefined = undefined
 
   constructor(settings: TokenBucketSettings = {}) {
     this.#capacity = settings.capacity ?? 0
@@ -111,9 +113,11 @@ export class TokenBucket {
   start(): void {
     if (this.running) return
 
-    this.#timer = setInterval(() => {
-      this.#task()
-    }, this.interval)
+    this.#timer = unref(
+      setInterval(() => {
+        this.#task()
+      }, this.interval),
+    )
   }
 
   /** Stops replenishing the bucket */
@@ -127,16 +131,6 @@ export class TokenBucket {
   /** Whether the bucket is actively being replenished */
   get running(): boolean {
     return this.#timer !== undefined
-  }
-
-  /** https://nodejs.org/docs/latest/api/timers.html#timeoutref */
-  ref(): void {
-    this.#timer?.ref()
-  }
-
-  /** https://nodejs.org/docs/latest/api/timers.html#timeoutunref */
-  unref(): void {
-    this.#timer?.unref()
   }
 
   #task() {

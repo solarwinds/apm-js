@@ -24,6 +24,7 @@ import {
   ATTR_HTTP_ROUTE,
   ATTR_URL_PATH,
 } from "@opentelemetry/semantic-conventions"
+import { unref } from "@solarwinds-apm/module"
 
 import { type Configuration } from "../config.js"
 import { componentLogger } from "../logger.js"
@@ -154,10 +155,9 @@ export class TransactionNamePool {
     }
 
     if (existing !== undefined || this.#pool.size < this.#max) {
-      const timeout = setTimeout(
-        () => this.#pool.delete(name),
-        this.#ttl,
-      ).unref()
+      const timeout = unref(
+        setTimeout(() => this.#pool.delete(name), this.#ttl),
+      )
       this.#pool.set(name, timeout)
       return name
     } else {

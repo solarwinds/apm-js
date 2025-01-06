@@ -16,6 +16,17 @@ limitations under the License.
 
 import { env } from "node:process"
 
+/**
+ * Unrefs a Node.js reference counted object so it
+ * doesn't prevent the runtime from shutting down
+ **/
+export function unref<T extends NodeJS.RefCounted | number>(ref: T): T {
+  if (typeof ref === "object") {
+    ref.unref()
+  }
+  return ref
+}
+
 export async function load(url: string): Promise<unknown> {
   const imported = (await import(url)) as object
 

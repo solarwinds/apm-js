@@ -111,8 +111,6 @@ export abstract class OboeSampler implements Sampler {
   constructor(protected readonly logger: DiagLogger) {
     for (const bucket of Object.values(this.#buckets)) {
       bucket.start()
-      // unref the bucket so that it doesn't prevent the process from exiting
-      bucket.unref()
     }
   }
 
