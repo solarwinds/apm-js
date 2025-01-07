@@ -1,3 +1,14 @@
+# [15.1.0](https://github.com/solarwinds/apm-js/releases/tag/v15.1.0)
+
+## New features and improvements
+
+- New `SW_APM_LOG_STDERR` and `SW_APM_LOG_NULL` flags to redirect logging output
+
+## Internal changes
+
+- Retrieve sampling settings using HTTP instead of gRPC
+- Use pure JavaScript crypto
+
 # [15.0.0](https://github.com/solarwinds/apm-js/releases/tag/v15.0.0)
 
 ## Breaking changes
