@@ -28,8 +28,7 @@ import {
   type ResourceDetectorConfigMap,
   type Set,
 } from "@solarwinds-apm/instrumentations"
-import { IS_SERVERLESS } from "@solarwinds-apm/module"
-import { load } from "@solarwinds-apm/module"
+import { IS_SERVERLESS, load } from "@solarwinds-apm/module"
 import { z, ZodError, ZodIssueCode } from "zod"
 
 import log from "./commonjs/log.js"

@@ -1901,6 +1901,7 @@ __metadata:
     "@opentelemetry/sdk-metrics": "npm:~1.30.0"
     "@opentelemetry/sdk-trace-base": "npm:~1.30.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
+    "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^18.19.0"
     eslint: "npm:^9.12.0"

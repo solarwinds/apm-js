@@ -16,6 +16,7 @@ limitations under the License.
 
 import { context } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
+import { unref } from "@solarwinds-apm/module"
 
 import { Backoff } from "../backoff.js"
 import { type Configuration } from "../config.js"
@@ -28,27 +29,17 @@ const RETRY_MAX_TIMEOUT = 60 * 1000 // 60s
 const RETRY_MAX_ATTEMPTS = 20
 const MULTIPLIER = 1.5
 
-/** Creates a timeout and unreferences it if running Node.js */
-function unrefTimeout(timeout: number, callback: () => void) {
-  const timer = setTimeout(callback, timeout)
-  if (typeof timer.unref === "function") {
-    timer.unref()
-  }
-  return timer
-}
-
 /** Retrieves the hostname (or User-Agent in browsers) in URL encoded format */
-export function hostname(): Promise<string> {
+export async function hostname(): Promise<string> {
   if (
     typeof process !== "undefined" &&
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     typeof process?.versions?.node !== "undefined"
   ) {
-    return import("node:os").then(({ hostname }) =>
-      encodeURIComponent(hostname()),
-    )
+    const { hostname } = await import("node:os")
+    return encodeURIComponent(hostname())
   } else {
-    return Promise.resolve(encodeURIComponent(navigator.userAgent))
+    return encodeURIComponent(navigator.userAgent)
   }
 }
 
@@ -103,9 +94,11 @@ export class HttpSampler extends Sampler {
     const timeout = this.#backoff.backoff()
     if (timeout) {
       this.logger.debug(`retrying in ${(timeout / 1000).toFixed(1)}s`)
-      unrefTimeout(timeout, () => {
-        this.#loop()
-      })
+      unref(
+        setTimeout(() => {
+          this.#loop()
+        }, timeout),
+      )
     } else {
       this.logger.warn(
         "Reached max retry attempts for sampling settings retrieval.",
@@ -154,9 +147,14 @@ export class HttpSampler extends Sampler {
         // before the previous ones expire with some time to spare
         const expiry = (parsed.timestamp + parsed.ttl) * 1000
         const timeout = expiry - REQUEST_TIMEOUT * MULTIPLIER - Date.now()
-        unrefTimeout(Math.max(0, timeout), () => {
-          this.#loop()
-        })
+        unref(
+          setTimeout(
+            () => {
+              this.#loop()
+            },
+            Math.max(0, timeout),
+          ),
+        )
       })
       .catch((error: unknown) => {
         let message = "Failed to retrieve sampling settings"
