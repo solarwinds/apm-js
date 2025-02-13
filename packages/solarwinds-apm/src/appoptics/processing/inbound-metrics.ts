@@ -37,7 +37,7 @@ export class AppopticsInboundMetricsProcessor
   implements SpanProcessor
 {
   readonly #logger = componentLogger(AppopticsInboundMetricsProcessor)
-  readonly #defaultTransactionName?: string
+  readonly #defaultTransactionName?: () => string
 
   constructor(config: Configuration) {
     super()
@@ -57,7 +57,7 @@ export class AppopticsInboundMetricsProcessor
     this.#logger.debug("initial transaction name", transaction)
     if (typeof transaction !== "string") {
       transaction =
-        this.#defaultTransactionName ?? computedTransactionName(span)
+        this.#defaultTransactionName?.() ?? computedTransactionName(span)
     }
 
     if (meta.http) {
