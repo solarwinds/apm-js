@@ -22,12 +22,12 @@ import {
   InstrumentType,
 } from "@opentelemetry/sdk-metrics"
 
-import { type Configuration } from "../config.js"
+import { type Configuration } from "../shared/config.js"
 
 export class MetricExporter extends OTLPMetricExporter {
-  constructor(config: Configuration) {
+  constructor(config: Configuration & { trustedpath?: string }) {
     super({
-      url: config.otlp.metricsEndpoint,
+      url: config.otlp.metrics,
       headers: config.headers,
       httpAgentOptions: {
         ca: config.trustedpath,

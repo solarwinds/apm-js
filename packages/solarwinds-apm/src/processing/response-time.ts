@@ -32,8 +32,8 @@ import {
   ATTR_HTTP_RESPONSE_STATUS_CODE,
 } from "@opentelemetry/semantic-conventions"
 
-import { componentLogger } from "../logger.js"
 import { ATTR_HTTP_METHOD, ATTR_HTTP_STATUS_CODE } from "../semattrs.old.js"
+import { componentLogger } from "../shared/logger.js"
 import { isRootOrEntry } from "./parent-span.js"
 import { TRANSACTION_NAME_ATTRIBUTE } from "./transaction-name.js"
 

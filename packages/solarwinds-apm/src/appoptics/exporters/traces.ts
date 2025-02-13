@@ -39,9 +39,9 @@ import {
 } from "@opentelemetry/semantic-conventions"
 import { oboe } from "@solarwinds-apm/bindings"
 
-import { componentLogger } from "../../logger.js"
 import { TRANSACTION_NAME_ATTRIBUTE } from "../../processing/transaction-name.js"
 import { traceParent } from "../../propagation/headers.js"
+import { componentLogger } from "../../shared/logger.js"
 
 export class AppopticsTraceExporter implements SpanExporter {
   readonly #logger = componentLogger(AppopticsTraceExporter)

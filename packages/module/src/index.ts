@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { env } from "node:process"
-
 /**
  * Unrefs a Node.js reference counted object so it
  * doesn't prevent the runtime from shutting down
@@ -40,7 +38,3 @@ export async function load(url: string): Promise<unknown> {
   if (useDefaultExport) return imported.default
   else return imported
 }
-
-export const IS_AWS_LAMBDA = "AWS_LAMBDA_FUNCTION_NAME" in env
-
-export const IS_SERVERLESS = IS_AWS_LAMBDA

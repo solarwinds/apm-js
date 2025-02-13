@@ -14,18 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
+export const IS_NODE =
+  typeof globalThis.process === "object" &&
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  typeof globalThis.process?.versions?.node === "string"
 
-import { type Configuration } from "../shared/config.js"
+export const AWS_LAMBDA_NAME = IS_NODE
+  ? process.env.AWS_LAMBDA_FUNCTION_NAME
+  : undefined
+export const IS_AWS_LAMBDA = AWS_LAMBDA_NAME !== undefined
 
-export class TraceExporter extends OTLPTraceExporter {
-  constructor(config: Configuration & { trustedpath?: string }) {
-    super({
-      url: config.otlp.traces,
-      headers: config.headers,
-      httpAgentOptions: {
-        ca: config.trustedpath,
-      },
-    })
-  }
-}
+export const SERVERLESS_NAME = AWS_LAMBDA_NAME
+export const IS_SERVERLESS = IS_AWS_LAMBDA

@@ -40,7 +40,7 @@ import {
   type Histogram,
 } from "@solarwinds-apm/histogram"
 
-import { componentLogger } from "../../logger.js"
+import { componentLogger } from "../../shared/logger.js"
 
 const MAX_TAGS = 50
 

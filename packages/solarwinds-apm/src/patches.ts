@@ -21,9 +21,9 @@ import {
   trace,
 } from "@opentelemetry/api"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
-import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
 import { type Configuration } from "./config.js"
+import { IS_AWS_LAMBDA } from "./env.js"
 
 export interface Options extends Configuration {
   responsePropagator: TextMapPropagator<unknown>

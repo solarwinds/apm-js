@@ -26,9 +26,10 @@ import {
 } from "@opentelemetry/semantic-conventions"
 import { unref } from "@solarwinds-apm/module"
 
-import { type Configuration } from "../config.js"
-import { componentLogger } from "../logger.js"
+import { SERVERLESS_NAME } from "../env.js"
 import { ATTR_HTTP_TARGET } from "../semattrs.old.js"
+import { type Configuration } from "../shared/config.js"
+import { componentLogger } from "../shared/logger.js"
 import { getRootOrEntry, isRootOrEntry } from "./parent-span.js"
 
 export const TRANSACTION_NAME_ATTRIBUTE = "sw.transaction"
@@ -71,7 +72,7 @@ export class TransactionNameProcessor
     maxLength: TRANSACTION_NAME_MAX_LENGTH,
     default: TRANSACTION_NAME_DEFAULT,
   })
-  readonly #defaultName?: string
+  readonly #defaultName?: () => string
 
   constructor(config: Configuration) {
     super()
@@ -86,7 +87,7 @@ export class TransactionNameProcessor
     let name = span.attributes[TRANSACTION_NAME_ATTRIBUTE]
     this.#logger.debug("initial transaction name", name, span.attributes)
     if (typeof name !== "string") {
-      name = this.#defaultName ?? computedTransactionName(span)
+      name = this.#defaultName?.() ?? computedTransactionName(span)
     }
     name = this.#pool.registered(name)
     this.#logger.debug("final transaction name", name)
@@ -98,16 +99,18 @@ export class TransactionNameProcessor
 /** Computes a transaction name from a span and its attributes */
 /* eslint-disable @typescript-eslint/no-deprecated */
 export function computedTransactionName(span: ReadableSpan): string {
-  if (typeof process.env.AWS_LAMBDA_FUNCTION_NAME === "string") {
-    return process.env.AWS_LAMBDA_FUNCTION_NAME
+  // split on slashes and keep the first 3 segments
+  // where the first segment is an empty string before the first slash
+  const trim = (path: string) => path.split("/", 3).join("/")
+
+  if (SERVERLESS_NAME !== undefined) {
+    return SERVERLESS_NAME
   } else if (typeof span.attributes[ATTR_HTTP_ROUTE] === "string") {
     return span.attributes[ATTR_HTTP_ROUTE]
   } else if (typeof span.attributes[ATTR_URL_PATH] === "string") {
-    // split on slashes and keep the first 3 segments
-    // where the first segment is an empty string before the first slash
-    return span.attributes[ATTR_URL_PATH].split("/", 3).join("/")
+    return trim(span.attributes[ATTR_URL_PATH])
   } else if (typeof span.attributes[ATTR_HTTP_TARGET] === "string") {
-    return span.attributes[ATTR_HTTP_TARGET].split("/", 3).join("/")
+    return trim(span.attributes[ATTR_HTTP_TARGET])
   } else {
     return span.name
   }

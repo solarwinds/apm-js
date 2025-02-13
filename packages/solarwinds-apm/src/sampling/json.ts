@@ -22,8 +22,8 @@ import { context } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
 import { type SampleParams } from "@solarwinds-apm/sampling"
 
-import { type Configuration } from "../config.js"
-import { componentLogger } from "../logger.js"
+import { type Configuration } from "../shared/config.js"
+import { componentLogger } from "../shared/logger.js"
 import { Sampler } from "./sampler.js"
 
 const PATH = path.join(os.tmpdir(), "solarwinds-apm-settings.json")

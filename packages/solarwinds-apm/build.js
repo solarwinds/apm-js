@@ -16,6 +16,8 @@ limitations under the License.
 
 import fs from "node:fs/promises"
 
+import { agents } from "caniuse-lite"
+import esbuild from "esbuild"
 import eslint from "eslint"
 import prettier from "prettier"
 
@@ -33,3 +35,33 @@ await fs.writeFile("src/version.ts", linted[0].output)
 
 await fs.mkdir("dist/commonjs", { recursive: true })
 await fs.cp("src/commonjs/package.json", "dist/commonjs/package.json")
+
+// Generate the web instrumentation bundle to target the Chrome/Safari/Firefox/Edge
+// versions which were the latest 1 year ago as a default
+// People can still bundle themselves if this isn't satisfactory
+const targets = Object.entries(agents)
+  .filter(([name]) => ["chrome", "safari", "firefox", "edge"].includes(name))
+  .map(([name, data]) => {
+    const deadline = new Date()
+    deadline.setFullYear(deadline.getFullYear() - 1)
+
+    const version = data.versions.findLast(
+      (version) =>
+        Number.isSafeInteger(data.release_date[version]) &&
+        new Date(data.release_date[version] * 1000) <= deadline,
+    )
+
+    return name + version
+  })
+
+await esbuild.build({
+  entryPoints: ["src/web/index.ts"],
+  outfile: "dist/web.js",
+  format: "esm",
+  target: targets,
+  bundle: true,
+  minify: true,
+  keepNames: true,
+  sourcemap: "linked",
+  external: ["node:*"],
+})

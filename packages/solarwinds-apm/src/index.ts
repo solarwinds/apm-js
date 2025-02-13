@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { IS_SERVERLESS } from "@solarwinds-apm/module"
 import { register } from "module"
 
 import { INIT } from "./commonjs/flags.js"
 import log from "./commonjs/log.js"
+import { IS_SERVERLESS } from "./env.js"
 import { init } from "./init.js"
 
 if (!IS_SERVERLESS) {

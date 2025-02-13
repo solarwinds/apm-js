@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { SAMPLER } from "./init.js"
+import { SAMPLER } from "./shared/init.js"
 
 /**
  * Wait until the library is ready to sample traces
