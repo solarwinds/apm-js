@@ -14,15 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export const IS_NODE =
-  typeof globalThis.process === "object" &&
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  typeof globalThis.process?.versions?.node === "string"
+export const environment = {
+  IS_NODE:
+    typeof globalThis.process === "object" &&
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    typeof globalThis.process?.versions?.node === "string",
 
-export const AWS_LAMBDA_NAME = IS_NODE
-  ? process.env.AWS_LAMBDA_FUNCTION_NAME
-  : undefined
-export const IS_AWS_LAMBDA = AWS_LAMBDA_NAME !== undefined
+  get AWS_LAMBDA_NAME() {
+    return this.IS_NODE ? process.env.AWS_LAMBDA_FUNCTION_NAME : undefined
+  },
+  get IS_AWS_LAMBDA() {
+    return this.AWS_LAMBDA_NAME !== undefined
+  },
 
-export const SERVERLESS_NAME = AWS_LAMBDA_NAME
-export const IS_SERVERLESS = IS_AWS_LAMBDA
+  get SERVERLESS_NAME() {
+    return this.AWS_LAMBDA_NAME
+  },
+  get IS_SERVERLESS() {
+    return this.IS_AWS_LAMBDA
+  },
+}

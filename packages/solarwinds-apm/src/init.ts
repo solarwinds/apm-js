@@ -42,7 +42,7 @@ import {
 
 import log from "./commonjs/log.js"
 import { type Configuration, printError, read } from "./config.js"
-import { IS_AWS_LAMBDA } from "./env.js"
+import { environment } from "./env.js"
 import { Logger } from "./logger.js"
 import { patch } from "./patches.js"
 import { ParentSpanProcessor } from "./processing/parent-span.js"
@@ -171,7 +171,7 @@ async function initTracing(
     ],
   })
 
-  if (IS_AWS_LAMBDA) {
+  if (environment.IS_AWS_LAMBDA) {
     const [{ JsonSampler }, { TraceExporter }] = await Promise.all([
       import("./sampling/json.js"),
       import("./exporters/traces.js"),

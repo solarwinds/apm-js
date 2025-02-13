@@ -31,7 +31,7 @@ import { load } from "@solarwinds-apm/module"
 import * as v from "valibot"
 
 import log from "./commonjs/log.js"
-import { IS_SERVERLESS, SERVERLESS_NAME } from "./env.js"
+import { environment } from "./env.js"
 import {
   env,
   schema as sharedSchema,
@@ -75,7 +75,9 @@ const schemas = {
 const schema = v.pipe(
   v.intersect([
     sharedSchema({
-      serviceKey: SERVERLESS_NAME ? `:${SERVERLESS_NAME}` : undefined,
+      serviceKey: environment.SERVERLESS_NAME
+        ? `:${environment.SERVERLESS_NAME}`
+        : undefined,
       triggerTraceEnabled: true,
     }),
 
@@ -86,7 +88,7 @@ const schema = v.pipe(
 
       proxy: v.optional(v.string()),
 
-      runtimeMetrics: v.optional(schemas.boolean, !IS_SERVERLESS),
+      runtimeMetrics: v.optional(schemas.boolean, !environment.IS_SERVERLESS),
 
       insertTraceContextIntoLogs: v.optional(schemas.boolean, false),
 
@@ -96,7 +98,10 @@ const schema = v.pipe(
         v.object({
           configs: v.optional(v.record(v.string(), v.unknown()), {}),
           extra: v.optional(v.array(v.unknown()), []),
-          set: v.optional(schemas.set, IS_SERVERLESS ? "core" : "all"),
+          set: v.optional(
+            schemas.set,
+            environment.IS_SERVERLESS ? "core" : "all",
+          ),
         }),
         {},
       ),
@@ -108,7 +113,10 @@ const schema = v.pipe(
             {},
           ),
           extra: v.optional(v.array(v.unknown()), []),
-          set: v.optional(schemas.set, IS_SERVERLESS ? "core" : "all"),
+          set: v.optional(
+            schemas.set,
+            environment.IS_SERVERLESS ? "core" : "all",
+          ),
         }),
         {},
       ),

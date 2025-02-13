@@ -26,7 +26,7 @@ import {
 } from "@opentelemetry/semantic-conventions"
 import { unref } from "@solarwinds-apm/module"
 
-import { SERVERLESS_NAME } from "../env.js"
+import { environment } from "../env.js"
 import { ATTR_HTTP_TARGET } from "../semattrs.old.js"
 import { type Configuration } from "../shared/config.js"
 import { componentLogger } from "../shared/logger.js"
@@ -103,8 +103,8 @@ export function computedTransactionName(span: ReadableSpan): string {
   // where the first segment is an empty string before the first slash
   const trim = (path: string) => path.split("/", 3).join("/")
 
-  if (SERVERLESS_NAME !== undefined) {
-    return SERVERLESS_NAME
+  if (environment.SERVERLESS_NAME) {
+    return environment.SERVERLESS_NAME
   } else if (typeof span.attributes[ATTR_HTTP_ROUTE] === "string") {
     return span.attributes[ATTR_HTTP_ROUTE]
   } else if (typeof span.attributes[ATTR_URL_PATH] === "string") {

@@ -18,10 +18,10 @@ import { register } from "module"
 
 import { INIT } from "./commonjs/flags.js"
 import log from "./commonjs/log.js"
-import { IS_SERVERLESS } from "./env.js"
+import { environment } from "./env.js"
 import { init } from "./init.js"
 
-if (!IS_SERVERLESS) {
+if (!environment.IS_SERVERLESS) {
   await import("./commonjs/version.js")
 }
 

@@ -146,6 +146,6 @@ describe("read", () => {
 
     const config = await read()
     expect(config.transactionName).not.to.be.undefined
-    expect(config.transactionName).to.equal("cjs")
+    expect(config.transactionName!()).to.equal("cjs")
   })
 })

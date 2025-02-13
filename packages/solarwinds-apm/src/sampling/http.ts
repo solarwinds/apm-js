@@ -20,7 +20,7 @@ import { unref } from "@solarwinds-apm/module"
 import { type Settings } from "@solarwinds-apm/sampling"
 
 import { Backoff } from "../backoff.js"
-import { IS_NODE } from "../env.js"
+import { environment } from "../env.js"
 import { type Configuration } from "../shared/config.js"
 import { componentLogger } from "../shared/logger.js"
 import { Sampler } from "./sampler.js"
@@ -33,7 +33,7 @@ const MULTIPLIER = 1.5
 
 /** Retrieves the hostname (or User-Agent in browsers) in URL encoded format */
 export async function hostname(): Promise<string> {
-  if (IS_NODE) {
+  if (environment.IS_NODE) {
     const { hostname } = await import("node:os")
     return encodeURIComponent(hostname())
   } else {
