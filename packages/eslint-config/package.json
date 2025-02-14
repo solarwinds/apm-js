@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@eslint/js": "^9.13.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-notice": "^1.0.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "typescript-eslint": "^8.10.0"
