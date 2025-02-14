@@ -33,10 +33,7 @@ describe("read", () => {
     const config = await read()
     const expected: Configuration = {
       service: "name",
-      serviceKey: {
-        name: "name",
-        token: "token",
-      },
+      token: "token",
       enabled: true,
       appoptics: false,
       legacy: false,
@@ -47,20 +44,17 @@ describe("read", () => {
       insertTraceContextIntoLogs: false,
       insertTraceContextIntoQueries: false,
       exportLogsEnabled: false,
-      instrumentations: { set: "all" },
-      resourceDetectors: { set: "all" },
+      instrumentations: { configs: {}, extra: [], set: "all" },
+      resourceDetectors: { configs: {}, extra: [], set: "all" },
       headers: { authorization: "Bearer token" },
       otlp: {
-        tracesEndpoint:
-          "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
-        metricsEndpoint:
-          "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
-        logsEndpoint:
-          "https://otel.collector.na-01.cloud.solarwinds.com/v1/logs",
+        traces: "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
+        metrics: "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
+        logs: "https://otel.collector.na-01.cloud.solarwinds.com/v1/logs",
       },
     }
 
-    expect(config).to.loosely.deep.include(expected)
+    expect(config).to.loosely.deep.equal(expected)
   })
 
   it("properly sets OTLP endpoints", async () => {
@@ -68,11 +62,9 @@ describe("read", () => {
 
     const config = await read()
     expect(config.otlp).to.include({
-      tracesEndpoint:
-        "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
-      metricsEndpoint:
-        "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
-      logsEndpoint: "https://otel.collector.na-01.cloud.solarwinds.com/v1/logs",
+      traces: "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
+      metrics: "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
+      logs: "https://otel.collector.na-01.cloud.solarwinds.com/v1/logs",
     })
   })
 
@@ -154,6 +146,6 @@ describe("read", () => {
 
     const config = await read()
     expect(config.transactionName).not.to.be.undefined
-    expect(config.transactionName).to.equal("cjs")
+    expect(config.transactionName!()).to.equal("cjs")
   })
 })

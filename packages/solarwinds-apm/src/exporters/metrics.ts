@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http"
 import {
   Aggregation,
   AggregationTemporality,
@@ -22,12 +22,12 @@ import {
   InstrumentType,
 } from "@opentelemetry/sdk-metrics"
 
-import { type Configuration } from "../config.js"
+import { type Configuration } from "../shared/config.js"
 
 export class MetricExporter extends OTLPMetricExporter {
-  constructor(config: Configuration) {
+  constructor(config: Configuration & { trustedpath?: string }) {
     super({
-      url: config.otlp.metricsEndpoint,
+      url: config.otlp.metrics,
       headers: config.headers,
       httpAgentOptions: {
         ca: config.trustedpath,

@@ -24,20 +24,20 @@ import {
 import { oboe } from "@solarwinds-apm/bindings"
 
 import { type Configuration } from "../../config.js"
-import { componentLogger } from "../../logger.js"
 import { isRootOrEntry } from "../../processing/parent-span.js"
 import {
   computedTransactionName,
   TRANSACTION_NAME_ATTRIBUTE,
 } from "../../processing/transaction-name.js"
 import { httpSpanMetadata } from "../../sampling/sampler.js"
+import { componentLogger } from "../../shared/logger.js"
 
 export class AppopticsInboundMetricsProcessor
   extends NoopSpanProcessor
   implements SpanProcessor
 {
   readonly #logger = componentLogger(AppopticsInboundMetricsProcessor)
-  readonly #defaultTransactionName?: string
+  readonly #defaultTransactionName?: () => string
 
   constructor(config: Configuration) {
     super()
@@ -57,7 +57,7 @@ export class AppopticsInboundMetricsProcessor
     this.#logger.debug("initial transaction name", transaction)
     if (typeof transaction !== "string") {
       transaction =
-        this.#defaultTransactionName ?? computedTransactionName(span)
+        this.#defaultTransactionName?.() ?? computedTransactionName(span)
     }
 
     if (meta.http) {

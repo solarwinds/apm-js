@@ -14,18 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
+import { diag, type DiagLogger } from "@opentelemetry/api"
 
-import { type Configuration } from "../shared/config.js"
-
-export class TraceExporter extends OTLPTraceExporter {
-  constructor(config: Configuration & { trustedpath?: string }) {
-    super({
-      url: config.otlp.traces,
-      headers: config.headers,
-      httpAgentOptions: {
-        ca: config.trustedpath,
-      },
-    })
-  }
+/** Creates a diag logger for the given named function or class */
+export function componentLogger(component: {
+  readonly name: string
+}): DiagLogger {
+  return diag.createComponentLogger({
+    namespace: `solarwinds-apm/${component.name}`,
+  })
 }

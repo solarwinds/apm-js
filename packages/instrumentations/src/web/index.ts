@@ -14,18 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
+import {
+  browserDetectorSync,
+  detectResourcesSync,
+  envDetectorSync,
+  type Resource,
+} from "@opentelemetry/resources"
 
-import { type Configuration } from "../shared/config.js"
+import { sessionIdDetector } from "./resource-detector-session-id.js"
 
-export class TraceExporter extends OTLPTraceExporter {
-  constructor(config: Configuration & { trustedpath?: string }) {
-    super({
-      url: config.otlp.traces,
-      headers: config.headers,
-      httpAgentOptions: {
-        ca: config.trustedpath,
-      },
-    })
-  }
+export {
+  getWebAutoInstrumentations as getInstrumentations,
+  type InstrumentationConfigMap,
+} from "@opentelemetry/auto-instrumentations-web"
+
+export function getResource(): Resource {
+  return detectResourcesSync({
+    detectors: [browserDetectorSync, envDetectorSync, sessionIdDetector],
+  })
 }

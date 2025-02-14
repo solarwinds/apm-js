@@ -14,18 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
+import { type Sampler } from "../sampling/sampler.js"
+import { global } from "../storage.js"
 
-import { type Configuration } from "../shared/config.js"
-
-export class TraceExporter extends OTLPTraceExporter {
-  constructor(config: Configuration & { trustedpath?: string }) {
-    super({
-      url: config.otlp.traces,
-      headers: config.headers,
-      httpAgentOptions: {
-        ca: config.trustedpath,
-      },
-    })
-  }
-}
+/** Global reference to the current sampler */
+export const SAMPLER = global("sampler", () => {
+  let resolve!: (instance: Sampler) => void
+  const promise = new Promise<Sampler>((r) => (resolve = r))
+  return Object.assign(promise, { resolve })
+})

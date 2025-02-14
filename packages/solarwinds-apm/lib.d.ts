@@ -22,4 +22,8 @@ interface ObjectConstructor {
   entries<const T extends Record<string, unknown>>(
     object: T,
   ): { [K in keyof T]: [K, T[K]] }[keyof T][]
+
+  fromEntries<const T extends readonly [PropertyKey, unknown]>(
+    entries: Iterable<T>,
+  ): Record<T[0], T[1]>
 }

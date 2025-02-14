@@ -14,13 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import fsync from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
 import process from "node:process"
 import { pathToFileURL } from "node:url"
 
-import { DiagLogLevel } from "@opentelemetry/api"
-import { getEnvWithoutDefaults } from "@opentelemetry/core"
 import { type Instrumentation } from "@opentelemetry/instrumentation"
 import { type Detector, type DetectorSync } from "@opentelemetry/resources"
 import {
@@ -28,125 +27,16 @@ import {
   type ResourceDetectorConfigMap,
   type Set,
 } from "@solarwinds-apm/instrumentations"
-import { IS_SERVERLESS, load } from "@solarwinds-apm/module"
-import { z, ZodError, ZodIssueCode } from "zod"
+import { load } from "@solarwinds-apm/module"
+import * as v from "valibot"
 
 import log from "./commonjs/log.js"
-
-const PREFIX = "SW_APM_"
-const ENDPOINTS = {
-  traces: "/v1/traces",
-  metrics: "/v1/metrics",
-  logs: "/v1/logs",
-}
-
-const boolean = z.union([
-  z.boolean(),
-  z
-    .enum(["true", "false", "1", "0"])
-    .transform((b) => b === "true" || b === "1"),
-])
-
-const regex = z.union([
-  z.instanceof(RegExp),
-  z.string().transform((string, ctx) => {
-    try {
-      return new RegExp(string)
-    } catch (err) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: (err as SyntaxError).message,
-      })
-      return z.NEVER
-    }
-  }),
-])
-
-const serviceKey = z
-  .string()
-  .includes(":")
-  .transform((string) => {
-    const [token, ...name] = string.split(":")
-    return {
-      token: token!,
-      name: name.join(":"),
-    }
-  })
-
-const collector = z.string().transform((string, ctx) => {
-  if (!/^https?:/.test(string)) {
-    string = `https://${string}`
-  }
-  try {
-    return new URL(string)
-  } catch (err) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: (err as Error).message,
-    })
-    return z.NEVER
-  }
-})
-
-const trustedpath = z.string().transform((tp, ctx) => {
-  try {
-    return fs.readFile(tp, "utf-8")
-  } catch (err) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: (err as NodeJS.ErrnoException).message,
-    })
-    return z.NEVER
-  }
-})
-
-const tracingMode = z
-  .enum(["enabled", "disabled"])
-  .transform((m) => m === "enabled")
-
-const logLevel = z
-  .enum(["all", "verbose", "debug", "info", "warn", "error", "none"])
-  .transform((l) => {
-    switch (l) {
-      case "all":
-        return DiagLogLevel.ALL
-      case "verbose":
-        return DiagLogLevel.VERBOSE
-      case "debug":
-        return DiagLogLevel.DEBUG
-      case "info":
-        return DiagLogLevel.INFO
-      case "warn":
-        return DiagLogLevel.WARN
-      case "error":
-        return DiagLogLevel.ERROR
-      case "none":
-        return DiagLogLevel.NONE
-    }
-  })
-
-const transactionSettings = z.array(
-  z
-    .union([
-      z.object({
-        tracing: tracingMode,
-        regex,
-      }),
-      z.object({
-        tracing: tracingMode,
-        matcher: z.function().args(z.string()).returns(z.boolean()),
-      }),
-    ])
-    .transform((s) => ({
-      tracing: s.tracing,
-      matcher:
-        "matcher" in s
-          ? s.matcher.bind(s)
-          : (ident: string) => s.regex.test(ident),
-    })),
-)
-
-const set = z.enum(["none", "core", "all"])
+import { environment } from "./env.js"
+import {
+  env,
+  schema as sharedSchema,
+  schemas as sharedSchemas,
+} from "./shared/config.js"
 
 interface Instrumentations {
   configs?: InstrumentationConfigMap
@@ -161,59 +51,107 @@ interface ResourceDetectors {
   set?: Set
 }
 
-const schema = z.object({
-  serviceKey: serviceKey.optional(),
-  enabled: boolean.default(true),
-  legacy: boolean.optional(),
-  collector: collector.default("apm.collector.na-01.cloud.solarwinds.com"),
-  trustedpath: trustedpath.optional(),
-  proxy: z.string().optional(),
-  logLevel: logLevel.default("warn"),
-  triggerTraceEnabled: boolean.default(true),
-  runtimeMetrics: boolean.default(!IS_SERVERLESS),
-  tracingMode: tracingMode.optional(),
-  transactionName: z.string().optional(),
-  insertTraceContextIntoLogs: boolean.default(false),
-  insertTraceContextIntoQueries: boolean.default(false),
-  exportLogsEnabled: boolean.default(false),
-  transactionSettings: transactionSettings.optional(),
-  instrumentations: z
-    .object({
-      configs: z.record(z.unknown()).optional(),
-      extra: z.array(z.unknown()).optional(),
-      set: set.default(IS_SERVERLESS ? "core" : "all"),
-    })
-    .transform((i) => i as Instrumentations)
-    .default({}),
-  resourceDetectors: z
-    .object({
-      configs: z.record(z.record(z.string(), z.boolean())).optional(),
-      extra: z.array(z.unknown()).optional(),
-      set: set.default(IS_SERVERLESS ? "core" : "all"),
-    })
-    .transform((i) => i as ResourceDetectors)
-    .default({}),
-})
+const schemas = {
+  ...sharedSchemas,
+
+  set: v.picklist(["none", "core", "all"]),
+
+  trustedpath: v.pipe(
+    v.string(),
+    v.rawTransform(({ dataset: { value }, addIssue, NEVER }) => {
+      try {
+        return fsync.readFileSync(value, "utf-8")
+      } catch (err) {
+        addIssue({
+          label: "File",
+          message: (err as NodeJS.ErrnoException).message,
+        })
+        return NEVER
+      }
+    }),
+  ),
+}
+
+const schema = v.pipe(
+  v.intersect([
+    sharedSchema({
+      serviceKey: environment.SERVERLESS_NAME
+        ? `:${environment.SERVERLESS_NAME}`
+        : undefined,
+      triggerTraceEnabled: true,
+    }),
+
+    v.object({
+      legacy: v.optional(schemas.boolean),
+
+      trustedpath: v.optional(schemas.trustedpath),
+
+      proxy: v.optional(v.string()),
+
+      runtimeMetrics: v.optional(schemas.boolean, !environment.IS_SERVERLESS),
+
+      insertTraceContextIntoLogs: v.optional(schemas.boolean, false),
+
+      insertTraceContextIntoQueries: v.optional(schemas.boolean, false),
+
+      instrumentations: v.optional(
+        v.object({
+          configs: v.optional(v.record(v.string(), v.unknown()), {}),
+          extra: v.optional(v.array(v.unknown()), []),
+          set: v.optional(
+            schemas.set,
+            environment.IS_SERVERLESS ? "core" : "all",
+          ),
+        }),
+        {},
+      ),
+
+      resourceDetectors: v.optional(
+        v.object({
+          configs: v.optional(
+            v.record(v.string(), v.record(v.string(), v.boolean())),
+            {},
+          ),
+          extra: v.optional(v.array(v.unknown()), []),
+          set: v.optional(
+            schemas.set,
+            environment.IS_SERVERLESS ? "core" : "all",
+          ),
+        }),
+        {},
+      ),
+    }),
+  ]),
+
+  v.transform(({ instrumentations, resourceDetectors, ...raw }) => {
+    const appoptics = /\.?appoptics.com$/.test(raw.collector.hostname)
+    const legacy = raw.legacy ?? appoptics
+
+    if (raw.exportLogsEnabled) {
+      log("Logs export is not supported on AppOptics.")
+      raw.exportLogsEnabled = false
+    }
+
+    return {
+      appoptics,
+      legacy,
+
+      instrumentations: instrumentations as Required<Instrumentations>,
+      resourceDetectors: resourceDetectors as Required<ResourceDetectors>,
+
+      ...raw,
+    }
+  }),
+)
 
 /** User provided configuration for solarwinds-apm */
-export interface Config extends z.input<typeof schema> {
+export interface Config extends v.InferInput<typeof schema> {
   instrumentations?: Instrumentations
   resourceDetectors?: ResourceDetectors
 }
 
-/** Processed configuration for solarwinds-apm */
-export interface Configuration extends z.output<typeof schema> {
-  service: string
-  appoptics: boolean
-  legacy: boolean
-
-  headers: Record<string, string>
-  otlp: {
-    tracesEndpoint?: string
-    metricsEndpoint?: string
-    logsEndpoint?: string
-  }
-
+/** Processed configuration for Node.js solarwinds-apm */
+export interface Configuration extends v.InferOutput<typeof schema> {
   source?: string
 }
 
@@ -239,7 +177,6 @@ export async function read(): Promise<Configuration> {
       .then((stat) => stat.isFile())
       .catch(() => false)
 
-  const env = envObject()
   let file: object = {}
   let source: string | undefined
 
@@ -267,120 +204,26 @@ export async function read(): Promise<Configuration> {
     }
   }
 
-  const raw = await schema.parseAsync({ ...file, ...env })
-  const otel = getEnvWithoutDefaults()
-
-  const service = otel.OTEL_SERVICE_NAME ?? raw.serviceKey?.name
-  if (!service || (!IS_SERVERLESS && !raw.serviceKey?.token)) {
-    throw new ZodError([
-      {
-        path: ["serviceKey"],
-        message: "Missing service key",
-        code: ZodIssueCode.custom,
-      },
-    ])
-  }
-
-  const appoptics = raw.collector.hostname.includes("appoptics")
-  const legacy = raw.legacy ?? appoptics
-  if (legacy && raw.exportLogsEnabled) {
-    log("Logs export is not supported when exporting to AppOptics.")
-    raw.exportLogsEnabled = false
-  }
-
-  return {
-    ...raw,
-
-    service,
-    appoptics,
-    legacy,
-
-    headers: raw.serviceKey?.token
-      ? { authorization: `Bearer ${raw.serviceKey.token}` }
-      : {},
-    otlp: {
-      tracesEndpoint:
-        otel.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ??
-        otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.traces) ??
-        otelUrl(raw.collector, ENDPOINTS.traces),
-      metricsEndpoint:
-        otel.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ??
-        otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.metrics) ??
-        otelUrl(raw.collector, ENDPOINTS.metrics),
-      logsEndpoint:
-        otel.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
-        otel.OTEL_EXPORTER_OTLP_ENDPOINT?.concat(ENDPOINTS.logs) ??
-        otelUrl(raw.collector, ENDPOINTS.logs),
-    },
-
-    source,
-  }
+  return { source, ...v.parse(schema, { ...file, ...env.object(process.env) }) }
 }
 
 export function printError(err: unknown) {
-  if (err instanceof z.ZodError) {
-    const formatPath = (path: (string | number)[]) =>
-      path.length === 1
-        ? // `key (SW_APM_KEY)`
-          `${path[0]!} (${toEnvKey(path[0]!.toString())})`
-        : // `full.key[0].path`
-          path
-            .map((p) => (typeof p === "string" ? `.${p}` : `[${p}]`))
-            .join("")
-            .slice(1)
+  if (err instanceof v.ValiError) {
+    const issues = err.issues as v.ValiError<typeof schema>["issues"]
+    const flattened = v.flatten(issues)
 
-    const formatIssue =
-      (depth: number) =>
-      (issue: z.ZodIssue): string[] => {
-        const indent = " ".repeat(depth * 2)
-        const messages = [
-          `${indent}${formatPath(issue.path)}: ${issue.message}`,
-        ]
-
-        if (issue.code === z.ZodIssueCode.invalid_union) {
-          messages.push(
-            ...issue.unionErrors.flatMap((e) =>
-              e.issues.flatMap(formatIssue(depth + 1)),
-            ),
-          )
-        }
-
-        return messages
-      }
-
-    for (const issue of err.issues.flatMap(formatIssue(1))) {
+    // Label each issue by key. If the key isn't nested (doesn't contain a `.`)
+    // also label the issue with the equivalent environment variable.
+    const formatted = Object.entries(flattened.nested ?? {}).flatMap(
+      ([name, messages]) => {
+        const label = name.includes(".") ? name : `${name} (${env.toKey(name)})`
+        return messages?.map((message) => `- ${label}: ${message}`) ?? []
+      },
+    )
+    for (const issue of formatted) {
       log(issue)
     }
   } else {
     log(err)
   }
-}
-
-function fromEnvKey(k: string, prefix = PREFIX) {
-  return k
-    .slice(prefix.length)
-    .toLowerCase()
-    .replace(/_[a-z]/g, (c) => c.slice(1).toUpperCase())
-}
-
-function toEnvKey(k: string, prefix = PREFIX) {
-  return `${prefix}${k.replace(/[A-Z]/g, (c) => `_${c}`).toUpperCase()}`
-}
-
-function envObject(prefix = PREFIX) {
-  return Object.fromEntries(
-    Object.entries(process.env)
-      .filter(([k]) => k.startsWith(prefix))
-      .map(([k, v]) => [fromEnvKey(k, prefix), v]),
-  )
-}
-
-function otelUrl(apmUrl: URL, endpoint: string) {
-  const otelUrl = new URL(apmUrl)
-  otelUrl.hostname = apmUrl.hostname.replace(
-    /^apm\.collector\./,
-    "otel.collector.",
-  )
-  otelUrl.pathname = endpoint
-  return otelUrl.href
 }

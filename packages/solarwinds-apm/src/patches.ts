@@ -21,9 +21,9 @@ import {
   trace,
 } from "@opentelemetry/api"
 import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
-import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
 import { type Configuration } from "./config.js"
+import { environment } from "./env.js"
 
 export interface Options extends Configuration {
   responsePropagator: TextMapPropagator<unknown>
@@ -55,11 +55,11 @@ function patcher<const Name extends keyof InstrumentationConfigMap>(
 
 const PATCHERS = [
   patcher(["@opentelemetry/instrumentation-aws-lambda"], (config) => {
-    config.enabled ??= IS_AWS_LAMBDA
+    config.enabled ??= environment.IS_AWS_LAMBDA
   }),
 
   patcher(["@opentelemetry/instrumentation-aws-sdk"], (config) => {
-    if (IS_AWS_LAMBDA) {
+    if (environment.IS_AWS_LAMBDA) {
       config.enabled ??= true
     }
   }),

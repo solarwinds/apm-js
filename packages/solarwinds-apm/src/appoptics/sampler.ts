@@ -47,9 +47,9 @@ import {
 } from "@solarwinds-apm/sampling"
 
 import { type Configuration } from "../config.js"
-import { componentLogger } from "../logger.js"
 import { HEADERS_STORAGE, traceParent } from "../propagation/headers.js"
 import { Sampler } from "../sampling/sampler.js"
+import { componentLogger } from "../shared/logger.js"
 
 export class AppopticsSampler extends Sampler {
   constructor(config: Configuration) {

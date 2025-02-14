@@ -17,7 +17,7 @@ limitations under the License.
 import process from "node:process"
 import util from "node:util"
 
-import { diag, type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
+import { type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
 import stringify from "json-stringify-safe"
 
 import log from "./commonjs/log.js"
@@ -28,14 +28,7 @@ const COLOURS = {
   cyan: "\x1b[1;36m",
 }
 
-export function componentLogger(component: {
-  readonly name: string
-}): DiagLogger {
-  return diag.createComponentLogger({
-    namespace: `solarwinds-apm/${component.name}`,
-  })
-}
-
+/** Node.js logger that outputs nice coloured messages in TTYs and JSON otherwise */
 export class Logger implements DiagLogger {
   readonly error = Logger.makeLogger("error", "red", console.error)
   readonly warn = Logger.makeLogger("warn", "yellow", console.warn)

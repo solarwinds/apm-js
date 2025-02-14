@@ -40,7 +40,6 @@ import {
   TracingMode,
 } from "@solarwinds-apm/sampling"
 
-import { type Configuration } from "../config.js"
 import { HEADERS_STORAGE } from "../propagation/headers.js"
 import {
   ATTR_HTTP_METHOD,
@@ -49,6 +48,7 @@ import {
   ATTR_HTTP_TARGET,
   ATTR_NET_HOST_NAME,
 } from "../semattrs.old.js"
+import { type Configuration } from "../shared/config.js"
 
 /**
  * Returns whether a span represents an HTTP request, and if so
@@ -247,7 +247,7 @@ export abstract class Sampler extends OboeSampler {
   readonly #ready: Promise<void>
   #resolve!: () => void
 
-  constructor(config: Configuration, logger: DiagLogger) {
+  constructor(config: Configuration, logger: DiagLogger, initial?: Settings) {
     super(logger)
 
     if (config.tracingMode !== undefined) {
@@ -259,6 +259,10 @@ export abstract class Sampler extends OboeSampler {
     this.#transactionSettings = config.transactionSettings
 
     this.#ready = new Promise((resolve) => (this.#resolve = resolve))
+
+    if (initial) {
+      super.updateSettings(initial)
+    }
   }
 
   waitUntilReady(timeout: number): Promise<boolean> {

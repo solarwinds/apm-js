@@ -39,11 +39,11 @@ import {
   getInstrumentations,
   getResource,
 } from "@solarwinds-apm/instrumentations"
-import { IS_AWS_LAMBDA } from "@solarwinds-apm/module"
 
 import log from "./commonjs/log.js"
 import { type Configuration, printError, read } from "./config.js"
-import { componentLogger, Logger } from "./logger.js"
+import { environment } from "./env.js"
+import { Logger } from "./logger.js"
 import { patch } from "./patches.js"
 import { ParentSpanProcessor } from "./processing/parent-span.js"
 import { ResponseTimeProcessor } from "./processing/response-time.js"
@@ -54,14 +54,9 @@ import {
 } from "./propagation/headers.js"
 import { TraceContextPropagator } from "./propagation/trace-context.js"
 import { type Sampler } from "./sampling/sampler.js"
-import { global } from "./storage.js"
+import { SAMPLER } from "./shared/init.js"
+import { componentLogger } from "./shared/logger.js"
 import { VERSION } from "./version.js"
-
-export const SAMPLER = global("sampler", () => {
-  let resolve!: (instance: Sampler) => void
-  const promise = new Promise<Sampler>((r) => (resolve = r))
-  return Object.assign(promise, { resolve })
-})
 
 export async function init() {
   let config: Configuration
@@ -96,8 +91,8 @@ export async function init() {
     )
     .merge(
       getResource(
-        config.resourceDetectors.configs ?? {},
-        config.resourceDetectors.set!,
+        config.resourceDetectors.configs,
+        config.resourceDetectors.set,
       ),
     )
     .merge(
@@ -140,13 +135,13 @@ async function initInstrumentations(config: Configuration, logger: DiagLogger) {
   logger.debug("initialising instrumentations")
 
   const provided = await getInstrumentations(
-    patch(config.instrumentations.configs ?? {}, {
+    patch(config.instrumentations.configs, {
       ...config,
       responsePropagator: new ResponseHeadersPropagator(),
     }),
-    config.instrumentations.set!,
+    config.instrumentations.set,
   )
-  const extra = config.instrumentations.extra ?? []
+  const extra = config.instrumentations.extra
 
   return (tracerProvider: TracerProvider, meterProvider: MeterProvider) => {
     registerInstrumentations({
@@ -176,7 +171,7 @@ async function initTracing(
     ],
   })
 
-  if (IS_AWS_LAMBDA) {
+  if (environment.IS_AWS_LAMBDA) {
     const [{ JsonSampler }, { TraceExporter }] = await Promise.all([
       import("./sampling/json.js"),
       import("./exporters/traces.js"),

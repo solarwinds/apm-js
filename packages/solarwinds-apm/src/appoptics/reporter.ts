@@ -29,8 +29,8 @@ import {
 import { oboe } from "@solarwinds-apm/bindings"
 
 import { type Configuration } from "../config.js"
-import { componentLogger } from "../logger.js"
 import { modules, VERSIONS } from "../metadata.js"
+import { componentLogger } from "../shared/logger.js"
 import { VERSION } from "../version.js"
 import certificate from "./certificate.js"
 
@@ -41,7 +41,7 @@ export async function reporter(
   resource: Resource,
 ): Promise<oboe.Reporter> {
   const reporter = new oboe.Reporter({
-    service_key: `${config.serviceKey?.token}:${config.service}`,
+    service_key: `${config.token}:${config.service}`,
     host: config.collector.hostname,
     certificates: config.trustedpath ?? (config.appoptics ? certificate : ""),
     grpc_proxy: config.proxy ?? "",
