@@ -162,11 +162,22 @@ const CORE_RESOURCE_DETECTORS = {
     "processDetectorSync",
     "serviceInstanceIdDetectorSync",
   ],
+  "@opentelemetry/resource-detector-aws": ["awsLambdaDetectorSync"],
 } as const
 const RESOURCE_DETECTORS = {
-  "@opentelemetry/resource-detector-aws": ["awsEc2Detector"],
-  "@opentelemetry/resource-detector-azure": ["azureAppServiceDetector"],
   "@opentelemetry/resource-detector-container": ["containerDetector"],
+  "@opentelemetry/resource-detector-aws": [
+    "awsBeanstalkDetectorSync",
+    "awsEc2DetectorSync",
+    "awsEcsDetectorSync",
+    "awsEksDetectorSync",
+  ],
+  "@opentelemetry/resource-detector-azure": [
+    "azureAppServiceDetector",
+    "azureFunctionsDetector",
+    "azureVmDetector",
+  ],
+  "@opentelemetry/resource-detector-gcp": ["gcpResourceDetector"],
   "./resource-detector-uams": ["uamsDetector"],
 } as const
 
