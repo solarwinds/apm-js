@@ -1659,14 +1659,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/semantic-conventions@npm:1.28.0, @opentelemetry/semantic-conventions@npm:~1.28.0":
+"@opentelemetry/semantic-conventions@npm:1.28.0":
   version: 1.28.0
   resolution: "@opentelemetry/semantic-conventions@npm:1.28.0"
   checksum: 10c0/deb8a0f744198071e70fea27143cf7c9f7ecb7e4d7b619488c917834ea09b31543c1c2bcea4ec5f3cf68797f0ef3549609c14e859013d9376400ac1499c2b9cb
   languageName: node
   linkType: hard
 
-"@opentelemetry/semantic-conventions@npm:^1.27.0":
+"@opentelemetry/semantic-conventions@npm:^1.27.0, @opentelemetry/semantic-conventions@npm:~1.30.0":
   version: 1.30.0
   resolution: "@opentelemetry/semantic-conventions@npm:1.30.0"
   checksum: 10c0/0bf99552e3b4b7e8b7eb504b678d52f59c6f259df88e740a2011a0d858e523d36fee86047ae1b7f45849c77f00f970c3059ba58e0a06a7d47d6f01dbe8c455bd
@@ -1917,7 +1917,7 @@ __metadata:
   resolution: "@solarwinds-apm/compat@workspace:packages/compat"
   dependencies:
     "@opentelemetry/api": "npm:^1.9.0"
-    "@opentelemetry/semantic-conventions": "npm:~1.28.0"
+    "@opentelemetry/semantic-conventions": "npm:~1.30.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^18.19.0"
@@ -2121,7 +2121,7 @@ __metadata:
     "@opentelemetry/resource-detector-azure": "npm:^0.5.0"
     "@opentelemetry/resource-detector-container": "npm:^0.5.0"
     "@opentelemetry/resources": "npm:~1.30.0"
-    "@opentelemetry/semantic-conventions": "npm:~1.28.0"
+    "@opentelemetry/semantic-conventions": "npm:~1.30.0"
     "@opentelemetry/winston-transport": "npm:^0.10.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
@@ -7679,7 +7679,7 @@ __metadata:
     "@opentelemetry/sdk-trace-base": "npm:~1.30.0"
     "@opentelemetry/sdk-trace-node": "npm:~1.30.0"
     "@opentelemetry/sdk-trace-web": "npm:~1.30.0"
-    "@opentelemetry/semantic-conventions": "npm:~1.28.0"
+    "@opentelemetry/semantic-conventions": "npm:~1.30.0"
     "@solarwinds-apm/bindings": "workspace:^"
     "@solarwinds-apm/dependencies": "workspace:^"
     "@solarwinds-apm/eslint-config": "workspace:^"
