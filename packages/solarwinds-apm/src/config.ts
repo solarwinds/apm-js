@@ -124,7 +124,7 @@ const schema = v.pipe(
   ]),
 
   v.transform(({ instrumentations, resourceDetectors, ...raw }) => {
-    const appoptics = raw.collector.hostname.includes("appoptics.com")
+    const appoptics = /\.?appoptics.com$/.test(raw.collector.hostname)
     const legacy = raw.legacy ?? appoptics
 
     if (raw.exportLogsEnabled) {
