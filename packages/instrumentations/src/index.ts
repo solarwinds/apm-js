@@ -177,7 +177,7 @@ const RESOURCE_DETECTORS = {
     "azureFunctionsDetector",
     "azureVmDetector",
   ],
-  "@opentelemetry/resource-detector-gcp": ["gcpResourceDetector"],
+  "@opentelemetry/resource-detector-gcp": ["gcpDetector"],
   "./resource-detector-uams": ["uamsDetector"],
 } as const
 
