@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http"
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-proto"
 
 import { type Configuration } from "../shared/config.js"
 

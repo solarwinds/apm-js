@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http"
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 import {
   Aggregation,
   AggregationTemporality,
