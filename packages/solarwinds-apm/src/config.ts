@@ -127,7 +127,7 @@ const schema = v.pipe(
     const appoptics = /\.?appoptics.com$/.test(raw.collector.hostname)
     const legacy = raw.legacy ?? appoptics
 
-    if (raw.exportLogsEnabled) {
+    if (legacy && raw.exportLogsEnabled) {
       log("Logs export is not supported on AppOptics.")
       raw.exportLogsEnabled = false
     }
