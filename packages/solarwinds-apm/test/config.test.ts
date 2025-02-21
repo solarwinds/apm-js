@@ -141,6 +141,13 @@ describe("read", () => {
     })
   })
 
+  it("supports logs export by default", async () => {
+    process.env.SW_APM_EXPORT_LOGS_ENABLED = "true"
+
+    const config = await read()
+    expect(config.exportLogsEnabled).to.be.true
+  })
+
   it("supports cjs configs", async () => {
     process.env.SW_APM_CONFIG_FILE = "test/configs/commonjs.cjs"
 

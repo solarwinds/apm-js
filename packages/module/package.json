@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/module",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
