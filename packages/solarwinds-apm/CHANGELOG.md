@@ -1,3 +1,9 @@
+# [15.2.0](https://github.com/solarwinds/apm-js/releases/tag/v15.2.0)
+
+## New features and improvements
+
+- Added resource attribute detections for EKS and GCP
+
 # [15.1.0](https://github.com/solarwinds/apm-js/releases/tag/v15.1.0)
 
 ## New features and improvements
