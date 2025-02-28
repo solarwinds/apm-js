@@ -21,7 +21,7 @@
 | `dns`                       | `*`                | `@opentelemetry/instrumentation-dns`              |
 | `dns/promises`              | `*`                | `@opentelemetry/instrumentation-dns`              |
 | `express`                   | `>=4.0.0 <5.0.0`   | `@opentelemetry/instrumentation-express`          |
-| `fastify`                   | `>=3.0.0 <6.0.0`   | `@opentelemetry/instrumentation-fastify`          |
+| `fastify`                   | `>=4.0.0 <6.0.0`   | `@fastify/otel`                                   |
 | `fs`                        | `*`                | `@opentelemetry/instrumentation-fs`               |
 | `fs/promises`               | `*`                | `@opentelemetry/instrumentation-fs`               |
 | `generic-pool`              | `>=2.0.0 <4.0.0`   | `@opentelemetry/instrumentation-generic-pool`     |

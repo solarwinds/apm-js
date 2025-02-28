@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { type FastifyOtelInstrumentation } from "@fastify/otel"
 import {
   type Instrumentation,
   type InstrumentationConfig,
@@ -28,7 +29,6 @@ import { type CucumberInstrumentation } from "@opentelemetry/instrumentation-cuc
 import { type DataloaderInstrumentation } from "@opentelemetry/instrumentation-dataloader"
 import { type DnsInstrumentation } from "@opentelemetry/instrumentation-dns"
 import { type ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
-import { type FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify"
 import { type FsInstrumentation } from "@opentelemetry/instrumentation-fs"
 import { type GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool"
 import { type GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
@@ -66,6 +66,7 @@ import { load } from "@solarwinds-apm/module"
 
 // map of package names to their instrumentation type
 interface InstrumentationTypes {
+  "@fastify/otel": typeof FastifyOtelInstrumentation
   "@opentelemetry/instrumentation-amqplib": typeof AmqplibInstrumentation
   "@opentelemetry/instrumentation-aws-lambda": typeof AwsLambdaInstrumentation
   "@opentelemetry/instrumentation-aws-sdk": typeof AwsInstrumentation
@@ -76,7 +77,6 @@ interface InstrumentationTypes {
   "@opentelemetry/instrumentation-dataloader": typeof DataloaderInstrumentation
   "@opentelemetry/instrumentation-dns": typeof DnsInstrumentation
   "@opentelemetry/instrumentation-express": typeof ExpressInstrumentation
-  "@opentelemetry/instrumentation-fastify": typeof FastifyInstrumentation
   "@opentelemetry/instrumentation-fs": typeof FsInstrumentation
   "@opentelemetry/instrumentation-generic-pool": typeof GenericPoolInstrumentation
   "@opentelemetry/instrumentation-graphql": typeof GraphQLInstrumentation
@@ -113,6 +113,7 @@ const CORE_INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-undici": "UndiciInstrumentation",
 } as const
 const INSTRUMENTATIONS = {
+  "@fastify/otel": "FastifyOtelInstrumentation",
   "@opentelemetry/instrumentation-amqplib": "AmqplibInstrumentation",
   "@opentelemetry/instrumentation-aws-lambda": "AwsLambdaInstrumentation",
   "@opentelemetry/instrumentation-aws-sdk": "AwsInstrumentation",
@@ -124,7 +125,6 @@ const INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-dataloader": "DataloaderInstrumentation",
   "@opentelemetry/instrumentation-dns": "DnsInstrumentation",
   "@opentelemetry/instrumentation-express": "ExpressInstrumentation",
-  "@opentelemetry/instrumentation-fastify": "FastifyInstrumentation",
   "@opentelemetry/instrumentation-fs": "FsInstrumentation",
   "@opentelemetry/instrumentation-generic-pool": "GenericPoolInstrumentation",
   "@opentelemetry/instrumentation-graphql": "GraphQLInstrumentation",

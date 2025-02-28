@@ -54,6 +54,10 @@ function patcher<const Name extends keyof InstrumentationConfigMap>(
 }
 
 const PATCHERS = [
+  patcher(["@fastify/otel"], (config) => {
+    config.registerOnInitialization ??= true
+  }),
+
   patcher(["@opentelemetry/instrumentation-aws-lambda"], (config) => {
     config.enabled ??= environment.IS_AWS_LAMBDA
   }),
