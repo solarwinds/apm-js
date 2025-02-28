@@ -39,6 +39,7 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
+    "@fastify/otel": "^0.4.0",
     "@opentelemetry/auto-instrumentations-web": "^0.45.0",
     "@opentelemetry/core": "~1.30.0",
     "@opentelemetry/instrumentation": "~0.57.0",
@@ -52,7 +53,6 @@
     "@opentelemetry/instrumentation-dataloader": "^0.16.0",
     "@opentelemetry/instrumentation-dns": "^0.43.0",
     "@opentelemetry/instrumentation-express": "^0.47.0",
-    "@opentelemetry/instrumentation-fastify": "^0.44.0",
     "@opentelemetry/instrumentation-fs": "^0.19.0",
     "@opentelemetry/instrumentation-generic-pool": "^0.43.0",
     "@opentelemetry/instrumentation-graphql": "^0.47.0",
@@ -65,7 +65,7 @@
     "@opentelemetry/instrumentation-koa": "^0.47.0",
     "@opentelemetry/instrumentation-lru-memoizer": "^0.44.0",
     "@opentelemetry/instrumentation-memcached": "^0.43.0",
-    "@opentelemetry/instrumentation-mongodb": "^0.51.0",
+    "@opentelemetry/instrumentation-mongodb": "^0.52.0",
     "@opentelemetry/instrumentation-mongoose": "^0.46.0",
     "@opentelemetry/instrumentation-mysql": "^0.45.0",
     "@opentelemetry/instrumentation-mysql2": "^0.45.0",

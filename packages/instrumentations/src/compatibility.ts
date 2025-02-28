@@ -23,10 +23,17 @@ import { type Comparator, compare, minVersion, Range } from "semver"
 
 import { getInstrumentations } from "./index.js"
 
+const PLUGIN_META = Symbol.for("plugin-meta")
+interface Instrumentation extends InstrumentationBase {
+  plugin?(): {
+    [PLUGIN_META]: { fastify: string }
+  }
+}
+
 const instrumentations = (await getInstrumentations(
   {},
   "all",
-)) as InstrumentationBase[]
+)) as Instrumentation[]
 
 const versions = new Map<
   string,
@@ -34,9 +41,9 @@ const versions = new Map<
 >()
 
 for (const i of instrumentations) {
-  const definitions = i.getModuleDefinitions()
   const instrumentation = i.instrumentationName
 
+  const definitions = i.getModuleDefinitions()
   for (const definition of definitions) {
     const supported = versions.get(definition.name) ?? {
       versions: new Set(),
@@ -46,6 +53,16 @@ for (const i of instrumentations) {
       supported.versions.add(v)
     }
     versions.set(definition.name, supported)
+  }
+
+  const plugin = i.plugin?.()
+  if (plugin) {
+    const supported = versions.get("fastify") ?? {
+      versions: new Set(),
+      instrumentation,
+    }
+    supported.versions.add(plugin[PLUGIN_META].fastify)
+    versions.set("fastify", supported)
   }
 }
 
