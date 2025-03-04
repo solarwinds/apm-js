@@ -7797,7 +7797,7 @@ __metadata:
     prettier: "npm:^3.3.3"
     semver: "npm:^7.6.3"
     typescript: "npm:~5.7.2"
-    valibot: "npm:1.0.0-rc.1"
+    valibot: "npm:1.0.0-rc.3"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
   peerDependenciesMeta:
@@ -8559,15 +8559,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"valibot@npm:1.0.0-rc.1":
-  version: 1.0.0-rc.1
-  resolution: "valibot@npm:1.0.0-rc.1"
+"valibot@npm:1.0.0-rc.3":
+  version: 1.0.0-rc.3
+  resolution: "valibot@npm:1.0.0-rc.3"
   peerDependencies:
     typescript: ">=5"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/a2d8a0a6e48f98f92178e9fff61d6f4386240ce3fbc44228c119131d043291fac28e62a657e6138d8ee9a1b1515e97c54bcca9b7098fa4226ee0cd5f4bf2607f
+  checksum: 10c0/927052abcd5200f05bc7ff86d8599a114ade3d4f5c3cd967103a667ba5e82b8cd458c224803f56475eb3fa9847d955888d68ea7f6779b301afbe24056d81da70
   languageName: node
   linkType: hard
 
