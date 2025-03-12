@@ -21,6 +21,7 @@ import process from "node:process"
 import { type Attributes, context, diag } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
 import { type DetectorSync, Resource } from "@opentelemetry/resources"
+import { ATTR_HOST_ID } from "@opentelemetry/semantic-conventions/incubating"
 
 export const ATTR_UAMS_CLIENT_ID = "sw.uams.client.id"
 
@@ -50,9 +51,12 @@ class UamsDetector implements DetectorSync {
 
   async #readFromFile(): Promise<Attributes> {
     try {
-      const id = await fs.readFile(UAMS_CLIENT_PATH, { encoding: "utf-8" })
+      let id = await fs.readFile(UAMS_CLIENT_PATH, { encoding: "utf-8" })
+      id = id.trim()
+
       return {
-        [ATTR_UAMS_CLIENT_ID]: id.trim(),
+        [ATTR_UAMS_CLIENT_ID]: id,
+        [ATTR_HOST_ID]: id,
       }
     } catch (error) {
       this.#logger.debug("file error", error)
@@ -80,7 +84,11 @@ class UamsDetector implements DetectorSync {
                   throw new Error("Invalid response format")
                 }
 
-                resolve({ [ATTR_UAMS_CLIENT_ID]: data[UAMS_CLIENT_ID_FIELD] })
+                const id = data[UAMS_CLIENT_ID_FIELD]
+                resolve({
+                  [ATTR_UAMS_CLIENT_ID]: id,
+                  [ATTR_HOST_ID]: id,
+                })
               } catch (error) {
                 this.#logger.debug("api response error", error)
                 // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors

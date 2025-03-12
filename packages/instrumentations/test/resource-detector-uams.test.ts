@@ -20,7 +20,7 @@ import http from "node:http"
 import path from "node:path"
 import process from "node:process"
 
-import { describe, expect, it } from "@solarwinds-apm/test"
+import { afterEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { uamsDetector } from "../src/resource-detector-uams.js"
 
@@ -75,7 +75,10 @@ describe("uamsDetector", () => {
     const resource = uamsDetector.detect()
     await resource.waitForAsyncAttributes?.()
 
-    expect(resource.attributes).to.deep.equal({ "sw.uams.client.id": FILE_ID })
+    expect(resource.attributes).to.deep.equal({
+      "sw.uams.client.id": FILE_ID,
+      "host.id": FILE_ID,
+    })
   })
 
   it("detects id from file when file present and api not running", async () => {
@@ -84,7 +87,10 @@ describe("uamsDetector", () => {
     const resource = uamsDetector.detect()
     await resource.waitForAsyncAttributes?.()
 
-    expect(resource.attributes).to.deep.equal({ "sw.uams.client.id": FILE_ID })
+    expect(resource.attributes).to.deep.equal({
+      "sw.uams.client.id": FILE_ID,
+      "host.id": FILE_ID,
+    })
   })
 
   it("detects id from file when file present and unrelated running", async () => {
@@ -94,7 +100,10 @@ describe("uamsDetector", () => {
     const resource = uamsDetector.detect()
     await resource.waitForAsyncAttributes?.()
 
-    expect(resource.attributes).to.deep.equal({ "sw.uams.client.id": FILE_ID })
+    expect(resource.attributes).to.deep.equal({
+      "sw.uams.client.id": FILE_ID,
+      "host.id": FILE_ID,
+    })
   })
 
   it("detects id from api when file not present and api running", async () => {
@@ -103,7 +112,10 @@ describe("uamsDetector", () => {
     const resource = uamsDetector.detect()
     await resource.waitForAsyncAttributes?.()
 
-    expect(resource.attributes).to.deep.equal({ "sw.uams.client.id": API_ID })
+    expect(resource.attributes).to.deep.equal({
+      "sw.uams.client.id": API_ID,
+      "host.id": API_ID,
+    })
   })
 
   it("detects nothing when file not present and api not running", async () => {

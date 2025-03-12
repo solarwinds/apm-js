@@ -14,12 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import {
-  browserDetectorSync,
-  detectResourcesSync,
-  envDetectorSync,
-  type Resource,
-} from "@opentelemetry/resources"
+import { browserDetector } from "@opentelemetry/opentelemetry-browser-detector"
+import { detectResourcesSync, type Resource } from "@opentelemetry/resources"
 
 import { sessionIdDetector } from "./resource-detector-session-id.js"
 
@@ -30,6 +26,6 @@ export {
 
 export function getResource(): Resource {
   return detectResourcesSync({
-    detectors: [browserDetectorSync, envDetectorSync, sessionIdDetector],
+    detectors: [browserDetector, sessionIdDetector],
   })
 }
