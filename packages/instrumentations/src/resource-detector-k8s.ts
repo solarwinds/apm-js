@@ -19,7 +19,7 @@ import os from "node:os"
 import process from "node:process"
 import type readline from "node:readline"
 
-import { context, diag } from "@opentelemetry/api"
+import { type Attributes, context, diag } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
 import {
   type DetectorSync,
@@ -61,19 +61,25 @@ export class K8sDetector implements DetectorSync {
     return new Resource(
       {},
       context.with(suppressTracing(context.active()), async () => {
+        const attributes: Attributes = {}
+
         const namespace = await this.#podNamespace()
         if (!namespace) {
-          return {}
+          return attributes
         }
+        attributes[ATTR_K8S_NAMESPACE_NAME] = namespace
 
         const uid = await this.#podUid()
-        const name = this.#podName()
-
-        return {
-          [ATTR_K8S_NAMESPACE_NAME]: namespace,
-          [ATTR_K8S_POD_UID]: uid,
-          [ATTR_K8S_POD_NAME]: name,
+        if (uid) {
+          attributes[ATTR_K8S_POD_UID] = uid
         }
+
+        const name = this.#podName()
+        if (name) {
+          attributes[ATTR_K8S_POD_NAME] = name
+        }
+
+        return attributes
       }),
     )
   }

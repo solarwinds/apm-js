@@ -33,7 +33,7 @@ const FILE_NAMESPACE = randomBytes(8).toString("hex")
 const ENV_UID = randomUUID()
 const FILE_UID = randomUUID()
 
-const ENV_NAME = randomBytes(4).toString()
+const ENV_NAME = randomBytes(4).toString("hex")
 
 const envNamespace = () => {
   process.env.SW_K8S_POD_NAMESPACE = ENV_NAMESPACE
