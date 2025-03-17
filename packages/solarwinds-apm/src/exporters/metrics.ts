@@ -47,13 +47,27 @@ export interface MetricReaderOptions
 export class MetricReader extends PeriodicExportingMetricReader {
   readonly #cardinalityLimit: number
 
+  readonly #selectAggregation?: MetricReader["selectAggregation"]
+  readonly #selectAggregationTemporality?: MetricReader["selectAggregationTemporality"]
+
   constructor(options: MetricReaderOptions) {
     super(options)
+
     this.#cardinalityLimit =
       options.cardinalityLimit ?? DEFAULT_CARDINALITY_LIMIT
+
+    this.#selectAggregation = options.exporter.selectAggregation?.bind(
+      options.exporter,
+    )
+    this.#selectAggregationTemporality =
+      options.exporter.selectAggregationTemporality?.bind(options.exporter)
   }
 
   override selectAggregation(instrumentType: InstrumentType): Aggregation {
+    if (this.#selectAggregation) {
+      return this.#selectAggregation(instrumentType)
+    }
+
     switch (instrumentType) {
       case InstrumentType.HISTOGRAM: {
         return new ExponentialHistogramAggregation(undefined, true)
@@ -63,7 +77,14 @@ export class MetricReader extends PeriodicExportingMetricReader {
       }
     }
   }
-  override selectAggregationTemporality(): AggregationTemporality {
+
+  override selectAggregationTemporality(
+    instrumentType: InstrumentType,
+  ): AggregationTemporality {
+    if (this.#selectAggregationTemporality) {
+      return this.#selectAggregationTemporality(instrumentType)
+    }
+
     return AggregationTemporality.DELTA
   }
 

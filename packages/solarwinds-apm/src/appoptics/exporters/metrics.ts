@@ -227,7 +227,7 @@ export class AppopticsMetricExporter {
     tags: Record<string, string>,
   ): [tags: oboe.MetricTags, count: number] {
     const entries = Object.entries(tags)
-    const count = Math.max(entries.length, MAX_TAGS)
+    const count = Math.min(entries.length, MAX_TAGS)
     entries.length = count
 
     const oboeTags = new oboe.MetricTags(count)
