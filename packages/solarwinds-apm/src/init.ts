@@ -39,7 +39,7 @@ import {
 import log from "./commonjs/log.js"
 import { type Configuration, printError, read } from "./config.js"
 import { environment } from "./env.js"
-import { MetricReader } from "./exporters/metric-reader.js"
+import { MetricReader } from "./exporters/metrics.js"
 import { Logger } from "./logger.js"
 import { patch } from "./patches.js"
 import { ParentSpanProcessor } from "./processing/parent-span.js"

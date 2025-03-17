@@ -37,7 +37,7 @@ import {
 import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
 
 import { LogExporter } from "../exporters/logs.js"
-import { MetricReader } from "../exporters/metric-reader.js"
+import { MetricReader } from "../exporters/metrics.js"
 import { MetricExporter } from "../exporters/metrics.js"
 import { TraceExporter } from "../exporters/traces.js"
 import { LocationProcessor } from "../processing/location.js"
