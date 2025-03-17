@@ -36,6 +36,21 @@ export class MetricExporter extends OTLPMetricExporter {
       },
     })
   }
+
+  override selectAggregation(instrumentType: InstrumentType): Aggregation {
+    switch (instrumentType) {
+      case InstrumentType.HISTOGRAM: {
+        return new ExponentialHistogramAggregation(undefined, true)
+      }
+      default: {
+        return Aggregation.Default()
+      }
+    }
+  }
+
+  override selectAggregationTemporality(): AggregationTemporality {
+    return AggregationTemporality.DELTA
+  }
 }
 
 const DEFAULT_CARDINALITY_LIMIT = 200
@@ -47,45 +62,10 @@ export interface MetricReaderOptions
 export class MetricReader extends PeriodicExportingMetricReader {
   readonly #cardinalityLimit: number
 
-  readonly #selectAggregation?: MetricReader["selectAggregation"]
-  readonly #selectAggregationTemporality?: MetricReader["selectAggregationTemporality"]
-
   constructor(options: MetricReaderOptions) {
     super(options)
-
     this.#cardinalityLimit =
       options.cardinalityLimit ?? DEFAULT_CARDINALITY_LIMIT
-
-    this.#selectAggregation = options.exporter.selectAggregation?.bind(
-      options.exporter,
-    )
-    this.#selectAggregationTemporality =
-      options.exporter.selectAggregationTemporality?.bind(options.exporter)
-  }
-
-  override selectAggregation(instrumentType: InstrumentType): Aggregation {
-    if (this.#selectAggregation) {
-      return this.#selectAggregation(instrumentType)
-    }
-
-    switch (instrumentType) {
-      case InstrumentType.HISTOGRAM: {
-        return new ExponentialHistogramAggregation(undefined, true)
-      }
-      default: {
-        return Aggregation.Default()
-      }
-    }
-  }
-
-  override selectAggregationTemporality(
-    instrumentType: InstrumentType,
-  ): AggregationTemporality {
-    if (this.#selectAggregationTemporality) {
-      return this.#selectAggregationTemporality(instrumentType)
-    }
-
-    return AggregationTemporality.DELTA
   }
 
   override selectCardinalityLimit(instrumentType: InstrumentType): number {

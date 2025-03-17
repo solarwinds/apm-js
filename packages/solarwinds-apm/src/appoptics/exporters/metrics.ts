@@ -23,9 +23,11 @@ import {
   type InstrumentationScope,
 } from "@opentelemetry/core"
 import {
+  Aggregation,
   AggregationTemporality,
   DataPointType,
   type ExponentialHistogram as ExponentialHistogramDatapoint,
+  ExponentialHistogramAggregation,
   type Histogram as HistogramDatapoint,
   InstrumentType,
   type MetricDescriptor,
@@ -138,6 +140,17 @@ export class AppopticsMetricExporter {
     resultCallback({
       code: ExportResultCode.SUCCESS,
     })
+  }
+
+  selectAggregation(instrumentType: InstrumentType): Aggregation {
+    switch (instrumentType) {
+      case InstrumentType.HISTOGRAM: {
+        return new ExponentialHistogramAggregation(undefined, true)
+      }
+      default: {
+        return Aggregation.Default()
+      }
+    }
   }
 
   selectAggregationTemporality(
