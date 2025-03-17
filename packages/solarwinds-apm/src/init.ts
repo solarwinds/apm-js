@@ -23,7 +23,11 @@ import {
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
 import { detectResourcesSync, Resource } from "@opentelemetry/resources"
-import { MeterProvider } from "@opentelemetry/sdk-metrics"
+import {
+  MeterProvider,
+  type MetricReader,
+  PeriodicExportingMetricReader,
+} from "@opentelemetry/sdk-metrics"
 import {
   BatchSpanProcessor,
   type SpanProcessor,
@@ -39,7 +43,6 @@ import {
 import log from "./commonjs/log.js"
 import { type Configuration, printError, read } from "./config.js"
 import { environment } from "./env.js"
-import { MetricReader } from "./exporters/metric-reader.js"
 import { Logger } from "./logger.js"
 import { patch } from "./patches.js"
 import { ParentSpanProcessor } from "./processing/parent-span.js"
@@ -241,14 +244,14 @@ async function initMetrics(
       "./appoptics/exporters/metrics.js"
     )
     readers = [
-      new MetricReader({
+      new PeriodicExportingMetricReader({
         exporter: new AppopticsMetricExporter(oboe),
       }),
     ]
   } else {
     const { MetricExporter } = await import("./exporters/metrics.js")
     readers = [
-      new MetricReader({
+      new PeriodicExportingMetricReader({
         exporter: new MetricExporter(config),
       }),
     ]

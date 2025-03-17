@@ -24,7 +24,10 @@ import {
   BatchLogRecordProcessor,
   LoggerProvider,
 } from "@opentelemetry/sdk-logs"
-import { MeterProvider } from "@opentelemetry/sdk-metrics"
+import {
+  MeterProvider,
+  PeriodicExportingMetricReader,
+} from "@opentelemetry/sdk-metrics"
 import {
   BatchSpanProcessor,
   WebTracerProvider,
@@ -37,7 +40,6 @@ import {
 import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
 
 import { LogExporter } from "../exporters/logs.js"
-import { MetricReader } from "../exporters/metric-reader.js"
 import { MetricExporter } from "../exporters/metrics.js"
 import { TraceExporter } from "../exporters/traces.js"
 import { LocationProcessor } from "../processing/location.js"
@@ -132,7 +134,7 @@ function initMetrics(config: Configuration, resource: Resource) {
   const provider = new MeterProvider({
     resource,
     readers: [
-      new MetricReader({
+      new PeriodicExportingMetricReader({
         exporter: new MetricExporter(config),
       }),
     ],
