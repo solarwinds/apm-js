@@ -45,16 +45,7 @@ export class MetricExporter extends OTLPMetricExporter {
       }
     }
   }
-  override selectAggregationTemporality(
-    instrumentType: InstrumentType,
-  ): AggregationTemporality {
-    switch (instrumentType) {
-      case InstrumentType.HISTOGRAM: {
-        return AggregationTemporality.DELTA
-      }
-      default: {
-        return super.selectAggregationTemporality(instrumentType)
-      }
-    }
+  override selectAggregationTemporality(): AggregationTemporality {
+    return AggregationTemporality.DELTA
   }
 }
