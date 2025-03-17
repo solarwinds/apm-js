@@ -16,45 +16,44 @@ limitations under the License.
 
 import {
   AggregationTemporality,
-  ExponentialHistogramAggregation,
   InstrumentType,
 } from "@opentelemetry/sdk-metrics"
 import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { AppopticsMetricExporter } from "../../../src/appoptics/exporters/metrics.js"
+import { MetricReader } from "../../../src/exporters/metrics.js"
 
 describe(AppopticsMetricExporter.name, () => {
   const exporter = new AppopticsMetricExporter(null!)
-
-  it("uses proper aggregations", () => {
-    expect(
-      exporter.selectAggregation(InstrumentType.HISTOGRAM),
-    ).to.be.instanceof(ExponentialHistogramAggregation)
-  })
+  const reader = new MetricReader({ exporter })
 
   it("uses proper aggregation temporalities", () => {
-    expect(
-      exporter.selectAggregationTemporality(InstrumentType.COUNTER),
-    ).to.equal(AggregationTemporality.CUMULATIVE)
-    expect(
-      exporter.selectAggregationTemporality(InstrumentType.GAUGE),
-    ).to.equal(AggregationTemporality.CUMULATIVE)
-    expect(
-      exporter.selectAggregationTemporality(InstrumentType.HISTOGRAM),
-    ).to.equal(AggregationTemporality.DELTA)
-    expect(
-      exporter.selectAggregationTemporality(InstrumentType.OBSERVABLE_COUNTER),
-    ).to.equal(AggregationTemporality.CUMULATIVE)
-    expect(
-      exporter.selectAggregationTemporality(InstrumentType.OBSERVABLE_GAUGE),
-    ).to.equal(AggregationTemporality.CUMULATIVE)
-    expect(
-      exporter.selectAggregationTemporality(
-        InstrumentType.OBSERVABLE_UP_DOWN_COUNTER,
-      ),
-    ).to.equal(AggregationTemporality.CUMULATIVE)
-    expect(
-      exporter.selectAggregationTemporality(InstrumentType.UP_DOWN_COUNTER),
-    ).to.equal(AggregationTemporality.CUMULATIVE)
+    for (const component of [exporter, reader]) {
+      expect(
+        component.selectAggregationTemporality(InstrumentType.COUNTER),
+      ).to.equal(AggregationTemporality.CUMULATIVE)
+      expect(
+        component.selectAggregationTemporality(InstrumentType.GAUGE),
+      ).to.equal(AggregationTemporality.CUMULATIVE)
+      expect(
+        component.selectAggregationTemporality(InstrumentType.HISTOGRAM),
+      ).to.equal(AggregationTemporality.DELTA)
+      expect(
+        component.selectAggregationTemporality(
+          InstrumentType.OBSERVABLE_COUNTER,
+        ),
+      ).to.equal(AggregationTemporality.CUMULATIVE)
+      expect(
+        component.selectAggregationTemporality(InstrumentType.OBSERVABLE_GAUGE),
+      ).to.equal(AggregationTemporality.CUMULATIVE)
+      expect(
+        component.selectAggregationTemporality(
+          InstrumentType.OBSERVABLE_UP_DOWN_COUNTER,
+        ),
+      ).to.equal(AggregationTemporality.CUMULATIVE)
+      expect(
+        component.selectAggregationTemporality(InstrumentType.UP_DOWN_COUNTER),
+      ).to.equal(AggregationTemporality.CUMULATIVE)
+    }
   })
 })
