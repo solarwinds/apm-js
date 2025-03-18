@@ -22,22 +22,49 @@ import {
 import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { type Configuration } from "../../src/config.js"
-import { MetricExporter } from "../../src/exporters/metrics.js"
+import { MetricExporter, MetricReader } from "../../src/exporters/metrics.js"
 
 describe(MetricExporter.name, () => {
   const exporter = new MetricExporter({
     otlp: { metricsEndpoint: "https://metrics", headers: {} },
   } as unknown as Configuration)
+  const reader = new MetricReader({ exporter })
 
   it("uses proper aggregations", () => {
-    expect(
-      exporter.selectAggregation(InstrumentType.HISTOGRAM),
-    ).to.be.instanceof(ExponentialHistogramAggregation)
+    for (const component of [exporter, reader]) {
+      expect(
+        component.selectAggregation(InstrumentType.HISTOGRAM),
+      ).to.be.instanceof(ExponentialHistogramAggregation)
+    }
   })
 
   it("uses proper aggregation temporalities", () => {
-    expect(
-      exporter.selectAggregationTemporality(InstrumentType.HISTOGRAM),
-    ).to.equal(AggregationTemporality.DELTA)
+    for (const component of [exporter, reader]) {
+      expect(
+        component.selectAggregationTemporality(InstrumentType.COUNTER),
+      ).to.equal(AggregationTemporality.DELTA)
+      expect(
+        component.selectAggregationTemporality(InstrumentType.GAUGE),
+      ).to.equal(AggregationTemporality.DELTA)
+      expect(
+        component.selectAggregationTemporality(InstrumentType.HISTOGRAM),
+      ).to.equal(AggregationTemporality.DELTA)
+      expect(
+        component.selectAggregationTemporality(
+          InstrumentType.OBSERVABLE_COUNTER,
+        ),
+      ).to.equal(AggregationTemporality.DELTA)
+      expect(
+        component.selectAggregationTemporality(InstrumentType.OBSERVABLE_GAUGE),
+      ).to.equal(AggregationTemporality.DELTA)
+      expect(
+        component.selectAggregationTemporality(
+          InstrumentType.OBSERVABLE_UP_DOWN_COUNTER,
+        ),
+      ).to.equal(AggregationTemporality.DELTA)
+      expect(
+        component.selectAggregationTemporality(InstrumentType.UP_DOWN_COUNTER),
+      ).to.equal(AggregationTemporality.DELTA)
+    }
   })
 })

@@ -20,6 +20,8 @@ import {
   AggregationTemporality,
   ExponentialHistogramAggregation,
   InstrumentType,
+  PeriodicExportingMetricReader,
+  type PeriodicExportingMetricReaderOptions,
 } from "@opentelemetry/sdk-metrics"
 
 import { type Configuration } from "../shared/config.js"
@@ -45,16 +47,31 @@ export class MetricExporter extends OTLPMetricExporter {
       }
     }
   }
-  override selectAggregationTemporality(
-    instrumentType: InstrumentType,
-  ): AggregationTemporality {
-    switch (instrumentType) {
-      case InstrumentType.HISTOGRAM: {
-        return AggregationTemporality.DELTA
-      }
-      default: {
-        return super.selectAggregationTemporality(instrumentType)
-      }
-    }
+
+  override selectAggregationTemporality(): AggregationTemporality {
+    return AggregationTemporality.DELTA
+  }
+}
+
+const DEFAULT_CARDINALITY_LIMIT = 200
+export interface MetricReaderOptions
+  extends PeriodicExportingMetricReaderOptions {
+  cardinalityLimit?: number
+}
+
+export class MetricReader extends PeriodicExportingMetricReader {
+  readonly #cardinalityLimit: number
+
+  constructor(options: MetricReaderOptions) {
+    super(options)
+    this.#cardinalityLimit =
+      options.cardinalityLimit ?? DEFAULT_CARDINALITY_LIMIT
+  }
+
+  override selectCardinalityLimit(instrumentType: InstrumentType): number {
+    return Math.min(
+      super.selectCardinalityLimit(instrumentType),
+      this.#cardinalityLimit,
+    )
   }
 }
