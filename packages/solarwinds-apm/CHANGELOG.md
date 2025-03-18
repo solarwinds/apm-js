@@ -1,4 +1,4 @@
-# [15.4.0](https://github.com/solarwinds/apm-js/releases/tag/v15.3.1)
+# [15.4.0](https://github.com/solarwinds/apm-js/releases/tag/v15.4.0)
 
 ## New features and improvements
 
