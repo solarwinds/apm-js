@@ -1,3 +1,14 @@
+# [15.3.0](https://github.com/solarwinds/apm-js/releases/tag/v15.3.0)
+
+## New features and improvements
+
+- Added generic resource attributes detection for Kubernetes
+
+## Fixes
+
+- Collect all metrics with the proper aggregation temporality
+- Cap metrics cardinality
+
 # [15.2.0](https://github.com/solarwinds/apm-js/releases/tag/v15.2.0)
 
 ## New features and improvements
