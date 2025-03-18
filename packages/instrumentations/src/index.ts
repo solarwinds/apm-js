@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { type FastifyOtelInstrumentation } from "@fastify/otel"
+import { diag } from "@opentelemetry/api"
 import {
   type Instrumentation,
   type InstrumentationConfig,
@@ -165,20 +166,25 @@ const CORE_RESOURCE_DETECTORS = {
   "@opentelemetry/resource-detector-aws": ["awsLambdaDetectorSync"],
 } as const
 const RESOURCE_DETECTORS = {
+  // Generic container, k8s and UAMS detectors, lowest precedence
   "@opentelemetry/resource-detector-container": ["containerDetector"],
+  "./resource-detector-k8s": ["k8sDetector"],
+  "./resource-detector-uams": ["uamsDetector"],
+
+  // Cloud specific detectors, higher precedence than generic
+  // will override k8s and host attributes using their more specialised logic
   "@opentelemetry/resource-detector-aws": [
-    "awsBeanstalkDetectorSync",
     "awsEc2DetectorSync",
     "awsEcsDetectorSync",
     "awsEksDetectorSync",
+    "awsBeanstalkDetectorSync",
   ],
   "@opentelemetry/resource-detector-azure": [
-    "azureAppServiceDetector",
-    "azureFunctionsDetector",
     "azureVmDetector",
+    "azureFunctionsDetector",
+    "azureAppServiceDetector",
   ],
   "@opentelemetry/resource-detector-gcp": ["gcpDetector"],
-  "./resource-detector-uams": ["uamsDetector"],
 } as const
 
 export type InstrumentationConfigMap = {
@@ -304,7 +310,8 @@ export function getResource(
         await resource.waitForAsyncAttributes?.()
 
         return resource.attributes
-      } catch {
+      } catch (err) {
+        diag.warn(`failed to load ${module}/${name}`, err)
         return {}
       }
     }),
