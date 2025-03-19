@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { register } from "module"
+import { register } from "node:module"
+
+import { createAddHookMessageChannel } from "import-in-the-middle"
 
 import { INIT } from "./commonjs/flags.js"
 import log from "./commonjs/log.js"
@@ -34,8 +36,11 @@ if (!Reflect.has(globalThis, INIT)) {
       writable: true,
     })
 
-    register("./hooks.js", import.meta.url)
+    const { registerOptions, waitForAllMessagesAcknowledged } =
+      createAddHookMessageChannel()
+    register("./hooks.js", import.meta.url, registerOptions)
     await init()
+    await waitForAllMessagesAcknowledged()
 
     Reflect.defineProperty(globalThis, INIT, {
       value: true,
