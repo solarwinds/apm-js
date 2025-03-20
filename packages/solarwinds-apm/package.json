@@ -83,6 +83,7 @@
     "@solarwinds-apm/instrumentations": "workspace:^",
     "@solarwinds-apm/module": "workspace:^",
     "@solarwinds-apm/sampling": "workspace:^",
+    "import-in-the-middle": "^1.11.0",
     "json-stringify-safe": "^5.0.1",
     "node-releases": "^2.0.18",
     "semver": "^7.6.3",
