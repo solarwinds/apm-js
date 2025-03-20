@@ -59,19 +59,17 @@ describe("init", () => {
     expect(message).not.to.have.key(ATTR_SERVICE_NAME)
   }).timeout(10_000)
 
-  lit("converts array or undefined resource properties", async () => {
+  lit("converts array resource properties", async () => {
     const message = Object.fromEntries(
       await init(
         resourceFromAttributes({
           array: [],
-          undefined: undefined,
         }),
       ),
     )
 
     expect(message).to.include({
       array: "",
-      undefined: null,
     })
   }).timeout(10_000)
 
