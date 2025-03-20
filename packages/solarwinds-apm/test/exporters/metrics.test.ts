@@ -16,7 +16,7 @@ limitations under the License.
 
 import {
   AggregationTemporality,
-  ExponentialHistogramAggregation,
+  AggregationType,
   InstrumentType,
 } from "@opentelemetry/sdk-metrics"
 import { describe, expect, it } from "@solarwinds-apm/test"
@@ -31,11 +31,12 @@ describe(MetricExporter.name, () => {
   const reader = new MetricReader({ exporter })
 
   it("uses proper aggregations", () => {
-    for (const component of [exporter, reader]) {
-      expect(
-        component.selectAggregation(InstrumentType.HISTOGRAM),
-      ).to.be.instanceof(ExponentialHistogramAggregation)
-    }
+    expect(reader.selectAggregation(InstrumentType.HISTOGRAM)).to.deep.equal({
+      type: AggregationType.EXPONENTIAL_HISTOGRAM,
+      options: {
+        recordMinMax: true,
+      },
+    })
   })
 
   it("uses proper aggregation temporalities", () => {

@@ -20,6 +20,7 @@ import os from "node:os"
 import path from "node:path"
 import process from "node:process"
 
+import { detectResources } from "@opentelemetry/resources"
 import { afterEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { K8sDetector } from "../src/resource-detector-k8s.js"
@@ -99,7 +100,7 @@ describe("k8sDetector", () => {
     envUid()
     envName()
 
-    const resource = k8sDetector.detect()
+    const resource = detectResources({ detectors: [k8sDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({
@@ -113,7 +114,7 @@ describe("k8sDetector", () => {
     await fileNamespace()
     await fileUid()
 
-    const resource = k8sDetector.detect()
+    const resource = detectResources({ detectors: [k8sDetector] })
     await resource.waitForAsyncAttributes?.()
 
     if (process.platform === "win32") {
@@ -137,7 +138,7 @@ describe("k8sDetector", () => {
     await fileUid()
     envName()
 
-    const resource = k8sDetector.detect()
+    const resource = detectResources({ detectors: [k8sDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({
@@ -152,7 +153,7 @@ describe("k8sDetector", () => {
     await fileUid()
     envName()
 
-    const resource = k8sDetector.detect()
+    const resource = detectResources({ detectors: [k8sDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({})

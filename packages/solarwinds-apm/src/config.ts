@@ -21,7 +21,7 @@ import process from "node:process"
 import { pathToFileURL } from "node:url"
 
 import { type Instrumentation } from "@opentelemetry/instrumentation"
-import { type Detector, type DetectorSync } from "@opentelemetry/resources"
+import { type ResourceDetector } from "@opentelemetry/resources"
 import {
   type InstrumentationConfigMap,
   type ResourceDetectorConfigMap,
@@ -46,8 +46,8 @@ interface Instrumentations {
 
 interface ResourceDetectors {
   configs?: ResourceDetectorConfigMap
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  extra?: (DetectorSync | Detector)[]
+
+  extra?: ResourceDetector[]
   set?: Set
 }
 

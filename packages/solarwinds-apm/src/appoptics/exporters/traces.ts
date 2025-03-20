@@ -61,14 +61,14 @@ export class AppopticsTraceExporter implements SpanExporter {
       const md = this.#metadata(context)
 
       let evt: oboe.Event
-      if (span.parentSpanId) {
+      if (span.parentSpanContext) {
         evt = oboe.Context.createEntry(
           md,
           hrTimeToMicroseconds(span.startTime),
           this.#metadata({
             traceFlags: context.traceFlags,
             traceId: context.traceId,
-            spanId: span.parentSpanId,
+            spanId: span.parentSpanContext.spanId,
           }),
         )
       } else {
@@ -83,10 +83,10 @@ export class AppopticsTraceExporter implements SpanExporter {
       evt.addInfo("sw.span_kind", kind)
       evt.addInfo("Language", "Node.js")
 
-      evt.addInfo("otel.scope.name", span.instrumentationLibrary.name)
+      evt.addInfo("otel.scope.name", span.instrumentationScope.name)
       evt.addInfo(
         "otel.scope.version",
-        span.instrumentationLibrary.version ?? null,
+        span.instrumentationScope.version ?? null,
       )
       if (span.status.code !== SpanStatusCode.UNSET) {
         evt.addInfo("otel.status_code", SpanStatusCode[span.status.code])

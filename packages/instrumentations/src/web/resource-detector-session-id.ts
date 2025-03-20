@@ -15,13 +15,13 @@ limitations under the License.
 */
 
 import { type Attributes } from "@opentelemetry/api"
-import { type DetectorSync, Resource } from "@opentelemetry/resources"
+import { type ResourceDetector } from "@opentelemetry/resources"
 import {
   ATTR_SERVICE_INSTANCE_ID,
   ATTR_SESSION_ID,
 } from "@opentelemetry/semantic-conventions/incubating"
 
-export const sessionIdDetector: DetectorSync = {
+export const sessionIdDetector: ResourceDetector = {
   detect: () => {
     const attributes: Attributes = {}
     const id =
@@ -34,6 +34,7 @@ export const sessionIdDetector: DetectorSync = {
       attributes[ATTR_SESSION_ID] = id
       attributes[ATTR_SERVICE_INSTANCE_ID] = id
     }
-    return new Resource(attributes)
+
+    return { attributes }
   },
 }

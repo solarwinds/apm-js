@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 import { type FastifyOtelInstrumentation } from "@fastify/otel"
-import { diag } from "@opentelemetry/api"
 import {
   type Instrumentation,
   type InstrumentationConfig,
@@ -58,11 +57,7 @@ import { type SocketIoInstrumentation } from "@opentelemetry/instrumentation-soc
 import { type TediousInstrumentation } from "@opentelemetry/instrumentation-tedious"
 import { type UndiciInstrumentation } from "@opentelemetry/instrumentation-undici"
 import { type WinstonInstrumentation } from "@opentelemetry/instrumentation-winston"
-import {
-  type Detector,
-  type DetectorSync,
-  Resource,
-} from "@opentelemetry/resources"
+import { type ResourceDetector } from "@opentelemetry/resources"
 import { load } from "@solarwinds-apm/module"
 
 // map of package names to their instrumentation type
@@ -157,13 +152,13 @@ const INSTRUMENTATIONS = {
 // Maps of resource detector module names to list of detector names
 const CORE_RESOURCE_DETECTORS = {
   "@opentelemetry/resources": [
-    "envDetectorSync",
-    "hostDetectorSync",
-    "osDetectorSync",
-    "processDetectorSync",
-    "serviceInstanceIdDetectorSync",
+    "envDetector",
+    "hostDetector",
+    "osDetector",
+    "processDetector",
+    "serviceInstanceIdDetector",
   ],
-  "@opentelemetry/resource-detector-aws": ["awsLambdaDetectorSync"],
+  "@opentelemetry/resource-detector-aws": ["awsLambdaDetector"],
 } as const
 const RESOURCE_DETECTORS = {
   // Generic container, k8s and UAMS detectors, lowest precedence
@@ -174,10 +169,10 @@ const RESOURCE_DETECTORS = {
   // Cloud specific detectors, higher precedence than generic
   // will override k8s and host attributes using their more specialised logic
   "@opentelemetry/resource-detector-aws": [
-    "awsEc2DetectorSync",
-    "awsEcsDetectorSync",
-    "awsEksDetectorSync",
-    "awsBeanstalkDetectorSync",
+    "awsEc2Detector",
+    "awsEcsDetector",
+    "awsEksDetector",
+    "awsBeanstalkDetector",
   ],
   "@opentelemetry/resource-detector-azure": [
     "azureVmDetector",
@@ -261,10 +256,10 @@ export function getInstrumentations(
   )
 }
 
-export function getResource(
+export function getResourceDetectors(
   configs: ResourceDetectorConfigMap,
   set: Set,
-): Resource {
+): Promise<ResourceDetector[]> {
   const resourceDetectors = [
     ...Object.entries(CORE_RESOURCE_DETECTORS).flatMap(([module, names]) =>
       names.map((name) => ({
@@ -288,36 +283,17 @@ export function getResource(
       enabled,
   )
 
-  // The Resource constructor accepts a promise resolving to arguments,
-  // so we create one by loading each detector module, then calling its detector,
-  // then waiting for the resource attributes to be available, concurrently
-  // for every enabled detector. Once all of these concurrent tasks have completed
-  // we merge all of the resulting attributes.
-  const attributes = Promise.all(
+  return Promise.all(
     resourceDetectors.map(async ({ module, name }) => {
-      try {
-        // Resolve relative imports
-        if (module.startsWith(".")) {
-          module = new URL(`${module}.js`, import.meta.url).href
-        }
-
-        const loaded = await load(module)
-        const detector =
-          // eslint-disable-next-line @typescript-eslint/no-deprecated
-          (loaded as Record<typeof name, Detector | DetectorSync>)[name]
-
-        const resource = await detector.detect()
-        await resource.waitForAsyncAttributes?.()
-
-        return resource.attributes
-      } catch (err) {
-        diag.warn(`failed to load ${module}/${name}`, err)
-        return {}
+      // Resolve relative imports
+      if (module.startsWith(".")) {
+        module = new URL(`${module}.js`, import.meta.url).href
       }
-    }),
-  ).then((attributes) =>
-    attributes.reduce((all, next) => ({ ...all, ...next })),
-  )
 
-  return new Resource({}, attributes)
+      const loaded = await load(module)
+      const detector = (loaded as Record<typeof name, ResourceDetector>)[name]
+
+      return detector
+    }),
+  )
 }

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import { DiagLogLevel } from "@opentelemetry/api"
-import { type ENVIRONMENT, getEnvWithoutDefaults } from "@opentelemetry/core"
+import { getStringFromEnv } from "@opentelemetry/core"
 import * as v from "valibot"
 
 /** Processed configuration shared by web and Node.js */
@@ -196,9 +196,8 @@ export const schema = (defaults: Defaults) =>
     }),
 
     v.transform((raw): Configuration => {
-      const otel = getEnvWithoutDefaults()
-
-      const service = otel.OTEL_SERVICE_NAME ?? raw.serviceKey.name
+      const service =
+        getStringFromEnv("OTEL_SERVICE_NAME") ?? raw.serviceKey.name
       const token = raw.serviceKey.token
 
       const collector = raw.collector
@@ -208,7 +207,7 @@ export const schema = (defaults: Defaults) =>
       const otlp: Configuration["otlp"] = Object.fromEntries(
         (["traces", "metrics", "logs"] as const).map((signal) => [
           signal,
-          signalEndpoint(signal, collector, otel),
+          signalEndpoint(signal, collector),
         ]),
       )
 
@@ -273,20 +272,17 @@ type Signal = "traces" | "metrics" | "logs"
  * Computes the collector endpoint for the given signal
  * based on the config and environment
  */
-function signalEndpoint(
-  signal: Signal,
-  collector: URL,
-  otel: ENVIRONMENT,
-): string {
-  const upper = signal.toUpperCase() as Uppercase<typeof signal>
+function signalEndpoint(signal: Signal, collector: URL): string {
   const path = `/v1/${signal}`
 
-  const specific = otel[`OTEL_EXPORTER_OTLP_${upper}_ENDPOINT`]
+  const specific = getStringFromEnv(
+    `OTEL_EXPORTER_OTLP_${signal.toUpperCase()}_ENDPOINT`,
+  )
   if (specific) {
     return specific
   }
 
-  const generic = otel.OTEL_EXPORTER_OTLP_ENDPOINT
+  const generic = getStringFromEnv("OTEL_EXPORTER_OTLP_ENDPOINT")
   if (generic) {
     return `${generic}${path}`
   }

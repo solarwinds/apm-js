@@ -16,9 +16,9 @@ limitations under the License.
 
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 import {
-  Aggregation,
+  type AggregationOption,
   AggregationTemporality,
-  ExponentialHistogramAggregation,
+  AggregationType,
   InstrumentType,
   PeriodicExportingMetricReader,
   type PeriodicExportingMetricReaderOptions,
@@ -35,17 +35,6 @@ export class MetricExporter extends OTLPMetricExporter {
         ca: config.trustedpath,
       },
     })
-  }
-
-  override selectAggregation(instrumentType: InstrumentType): Aggregation {
-    switch (instrumentType) {
-      case InstrumentType.HISTOGRAM: {
-        return new ExponentialHistogramAggregation(undefined, true)
-      }
-      default: {
-        return Aggregation.Default()
-      }
-    }
   }
 
   override selectAggregationTemporality(): AggregationTemporality {
@@ -66,6 +55,24 @@ export class MetricReader extends PeriodicExportingMetricReader {
     super(options)
     this.#cardinalityLimit =
       options.cardinalityLimit ?? DEFAULT_CARDINALITY_LIMIT
+  }
+
+  override selectAggregation(
+    instrumentType: InstrumentType,
+  ): AggregationOption {
+    switch (instrumentType) {
+      case InstrumentType.HISTOGRAM: {
+        return {
+          type: AggregationType.EXPONENTIAL_HISTOGRAM,
+          options: {
+            recordMinMax: true,
+          },
+        }
+      }
+      default: {
+        return super.selectAggregation(instrumentType)
+      }
+    }
   }
 
   override selectCardinalityLimit(instrumentType: InstrumentType): number {

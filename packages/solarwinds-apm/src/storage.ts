@@ -20,7 +20,7 @@ import {
   diag,
   type Span,
 } from "@opentelemetry/api"
-import * as sdk from "@opentelemetry/sdk-trace-base"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 
 /**
  * Creates a global value shared between ESM and CommonJS contexts
@@ -95,22 +95,22 @@ export interface ContextStorage<T> {
  * using up memory unnecessarily while waiting for the next GC cycle.
  */
 export interface SpanStorage<T> {
-  get(span: Span | sdk.Span | sdk.ReadableSpan): T | undefined
-  set(span: Span | sdk.Span | sdk.ReadableSpan, value: T): boolean
-  delete(span: Span | sdk.Span | sdk.ReadableSpan): boolean
+  get(span: Span | ReadableSpan): T | undefined
+  set(span: Span | ReadableSpan, value: T): boolean
+  delete(span: Span | ReadableSpan): boolean
 }
 
 const GLOBAL_SPAN_STORAGE = global(
   "span storage",
-  () => new WeakMap<sdk.Span, Map<symbol, unknown>>(),
+  () => new WeakMap<Span & ReadableSpan, Map<symbol, unknown>>(),
 )
 
 function withSdkSpan<T, const U>(
-  span: Span | sdk.Span | sdk.ReadableSpan,
+  span: Span | ReadableSpan | (Span & ReadableSpan),
   fallback: U,
-  f: (span: sdk.Span) => T,
+  f: (span: Span & ReadableSpan) => T,
 ): T | U {
-  if (span instanceof sdk.Span) {
+  if ("setAttribute" in span && "attributes" in span) {
     return f(span)
   } else {
     diag.debug("span storage passed an invalid key", span)

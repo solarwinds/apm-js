@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@noble/hashes": "^1.6.1",
-    "@opentelemetry/sdk-trace-base": "~1.30.0",
+    "@opentelemetry/sdk-trace-base": "^2.0.0",
     "@solarwinds-apm/module": "workspace:^"
   },
   "peerDependencies": {
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/sdk-metrics": "~1.30.0",
+    "@opentelemetry/sdk-metrics": "^2.0.0",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^18.19.0",

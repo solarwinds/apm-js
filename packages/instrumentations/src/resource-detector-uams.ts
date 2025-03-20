@@ -20,7 +20,10 @@ import process from "node:process"
 
 import { type Attributes, context, diag } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
-import { type DetectorSync, Resource } from "@opentelemetry/resources"
+import {
+  type DetectedResourceAttributes,
+  type ResourceDetector,
+} from "@opentelemetry/resources"
 import { ATTR_HOST_ID } from "@opentelemetry/semantic-conventions/incubating"
 
 export const ATTR_UAMS_CLIENT_ID = "sw.uams.client.id"
@@ -33,20 +36,26 @@ const UAMS_CLIENT_PATH =
 const UAMS_CLIENT_URL = new URL("http://127.0.0.1:2113/info/uamsclient")
 const UAMS_CLIENT_ID_FIELD = "uamsclient_id"
 
-class UamsDetector implements DetectorSync {
+const ATTRIBUTES = [ATTR_UAMS_CLIENT_ID, ATTR_HOST_ID]
+
+class UamsDetector implements ResourceDetector {
   readonly #logger = diag.createComponentLogger({
     namespace: `@solarwinds-apm/instrumentations/${UamsDetector.name}`,
   })
 
-  detect(): Resource {
-    return new Resource(
-      {},
-      context.with(suppressTracing(context.active()), () =>
+  detect() {
+    const promise: Promise<DetectedResourceAttributes> = context.with(
+      suppressTracing(context.active()),
+      () =>
         this.#readFromFile()
           .catch(() => this.#readFromApi())
           .catch(() => ({})),
-      ),
     )
+
+    const attributes = Object.fromEntries(
+      ATTRIBUTES.map((name) => [name, promise.then((a) => a[name])]),
+    )
+    return { attributes }
   }
 
   async #readFromFile(): Promise<Attributes> {
@@ -108,4 +117,4 @@ class UamsDetector implements DetectorSync {
   }
 }
 
-export const uamsDetector: DetectorSync = new UamsDetector()
+export const uamsDetector: ResourceDetector = new UamsDetector()
