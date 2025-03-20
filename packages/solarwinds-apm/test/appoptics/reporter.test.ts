@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { Resource } from "@opentelemetry/resources"
+import { resourceFromAttributes } from "@opentelemetry/resources"
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
 import {
   ATTR_PROCESS_COMMAND_ARGS,
@@ -28,7 +28,7 @@ const lit = process.platform === "linux" ? it : it.skip.bind(it)
 
 describe("init", () => {
   lit("has right basic properties", async () => {
-    const message = Object.fromEntries(await init(new Resource({})))
+    const message = Object.fromEntries(await init(resourceFromAttributes({})))
 
     expect(message).to.include({
       __Init: true,
@@ -44,14 +44,16 @@ describe("init", () => {
       n: 2,
       b: true,
     }
-    const message = Object.fromEntries(await init(new Resource(props)))
+    const message = Object.fromEntries(
+      await init(resourceFromAttributes(props)),
+    )
 
     expect(message).to.include(props)
   }).timeout(10_000)
 
   lit("doesn't forward service name", async () => {
     const message = Object.fromEntries(
-      await init(new Resource({ [ATTR_SERVICE_NAME]: "value" })),
+      await init(resourceFromAttributes({ [ATTR_SERVICE_NAME]: "value" })),
     )
 
     expect(message).not.to.have.key(ATTR_SERVICE_NAME)
@@ -60,7 +62,7 @@ describe("init", () => {
   lit("converts array or undefined resource properties", async () => {
     const message = Object.fromEntries(
       await init(
-        new Resource({
+        resourceFromAttributes({
           array: [],
           undefined: undefined,
         }),
@@ -76,7 +78,7 @@ describe("init", () => {
   lit("converts process command args to command line", async () => {
     const message = Object.fromEntries(
       await init(
-        new Resource({
+        resourceFromAttributes({
           [ATTR_PROCESS_COMMAND_ARGS]: ["node", "index.js"],
         }),
       ),
@@ -91,7 +93,7 @@ describe("init", () => {
   lit("doesn't override base attributes with resource attributes", async () => {
     const message = Object.fromEntries(
       await init(
-        new Resource({
+        resourceFromAttributes({
           __Init: false,
           Layer: "python",
           Label: "multiple",

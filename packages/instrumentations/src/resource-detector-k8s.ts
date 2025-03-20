@@ -19,13 +19,9 @@ import os from "node:os"
 import process from "node:process"
 import type readline from "node:readline"
 
-import { type Attributes, context, diag } from "@opentelemetry/api"
+import { context, diag } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
-import {
-  type DetectorSync,
-  type IResource,
-  Resource,
-} from "@opentelemetry/resources"
+import { type ResourceDetector } from "@opentelemetry/resources"
 import {
   ATTR_K8S_NAMESPACE_NAME,
   ATTR_K8S_POD_NAME,
@@ -44,7 +40,13 @@ const NAMESPACE_FILE =
 const MOUNTINFO_FILE = "/proc/self/mountinfo"
 const UID_REGEX = /[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}/i
 
-export class K8sDetector implements DetectorSync {
+const ATTRIBUTES = [
+  ATTR_K8S_NAMESPACE_NAME,
+  ATTR_K8S_POD_UID,
+  ATTR_K8S_POD_NAME,
+]
+
+export class K8sDetector implements ResourceDetector {
   readonly #logger = diag.createComponentLogger({
     namespace: `@solarwinds-apm/instrumentations/${K8sDetector.name}`,
   })
@@ -57,31 +59,30 @@ export class K8sDetector implements DetectorSync {
     this.#mountinfo = mountinfo
   }
 
-  detect(): IResource {
-    return new Resource(
-      {},
-      context.with(suppressTracing(context.active()), async () => {
-        const attributes: Attributes = {}
-
+  detect() {
+    const promise = context.with(
+      suppressTracing(context.active()),
+      async () => {
         const namespace = await this.#podNamespace()
         if (!namespace) {
-          return attributes
+          return {}
         }
-        attributes[ATTR_K8S_NAMESPACE_NAME] = namespace
 
         const uid = await this.#podUid()
-        if (uid) {
-          attributes[ATTR_K8S_POD_UID] = uid
-        }
-
         const name = this.#podName()
-        if (name) {
-          attributes[ATTR_K8S_POD_NAME] = name
-        }
 
-        return attributes
-      }),
+        return {
+          [ATTR_K8S_NAMESPACE_NAME]: namespace,
+          [ATTR_K8S_POD_UID]: uid,
+          [ATTR_K8S_POD_NAME]: name,
+        }
+      },
     )
+
+    const attributes = Object.fromEntries(
+      ATTRIBUTES.map((name) => [name, promise.then((a) => a[name])]),
+    )
+    return { attributes }
   }
 
   async #podNamespace(): Promise<string | undefined> {
@@ -169,4 +170,4 @@ export class K8sDetector implements DetectorSync {
   }
 }
 
-export const k8sDetector: DetectorSync = new K8sDetector()
+export const k8sDetector: ResourceDetector = new K8sDetector()

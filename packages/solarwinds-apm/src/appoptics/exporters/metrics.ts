@@ -23,14 +23,13 @@ import {
   type InstrumentationScope,
 } from "@opentelemetry/core"
 import {
-  Aggregation,
   AggregationTemporality,
   DataPointType,
   type ExponentialHistogram as ExponentialHistogramDatapoint,
-  ExponentialHistogramAggregation,
   type Histogram as HistogramDatapoint,
   InstrumentType,
   type MetricDescriptor,
+  type PushMetricExporter,
   type ResourceMetrics,
 } from "@opentelemetry/sdk-metrics"
 import { oboe } from "@solarwinds-apm/bindings"
@@ -44,7 +43,7 @@ import { componentLogger } from "../../shared/logger.js"
 
 const MAX_TAGS = 50
 
-export class AppopticsMetricExporter {
+export class AppopticsMetricExporter implements PushMetricExporter {
   readonly #logger = componentLogger(AppopticsMetricExporter)
   readonly #reporter: oboe.Reporter
 
@@ -140,17 +139,6 @@ export class AppopticsMetricExporter {
     resultCallback({
       code: ExportResultCode.SUCCESS,
     })
-  }
-
-  selectAggregation(instrumentType: InstrumentType): Aggregation {
-    switch (instrumentType) {
-      case InstrumentType.HISTOGRAM: {
-        return new ExponentialHistogramAggregation(undefined, true)
-      }
-      default: {
-        return Aggregation.Default()
-      }
-    }
   }
 
   selectAggregationTemporality(

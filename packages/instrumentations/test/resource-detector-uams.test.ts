@@ -20,6 +20,7 @@ import http from "node:http"
 import path from "node:path"
 import process from "node:process"
 
+import { detectResources } from "@opentelemetry/resources"
 import { afterEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { uamsDetector } from "../src/resource-detector-uams.js"
@@ -72,7 +73,7 @@ describe("uamsDetector", () => {
     await file()
     await api(true)
 
-    const resource = uamsDetector.detect()
+    const resource = detectResources({ detectors: [uamsDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({
@@ -84,7 +85,7 @@ describe("uamsDetector", () => {
   it("detects id from file when file present and api not running", async () => {
     await file()
 
-    const resource = uamsDetector.detect()
+    const resource = detectResources({ detectors: [uamsDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({
@@ -97,7 +98,7 @@ describe("uamsDetector", () => {
     await file()
     await api(false)
 
-    const resource = uamsDetector.detect()
+    const resource = detectResources({ detectors: [uamsDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({
@@ -109,7 +110,7 @@ describe("uamsDetector", () => {
   it("detects id from api when file not present and api running", async () => {
     await api(true)
 
-    const resource = uamsDetector.detect()
+    const resource = detectResources({ detectors: [uamsDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({
@@ -119,7 +120,7 @@ describe("uamsDetector", () => {
   })
 
   it("detects nothing when file not present and api not running", async () => {
-    const resource = uamsDetector.detect()
+    const resource = detectResources({ detectors: [uamsDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({})
@@ -128,7 +129,7 @@ describe("uamsDetector", () => {
   it("detects nothing when file not present and unrelated running", async () => {
     await api(false)
 
-    const resource = uamsDetector.detect()
+    const resource = detectResources({ detectors: [uamsDetector] })
     await resource.waitForAsyncAttributes?.()
 
     expect(resource.attributes).to.deep.equal({})
