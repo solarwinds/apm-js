@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@opentelemetry/api-logs": "~0.57.0",
-    "@opentelemetry/context-zone": "~1.30.0",
+    "@opentelemetry/context-zone": "~2.0.0",
     "@opentelemetry/core": "~1.30.0",
     "@opentelemetry/exporter-logs-otlp-proto": "~0.57.0",
     "@opentelemetry/exporter-metrics-otlp-http": "~0.57.0",
