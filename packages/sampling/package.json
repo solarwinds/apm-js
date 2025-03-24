@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@noble/hashes": "^1.6.1",
-    "@opentelemetry/sdk-trace-base": "~1.30.0",
+    "@opentelemetry/sdk-trace-base": "~2.0.0",
     "@solarwinds-apm/module": "workspace:^"
   },
   "peerDependencies": {
