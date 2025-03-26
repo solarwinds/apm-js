@@ -22,7 +22,12 @@ import {
 } from "@opentelemetry/api"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
-import { detectResourcesSync, Resource } from "@opentelemetry/resources"
+import {
+  defaultResource,
+  detectResources,
+  type Resource,
+  resourceFromAttributes,
+} from "@opentelemetry/resources"
 import { MeterProvider } from "@opentelemetry/sdk-metrics"
 import {
   BatchSpanProcessor,
@@ -33,7 +38,7 @@ import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
 import { type oboe } from "@solarwinds-apm/bindings"
 import {
   getInstrumentations,
-  getResource,
+  getResourceDetectors,
 } from "@solarwinds-apm/instrumentations"
 
 import log from "./commonjs/log.js"
@@ -78,23 +83,20 @@ export async function init() {
   }
 
   const registerInstrumentations = await initInstrumentations(config, logger)
-  const resource = Resource.default()
+  const detectors = await getResourceDetectors(
+    config.resourceDetectors.configs,
+    config.resourceDetectors.set,
+  )
+
+  const resource = detectResources({
+    detectors: [...detectors, ...config.resourceDetectors.extra],
+  })
+    .merge(defaultResource())
     .merge(
-      new Resource({
+      resourceFromAttributes({
         [ATTR_SERVICE_NAME]: config.service,
         "sw.data.module": "apm",
         "sw.apm.version": VERSION,
-      }),
-    )
-    .merge(
-      getResource(
-        config.resourceDetectors.configs,
-        config.resourceDetectors.set,
-      ),
-    )
-    .merge(
-      detectResourcesSync({
-        detectors: config.resourceDetectors.extra,
       }),
     )
 

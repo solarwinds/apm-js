@@ -19,7 +19,12 @@ import { logs } from "@opentelemetry/api-logs"
 import { ZoneContextManager } from "@opentelemetry/context-zone"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
-import { Resource } from "@opentelemetry/resources"
+import {
+  defaultResource,
+  detectResources,
+  type Resource,
+  resourceFromAttributes,
+} from "@opentelemetry/resources"
 import {
   BatchLogRecordProcessor,
   LoggerProvider,
@@ -32,7 +37,7 @@ import {
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
 import {
   getInstrumentations,
-  getResource,
+  getResourceDetectors,
 } from "@solarwinds-apm/instrumentations/web"
 import { BucketType, Flags, SampleSource } from "@solarwinds-apm/sampling"
 
@@ -61,15 +66,15 @@ export function init() {
     const logger = componentLogger(init)
     logger.debug("config", config)
 
-    const resource = Resource.default()
+    const resource = detectResources({ detectors: getResourceDetectors() })
+      .merge(defaultResource())
       .merge(
-        new Resource({
+        resourceFromAttributes({
           [ATTR_SERVICE_NAME]: config.service,
           "sw.data.module": "apm",
           "sw.apm.version": VERSION,
         }),
       )
-      .merge(getResource())
 
     const meterProvider = initMetrics(config, resource)
     const tracerProvider = initTracing(config, resource)
