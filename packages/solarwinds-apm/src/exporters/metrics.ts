@@ -25,16 +25,11 @@ import {
 } from "@opentelemetry/sdk-metrics"
 
 import { type Configuration } from "../shared/config.js"
+import { exporterConfig } from "./config.js"
 
 export class MetricExporter extends OTLPMetricExporter {
   constructor(config: Configuration & { trustedpath?: string }) {
-    super({
-      url: config.otlp.metrics,
-      headers: config.headers,
-      httpAgentOptions: {
-        ca: config.trustedpath,
-      },
-    })
+    super(exporterConfig(config, "metrics"))
   }
 
   override selectAggregationTemporality(): AggregationTemporality {

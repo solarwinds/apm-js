@@ -201,9 +201,7 @@ export const schema = (defaults: Defaults) =>
       const token = raw.serviceKey.token
 
       const collector = raw.collector
-      const headers: Configuration["headers"] = token
-        ? { authorization: `Bearer ${token}` }
-        : {}
+      const headers: Configuration["headers"] = {}
       const otlp: Configuration["otlp"] = Object.fromEntries(
         (["traces", "metrics", "logs"] as const).map((signal) => [
           signal,

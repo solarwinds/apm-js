@@ -17,15 +17,10 @@ limitations under the License.
 import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-proto"
 
 import { type Configuration } from "../shared/config.js"
+import { exporterConfig } from "./config.js"
 
 export class LogExporter extends OTLPLogExporter {
   constructor(config: Configuration & { trustedpath?: string }) {
-    super({
-      url: config.otlp.logs,
-      headers: config.headers,
-      httpAgentOptions: {
-        ca: config.trustedpath,
-      },
-    })
+    super(exporterConfig(config, "logs"))
   }
 }
