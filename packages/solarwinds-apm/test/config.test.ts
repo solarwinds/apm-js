@@ -46,7 +46,7 @@ describe("read", () => {
       exportLogsEnabled: false,
       instrumentations: { configs: {}, extra: [], set: "all" },
       resourceDetectors: { configs: {}, extra: [], set: "all" },
-      headers: { authorization: "Bearer token" },
+      headers: {},
       otlp: {
         traces: "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
         metrics: "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
@@ -61,10 +61,24 @@ describe("read", () => {
     process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
 
     const config = await read()
-    expect(config.otlp).to.include({
+    expect(config.otlp).to.deep.equal({
       traces: "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
       metrics: "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
       logs: "https://otel.collector.na-01.cloud.solarwinds.com/v1/logs",
+    })
+  })
+
+  it("properly uses OTLP env endpoints", async () => {
+    process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
+    process.env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://custom.endpoint"
+    process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT =
+      "http://custom.traces.endpoint/v1/traces"
+
+    const config = await read()
+    expect(config.otlp).to.deep.equal({
+      traces: "http://custom.traces.endpoint/v1/traces",
+      metrics: "http://custom.endpoint/v1/metrics",
+      logs: "http://custom.endpoint/v1/logs",
     })
   })
 
