@@ -7,13 +7,12 @@
 | `@cucumber/cucumber`        | `>=8.0.0 <12.0.0`  | `@opentelemetry/instrumentation-cucumber`         |
 | `@grpc/grpc-js`             | `>=1.0.0 <2.0.0`   | `@opentelemetry/instrumentation-grpc`             |
 | `@hapi/hapi`                | `>=17.0.0 <22.0.0` | `@opentelemetry/instrumentation-hapi`             |
-| `@nestjs/core`              | `>=4.0.0 <11.0.0`  | `@opentelemetry/instrumentation-nestjs-core`      |
+| `@nestjs/core`              | `>=4.0.0 <12.0.0`  | `@opentelemetry/instrumentation-nestjs-core`      |
 | `@node-redis/client`        | `>=1.0.0 <2.0.0`   | `@opentelemetry/instrumentation-redis-4`          |
 | `@redis/client`             | `>=1.0.0 <2.0.0`   | `@opentelemetry/instrumentation-redis-4`          |
 | `@smithy/middleware-stack`  | `>=2.0.0`          | `@opentelemetry/instrumentation-aws-sdk`          |
 | `@smithy/smithy-client`     | `>=1.0.3`          | `@opentelemetry/instrumentation-aws-sdk`          |
 | `amqplib`                   | `>=0.5.5 <1.0.0`   | `@opentelemetry/instrumentation-amqplib`          |
-| `aws-sdk`                   | `>=2.308.0 <3.0.0` | `@opentelemetry/instrumentation-aws-sdk`          |
 | `bunyan`                    | `>=1.0.0 <2.0.0`   | `@opentelemetry/instrumentation-bunyan`           |
 | `cassandra-driver`          | `>=4.4.0 <5.0.0`   | `@opentelemetry/instrumentation-cassandra-driver` |
 | `connect`                   | `>=2.0.0 <4.0.0`   | `@opentelemetry/instrumentation-connect`          |
@@ -29,7 +28,7 @@
 | `http`                      | `*`                | `@opentelemetry/instrumentation-http`             |
 | `https`                     | `*`                | `@opentelemetry/instrumentation-http`             |
 | `ioredis`                   | `>=2.0.0 <6.0.0`   | `@opentelemetry/instrumentation-ioredis`          |
-| `kafkajs`                   | `>=0.1.0 <3.0.0`   | `@opentelemetry/instrumentation-kafkajs`          |
+| `kafkajs`                   | `>=0.3.0 <3.0.0`   | `@opentelemetry/instrumentation-kafkajs`          |
 | `knex`                      | `>=0.10.0 <4.0.0`  | `@opentelemetry/instrumentation-knex`             |
 | `koa`                       | `>=2.0.0 <3.0.0`   | `@opentelemetry/instrumentation-koa`              |
 | `lru-memoizer`              | `>=1.3.0 <3.0.0`   | `@opentelemetry/instrumentation-lru-memoizer`     |
