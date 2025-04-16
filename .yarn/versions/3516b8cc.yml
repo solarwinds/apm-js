@@ -1,0 +1,4 @@
+releases:
+  "@solarwinds-apm/compat": patch
+  "@solarwinds-apm/instrumentations": minor
+  solarwinds-apm: patch
