@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 import {
-  ROOT_CONTEXT,
+  context,
+  type DiagLogger,
   type Span,
   type TextMapPropagator,
   trace,
@@ -32,10 +33,12 @@ export interface Options extends Configuration {
 export function patch(
   configs: InstrumentationConfigMap,
   options: Options,
+  logger: DiagLogger,
 ): InstrumentationConfigMap {
   for (const patcher of PATCHERS) {
     patcher(configs, options)
   }
+  logger.debug("patched instrumentation configs", configs)
   return configs
 }
 
@@ -77,8 +80,8 @@ const PATCHERS = [
     config.responseHook = (span, response) => {
       // only for server responses originating from the instrumented app
       if ("setHeader" in response) {
-        const context = trace.setSpan(ROOT_CONTEXT, span)
-        options.responsePropagator.inject(context, response, {
+        const ctx = trace.setSpan(context.active(), span)
+        options.responsePropagator.inject(ctx, response, {
           set: (res: typeof response, k, v) => {
             if (!res.hasHeader(k)) {
               res.setHeader(k, v)
@@ -109,7 +112,7 @@ const PATCHERS = [
       "@opentelemetry/instrumentation-winston",
     ],
     (config, options) => {
-      config.enabled ??= options.insertTraceContextIntoLogs
+      config.disableLogCorrelation ??= !options.insertTraceContextIntoLogs
       config.disableLogSending ??= !options.exportLogsEnabled
 
       const original = config.logHook
