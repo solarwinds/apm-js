@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import { hmac } from "@noble/hashes/hmac"
-import { sha1 } from "@noble/hashes/sha1"
+import { sha1 } from "@noble/hashes/legacy"
 import { diag, type DiagLogger } from "@opentelemetry/api"
 
 const TRIGGER_TRACE_KEY = "trigger-trace"
