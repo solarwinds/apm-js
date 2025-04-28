@@ -22,7 +22,7 @@ import {
   type TextMapPropagator,
   type TextMapSetter,
 } from "@opentelemetry/api"
-import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
+import { afterEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { type Options, patch } from "../src/patches.js"
 
@@ -105,7 +105,7 @@ describe("patch", () => {
   })
 
   describe("@opentelemetry/instrumentation-aws-lambda", () => {
-    beforeEach(() => {
+    afterEach(() => {
       Reflect.deleteProperty(process.env, "AWS_LAMBDA_FUNCTION_NAME")
     })
 
@@ -161,7 +161,7 @@ describe("patch", () => {
   })
 
   describe("@opentelemetry/instrumentation-aws-sdk", () => {
-    beforeEach(() => {
+    afterEach(() => {
       Reflect.deleteProperty(process.env, "AWS_LAMBDA_FUNCTION_NAME")
     })
 
