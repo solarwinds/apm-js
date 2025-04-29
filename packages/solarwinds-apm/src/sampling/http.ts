@@ -60,7 +60,11 @@ export class HttpSampler extends Sampler {
 
     this.#url = config.collector
     this.#service = encodeURIComponent(config.service)
-    this.#headers = config.headers
+
+    this.#headers = { ...config.headers }
+    if (this.#url.hostname.endsWith(".solarwinds.com")) {
+      this.#headers.authorization = `Bearer ${config.token}`
+    }
 
     setTimeout(() => {
       this.#loop()

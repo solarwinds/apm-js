@@ -19,19 +19,11 @@ import { setTimeout } from "node:timers/promises"
 import { trace } from "@opentelemetry/api"
 import { before, describe, expect, it, otel } from "@solarwinds-apm/test"
 
-import { type Configuration } from "../../src/config.js"
+import { read } from "../../src/config.js"
 import { HttpSampler } from "../../src/sampling/http.js"
 
 expect(process.env).to.include.keys("SW_APM_COLLECTOR", "SW_APM_SERVICE_KEY")
-const COLLECTOR = process.env.SW_APM_COLLECTOR!
-const [TOKEN, SERVICE] = process.env.SW_APM_SERVICE_KEY!.split(":")
-const CONFIG = {
-  service: SERVICE,
-  collector: new URL(`https://${COLLECTOR}`),
-  headers: {
-    Authorization: `Bearer ${TOKEN}`,
-  },
-} as unknown as Configuration
+const CONFIG = await read()
 
 describe(HttpSampler.name, () => {
   describe("valid service key", () => {
@@ -64,7 +56,7 @@ describe(HttpSampler.name, () => {
 
   describe("invalid service key", () => {
     before(async () => {
-      const config = { ...CONFIG, headers: { Authorization: "Bearer oh-no" } }
+      const config = { ...CONFIG, token: "OH NO" }
 
       const sampler = new HttpSampler(config)
       await otel.reset({ trace: { sampler } })
