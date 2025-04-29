@@ -134,10 +134,14 @@ async function initInstrumentations(config: Configuration, logger: DiagLogger) {
   logger.debug("initialising instrumentations")
 
   const provided = await getInstrumentations(
-    patch(config.instrumentations.configs, {
-      ...config,
-      responsePropagator: new ResponseHeadersPropagator(),
-    }),
+    patch(
+      config.instrumentations.configs,
+      {
+        ...config,
+        responsePropagator: new ResponseHeadersPropagator(),
+      },
+      logger,
+    ),
     config.instrumentations.set,
   )
   const extra = config.instrumentations.extra
