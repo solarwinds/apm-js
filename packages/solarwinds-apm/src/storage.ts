@@ -100,6 +100,14 @@ export interface SpanStorage<T> {
   delete(span: Span | ReadableSpan): boolean
 }
 
+/**
+ * Promise which resolves to the value passed to it
+ * when calling its resolve method.
+ */
+export interface CellStorage<T> extends Promise<T> {
+  resolve(instance: T): void
+}
+
 const GLOBAL_SPAN_STORAGE = global(
   "span storage",
   () => new WeakMap<Span & ReadableSpan, Map<symbol, unknown>>(),
@@ -161,4 +169,12 @@ export function spanStorage<T>(id: string): SpanStorage<T> {
         return deleted
       }),
   }
+}
+
+export function cellStorage<T>(id: string): CellStorage<T> {
+  return global(id, () => {
+    let resolve!: (instance: T) => void
+    const promise = new Promise<T>((r) => (resolve = r))
+    return Object.assign(promise, { resolve })
+  })
 }

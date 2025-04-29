@@ -56,7 +56,12 @@ import {
 } from "./propagation/headers.js"
 import { TraceContextPropagator } from "./propagation/trace-context.js"
 import { type Sampler } from "./sampling/sampler.js"
-import { SAMPLER } from "./shared/init.js"
+import {
+  LOGGER_PROVIDER,
+  METER_PROVIDER,
+  SAMPLER,
+  TRACER_PROVIDER,
+} from "./shared/init.js"
 import { componentLogger } from "./shared/logger.js"
 import { VERSION } from "./version.js"
 
@@ -228,6 +233,7 @@ async function initTracing(
   })
   provider.register({ propagator })
 
+  TRACER_PROVIDER.resolve(provider)
   logger.debug("initialised tracing")
   return provider
 }
@@ -273,6 +279,7 @@ async function initMetrics(
     enable()
   }
 
+  METER_PROVIDER.resolve(provider)
   logger.debug("initialised metrics")
   return provider
 }
@@ -282,7 +289,10 @@ async function initLogs(
   resource: Resource,
   logger: DiagLogger,
 ) {
-  if (!config.exportLogsEnabled) return
+  if (!config.exportLogsEnabled) {
+    LOGGER_PROVIDER.resolve(undefined)
+    return
+  }
   logger.debug("initialising logs")
 
   const [
@@ -301,6 +311,7 @@ async function initLogs(
   )
   logs.setGlobalLoggerProvider(provider)
 
+  LOGGER_PROVIDER.resolve(provider)
   logger.debug("logs initialised")
   return provider
 }
