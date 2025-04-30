@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/instrumentations",
-  "version": "2.5.0-pre.2",
+  "version": "2.5.0-pre.3",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
