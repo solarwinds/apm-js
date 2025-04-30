@@ -22,6 +22,11 @@ import { INIT } from "./commonjs/flags.js"
 import log from "./commonjs/log.js"
 import { environment } from "./env.js"
 import { init } from "./init.js"
+import {
+  LOGGER_PROVIDER,
+  METER_PROVIDER,
+  TRACER_PROVIDER,
+} from "./shared/init.js"
 
 if (!environment.IS_SERVERLESS) {
   await import("./commonjs/version.js")
@@ -48,6 +53,24 @@ if (!Reflect.has(globalThis, INIT)) {
       configurable: false,
       writable: false,
     })
+
+    let exited = false
+    Object.entries({
+      SIGINT: 2,
+      SIGTERM: 15,
+      beforeExit: -128,
+    }).map(([signal, code]) =>
+      process.once(signal, () => {
+        if (exited) return
+        exited = true
+
+        void Promise.all([TRACER_PROVIDER, METER_PROVIDER, LOGGER_PROVIDER])
+          .then((providers) =>
+            Promise.all(providers.map((provider) => provider?.shutdown())),
+          )
+          .finally(() => process.exit(128 + code))
+      }),
+    )
   } catch (error) {
     log(error)
   }

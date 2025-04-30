@@ -56,7 +56,12 @@ import {
 } from "./propagation/headers.js"
 import { TraceContextPropagator } from "./propagation/trace-context.js"
 import { type Sampler } from "./sampling/sampler.js"
-import { SAMPLER } from "./shared/init.js"
+import {
+  LOGGER_PROVIDER,
+  METER_PROVIDER,
+  SAMPLER,
+  TRACER_PROVIDER,
+} from "./shared/init.js"
 import { componentLogger } from "./shared/logger.js"
 import { VERSION } from "./version.js"
 
@@ -79,6 +84,11 @@ export async function init() {
 
   if (!config.enabled) {
     logger.warn("Library disabled, application will not be instrumented.")
+
+    SAMPLER.resolve(undefined)
+    TRACER_PROVIDER.resolve(undefined)
+    METER_PROVIDER.resolve(undefined)
+    LOGGER_PROVIDER.resolve(undefined)
     return
   }
 
@@ -219,8 +229,6 @@ async function initTracing(
     ]
   }
 
-  SAMPLER.resolve(sampler)
-
   const provider = new NodeTracerProvider({
     resource,
     sampler,
@@ -228,6 +236,8 @@ async function initTracing(
   })
   provider.register({ propagator })
 
+  SAMPLER.resolve(sampler)
+  TRACER_PROVIDER.resolve(provider)
   logger.debug("initialised tracing")
   return provider
 }
@@ -273,6 +283,7 @@ async function initMetrics(
     enable()
   }
 
+  METER_PROVIDER.resolve(provider)
   logger.debug("initialised metrics")
   return provider
 }
@@ -282,7 +293,10 @@ async function initLogs(
   resource: Resource,
   logger: DiagLogger,
 ) {
-  if (!config.exportLogsEnabled) return
+  if (!config.exportLogsEnabled) {
+    LOGGER_PROVIDER.resolve(undefined)
+    return
+  }
   logger.debug("initialising logs")
 
   const [
@@ -301,6 +315,7 @@ async function initLogs(
   )
   logs.setGlobalLoggerProvider(provider)
 
+  LOGGER_PROVIDER.resolve(provider)
   logger.debug("logs initialised")
   return provider
 }

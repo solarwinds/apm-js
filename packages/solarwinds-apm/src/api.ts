@@ -14,7 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { SAMPLER } from "./shared/init.js"
+import {
+  LOGGER_PROVIDER,
+  METER_PROVIDER,
+  SAMPLER,
+  TRACER_PROVIDER,
+} from "./shared/init.js"
 
 /**
  * Wait until the library is ready to sample traces
@@ -24,8 +29,22 @@ import { SAMPLER } from "./shared/init.js"
  * @param timeout - Wait timeout in milliseconds
  * @returns Whether the library is ready
  */
-export function waitUntilReady(timeout: number): Promise<boolean> {
-  return SAMPLER.then((sampler) => sampler.waitUntilReady(timeout))
+export async function waitUntilReady(timeout: number): Promise<boolean> {
+  const sampler = await SAMPLER
+  const success = await sampler?.waitUntilReady(timeout)
+  return success ?? false
+}
+
+/**
+ * Forces the library to flush any buffered traces, metrics or logs
+ */
+export async function forceFlush(): Promise<void> {
+  const providers = await Promise.all([
+    TRACER_PROVIDER,
+    METER_PROVIDER,
+    LOGGER_PROVIDER,
+  ])
+  await Promise.all(providers.map((provider) => provider?.forceFlush()))
 }
 
 export { type Config } from "./config.js"

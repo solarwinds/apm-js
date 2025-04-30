@@ -52,7 +52,12 @@ import { TransactionNameProcessor } from "../processing/transaction-name.js"
 import { RequestHeadersPropagator } from "../propagation/headers.js"
 import { TraceContextPropagator } from "../propagation/trace-context.js"
 import { HttpSampler } from "../sampling/http.js"
-import { SAMPLER } from "../shared/init.js"
+import {
+  LOGGER_PROVIDER,
+  METER_PROVIDER,
+  SAMPLER,
+  TRACER_PROVIDER,
+} from "../shared/init.js"
 import { componentLogger } from "../shared/logger.js"
 import { VERSION } from "../version.js"
 import { type Configuration, read } from "./config.js"
@@ -65,6 +70,16 @@ export function init() {
     diag.setLogger(new Logger(), config.logLevel)
     const logger = componentLogger(init)
     logger.debug("config", config)
+
+    if (!config.enabled) {
+      logger.warn("Library disabled, application will not be instrumented.")
+
+      SAMPLER.resolve(undefined)
+      TRACER_PROVIDER.resolve(undefined)
+      METER_PROVIDER.resolve(undefined)
+      LOGGER_PROVIDER.resolve(undefined)
+      return
+    }
 
     const resource = detectResources({ detectors: getResourceDetectors() })
       .merge(defaultResource())
@@ -106,7 +121,6 @@ function initTracing(config: Configuration, resource: Resource) {
     timestamp: Math.round(Date.now() / 1000),
     ttl: 10,
   })
-  SAMPLER.resolve(sampler)
 
   const provider = new WebTracerProvider({
     resource,
@@ -130,6 +144,8 @@ function initTracing(config: Configuration, resource: Resource) {
     }),
   })
 
+  SAMPLER.resolve(sampler)
+  TRACER_PROVIDER.resolve(provider)
   return provider
 }
 
@@ -144,11 +160,13 @@ function initMetrics(config: Configuration, resource: Resource) {
   })
   metrics.setGlobalMeterProvider(provider)
 
+  METER_PROVIDER.resolve(provider)
   return provider
 }
 
 function initLogs(config: Configuration, resource: Resource) {
   if (!config.exportLogsEnabled) {
+    LOGGER_PROVIDER.resolve(undefined)
     return
   }
 
@@ -160,5 +178,6 @@ function initLogs(config: Configuration, resource: Resource) {
   )
   logs.setGlobalLoggerProvider(provider)
 
+  LOGGER_PROVIDER.resolve(provider)
   return provider
 }
