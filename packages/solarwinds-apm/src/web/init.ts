@@ -121,7 +121,6 @@ function initTracing(config: Configuration, resource: Resource) {
     timestamp: Math.round(Date.now() / 1000),
     ttl: 10,
   })
-  SAMPLER.resolve(sampler)
 
   const provider = new WebTracerProvider({
     resource,
@@ -145,6 +144,7 @@ function initTracing(config: Configuration, resource: Resource) {
     }),
   })
 
+  SAMPLER.resolve(sampler)
   TRACER_PROVIDER.resolve(provider)
   return provider
 }

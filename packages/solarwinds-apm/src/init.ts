@@ -229,8 +229,6 @@ async function initTracing(
     ]
   }
 
-  SAMPLER.resolve(sampler)
-
   const provider = new NodeTracerProvider({
     resource,
     sampler,
@@ -238,6 +236,7 @@ async function initTracing(
   })
   provider.register({ propagator })
 
+  SAMPLER.resolve(sampler)
   TRACER_PROVIDER.resolve(provider)
   logger.debug("initialised tracing")
   return provider
