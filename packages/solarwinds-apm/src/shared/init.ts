@@ -22,14 +22,17 @@ import { type Sampler } from "../sampling/sampler.js"
 import { cellStorage } from "../storage.js"
 
 /** Global reference to the current sampler */
-export const SAMPLER = cellStorage<Sampler>("sampler")
+export const SAMPLER = cellStorage<Sampler | undefined>("sampler")
 
 /** Global reference to the current tracer provider */
-export const TRACER_PROVIDER =
-  cellStorage<BasicTracerProvider>("tracer provider")
+export const TRACER_PROVIDER = cellStorage<BasicTracerProvider | undefined>(
+  "tracer provider",
+)
 
 /** Global reference to the current meter provider */
-export const METER_PROVIDER = cellStorage<MeterProvider>("meter provider")
+export const METER_PROVIDER = cellStorage<MeterProvider | undefined>(
+  "meter provider",
+)
 
 /** Global reference to the current logger provider */
 export const LOGGER_PROVIDER = cellStorage<LoggerProvider | undefined>(

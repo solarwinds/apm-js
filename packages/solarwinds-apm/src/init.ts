@@ -84,6 +84,11 @@ export async function init() {
 
   if (!config.enabled) {
     logger.warn("Library disabled, application will not be instrumented.")
+
+    SAMPLER.resolve(undefined)
+    TRACER_PROVIDER.resolve(undefined)
+    METER_PROVIDER.resolve(undefined)
+    LOGGER_PROVIDER.resolve(undefined)
     return
   }
 

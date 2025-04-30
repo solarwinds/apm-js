@@ -31,7 +31,8 @@ import {
  */
 export async function waitUntilReady(timeout: number): Promise<boolean> {
   const sampler = await SAMPLER
-  return await sampler.waitUntilReady(timeout)
+  const success = await sampler?.waitUntilReady(timeout)
+  return success ?? false
 }
 
 /**
