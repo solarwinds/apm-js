@@ -17,6 +17,7 @@ limitations under the License.
 import { type OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-proto"
 import { type OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 import { type OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
+import { CompressionAlgorithm } from "@opentelemetry/otlp-exporter-base"
 
 import { type Configuration } from "../shared/config.js"
 
@@ -43,6 +44,7 @@ export function exporterConfig(
   return {
     url,
     headers,
+    compression: CompressionAlgorithm.GZIP,
     httpAgentOptions: {
       ca: config.trustedpath,
     },
