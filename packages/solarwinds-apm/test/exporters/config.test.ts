@@ -36,6 +36,7 @@ describe(exporterConfig.name, () => {
           expect(exporterConfig(config, signal)).to.loosely.deep.equal({
             url,
             headers: { authorization: "Bearer token" },
+            compression: "gzip",
             httpAgentOptions: {},
           })
         })
@@ -56,6 +57,7 @@ describe(exporterConfig.name, () => {
         expect(exporterConfig(config, signal)).to.loosely.deep.equal({
           url,
           headers: {},
+          compression: "gzip",
           httpAgentOptions: { ca: "certificate" },
         })
       })
@@ -75,6 +77,7 @@ describe(exporterConfig.name, () => {
         expect(exporterConfig(config, signal)).to.loosely.deep.equal({
           url,
           headers: {},
+          compression: "gzip",
           httpAgentOptions: { ca: "certificate" },
         })
       })
