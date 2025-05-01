@@ -82,6 +82,20 @@ try {
   ).version;
   log("solarwinds-apm " + solarwinds);
 
-  var otel = require("@opentelemetry/core").VERSION;
-  log("@opentelemetry/core " + otel);
+  function logVersion(module) {
+    var dir = require.resolve(module);
+    while (!dir.endsWith(module)) {
+      dir = path.dirname(dir);
+    }
+    var version = JSON.parse(
+      fs.readFileSync(path.join(dir, "package.json"), {
+        encoding: "utf8"
+      })
+    ).version;
+    log(module + " " + version);
+  }
+
+  logVersion("@opentelemetry/api");
+  logVersion("@opentelemetry/core");
+  logVersion("@opentelemetry/instrumentation");
 } catch (_error) {}
