@@ -19,7 +19,7 @@
 | `dataloader`                | `>=2.0.0 <3.0.0`   | `@opentelemetry/instrumentation-dataloader`       |
 | `dns`                       | `*`                | `@opentelemetry/instrumentation-dns`              |
 | `dns/promises`              | `*`                | `@opentelemetry/instrumentation-dns`              |
-| `express`                   | `>=4.0.0 <5.0.0`   | `@opentelemetry/instrumentation-express`          |
+| `express`                   | `>=4.0.0 <6.0.0`   | `@opentelemetry/instrumentation-express`          |
 | `fastify`                   | `>=4.0.0 <6.0.0`   | `@fastify/otel`                                   |
 | `fs`                        | `*`                | `@opentelemetry/instrumentation-fs`               |
 | `fs/promises`               | `*`                | `@opentelemetry/instrumentation-fs`               |
