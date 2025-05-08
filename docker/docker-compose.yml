@@ -148,10 +148,56 @@ services:
       - apm-collector
       - otel-collector
 
+  24-alpine:
+    build:
+      context: .
+      dockerfile: 24-alpine.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  24-amazonlinux:
+    build:
+      context: .
+      dockerfile: 24-amazonlinux.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  24-debian:
+    build:
+      context: .
+      dockerfile: 24-debian.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  24-ubi:
+    build:
+      context: .
+      dockerfile: 24-ubi.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+  24-ubuntu:
+    build:
+      context: .
+      dockerfile: 24-ubuntu.Dockerfile
+    volumes:
+      - ..:/solarwinds-apm
+    links:
+      - apm-collector
+      - otel-collector
+
   example:
     build:
       context: .
-      dockerfile: 20-ubuntu.Dockerfile
+      dockerfile: 22-ubuntu.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -173,7 +219,7 @@ services:
   udpdump:
     build:
       context: .
-      dockerfile: 20-alpine.Dockerfile
+      dockerfile: 22-alpine.Dockerfile
     command: [yarn node udpdump.js]
     working_dir: /solarwinds-apm/scripts
     volumes:
@@ -182,7 +228,7 @@ services:
       - 12225
 
   otel-collector:
-    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector:0.111.0}
+    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector:0.125.0}
     command: [--config=/solarwinds-apm/docker/otel-collector/config.yml]
     volumes:
       - ..:/solarwinds-apm
@@ -190,13 +236,13 @@ services:
       - 4317
 
   mysql:
-    image: mysql:8
+    image: mysql:9
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
   postgres:
-    image: postgres:16
+    image: postgres:17
     environment:
       POSTGRES_PASSWORD: postgres
     volumes:
