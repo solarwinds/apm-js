@@ -28,6 +28,11 @@ jobs:
           - 22-debian
           - 22-ubi
           - 22-ubuntu
+          - 24-alpine
+          - 24-amazonlinux
+          - 24-debian
+          - 24-ubi
+          - 24-ubuntu
       fail-fast: false
     steps:
       - uses: actions/checkout@v4

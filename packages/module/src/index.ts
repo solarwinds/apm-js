@@ -27,14 +27,23 @@ export function unref<T extends NodeJS.RefCounted | number>(ref: T): T {
 
 export async function load(url: string): Promise<unknown> {
   const imported = (await import(url)) as object
+  if (!("default" in imported)) {
+    return imported
+  }
 
-  const hasDefault = "default" in imported
-  const keyCount = Object.keys(imported).length
+  // we want to check if the only meaningful export is the default one
+  // so we count the number of keys in the exported object and subtract one
+  // for every export that matches a name we know not to be meaningful
+  const ignored = ["module.exports", "__esModule"]
+  const remaining = ignored.reduce(
+    (remaining, ignored) => (ignored in imported ? remaining - 1 : remaining),
+    Object.keys(imported).length,
+  )
 
-  const useDefaultExport =
-    hasDefault &&
-    (keyCount === 1 || (keyCount === 2 && "__esModule" in imported))
-
-  if (useDefaultExport) return imported.default
-  else return imported
+  // if there was only one meaningful export we can safely use that
+  if (remaining === 1) {
+    return imported.default
+  } else {
+    return imported
+  }
 }
