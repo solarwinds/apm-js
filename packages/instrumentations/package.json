@@ -39,7 +39,7 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@fastify/otel": "^0.7.0",
+    "@fastify/otel": "^0.8.0",
     "@opentelemetry/auto-instrumentations-web": "^0.46.0",
     "@opentelemetry/core": "^2.0.0",
     "@opentelemetry/instrumentation": "^0.200.0",
@@ -87,7 +87,7 @@
     "@opentelemetry/resource-detector-container": "^0.7.0",
     "@opentelemetry/resource-detector-gcp": "^0.34.0",
     "@opentelemetry/resources": "^2.0.0",
-    "@opentelemetry/semantic-conventions": "~1.32.0",
+    "@opentelemetry/semantic-conventions": "~1.33.0",
     "@opentelemetry/winston-transport": "^0.11.0",
     "@solarwinds-apm/module": "workspace:^"
   },
