@@ -172,10 +172,8 @@ function initLogs(config: Configuration, resource: Resource) {
 
   const provider = new LoggerProvider({
     resource,
+    processors: [new BatchLogRecordProcessor(new LogExporter(config))],
   })
-  provider.addLogRecordProcessor(
-    new BatchLogRecordProcessor(new LogExporter(config)),
-  )
   logs.setGlobalLoggerProvider(provider)
 
   LOGGER_PROVIDER.resolve(provider)
