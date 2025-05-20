@@ -309,10 +309,10 @@ async function initLogs(
     import("./exporters/logs.js"),
   ])
 
-  const provider = new LoggerProvider({ resource })
-  provider.addLogRecordProcessor(
-    new BatchLogRecordProcessor(new LogExporter(config)),
-  )
+  const provider = new LoggerProvider({
+    resource,
+    processors: [new BatchLogRecordProcessor(new LogExporter(config))],
+  })
   logs.setGlobalLoggerProvider(provider)
 
   LOGGER_PROVIDER.resolve(provider)
