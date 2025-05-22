@@ -228,7 +228,7 @@ services:
       - 12225
 
   otel-collector:
-    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector:0.125.0}
+    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector}
     command: [--config=/solarwinds-apm/docker/otel-collector/config.yml]
     volumes:
       - ..:/solarwinds-apm
