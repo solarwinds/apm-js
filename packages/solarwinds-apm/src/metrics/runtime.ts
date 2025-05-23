@@ -76,7 +76,6 @@ const uptime = meter.createObservableGauge(METRIC_PROCESS_UPTIME, {
 
 function callback(result: BatchObservableResult) {
   const usage = process.resourceUsage()
-  console.dir(usage)
 
   result.observe(cpuTime, usage.userCPUTime / 1_000_000, {
     [ATTR_CPU_MODE]: CPU_MODE_VALUE_USER,
