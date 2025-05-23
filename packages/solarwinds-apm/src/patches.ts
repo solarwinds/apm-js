@@ -106,6 +106,13 @@ const PATCHERS = [
   }),
 
   patcher(
+    ["@opentelemetry/instrumentation-runtime-node"],
+    (config, options) => {
+      config.enabled ??= options.runtimeMetrics
+    },
+  ),
+
+  patcher(
     [
       "@opentelemetry/instrumentation-bunyan",
       "@opentelemetry/instrumentation-pino",

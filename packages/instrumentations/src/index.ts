@@ -53,6 +53,7 @@ import { type RedisInstrumentation as RedisInstrumentationV2 } from "@openteleme
 import { type RedisInstrumentation as RedisInstrumentationV4 } from "@opentelemetry/instrumentation-redis-4"
 import { type RestifyInstrumentation } from "@opentelemetry/instrumentation-restify"
 import { type RouterInstrumentation } from "@opentelemetry/instrumentation-router"
+import { type RuntimeNodeInstrumentation } from "@opentelemetry/instrumentation-runtime-node"
 import { type SocketIoInstrumentation } from "@opentelemetry/instrumentation-socket.io"
 import { type TediousInstrumentation } from "@opentelemetry/instrumentation-tedious"
 import { type UndiciInstrumentation } from "@opentelemetry/instrumentation-undici"
@@ -97,6 +98,7 @@ interface InstrumentationTypes {
   "@opentelemetry/instrumentation-redis-4": typeof RedisInstrumentationV4
   "@opentelemetry/instrumentation-restify": typeof RestifyInstrumentation
   "@opentelemetry/instrumentation-router": typeof RouterInstrumentation
+  "@opentelemetry/instrumentation-runtime-node": typeof RuntimeNodeInstrumentation
   "@opentelemetry/instrumentation-socket.io": typeof SocketIoInstrumentation
   "@opentelemetry/instrumentation-tedious": typeof TediousInstrumentation
   "@opentelemetry/instrumentation-undici": typeof UndiciInstrumentation
@@ -144,6 +146,7 @@ const INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-redis-4": "RedisInstrumentation",
   "@opentelemetry/instrumentation-restify": "RestifyInstrumentation",
   "@opentelemetry/instrumentation-router": "RouterInstrumentation",
+  "@opentelemetry/instrumentation-runtime-node": "RuntimeNodeInstrumentation",
   "@opentelemetry/instrumentation-socket.io": "SocketIoInstrumentation",
   "@opentelemetry/instrumentation-tedious": "TediousInstrumentation",
   "@opentelemetry/instrumentation-winston": "WinstonInstrumentation",

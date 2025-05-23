@@ -1415,6 +1415,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@opentelemetry/instrumentation-runtime-node@npm:^0.15.0":
+  version: 0.15.0
+  resolution: "@opentelemetry/instrumentation-runtime-node@npm:0.15.0"
+  dependencies:
+    "@opentelemetry/instrumentation": "npm:^0.201.0"
+  peerDependencies:
+    "@opentelemetry/api": ^1.3.0
+  checksum: 10c0/7b9e730830744984e01fb81d552313f18d1878a13875e8275f3aa50ba03231b1e6a8deebf71186abad8cfe91f169950b05e7ca528daca8ef3d7c24a876029115
+  languageName: node
+  linkType: hard
+
 "@opentelemetry/instrumentation-socket.io@npm:^0.48.0":
   version: 0.48.0
   resolution: "@opentelemetry/instrumentation-socket.io@npm:0.48.0"
@@ -2178,6 +2189,7 @@ __metadata:
     "@opentelemetry/instrumentation-redis-4": "npm:^0.48.0"
     "@opentelemetry/instrumentation-restify": "npm:^0.47.0"
     "@opentelemetry/instrumentation-router": "npm:^0.46.0"
+    "@opentelemetry/instrumentation-runtime-node": "npm:^0.15.0"
     "@opentelemetry/instrumentation-socket.io": "npm:^0.48.0"
     "@opentelemetry/instrumentation-tedious": "npm:^0.20.0"
     "@opentelemetry/instrumentation-undici": "npm:^0.12.0"
