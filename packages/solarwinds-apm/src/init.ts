@@ -279,7 +279,7 @@ async function initMetrics(
   if (config.runtimeMetrics) {
     logger.debug("initialising runtime metrics")
 
-    const { enable } = await import("./metrics/runtime.js")
+    const { enable } = await import("./metrics.js")
     enable()
   }
 
