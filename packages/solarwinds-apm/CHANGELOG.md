@@ -1,3 +1,22 @@
+# [15.5.0](https://github.com/solarwinds/apm-js/releases/tag/v15.5.0)
+
+## New features and improvements
+
+- Node.js 24 support
+- Only patch instrumented packages to improve performance and compatibility
+- New API to flush telemetry data and best effort to flush on shutdown
+
+## Fixes
+
+- Send logs if requested even if log correlation is disabled
+- Always properly set trace response headers
+- Don't hang forever in some API calls when the library is disabled
+
+## Internal changes
+
+- Upgrade to OpenTelemetry SDK 2.0
+- Enable `gzip` compression by default
+
 # [15.4.0](https://github.com/solarwinds/apm-js/releases/tag/v15.4.0)
 
 ## New features and improvements
