@@ -1,6 +1,6 @@
 # solarwinds-apm
 
-The new OpenTelemetry-based SolarWinds APM Node.js library. Currently supports Node.js `^18.19.0`, `^20.8.0` and `22` or any later LTS release.
+The new OpenTelemetry-based SolarWinds APM Node.js library. Currently supports Node.js `^18.19.0`, `^20.8.0`, `22` and `24`.
 
 This library automatically instruments a wide set of frameworks and libraries, see the [Module Compatibility table](../instrumentations/COMPATIBILITY.md) for details.
 
@@ -59,6 +59,19 @@ const { setTransactionName } = require("solarwinds-apm")
 function calledFromWithinTransaction() {
   setTransactionName("custom-transaction")
 }
+```
+
+## Flushing pending telemetry data
+
+The library internally batches data before sending it to the platform to be more efficient. However in some scenarios it is desirable to force the data to be sent immediately. Calling `forceFlush` does exactly this.
+
+```ts
+import { forceFlush } from "solarwinds-apm"
+// or
+const { forceFlush } = require("solarwinds-apm")
+
+// by the time this resolves the data will have been sent
+await forceFlush()
 ```
 
 ## Migrating from 14.x.x

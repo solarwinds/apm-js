@@ -1,6 +1,0 @@
-releases:
-  "@solarwinds-apm/instrumentations": minor
-  "@solarwinds-apm/sampling": minor
-
-declined:
-  - solarwinds-apm

@@ -28,6 +28,10 @@ module.exports.waitUntilReady = function waitUntilReady(timeout) {
   return imported.then((api) => api.waitUntilReady(timeout));
 };
 
+module.exports.forceFlush = function forceFlush() {
+  return imported.then((api) => api.forceFlush());
+};
+
 /** @type{import("../api")} */
 let api = undefined;
 const imported = import("../api.js").then((imported) => {
