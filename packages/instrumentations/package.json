@@ -77,6 +77,7 @@
     "@opentelemetry/instrumentation-redis-4": "^0.48.0",
     "@opentelemetry/instrumentation-restify": "^0.47.0",
     "@opentelemetry/instrumentation-router": "^0.46.0",
+    "@opentelemetry/instrumentation-runtime-node": "^0.15.0",
     "@opentelemetry/instrumentation-socket.io": "^0.48.0",
     "@opentelemetry/instrumentation-tedious": "^0.20.0",
     "@opentelemetry/instrumentation-undici": "^0.12.0",
