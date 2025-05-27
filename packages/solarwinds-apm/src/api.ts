@@ -24,8 +24,6 @@ import {
 /**
  * Wait until the library is ready to sample traces
  *
- * Note that when exporting to AppOptics this function will block the event loop.
- *
  * @param timeout - Wait timeout in milliseconds
  * @returns Whether the library is ready
  */

@@ -3,20 +3,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": [
-        "build.js",
-        "package.json",
-        "tsconfig.json",
-        "src/**",
-        "oboe/**"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "npm/*/*.node",
-        "npm/*/liboboe.so",
-        "COMPATIBILITY.md"
-      ]
+      "inputs": ["build.js", "package.json", "tsconfig.json", "src/**"],
+      "outputs": ["dist/**", ".next/**", "COMPATIBILITY.md"]
     },
     "lint": {
       "dependsOn": ["^build"]
@@ -41,7 +29,6 @@
     }
   },
   "globalDependencies": [
-    ".clang-format",
     ".prettierrc.json",
     ".yarnrc.yml",
     "tsconfig.base.json",

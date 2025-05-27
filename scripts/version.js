@@ -27,11 +27,6 @@ function readJson(path) {
   return JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }))
 }
 
-function writeJson(path, data) {
-  fs.writeFileSync(path, JSON.stringify(data))
-  exec(`prettier --write '${path}'`)
-}
-
 function gitStatus() {
   const output = exec("git status --porcelain", { stdio: "pipe" }).toString(
     "utf-8",
@@ -61,19 +56,6 @@ if (process.argv[2] === "pre") {
 
 exec(command)
 exec("prettier --write 'packages/*/package.json'")
-
-const bindingsVersion = readJson("packages/bindings/package.json", {
-  encoding: "utf-8",
-}).version
-const bindingsNative = fs.readdirSync("packages/bindings/npm")
-for (const n of bindingsNative) {
-  const nPackagePath = `packages/bindings/npm/${n}/package.json`
-  const nPackage = readJson(nPackagePath)
-
-  console.log(`${n} ${nPackage.version} -> ${bindingsVersion}`)
-  nPackage.version = bindingsVersion
-  writeJson(nPackagePath, nPackage)
-}
 
 exec("git add yarn.lock .yarn 'packages/**/package.json'")
 

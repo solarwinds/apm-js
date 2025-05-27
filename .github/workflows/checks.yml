@@ -9,9 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
-          submodules: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -23,14 +20,6 @@ jobs:
           key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             yarn-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.zig-build
-            ~/.cache/zig
-          key: zig-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            zig-
 
       - run: yarn install --immutable
 
@@ -54,8 +43,6 @@ jobs:
             .root
             packages/**/dist/
             packages/solarwinds-apm/src/version.ts
-            packages/bindings/npm/*/*.node
-            packages/bindings/npm/*/liboboe.so
           retention-days: 1
 
   versions:
@@ -64,8 +51,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          lfs: true
-          submodules: true
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -135,8 +120,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
       - uses: actions/download-artifact@v4
         with:
           name: build
@@ -173,8 +156,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
       - uses: actions/download-artifact@v4
         with:
           name: build

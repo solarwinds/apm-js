@@ -7,7 +7,6 @@
     "examples",
     "examples/*",
     "packages/*",
-    "packages/bindings/npm/*",
     "scripts"
   ],
   "scripts": {
@@ -24,12 +23,10 @@
     "test:watch": "turbo watch test",
     "version:latest": "node scripts/version.js",
     "version:prerelease": "node scripts/version.js pre",
-    "version:testing": "node scripts/testing.js",
-    "prepare": "husky"
+    "version:testing": "node scripts/testing.js"
   },
   "devDependencies": {
     "eslint": "^9.12.0",
-    "husky": "^9.1.6",
     "prettier": "^3.3.3",
     "turbo": "^2.2.0",
     "typescript": "~5.8.2"

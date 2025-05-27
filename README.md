@@ -5,7 +5,6 @@ This repo holds the source code for the OpenTelemetry-based SolarWinds APM Node.
 ## Repository Setup
 
 ```sh
-git lfs pull
 yarn install
 ```
 
@@ -22,7 +21,7 @@ This project contains a few examples of how to use the library in the [`examples
 
 ## Node.js Version Support
 
-The packages in this project support all LTS Node.js versions up until their End Of Life plus 1 year. At the moment this means Node.js 18, 20 and 22 are supported.
+The packages in this project support all LTS Node.js versions up until their End Of Life plus 1 year. At the moment this means Node.js 18, 20, 22 and 24 are supported.
 
 ## License
 

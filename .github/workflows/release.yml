@@ -10,9 +10,6 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
-          submodules: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -52,9 +49,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
-          submodules: true
 
       - name: Replace placeholders in release template
         run: |

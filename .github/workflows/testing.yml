@@ -14,9 +14,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
-          submodules: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -29,14 +26,6 @@ jobs:
           key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             yarn-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.zig-build
-            ~/.cache/zig
-          key: zig-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            zig-
 
       - name: Prepare to publish
         run: |

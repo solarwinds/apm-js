@@ -1,5 +1,0 @@
-npm/*/oboe.node
-npm/*/liboboe.so
-
-.cache/
-compile_commands.json

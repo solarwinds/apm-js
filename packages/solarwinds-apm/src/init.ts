@@ -35,7 +35,6 @@ import {
 } from "@opentelemetry/sdk-trace-base"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
-import { type oboe } from "@solarwinds-apm/bindings"
 import {
   getInstrumentations,
   getResourceDetectors,
@@ -114,25 +113,9 @@ export async function init() {
     await resource.waitForAsyncAttributes?.()
   }
 
-  let oboe: oboe.Reporter | undefined
-  if (config.legacy) {
-    logger.debug("using oboe")
-
-    const { reporter, ERROR } = await import("./appoptics/reporter.js")
-    if (ERROR) {
-      logger.warn(
-        "Unsupported platform for AppOptics, application will not be instrumented.",
-        ERROR,
-      )
-      return
-    }
-
-    oboe = await reporter(config, resource)
-  }
-
-  const meterProvider = await initMetrics(config, resource, oboe, logger)
+  const meterProvider = await initMetrics(config, resource, logger)
   const [tracerProvider] = await Promise.all([
-    initTracing(config, resource, oboe, logger),
+    initTracing(config, resource, logger),
     initLogs(config, resource, logger),
   ])
 
@@ -169,7 +152,6 @@ async function initInstrumentations(config: Configuration, logger: DiagLogger) {
 async function initTracing(
   config: Configuration,
   resource: Resource,
-  oboe: oboe.Reporter | undefined,
   logger: DiagLogger,
 ) {
   logger.debug("initialising tracing")
@@ -195,23 +177,6 @@ async function initTracing(
       new TransactionNameProcessor(config),
       new ResponseTimeProcessor(),
       new BatchSpanProcessor(new TraceExporter(config)),
-      new ParentSpanProcessor(),
-    ]
-  } else if (oboe) {
-    const [
-      { AppopticsSampler },
-      { AppopticsTraceExporter },
-      { AppopticsInboundMetricsProcessor },
-    ] = await Promise.all([
-      import("./appoptics/sampler.js"),
-      import("./appoptics/exporters/traces.js"),
-      import("./appoptics/processing/inbound-metrics.js"),
-    ])
-
-    sampler = new AppopticsSampler(config)
-    processors = [
-      new AppopticsInboundMetricsProcessor(config),
-      new BatchSpanProcessor(new AppopticsTraceExporter(oboe)),
       new ParentSpanProcessor(),
     ]
   } else {
@@ -245,30 +210,16 @@ async function initTracing(
 async function initMetrics(
   config: Configuration,
   resource: Resource,
-  oboe: oboe.Reporter | undefined,
   logger: DiagLogger,
 ) {
   logger.debug("initialiing metrics")
 
-  let readers: MetricReader[]
-
-  if (oboe) {
-    const { AppopticsMetricExporter } = await import(
-      "./appoptics/exporters/metrics.js"
-    )
-    readers = [
-      new MetricReader({
-        exporter: new AppopticsMetricExporter(oboe),
-      }),
-    ]
-  } else {
-    const { MetricExporter } = await import("./exporters/metrics.js")
-    readers = [
-      new MetricReader({
-        exporter: new MetricExporter(config),
-      }),
-    ]
-  }
+  const { MetricExporter } = await import("./exporters/metrics.js")
+  const readers: MetricReader[] = [
+    new MetricReader({
+      exporter: new MetricExporter(config),
+    }),
+  ]
 
   const provider = new MeterProvider({
     resource,
