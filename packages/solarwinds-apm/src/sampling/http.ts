@@ -138,10 +138,7 @@ export class HttpSampler extends Sampler {
       const parsed = this.updateSettings(unparsed)
 
       if (!parsed) {
-        this.#warn(
-          "Retrieved sampling settings are invalid.",
-          "If you are connecting to an AppOptics collector please set the 'SW_APM_LEGACY' environment variable.",
-        )
+        this.#warn("Retrieved sampling settings are invalid.")
         this.#retry()
         return
       }

@@ -2,17 +2,11 @@
 
 ## Requirements
 
-- Node.js 16 or higher with corepack enabled
-- Git LFS
-- clang-format 14 or higher (only required by the C++ code)
+- Node.js 22 or higher with corepack enabled
 
 ## Project setup
 
 ```sh
-# Enable git lfs
-git lfs install
-# Fetch submodules
-git submodule update --init --recursive
 # Enable corepack
 corepack enable
 # Install dependencies
@@ -45,7 +39,7 @@ It is possible to start a development environment in any of the images using `ya
 
 ## Running tests
 
-Tests can be run with `yarn test`, either at the project root for all packages or in a package's directory for just that package. Additionally, when running in a package directory, any arguments accepted by Jest can be passed to the command. Note that while most of the tests do not depend on the bindings, some do and will fail on unsupported platforms. An easy way to run tests on a supported platform is to use the docker environment.
+Tests can be run with `yarn test`, either at the project root for all packages or in a package's directory for just that package. Additionally, when running in a package directory, any arguments accepted by Jest can be passed to the command.
 
 There's also a `yarn test:watch` command to intelligently run tests on code changes, which is only available at the project root.
 

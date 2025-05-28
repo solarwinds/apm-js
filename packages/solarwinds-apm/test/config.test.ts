@@ -35,8 +35,6 @@ describe("read", () => {
       service: "name",
       token: "token",
       enabled: true,
-      appoptics: false,
-      legacy: false,
       collector: new URL("https://apm.collector.na-01.cloud.solarwinds.com"),
       logLevel: DiagLogLevel.WARN,
       triggerTraceEnabled: true,
@@ -141,18 +139,6 @@ describe("read", () => {
     process.env.SW_APM_TRUSTEDPATH = "foo"
 
     await expect(read()).to.be.rejected
-  })
-
-  it("uses the right defaults for AppOptics", async () => {
-    process.env.SW_APM_COLLECTOR = "collector.appoptics.com"
-    process.env.SW_APM_EXPORT_LOGS_ENABLED = "true"
-
-    const config = await read()
-    expect(config).to.include({
-      appoptics: true,
-      legacy: true,
-      exportLogsEnabled: false,
-    })
   })
 
   it("supports logs export by default", async () => {

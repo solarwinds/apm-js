@@ -18,7 +18,6 @@ const { execSync } = require("node:child_process")
 const {
   cpSync,
   createWriteStream,
-  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync,
@@ -60,15 +59,6 @@ execSync("touch yarn.lock && yarn install", {
   env: { ...process.env, NODE_ENV: "production" },
   stdio: "inherit",
 })
-
-const scope = `node_modules/.lambda/node_modules/${
-  name === "solarwinds-apm" ? "@solarwinds-apm" : "@solarwinds"
-}`
-for (const entry of readdirSync(scope)) {
-  if (entry.includes("bindings-") && !entry.includes("serverless")) {
-    rmSync(`${scope}/${entry}`, { recursive: true })
-  }
-}
 
 const spinner = ora("building layer")
 

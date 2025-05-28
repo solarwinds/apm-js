@@ -1,9 +1,0 @@
-BasedOnStyle: LLVM
-
-ColumnLimit: 100
-IndentWidth: 4
-AlignAfterOpenBracket: BlockIndent
-NamespaceIndentation: Inner
-
-DerivePointerAlignment: false
-PointerAlignment: Left

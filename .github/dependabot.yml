@@ -16,6 +16,7 @@ updates:
         patterns:
           - "@opentelemetry/instrumentation-*"
           - "@opentelemetry/resource-detector-*"
+          - "@fastify/otel"
         exclude-patterns:
           # maintained as part of the sdk
           - "@opentelemetry/instrumentation-http"
@@ -33,9 +34,10 @@ updates:
 
       build:
         patterns:
+          - "esbuild"
+          - "node-releases"
           - "turbo"
           - "typescript"
-          - "zig-build"
         update-types:
           - minor
           - patch
@@ -57,11 +59,6 @@ updates:
           - patch
 
   - package-ecosystem: github-actions
-    directory: "/"
-    schedule:
-      interval: weekly
-
-  - package-ecosystem: gitsubmodule
     directory: "/"
     schedule:
       interval: weekly

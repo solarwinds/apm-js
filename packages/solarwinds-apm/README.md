@@ -24,10 +24,6 @@ export NODE_OPTIONS="--import solarwinds-apm"
 npm start
 ```
 
-## Legacy mode
-
-With the 15.0.0 release, major parts of the library were rewritten in pure JavaScript to replace the previously used native library. The new codebase makes it possible to run the library on platforms other than Linux, however it is not compatible with AppOptics and some niche features might be unimplemented. The legacy code can be turned back on manually by setting the `SW_APM_LEGACY` environment variable to `true`.
-
 ## Custom Instrumentation and Metrics
 
 Unlike previous non-OpenTelemetry version, all manual instrumentation and metrics collection are handled through the OpenTelemetry API using the `@opentelemetry/api` packages. The [OpenTelemetry JS documentation](https://opentelemetry.io/docs/instrumentation/js/manual/) for manual instrumentation provides instructions (note that `solarwinds-apm` takes care of the initial registration of all components), and the [SDK docs](https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_api.html) are available to see all that the API provides.

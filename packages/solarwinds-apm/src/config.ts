@@ -82,8 +82,6 @@ const schema = v.pipe(
     }),
 
     v.object({
-      legacy: v.optional(schemas.boolean),
-
       trustedpath: v.optional(schemas.trustedpath),
 
       proxy: v.optional(v.string()),
@@ -124,21 +122,9 @@ const schema = v.pipe(
   ]),
 
   v.transform(({ instrumentations, resourceDetectors, ...raw }) => {
-    const appoptics = /\.?appoptics.com$/.test(raw.collector.hostname)
-    const legacy = raw.legacy ?? appoptics
-
-    if (legacy && raw.exportLogsEnabled) {
-      log("Logs export is not supported on AppOptics.")
-      raw.exportLogsEnabled = false
-    }
-
     return {
-      appoptics,
-      legacy,
-
       instrumentations: instrumentations as Required<Instrumentations>,
       resourceDetectors: resourceDetectors as Required<ResourceDetectors>,
-
       ...raw,
     }
   }),
