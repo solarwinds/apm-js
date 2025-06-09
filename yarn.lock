@@ -353,8 +353,8 @@ __metadata:
   linkType: hard
 
 "@fastify/otel@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@fastify/otel@npm:0.9.0"
+  version: 0.9.1
+  resolution: "@fastify/otel@npm:0.9.1"
   dependencies:
     "@opentelemetry/core": "npm:^2.0.0"
     "@opentelemetry/instrumentation": "npm:^0.200.0"
@@ -362,7 +362,7 @@ __metadata:
     minimatch: "npm:^9.0.5"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
-  checksum: 10c0/8875e20b8c7bcb8c372035337349f282d0c7347364e1fbf1a1585f67f6b08f22b1d9926f29e55159abb6fc8c88f05d5284598b1ad430c89c3afbddd487d8059f
+  checksum: 10c0/11dbe303d478165fbf56851ee6441249300f4b7bc1f5b878253c5e4a0fe67077226bc91f83ed638eb613d0f64c0b4f236caa139a7226e54bade27761b05064ed
   languageName: node
   linkType: hard
 
