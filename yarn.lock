@@ -1128,16 +1128,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation-hapi@npm:^0.48.0":
-  version: 0.48.0
-  resolution: "@opentelemetry/instrumentation-hapi@npm:0.48.0"
+"@opentelemetry/instrumentation-hapi@npm:^0.49.0":
+  version: 0.49.0
+  resolution: "@opentelemetry/instrumentation-hapi@npm:0.49.0"
   dependencies:
     "@opentelemetry/core": "npm:^2.0.0"
     "@opentelemetry/instrumentation": "npm:^0.202.0"
     "@opentelemetry/semantic-conventions": "npm:^1.27.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/c0492a2c3b12865ca001b25c13ddfb1ca4ff7bf9a658337eabcb8facf2645404e57e23c9ef56dafc9f7766b2cb6443ace78959287ab0242fa2dbf506fd87f6b2
+  checksum: 10c0/867de41fd1fb8bf2af1fd90e2ee105aa0da65db4ead02e21fb519b09e0218fa07c617245af538689abb742a091e4ca74aa65220e4e4a06e4bf72c00b1e70bdb0
   languageName: node
   linkType: hard
 
@@ -1193,15 +1193,15 @@ __metadata:
   linkType: hard
 
 "@opentelemetry/instrumentation-koa@npm:^0.50.0":
-  version: 0.50.0
-  resolution: "@opentelemetry/instrumentation-koa@npm:0.50.0"
+  version: 0.50.1
+  resolution: "@opentelemetry/instrumentation-koa@npm:0.50.1"
   dependencies:
     "@opentelemetry/core": "npm:^2.0.0"
     "@opentelemetry/instrumentation": "npm:^0.202.0"
     "@opentelemetry/semantic-conventions": "npm:^1.27.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/c14ee9228055de6ec9e02145a2dc6a6bcdc4b0c64e5be57359ffcd8373552aecf10ddec70f6b48e70edc0c36b9251f722d5460f5fba343da6ae54aef3fcf3de5
+  checksum: 10c0/5c17e9f892d652f9d3b014c1b72dab9e4ed79c605c27284d7523d7f5fb328744baff6eefe9c39361cda351ac80ac32c3520faf18530c18bdf2b18d72f80cb490
   languageName: node
   linkType: hard
 
@@ -1230,14 +1230,14 @@ __metadata:
   linkType: hard
 
 "@opentelemetry/instrumentation-mongodb@npm:^0.55.0":
-  version: 0.55.0
-  resolution: "@opentelemetry/instrumentation-mongodb@npm:0.55.0"
+  version: 0.55.1
+  resolution: "@opentelemetry/instrumentation-mongodb@npm:0.55.1"
   dependencies:
     "@opentelemetry/instrumentation": "npm:^0.202.0"
     "@opentelemetry/semantic-conventions": "npm:^1.27.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/9ee8e6a46d90c3b68f9e8b2720a9b302876bcdbb56f3dc60c7d112698f1c9b2ce55d9a3508a56800abcd9608bb06c71fbaeafa195f2a93edd3b12e96c4773649
+  checksum: 10c0/e5880c15518f9ffee86dc3051b09be08889c8b5e423e2e2bd2cc13e72921b1052356b35767926af5aedbc73ca93848ec5484e6998223afed514c95f2cf84860c
   languageName: node
   linkType: hard
 
@@ -1293,14 +1293,14 @@ __metadata:
   linkType: hard
 
 "@opentelemetry/instrumentation-net@npm:^0.46.0":
-  version: 0.46.0
-  resolution: "@opentelemetry/instrumentation-net@npm:0.46.0"
+  version: 0.46.1
+  resolution: "@opentelemetry/instrumentation-net@npm:0.46.1"
   dependencies:
     "@opentelemetry/instrumentation": "npm:^0.202.0"
     "@opentelemetry/semantic-conventions": "npm:^1.27.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/bd2069f6d1adf5976c6c9ec46e612e5971e25a40deb81659e0e01197906cb28070cf17b29a063c09d1a544e090904431e87253717c35e9e2ebe6adc5259af5cb
+  checksum: 10c0/1bb22530c8a01d572cc6a874f9f0bde3b93b2082d5900464ff01f15bbbf8031c42fdbba8a16068c408a31d56de9b160abe48ca9002b8a550f7f46ead892ac34d
   languageName: node
   linkType: hard
 
@@ -1347,28 +1347,28 @@ __metadata:
   linkType: hard
 
 "@opentelemetry/instrumentation-redis@npm:^0.49.0":
-  version: 0.49.0
-  resolution: "@opentelemetry/instrumentation-redis@npm:0.49.0"
+  version: 0.49.1
+  resolution: "@opentelemetry/instrumentation-redis@npm:0.49.1"
   dependencies:
     "@opentelemetry/instrumentation": "npm:^0.202.0"
     "@opentelemetry/redis-common": "npm:^0.37.0"
     "@opentelemetry/semantic-conventions": "npm:^1.27.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/9dfdddfe137a7e05f771bc86ffb263a71bbe58d87f46e8238d731dc032dae3a923359d9ec6d469fb339083a6ba5e4a0f4927bc9b2ab5385e33911bf671ef2068
+  checksum: 10c0/97a463db65bcc37d12781e4691d0febee6e50f486b40a304ba4fc67ed8f92d3d5ef191766071142d789ff995e33de8a87f2214b162bdc98eee28e80bf8ed9257
   languageName: node
   linkType: hard
 
 "@opentelemetry/instrumentation-restify@npm:^0.48.0":
-  version: 0.48.0
-  resolution: "@opentelemetry/instrumentation-restify@npm:0.48.0"
+  version: 0.48.1
+  resolution: "@opentelemetry/instrumentation-restify@npm:0.48.1"
   dependencies:
     "@opentelemetry/core": "npm:^2.0.0"
     "@opentelemetry/instrumentation": "npm:^0.202.0"
     "@opentelemetry/semantic-conventions": "npm:^1.27.0"
   peerDependencies:
     "@opentelemetry/api": ^1.3.0
-  checksum: 10c0/62bd1844fa5fff0b858abf31f60a80cf600ed5d33908348df14519719bd75c3312fdbf0b5c114ee08ab44cd7f155a85f02e13423d78b803d13c0d337dfba3159
+  checksum: 10c0/82861ecc695b0f2fa3e2544a2bfefe1808a24ac75e9d1631b12822266ed95193d06028a5134633e8cc13593025908cd5324d7d2ac636409f98338c382cef4dc4
   languageName: node
   linkType: hard
 
@@ -1421,14 +1421,14 @@ __metadata:
   linkType: hard
 
 "@opentelemetry/instrumentation-undici@npm:^0.13.0":
-  version: 0.13.0
-  resolution: "@opentelemetry/instrumentation-undici@npm:0.13.0"
+  version: 0.13.1
+  resolution: "@opentelemetry/instrumentation-undici@npm:0.13.1"
   dependencies:
     "@opentelemetry/core": "npm:^2.0.0"
     "@opentelemetry/instrumentation": "npm:^0.202.0"
   peerDependencies:
     "@opentelemetry/api": ^1.7.0
-  checksum: 10c0/7ba1583f6c5ea0c9e3c40c84cb0122fd0323b84d055423d795a3ac2506a42c3d506592ffa654f6c016a2f7bd231b9b9da09e5b301a7cfe00355e12588ebc8900
+  checksum: 10c0/9e02b509eb0654b0bbc68c4cf6f0e9503fa259104ea7f71e54446bc68e180a09783209871d771f393152671a9db4d2b85a7ed4996070c3897a00f36ea58b9bd4
   languageName: node
   linkType: hard
 
@@ -2084,7 +2084,7 @@ __metadata:
     "@opentelemetry/instrumentation-generic-pool": "npm:^0.46.0"
     "@opentelemetry/instrumentation-graphql": "npm:^0.50.0"
     "@opentelemetry/instrumentation-grpc": "npm:^0.202.0"
-    "@opentelemetry/instrumentation-hapi": "npm:^0.48.0"
+    "@opentelemetry/instrumentation-hapi": "npm:^0.49.0"
     "@opentelemetry/instrumentation-http": "npm:^0.202.0"
     "@opentelemetry/instrumentation-ioredis": "npm:^0.50.0"
     "@opentelemetry/instrumentation-kafkajs": "npm:^0.11.0"
@@ -2463,7 +2463,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:8.34.0":
+"@typescript-eslint/eslint-plugin@npm:8.34.0, @typescript-eslint/eslint-plugin@npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0":
   version: 8.34.0
   resolution: "@typescript-eslint/eslint-plugin@npm:8.34.0"
   dependencies:
@@ -2484,28 +2484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0":
-  version: 8.33.1
-  resolution: "@typescript-eslint/eslint-plugin@npm:8.33.1"
-  dependencies:
-    "@eslint-community/regexpp": "npm:^4.10.0"
-    "@typescript-eslint/scope-manager": "npm:8.33.1"
-    "@typescript-eslint/type-utils": "npm:8.33.1"
-    "@typescript-eslint/utils": "npm:8.33.1"
-    "@typescript-eslint/visitor-keys": "npm:8.33.1"
-    graphemer: "npm:^1.4.0"
-    ignore: "npm:^7.0.0"
-    natural-compare: "npm:^1.4.0"
-    ts-api-utils: "npm:^2.1.0"
-  peerDependencies:
-    "@typescript-eslint/parser": ^8.33.1
-    eslint: ^8.57.0 || ^9.0.0
-    typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/35544068f175ca25296b42d0905065b40653a92c62e55414be68f62ddab580d7d768ee3c1276195fd8b8dd49de738ab7b41b8685e6fe2cd341cfca7320569166
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/parser@npm:8.34.0":
+"@typescript-eslint/parser@npm:8.34.0, @typescript-eslint/parser@npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0":
   version: 8.34.0
   resolution: "@typescript-eslint/parser@npm:8.34.0"
   dependencies:
@@ -2518,35 +2497,6 @@ __metadata:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.9.0"
   checksum: 10c0/a829be00ea3455c1e50983c8b44476fbfc9329d019764e407c4d591a95dbd168f83f13e309751242bb4fdc02f89cb51ca5cdc912a12b10f69eebcb1c46dcc39b
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/parser@npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0":
-  version: 8.33.1
-  resolution: "@typescript-eslint/parser@npm:8.33.1"
-  dependencies:
-    "@typescript-eslint/scope-manager": "npm:8.33.1"
-    "@typescript-eslint/types": "npm:8.33.1"
-    "@typescript-eslint/typescript-estree": "npm:8.33.1"
-    "@typescript-eslint/visitor-keys": "npm:8.33.1"
-    debug: "npm:^4.3.4"
-  peerDependencies:
-    eslint: ^8.57.0 || ^9.0.0
-    typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/be1c1313c342d956f5adfbd56f79865894cc9cabf93992515a690559c3758538868270671b222f90e4cabc2dcab82256aeb3ccea7502de9cc69e47b9b17ed45f
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/project-service@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@typescript-eslint/project-service@npm:8.33.1"
-  dependencies:
-    "@typescript-eslint/tsconfig-utils": "npm:^8.33.1"
-    "@typescript-eslint/types": "npm:^8.33.1"
-    debug: "npm:^4.3.4"
-  peerDependencies:
-    typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/b2ff7653aef4648bdff8aafc69b9de434184827216709f8a36427536ac7082a8adf1c5ac12a0a2bb023b46dfad8f6fee238028acc94af622956af7f22362de6f
   languageName: node
   linkType: hard
 
@@ -2563,16 +2513,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/scope-manager@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@typescript-eslint/scope-manager@npm:8.33.1"
-  dependencies:
-    "@typescript-eslint/types": "npm:8.33.1"
-    "@typescript-eslint/visitor-keys": "npm:8.33.1"
-  checksum: 10c0/03a6fd2b0a8ebeb62083a8f51658f0c42391cbfb632411542569a3a227d53bdb0332026ef4d5adc4780e5350d1d8b89e5b19667ed899afd26506e60c70192692
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/scope-manager@npm:8.34.0":
   version: 8.34.0
   resolution: "@typescript-eslint/scope-manager@npm:8.34.0"
@@ -2583,36 +2523,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/tsconfig-utils@npm:8.33.1, @typescript-eslint/tsconfig-utils@npm:^8.33.1":
-  version: 8.33.1
-  resolution: "@typescript-eslint/tsconfig-utils@npm:8.33.1"
-  peerDependencies:
-    typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/242e8f271d2e6e51446d337e1e59e8c91b66c0241da0fb861f536eb86cc3b53d1727c41e12e1ba070fa2451c8bc517c1ec50decaffa92a7c612b2aba29872777
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/tsconfig-utils@npm:8.34.0, @typescript-eslint/tsconfig-utils@npm:^8.34.0":
   version: 8.34.0
   resolution: "@typescript-eslint/tsconfig-utils@npm:8.34.0"
   peerDependencies:
     typescript: ">=4.8.4 <5.9.0"
   checksum: 10c0/98246f89d169d3feb453a6a8552c51d10225cb00c4ff1501549b7846e564ad0e218b644cd94ce779dceed07dcb9035c53fd32186b4c0223b7b2a1f7295b120c3
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/type-utils@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@typescript-eslint/type-utils@npm:8.33.1"
-  dependencies:
-    "@typescript-eslint/typescript-estree": "npm:8.33.1"
-    "@typescript-eslint/utils": "npm:8.33.1"
-    debug: "npm:^4.3.4"
-    ts-api-utils: "npm:^2.1.0"
-  peerDependencies:
-    eslint: ^8.57.0 || ^9.0.0
-    typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/59843eeb7c652306d130104d7cb0f7dea1cc95a6cf6345609efbae130f24e3c4a9472780332af4247337e152b7955540b15fd9b907c04a5d265b888139818266
   languageName: node
   linkType: hard
 
@@ -2631,37 +2547,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:8.33.1, @typescript-eslint/types@npm:^8.33.1":
-  version: 8.33.1
-  resolution: "@typescript-eslint/types@npm:8.33.1"
-  checksum: 10c0/3083c184c882475eed1f9d1a8961dad30ef834c662bc826ff9a959ff1eed49aad21a73b2b93c4062799feafff5f5f24aebb1df17e198808aa19d4c8de1e64095
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/types@npm:8.34.0, @typescript-eslint/types@npm:^8.34.0":
   version: 8.34.0
   resolution: "@typescript-eslint/types@npm:8.34.0"
   checksum: 10c0/5d32b2ac03e4cbc1ac1777a53ee83d6d7887a783363bab4f0a6f7550a9e9df0254971cdf71e13b988e2215f2939e7592404856b8acb086ec63c4479c0225c742
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/typescript-estree@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@typescript-eslint/typescript-estree@npm:8.33.1"
-  dependencies:
-    "@typescript-eslint/project-service": "npm:8.33.1"
-    "@typescript-eslint/tsconfig-utils": "npm:8.33.1"
-    "@typescript-eslint/types": "npm:8.33.1"
-    "@typescript-eslint/visitor-keys": "npm:8.33.1"
-    debug: "npm:^4.3.4"
-    fast-glob: "npm:^3.3.2"
-    is-glob: "npm:^4.0.3"
-    minimatch: "npm:^9.0.4"
-    semver: "npm:^7.6.0"
-    ts-api-utils: "npm:^2.1.0"
-  peerDependencies:
-    typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/293a93d25046e05fdc3887232191c3f3ee771c0f5b1426d63deaf0541db1cb80b4307a80805c78b092206c9b267884a7e6b5905dc1b3c26f28bb4de47fd9ee8f
   languageName: node
   linkType: hard
 
@@ -2685,21 +2574,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@typescript-eslint/utils@npm:8.33.1"
-  dependencies:
-    "@eslint-community/eslint-utils": "npm:^4.7.0"
-    "@typescript-eslint/scope-manager": "npm:8.33.1"
-    "@typescript-eslint/types": "npm:8.33.1"
-    "@typescript-eslint/typescript-estree": "npm:8.33.1"
-  peerDependencies:
-    eslint: ^8.57.0 || ^9.0.0
-    typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/12263df6eb32e8175236ad899687c062b50cfe4a0e66307d25ad2bf85a3e911faacbfbea4df180a59ebb5913fe1cc1f53fe3914695c7d802dd318bbc846fea26
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/utils@npm:8.34.0":
   version: 8.34.0
   resolution: "@typescript-eslint/utils@npm:8.34.0"
@@ -2712,16 +2586,6 @@ __metadata:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.9.0"
   checksum: 10c0/d759cf6f1b1b23d7d8ab922345e7b68b7c829f4bad841164312cfa3a3e8e818b962dd0d96c1aca7fd7c10248d56538d9714df5f3cfec9f159ca0a139feac60b9
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/visitor-keys@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@typescript-eslint/visitor-keys@npm:8.33.1"
-  dependencies:
-    "@typescript-eslint/types": "npm:8.33.1"
-    eslint-visitor-keys: "npm:^4.2.0"
-  checksum: 10c0/3eb99072e7c2741d5dfc38945d1e7617b15ed10d06b24658a6e919e4153983b3d3c5f5f775ce140f83a84dbde219948d187de97defb09c1a91f3cf0a96704a94
   languageName: node
   linkType: hard
 
@@ -2788,16 +2652,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.11.0, acorn@npm:^8.14.0, acorn@npm:^8.4.1":
-  version: 8.14.0
-  resolution: "acorn@npm:8.14.0"
-  bin:
-    acorn: bin/acorn
-  checksum: 10c0/6d4ee461a7734b2f48836ee0fbb752903606e576cc100eb49340295129ca0b452f3ba91ddd4424a1d4406a98adfb2ebb6bd0ff4c49d7a0930c10e462719bbfd7
-  languageName: node
-  linkType: hard
-
-"acorn@npm:^8.15.0":
+"acorn@npm:^8.11.0, acorn@npm:^8.14.0, acorn@npm:^8.15.0, acorn@npm:^8.4.1":
   version: 8.15.0
   resolution: "acorn@npm:8.15.0"
   bin:
@@ -4347,14 +4202,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-visitor-keys@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "eslint-visitor-keys@npm:4.2.0"
-  checksum: 10c0/2ed81c663b147ca6f578312919483eb040295bbab759e5a371953456c636c5b49a559883e2677112453728d66293c0a4c90ab11cab3428cf02a0236d2e738269
-  languageName: node
-  linkType: hard
-
-"eslint-visitor-keys@npm:^4.2.1":
+"eslint-visitor-keys@npm:^4.2.0, eslint-visitor-keys@npm:^4.2.1":
   version: 4.2.1
   resolution: "eslint-visitor-keys@npm:4.2.1"
   checksum: 10c0/fcd43999199d6740db26c58dbe0c2594623e31ca307e616ac05153c9272f12f1364f5a0b1917a8e962268fdecc6f3622c1c2908b4fcc2e047a106fe6de69dc43
@@ -4411,18 +4259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"espree@npm:^10.0.1":
-  version: 10.3.0
-  resolution: "espree@npm:10.3.0"
-  dependencies:
-    acorn: "npm:^8.14.0"
-    acorn-jsx: "npm:^5.3.2"
-    eslint-visitor-keys: "npm:^4.2.0"
-  checksum: 10c0/272beeaca70d0a1a047d61baff64db04664a33d7cfb5d144f84bc8a5c6194c6c8ebe9cc594093ca53add88baa23e59b01e69e8a0160ab32eac570482e165c462
-  languageName: node
-  linkType: hard
-
-"espree@npm:^10.4.0":
+"espree@npm:^10.0.1, espree@npm:^10.4.0":
   version: 10.4.0
   resolution: "espree@npm:10.4.0"
   dependencies:
