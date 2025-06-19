@@ -21,7 +21,6 @@ import * as v from "valibot"
 import { env, schema as sharedSchema } from "../shared/config.js"
 
 declare global {
-  /* eslint-disable no-var */
   var SW_APM_ENABLED: Config["serviceKey"]
   var SW_APM_SERVICE_KEY: Config["serviceKey"]
   var SW_APM_COLLECTOR: Config["collector"]
@@ -29,7 +28,6 @@ declare global {
   var SW_APM_TRACING_MODE: Config["tracingMode"]
   var SW_APM_EXPORT_LOGS_ENABLED: Config["exportLogsEnabled"]
   var SW_APM_INSTRUMENTATIONS: Config["instrumentations"]
-  /* eslint-enable no-var */
 }
 
 export type Configuration = v.InferOutput<typeof schema>
