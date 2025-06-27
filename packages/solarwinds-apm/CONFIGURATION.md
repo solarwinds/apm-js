@@ -52,6 +52,7 @@ module.exports = {
 | `insertTraceContextIntoLogs`    |                                | `false`           | Whether to insert trace context information into logs                          |
 | `insertTraceContextIntoQueries` |                                | `false`           | Whether to insert trace context information into SQL queries                   |
 | `transactionSettings`           |                                | None              | See [Transaction Settings](#transaction-settings)                              |
+| `spanStacktraceFilter`          |                                | None              | See [Stacktraces](#stacktraces)                                                |
 | `instrumentations`              |                                | None              | See [Instrumentations](#instrumentations)                                      |
 
 ### Service Name
@@ -103,6 +104,21 @@ module.exports = {
       },
     },
   ],
+}
+```
+
+### Stacktraces
+
+The library supports attaching stacktraces to spans on end with the `code.stacktrace` attribute. However this is not a cheap operation, and as such it is always opt-in on a per-span basis. To enable stacktrace collections, provide a `spanStacktraceFilter` function taking a [`ReadableSpan`](https://open-telemetry.github.io/opentelemetry-js/interfaces/_opentelemetry_sdk-trace-base.ReadableSpan.html) as its only argument and returning whether a stacktrace should be captured.
+
+```js
+import { hrTimeToMilliseconds } from "@opentelemetry/core"
+
+export default {
+  spanStacktraceFilter: (span) => {
+    // capture stacktraces for spans longer than 5 seconds
+    return hrTimeToMilliseconds(span.duration) >= 5000
+  },
 }
 ```
 

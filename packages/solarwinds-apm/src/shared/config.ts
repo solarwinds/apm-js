@@ -16,6 +16,7 @@ limitations under the License.
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { getStringFromEnv } from "@opentelemetry/core"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 import * as v from "valibot"
 
 /** Processed configuration shared by web and Node.js */
@@ -42,6 +43,7 @@ export interface Configuration {
     tracing: boolean
     matcher: (ident: string) => boolean
   }[]
+  spanStacktraceFilter?: (span: ReadableSpan) => boolean
 }
 
 export const schemas = {
@@ -116,7 +118,7 @@ export const schemas = {
       v.transform((s) => () => s),
     ),
     v.pipe(
-      v.function(),
+      v.custom<() => string>((f) => typeof f === "function"),
       v.transform((f) => () => String(f())),
     ),
   ]),
@@ -184,13 +186,29 @@ export const schema = (defaults: Defaults) =>
               })),
             ),
             v.pipe(
-              v.object({ tracing: schemas.tracingMode, matcher: v.function() }),
+              v.object({
+                tracing: schemas.tracingMode,
+                matcher: v.custom<(ident: string) => boolean>(
+                  (matcher) => typeof matcher === "function",
+                ),
+              }),
               v.transform(({ tracing, matcher }) => ({
                 tracing,
-                matcher: (ident: string) => !!matcher(ident),
+                matcher: (ident: string) => Boolean(matcher(ident)),
               })),
             ),
           ]),
+        ),
+      ),
+
+      spanStacktraceFilter: v.optional(
+        v.pipe(
+          v.custom<(span: ReadableSpan) => boolean>(
+            (filter) => typeof filter === "function",
+          ),
+          v.transform(
+            (filter) => (span: ReadableSpan) => Boolean(filter(span)),
+          ),
         ),
       ),
     }),
@@ -225,6 +243,7 @@ export const schema = (defaults: Defaults) =>
 
         transactionName: raw.transactionName,
         transactionSettings: raw.transactionSettings,
+        spanStacktraceFilter: raw.spanStacktraceFilter,
       }
     }),
   )

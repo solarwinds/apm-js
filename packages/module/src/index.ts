@@ -47,3 +47,34 @@ export async function load(url: string): Promise<unknown> {
     return imported
   }
 }
+
+export function stacktrace(filtered: boolean): string | undefined {
+  const prepareStackTrace = Reflect.get(Error, "prepareStackTrace")
+
+  Reflect.set(
+    Error,
+    "prepareStackTrace",
+    function filterStackTrace(this: ErrorConstructor, err, stack) {
+      const file = stack[0]?.getFileName()
+      while (stack.length > 0 && stack[0]?.getFileName() === file) {
+        stack.shift()
+      }
+
+      if (filtered) {
+        const exclude = ["solarwinds-apm", "@solarwinds-apm", "@opentelemetry"]
+
+        stack = stack.filter((frame) => {
+          const file = frame.getFileName()
+          const directories = file?.split(/\/|\\/)
+          return !directories?.some((directory) => exclude.includes(directory))
+        })
+      }
+
+      return prepareStackTrace.call(this, err, stack) as unknown
+    },
+  )
+  const stack = new Error().stack
+  Reflect.set(Error, "prepareStackTrace", prepareStackTrace)
+
+  return stack
+}

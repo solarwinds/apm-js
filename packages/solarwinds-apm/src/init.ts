@@ -48,6 +48,7 @@ import { Logger } from "./logger.js"
 import { patch } from "./patches.js"
 import { ParentSpanProcessor } from "./processing/parent-span.js"
 import { ResponseTimeProcessor } from "./processing/response-time.js"
+import { StacktraceProcessor } from "./processing/stacktrace.js"
 import { TransactionNameProcessor } from "./processing/transaction-name.js"
 import {
   RequestHeadersPropagator,
@@ -178,6 +179,7 @@ async function initTracing(
       new ResponseTimeProcessor(),
       new BatchSpanProcessor(new TraceExporter(config)),
       new ParentSpanProcessor(),
+      new StacktraceProcessor(config),
     ]
   } else {
     const [{ HttpSampler }, { TraceExporter }] = await Promise.all([
@@ -191,6 +193,7 @@ async function initTracing(
       new ResponseTimeProcessor(),
       new BatchSpanProcessor(new TraceExporter(config)),
       new ParentSpanProcessor(),
+      new StacktraceProcessor(config),
     ]
   }
 
