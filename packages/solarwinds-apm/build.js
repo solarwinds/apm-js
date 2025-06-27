@@ -34,7 +34,7 @@ const linted = await new ESLint({ fix: true }).lintFiles("src/version.ts")
 await fs.writeFile("src/version.ts", linted[0].output)
 
 await fs.mkdir("dist/commonjs", { recursive: true })
-await fs.cp("src/commonjs/package.json", "dist/commonjs/package.json")
+await fs.cp("src/commonjs/", "dist/commonjs/", { recursive: true, force: true })
 
 // Generate the web instrumentation bundle to target the Chrome/Safari/Firefox/Edge
 // versions which were the latest 1 year ago as a default
@@ -64,8 +64,4 @@ await esbuild.build({
   keepNames: true,
   sourcemap: "linked",
   external: ["node:*"],
-  alias: {
-    "@opentelemetry/exporter-metrics-otlp-proto":
-      "@opentelemetry/exporter-metrics-otlp-http",
-  },
 })
