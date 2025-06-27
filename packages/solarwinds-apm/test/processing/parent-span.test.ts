@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import { trace } from "@opentelemetry/api"
-import { before, describe, expect, it, otel } from "@solarwinds-apm/test"
+import { beforeEach, describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import {
   getRootOrEntry,
@@ -24,7 +24,7 @@ import {
 } from "../../src/processing/parent-span.js"
 
 describe("ParentSpanProcessor", () => {
-  before(async () => {
+  beforeEach(async () => {
     await otel.reset({ trace: { spanProcessors: [new ParentSpanProcessor()] } })
   })
 

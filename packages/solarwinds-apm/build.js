@@ -64,8 +64,4 @@ await esbuild.build({
   keepNames: true,
   sourcemap: "linked",
   external: ["node:*"],
-  alias: {
-    "@opentelemetry/exporter-metrics-otlp-proto":
-      "@opentelemetry/exporter-metrics-otlp-http",
-  },
 })
