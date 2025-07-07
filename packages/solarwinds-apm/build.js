@@ -18,10 +18,7 @@ import fs from "node:fs/promises"
 
 import { agents } from "caniuse-lite"
 import esbuild from "esbuild"
-import eslint from "eslint"
 import prettier from "prettier"
-
-const ESLint = await eslint.loadESLint({ useFlatConfig: true })
 
 const version = JSON.parse(
   await fs.readFile("package.json", { encoding: "utf-8" }),
@@ -30,8 +27,6 @@ const version = JSON.parse(
 const code = `export const VERSION = "${version}"`
 const formatted = await prettier.format(code, { parser: "typescript" })
 await fs.writeFile("src/version.ts", formatted)
-const linted = await new ESLint({ fix: true }).lintFiles("src/version.ts")
-await fs.writeFile("src/version.ts", linted[0].output)
 
 await fs.mkdir("dist/commonjs", { recursive: true })
 await fs.cp("src/commonjs/", "dist/commonjs/", { recursive: true, force: true })
