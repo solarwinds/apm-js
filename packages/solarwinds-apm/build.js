@@ -24,9 +24,19 @@ const version = JSON.parse(
   await fs.readFile("package.json", { encoding: "utf-8" }),
 ).version
 
-const code = `export const VERSION = "${version}"`
-const formatted = await prettier.format(code, { parser: "typescript" })
-await fs.writeFile("src/version.ts", formatted)
+await fs.writeFile(
+  "src/version.ts",
+  await prettier.format(`export const VERSION = "${version}"`, {
+    parser: "typescript",
+  }),
+)
+await fs.writeFile(
+  "src/commonjs/timestamp.js",
+  await prettier.format(
+    [`"use strict";`, `module.exports = ${Date.now()};`].join("\n"),
+    { parser: "typescript" },
+  ),
+)
 
 await fs.mkdir("dist/commonjs", { recursive: true })
 await fs.cp("src/commonjs/", "dist/commonjs/", { recursive: true, force: true })

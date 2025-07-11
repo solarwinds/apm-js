@@ -11,5 +11,7 @@ if (require("./version")) {
     );
   }
 
-  module.exports = require("./api");
+  module.exports = require("./api.proxy");
+} else {
+  module.exports = require("./api.noop");
 }

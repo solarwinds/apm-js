@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 Copyright 2023-2025 SolarWinds Worldwide, LLC.
 
@@ -14,5 +16,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import * as api from "../api.js";
-export = api;
+module.exports.setTransactionName = function setTransactionName(_name) {
+  return false;
+};
+
+module.exports.waitUntilReady = function waitUntilReady(_timeout) {
+  return Promise.resolve(false);
+};
+
+module.exports.forceFlush = function forceFlush() {
+  return Promise.resolve();
+};
+
+module.exports.VERSION = null;
