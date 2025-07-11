@@ -177,3 +177,46 @@ jobs:
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
+
+  supports:
+    if: github.event_name == 'pull_request'
+    needs:
+      - checks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Include versions from the most recent until the first unsupported
+        include:
+          # LTS
+          - node: 24
+            pass: true
+          - node: 22
+            pass: true
+          - node: 20
+            pass: true
+          - node: 18
+            pass: true
+          - node: 16
+            pass: false
+          # Unstable
+          - node: 23
+            pass: false
+          # Sanity check
+          - node: 8
+            pass: false
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: ./
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - run: node -e "require('assert').ok(${OP} require('${FILE}'))"
+        env:
+          OP: ${{ matrix.pass && '' || '!' }}
+          FILE: ./packages/solarwinds-apm/dist/commonjs/version.js
