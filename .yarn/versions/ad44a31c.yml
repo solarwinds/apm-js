@@ -1,0 +1,4 @@
+releases:
+  "@solarwinds-apm/compat": minor
+  "@solarwinds-apm/instrumentations": minor
+  solarwinds-apm: minor
