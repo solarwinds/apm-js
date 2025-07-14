@@ -38,7 +38,7 @@ export interface Configuration {
   triggerTraceEnabled: boolean
   exportLogsEnabled: boolean
 
-  transactionName?: () => string
+  transactionName?: (span: ReadableSpan) => string | undefined
   transactionSettings?: {
     tracing: boolean
     matcher: (ident: string) => boolean
@@ -112,17 +112,6 @@ export const schemas = {
     }),
   ),
 
-  stringy: v.union([
-    v.pipe(
-      v.string(),
-      v.transform((s) => () => s),
-    ),
-    v.pipe(
-      v.custom<() => string>((f) => typeof f === "function"),
-      v.transform((f) => () => String(f())),
-    ),
-  ]),
-
   tracingMode: v.pipe(
     v.picklist(["enabled", "disabled"]),
     v.transform((tm) => tm === "enabled"),
@@ -174,7 +163,52 @@ export const schema = (defaults: Defaults) =>
       ),
       exportLogsEnabled: v.optional(schemas.boolean, false),
 
-      transactionName: v.optional(schemas.stringy),
+      transactionName: v.optional(
+        v.union([
+          v.pipe(
+            v.string(),
+            v.transform((name) => () => name),
+          ),
+          v.pipe(
+            v.custom<(span: ReadableSpan) => string | undefined>(
+              (name) => typeof name === "function",
+            ),
+            v.transform((f) => (span: ReadableSpan) => {
+              const name = f(span)
+              if (name != null) {
+                return String(name)
+              } else {
+                return undefined
+              }
+            }),
+          ),
+          v.pipe(
+            v.array(
+              v.object({
+                scheme: v.literal("spanAttribute"),
+                delimiter: v.string(),
+                attributes: v.pipe(v.array(v.string()), v.minLength(1)),
+              }),
+            ),
+            v.transform((schemas) => (span: ReadableSpan) => {
+              for (const { attributes, delimiter } of schemas) {
+                const components: string[] = []
+                for (const a of attributes) {
+                  const component = span.attributes[a]
+                  if (component != null) {
+                    components.push(String(component))
+                  }
+                }
+
+                if (components.length === attributes.length) {
+                  return components.join(delimiter)
+                }
+              }
+              return undefined
+            }),
+          ),
+        ]),
+      ),
       transactionSettings: v.optional(
         v.array(
           v.union([

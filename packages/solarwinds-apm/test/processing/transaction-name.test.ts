@@ -72,7 +72,7 @@ describe("TransactionNameProcessor", () => {
       trace: {
         spanProcessors: [
           new TransactionNameProcessor({
-            transactionName: () => "default",
+            transactionName: (_span) => "default",
           } as Configuration),
           new ParentSpanProcessor(),
         ],
@@ -106,7 +106,7 @@ describe("TransactionNameProcessor", () => {
       trace: {
         spanProcessors: [
           new TransactionNameProcessor({
-            transactionName: () => "default",
+            transactionName: (_span) => "default",
           } as Configuration),
           new ParentSpanProcessor(),
         ],
