@@ -215,16 +215,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - run: corepack enable
 
-      - uses: actions/cache@v4
-        with:
-          path: .yarn/cache
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-
-
-      - run: yarn install --immutable
+      - run: rm package.json && rm yarn.lock && npm install --no-save node-releases
       - run: node -e "require('assert').ok(${OP} require('${FILE}'))"
         env:
           OP: ${{ !matrix.pass && '!' || '' }}
