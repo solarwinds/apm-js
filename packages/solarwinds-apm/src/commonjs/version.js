@@ -18,6 +18,9 @@ try {
     throw "UPDATE YOUR NODE.JS VERSION IMMEDIATELY.";
   }
 
+  // By default assume the Node version is too recent to be in the releases list
+  module.exports = true;
+
   var file = require.resolve(
     "node-releases/data/release-schedule/release-schedule.json"
   );
@@ -54,9 +57,6 @@ try {
     module.exports = supported;
     break;
   }
-
-  // The version is too recent to be present in node-releases
-  module.exports = true;
 } catch (error) {
   log(error);
   module.exports = false;
