@@ -6,6 +6,10 @@ var path = require("path");
 var process = require("process");
 var log = require("./log");
 
+var RELEASED = require("./timestamp");
+var NOW = Date.now();
+var YEAR = 1000 * 60 * 60 * 24 * 365;
+
 try {
   if (
     typeof process.version !== "string" ||
@@ -13,6 +17,9 @@ try {
   ) {
     throw "UPDATE YOUR NODE.JS VERSION IMMEDIATELY.";
   }
+
+  // By default assume the Node version is too recent to be in the releases list
+  module.exports = true;
 
   var file = require.resolve(
     "node-releases/data/release-schedule/release-schedule.json"
@@ -23,49 +30,33 @@ try {
       continue;
     }
 
+    var lts = "lts" in versions[major];
     var eol = new Date(versions[major].end);
 
-    var elapsed = Date.now() - eol.getTime();
-    if (elapsed > 1000 * 60 * 60 * 24 * 365) {
-      var message =
+    var maintained = NOW - eol <= 0;
+    var supported = RELEASED - eol <= (lts ? YEAR : 0);
+
+    if (!maintained) {
+      log(
         "The detected Node.js version (" +
-        process.version +
-        ") has reached End Of Life over one year ago (" +
-        versions[major].end +
-        "). It is no longer supported by this library (solarwinds-apm) and the application will not be instrumented. " +
-        "SolarWinds STRONGLY recommends customers use a non-EOL Node.js version receiving security updates.";
-
-      throw message;
-    } else if (elapsed > 0) {
-      var message =
-        "The detected Node.js version (" +
-        process.version +
-        ") has reached End Of Life (" +
-        versions[major].end +
-        "). It is still supported by this library (solarwinds-apm) for one year following this date. " +
-        "SolarWinds STRONGLY recommends customers use a non-EOL Node.js version receiving security updates.";
-
-      throw message;
+          process.version +
+          ") has reached End Of Life (" +
+          versions[major].end +
+          ")."
+      );
+      log(
+        "SolarWinds STRONGLY recommends customers use a non-EOL Node.js version receiving security updates."
+      );
     }
-  }
-
-  if (process.versions.ares) {
-    if (
-      process.versions.ares &&
-      process.env.GRPC_DNS_RESOLVER &&
-      process.env.GRPC_DNS_RESOLVER.toLowerCase() === "ares"
-    ) {
-      var message =
-        "The current Node.js version is incompatible with the c-ares gRPC DNS resolver, " +
-        "which this application explicitly specifies.";
-
-      throw message;
-    } else {
-      process.env.GRPC_DNS_RESOLVER = "native";
+    if (!supported) {
+      log(
+        "The application will not be instrumented to avoid potential compatibility issues."
+      );
     }
-  }
 
-  module.exports = true;
+    module.exports = supported;
+    break;
+  }
 } catch (error) {
   log(error);
   module.exports = false;

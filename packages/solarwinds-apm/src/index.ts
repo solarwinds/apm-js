@@ -25,14 +25,15 @@ import { init } from "./init.js"
 import {
   LOGGER_PROVIDER,
   METER_PROVIDER,
+  SAMPLER,
   TRACER_PROVIDER,
 } from "./shared/init.js"
 
-if (!environment.IS_SERVERLESS) {
-  await import("./commonjs/version.js")
-}
+const supported =
+  environment.IS_SERVERLESS || (await import("./commonjs/version.js")).default
+let initialised = Reflect.has(globalThis, INIT)
 
-if (!Reflect.has(globalThis, INIT)) {
+if (supported && !initialised) {
   try {
     Reflect.defineProperty(globalThis, INIT, {
       value: false,
@@ -44,7 +45,7 @@ if (!Reflect.has(globalThis, INIT)) {
     const { registerOptions, waitForAllMessagesAcknowledged } =
       createAddHookMessageChannel()
     register("./hooks.js", import.meta.url, registerOptions)
-    await init()
+    initialised = await init()
     await waitForAllMessagesAcknowledged()
 
     Reflect.defineProperty(globalThis, INIT, {
@@ -74,6 +75,12 @@ if (!Reflect.has(globalThis, INIT)) {
   } catch (error) {
     log(error)
   }
+}
+
+if (!initialised) {
+  ;[SAMPLER, TRACER_PROVIDER, METER_PROVIDER, LOGGER_PROVIDER].map((c) => {
+    c.resolve(undefined)
+  })
 }
 
 export * from "./api.js"

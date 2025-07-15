@@ -65,7 +65,7 @@ import {
 import { componentLogger } from "./shared/logger.js"
 import { VERSION } from "./version.js"
 
-export async function init() {
+export async function init(): Promise<boolean> {
   let config: Configuration
   try {
     config = await read()
@@ -74,7 +74,7 @@ export async function init() {
       "Invalid SolarWinds APM configuration, application will not be instrumented.",
     )
     printError(err)
-    return
+    return false
   }
 
   diag.setLogger(new Logger(), config.logLevel)
@@ -84,12 +84,7 @@ export async function init() {
 
   if (!config.enabled) {
     logger.warn("Library disabled, application will not be instrumented.")
-
-    SAMPLER.resolve(undefined)
-    TRACER_PROVIDER.resolve(undefined)
-    METER_PROVIDER.resolve(undefined)
-    LOGGER_PROVIDER.resolve(undefined)
-    return
+    return false
   }
 
   const registerInstrumentations = await initInstrumentations(config, logger)
@@ -124,7 +119,7 @@ export async function init() {
         "Unsupported platform for AppOptics, application will not be instrumented.",
         ERROR,
       )
-      return
+      return false
     }
 
     oboe = await reporter(config, resource)
@@ -138,6 +133,8 @@ export async function init() {
 
   registerInstrumentations(tracerProvider, meterProvider)
   logger.debug("resource", resource.attributes)
+
+  return true
 }
 
 async function initInstrumentations(config: Configuration, logger: DiagLogger) {

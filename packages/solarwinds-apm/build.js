@@ -18,23 +18,28 @@ import fs from "node:fs/promises"
 
 import { agents } from "caniuse-lite"
 import esbuild from "esbuild"
-import eslint from "eslint"
 import prettier from "prettier"
-
-const ESLint = await eslint.loadESLint({ useFlatConfig: true })
 
 const version = JSON.parse(
   await fs.readFile("package.json", { encoding: "utf-8" }),
 ).version
 
-const code = `export const VERSION = "${version}"`
-const formatted = await prettier.format(code, { parser: "typescript" })
-await fs.writeFile("src/version.ts", formatted)
-const linted = await new ESLint({ fix: true }).lintFiles("src/version.ts")
-await fs.writeFile("src/version.ts", linted[0].output)
+await fs.writeFile(
+  "src/version.ts",
+  await prettier.format(`export const VERSION = "${version}"`, {
+    parser: "typescript",
+  }),
+)
+await fs.writeFile(
+  "src/commonjs/timestamp.js",
+  await prettier.format(
+    [`"use strict";`, `module.exports = ${Date.now()};`].join("\n"),
+    { parser: "typescript" },
+  ),
+)
 
 await fs.mkdir("dist/commonjs", { recursive: true })
-await fs.cp("src/commonjs/package.json", "dist/commonjs/package.json")
+await fs.cp("src/commonjs/", "dist/commonjs/", { recursive: true, force: true })
 
 // Generate the web instrumentation bundle to target the Chrome/Safari/Firefox/Edge
 // versions which were the latest 1 year ago as a default
