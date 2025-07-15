@@ -54,6 +54,9 @@ try {
     module.exports = supported;
     break;
   }
+
+  // The version is too recent to be present in node-releases
+  module.exports = true;
 } catch (error) {
   log(error);
   module.exports = false;
