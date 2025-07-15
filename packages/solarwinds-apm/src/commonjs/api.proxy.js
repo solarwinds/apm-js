@@ -32,6 +32,8 @@ module.exports.forceFlush = function forceFlush() {
   return imported.then((api) => api.forceFlush());
 };
 
+module.exports.VERSION = null;
+
 /** @type{import("../api")} */
 let api = undefined;
 const imported = import("../api.js").then((imported) => {

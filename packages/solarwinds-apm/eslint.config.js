@@ -16,4 +16,7 @@ limitations under the License.
 
 import base from "@solarwinds-apm/eslint-config"
 
-export default [...base(), { ignores: ["src/version.ts"] }]
+export default [
+  ...base(),
+  { ignores: ["src/version.ts", "src/commonjs/timestamp.js"] },
+]
