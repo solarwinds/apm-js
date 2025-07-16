@@ -1,3 +1,9 @@
+# [15.5.1](https://github.com/solarwinds/apm-js/releases/tag/v15.5.1)
+
+## Fixes
+
+- Check for compatibility against library build date instead of current date
+
 # [15.5.0](https://github.com/solarwinds/apm-js/releases/tag/v15.5.0)
 
 ## New features and improvements
