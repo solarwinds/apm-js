@@ -216,7 +216,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - run: rm package.json && rm yarn.lock && npm install --no-save node-releases
       - run: node -e "require('assert').ok(${OP} require('${FILE}'))"
         env:
-          OP: ${{ matrix.pass && '' || '!' }}
+          OP: ${{ !matrix.pass && '!' || '' }}
           FILE: ./packages/solarwinds-apm/dist/commonjs/version.js
