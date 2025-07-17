@@ -117,6 +117,8 @@ It is also possible to set the value to an array of objects representing transac
 }
 ```
 
+Note that both the function and scheme approaches operate on the local root span, and attributes on child spans are not available from it. If more involved logic is required, consider using the `setTransactionName` function directly in code.
+
 ### Transaction Settings
 
 Transaction settings allow filtering out certain transactions, based on URL for web requests, and the type and name concatenated with a colon for everything else. This option should be set to an array of objects.
