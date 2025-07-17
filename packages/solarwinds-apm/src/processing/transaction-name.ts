@@ -72,7 +72,7 @@ export class TransactionNameProcessor
     maxLength: TRANSACTION_NAME_MAX_LENGTH,
     default: TRANSACTION_NAME_DEFAULT,
   })
-  readonly #defaultName?: () => string
+  readonly #defaultName?: (span: ReadableSpan) => string | undefined
 
   constructor(config: Configuration) {
     super()
@@ -87,7 +87,7 @@ export class TransactionNameProcessor
     let name = span.attributes[TRANSACTION_NAME_ATTRIBUTE]
     this.#logger.debug("initial transaction name", name, span.attributes)
     if (typeof name !== "string") {
-      name = this.#defaultName?.() ?? computedTransactionName(span)
+      name = this.#defaultName?.(span) ?? computedTransactionName(span)
     }
     name = this.#pool.registered(name)
     this.#logger.debug("final transaction name", name)

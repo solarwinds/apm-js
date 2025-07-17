@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { DiagLogLevel } from "@opentelemetry/api"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { type Configuration, read } from "../src/config.js"
@@ -101,14 +102,6 @@ describe("read", () => {
     expect(config.trustedpath).to.include("solarwinds-apm")
   })
 
-  it("parses transaction settings", async () => {
-    process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-settings.js"
-
-    const config = await read()
-    expect(config.transactionSettings).not.to.be.undefined
-    expect(config.transactionSettings).to.have.length(3)
-  })
-
   it("parses otel service name", async () => {
     process.env.OTEL_SERVICE_NAME = "otel-name"
 
@@ -153,6 +146,83 @@ describe("read", () => {
 
     const config = await read()
     expect(config.transactionName).not.to.be.undefined
-    expect(config.transactionName!()).to.equal("cjs")
+    expect(config.transactionName!(null!)).to.equal("cjs")
+  })
+
+  describe("transactionSettings", () => {
+    let config: Configuration
+    before(async () => {
+      process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-settings.js"
+      config = await read()
+    })
+
+    it("supports regex literals", () => {
+      const setting = config.transactionSettings![0]!
+
+      expect(setting.tracing).to.be.true
+      expect(setting.matcher("hello")).to.be.true
+      expect(setting.matcher("Hello !")).to.be.false
+    })
+
+    it("supports string literals as regexes", () => {
+      const setting = config.transactionSettings![1]!
+
+      expect(setting.tracing).to.be.false
+      expect(setting.matcher("Hello !")).to.be.true
+      expect(setting.matcher("hello")).to.be.false
+    })
+
+    it("supports matcher functions", () => {
+      const setting = config.transactionSettings![2]!
+
+      expect(setting.tracing).to.be.true
+      expect(setting.matcher("foobar")).to.be.true
+      expect(setting.matcher("barfoo")).to.be.false
+    })
+  })
+
+  describe("transactionName", () => {
+    it("supports string literals", async () => {
+      process.env.SW_APM_CONFIG_FILE =
+        "test/configs/transaction-name.literal.js"
+      const config = await read()
+
+      expect(config.transactionName?.(null!)).to.equal("name")
+    })
+
+    it("supports functions", async () => {
+      process.env.SW_APM_CONFIG_FILE =
+        "test/configs/transaction-name.function.js"
+      const config = await read()
+
+      expect(
+        config.transactionName?.({ name: "one" } as ReadableSpan),
+      ).to.equal("one")
+      expect(
+        config.transactionName?.({ name: "two" } as ReadableSpan),
+      ).to.equal("two")
+    })
+
+    it("supports schemes", async () => {
+      process.env.SW_APM_CONFIG_FILE =
+        "test/configs/transaction-name.schemes.js"
+      const config = await read()
+
+      expect(
+        config.transactionName?.({
+          attributes: { one: true },
+        } as unknown as ReadableSpan),
+      ).to.equal("true")
+      expect(
+        config.transactionName?.({
+          attributes: { one: true, two: 2 },
+        } as unknown as ReadableSpan),
+      ).to.equal("true:2")
+      expect(
+        config.transactionName?.({
+          attributes: { one: true, two: 2, three: "three" },
+        } as unknown as ReadableSpan),
+      ).to.equal("true-2-three")
+    })
   })
 })

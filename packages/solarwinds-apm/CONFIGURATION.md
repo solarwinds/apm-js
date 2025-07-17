@@ -47,7 +47,7 @@ module.exports = {
 | `triggerTraceEnabled`           | `SW_APM_TRIGGER_TRACE_ENABLED` | `true`            | Whether trigger tracing should be enabled                                      |
 | `runtimeMetrics`                | `SW_APM_RUNTIME_METRICS`       | `true`            | Whether runtime metrics should be collected                                    |
 | `tracingMode`                   | `SW_APM_TRACING_MODE`          | None              | Custom tracing mode                                                            |
-| `transactionName`               | `SW_APM_TRANSACTION_NAME`      | None              | Custom transaction name for all spans                                          |
+| `transactionName`               | `SW_APM_TRANSACTION_NAME`      | None              | Declarative transaction naming. See [Transaction Names](#transaction-names)    |
 | `exportLogsEnabled`             | `SW_APM_EXPORT_LOGS_ENABLED`   | `false`           | Whether to export logs to the collector. See [Logs Export](#logs-export)       |
 | `insertTraceContextIntoLogs`    |                                | `false`           | Whether to insert trace context information into logs                          |
 | `insertTraceContextIntoQueries` |                                | `false`           | Whether to insert trace context information into SQL queries                   |
@@ -80,6 +80,44 @@ It is possible to export logs to the collector by explicitly enabling the featur
 - `bunyan`
 - `pino`
 - `winston`
+
+### Transaction Names
+
+By default, the library will name transactions using a set of internal rules. However there are cases where the default naming logic doesn't fit. The `transactionName` option allows customising the behaviour.
+
+When set to a string literal, every transaction will use the name without exception. When set to a function, it will be called with the span object as its only parameter. The return value is used as transaction name, unless it is `undefined`, in which case the default naming logic is used.
+
+```js
+export default {
+  transactionName: (span) => {
+    const route = span.attributes["http.route"]
+    if (route) {
+      return `${span.name} ${route}`
+    }
+  },
+}
+```
+
+It is also possible to set the value to an array of objects representing transaction naming schemes. Each object lists a set of attributes and a delimiter, and the first one which has all of its attributes present in the span will be used by joining the attribute values by the delimiter. If no scheme matches, the default naming logic is used.
+
+```json
+{
+  "transactionName": [
+    {
+      "scheme": "spanAttribute",
+      "delimiter": " ",
+      "attributes": ["http.route", "HandlerName"]
+    }
+    {
+      "scheme": "spanAttribute",
+      "delimiter": ":",
+      "attributes": ["server.address", "server.port"]
+    },
+  ]
+}
+```
+
+Note that both the function and scheme approaches operate on the local root span, and attributes on child spans are not available from it. If more involved logic is required, consider using the `setTransactionName` function directly in code.
 
 ### Transaction Settings
 
