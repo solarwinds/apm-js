@@ -176,7 +176,7 @@ export const schema = (defaults: Defaults) =>
             v.transform((f) => (span: ReadableSpan) => {
               const name = f(span)
               if (name != null) {
-                return String(name)
+                return String(name as unknown)
               } else {
                 return undefined
               }
@@ -228,7 +228,7 @@ export const schema = (defaults: Defaults) =>
               }),
               v.transform(({ tracing, matcher }) => ({
                 tracing,
-                matcher: (ident: string) => Boolean(matcher(ident)),
+                matcher: (ident) => Boolean(matcher(ident) as unknown),
               })),
             ),
           ]),
@@ -241,7 +241,8 @@ export const schema = (defaults: Defaults) =>
             (filter) => typeof filter === "function",
           ),
           v.transform(
-            (filter) => (span: ReadableSpan) => Boolean(filter(span)),
+            (filter) => (span: ReadableSpan) =>
+              Boolean(filter(span) as unknown),
           ),
         ),
       ),
