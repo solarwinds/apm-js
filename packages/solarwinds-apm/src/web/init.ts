@@ -68,7 +68,7 @@ export function init() {
   try {
     const config = read()
 
-    diag.setLogger(new Logger(), config.logLevel)
+    diag.setLogger(new Logger(config), config.logLevel)
     const logger = componentLogger(init)
     logger.debug("config", config)
 
