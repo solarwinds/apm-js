@@ -41,7 +41,6 @@
 | `pg`                        | `>=8.0.3 <9.0.0`   | `@opentelemetry/instrumentation-pg`               |
 | `pg-pool`                   | `>=2.0.0 <4.0.0`   | `@opentelemetry/instrumentation-pg`               |
 | `pino`                      | `>=5.14.0 <10.0.0` | `@opentelemetry/instrumentation-pino`             |
-| `redis`                     | `>=2.6.0 <4.0.0`   | `@opentelemetry/instrumentation-redis`            |
 | `restify`                   | `>=4.1.0 <12.0.0`  | `@opentelemetry/instrumentation-restify`          |
 | `router`                    | `>=1.0.0 <2.0.0`   | `@opentelemetry/instrumentation-router`           |
 | `socket.io`                 | `>=2.0.0 <5.0.0`   | `@opentelemetry/instrumentation-socket.io`        |
