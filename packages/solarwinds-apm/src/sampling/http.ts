@@ -16,6 +16,7 @@ limitations under the License.
 
 import { context } from "@opentelemetry/api"
 import { suppressTracing } from "@opentelemetry/core"
+import { unref } from "@solarwinds-apm/module"
 import { type Settings } from "@solarwinds-apm/sampling"
 
 import { environment } from "../env.js"
@@ -58,9 +59,11 @@ export class HttpSampler extends Sampler {
     setTimeout(() => {
       this.#loop().catch(this.#catch.bind(this))
     }, 0)
-    setInterval(() => {
-      this.#loop().catch(this.#catch.bind(this))
-    }, REQUEST_INTERVAL)
+    unref(
+      setInterval(() => {
+        this.#loop().catch(this.#catch.bind(this))
+      }, REQUEST_INTERVAL),
+    )
   }
 
   override toString(): string {
