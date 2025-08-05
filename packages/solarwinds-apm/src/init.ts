@@ -77,7 +77,7 @@ export async function init(): Promise<boolean> {
     return false
   }
 
-  diag.setLogger(new Logger(), config.logLevel)
+  diag.setLogger(new Logger(config), config.logLevel)
   const logger = componentLogger(init)
   logger.debug("working directory", process.cwd())
   logger.debug("config", config)

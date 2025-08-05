@@ -21,6 +21,7 @@ import { type DiagLogFunction, type DiagLogger } from "@opentelemetry/api"
 import stringify from "json-stringify-safe"
 
 import log from "./commonjs/log.js"
+import { type Configuration } from "./config.js"
 
 const COLOURS = {
   red: "\x1b[1;31m",
@@ -30,13 +31,18 @@ const COLOURS = {
 
 /** Node.js logger that outputs nice coloured messages in TTYs and JSON otherwise */
 export class Logger implements DiagLogger {
-  readonly error = Logger.makeLogger("error", "red", console.error)
-  readonly warn = Logger.makeLogger("warn", "yellow", console.warn)
-  readonly info = Logger.makeLogger("info", "cyan")
-  readonly debug = Logger.makeLogger("debug")
-  readonly verbose = Logger.makeLogger("verbose")
+  readonly error = this.#makeLogger("error", "red", console.error)
+  readonly warn = this.#makeLogger("warn", "yellow", console.warn)
+  readonly info = this.#makeLogger("info", "cyan")
+  readonly debug = this.#makeLogger("debug")
+  readonly verbose = this.#makeLogger("verbose")
 
-  private static makeLogger(
+  readonly #token?: string
+  constructor(config: Configuration) {
+    this.#token = config.token
+  }
+
+  #makeLogger(
     level: string,
     colour?: keyof typeof COLOURS,
     pretty: typeof console.log = console.log,
@@ -62,7 +68,7 @@ export class Logger implements DiagLogger {
           line += ` ${string}`
         }
 
-        pretty(line)
+        pretty(this.#redact(line))
       }
     } else {
       return (message, ...args) => {
@@ -70,8 +76,16 @@ export class Logger implements DiagLogger {
           message += ` ${args.shift() as string}`
         }
 
-        log(stringify({ time: new Date(), level, message, args }))
+        log(this.#redact(stringify({ time: new Date(), level, message, args })))
       }
+    }
+  }
+
+  #redact(line: string) {
+    if (this.#token) {
+      return line.replaceAll(this.#token, "***")
+    } else {
+      return line
     }
   }
 }
