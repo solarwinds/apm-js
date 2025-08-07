@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { setTimeout } from "node:timers/promises"
-
 import { trace } from "@opentelemetry/api"
 import { before, describe, expect, it, otel } from "@solarwinds-apm/test"
 
@@ -98,10 +96,6 @@ describe(HttpSampler.name, () => {
 
       const spans = await otel.spans()
       expect(spans).to.be.empty
-    })
-
-    it("retries with backoff", async () => {
-      await setTimeout(1000)
     })
   })
 })
