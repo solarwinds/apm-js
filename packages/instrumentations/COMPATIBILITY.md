@@ -4,7 +4,7 @@
 | --------------------------- | ------------------ | ------------------------------------------------- |
 | `@aws-sdk/middleware-stack` | `>=3.1.0 <4.0.0`   | `@opentelemetry/instrumentation-aws-sdk`          |
 | `@aws-sdk/smithy-client`    | `>=3.1.0 <4.0.0`   | `@opentelemetry/instrumentation-aws-sdk`          |
-| `@cucumber/cucumber`        | `>=8.0.0 <12.0.0`  | `@opentelemetry/instrumentation-cucumber`         |
+| `@cucumber/cucumber`        | `>=8.0.0 <13.0.0`  | `@opentelemetry/instrumentation-cucumber`         |
 | `@grpc/grpc-js`             | `>=1.0.0 <2.0.0`   | `@opentelemetry/instrumentation-grpc`             |
 | `@hapi/hapi`                | `>=17.0.0 <22.0.0` | `@opentelemetry/instrumentation-hapi`             |
 | `@nestjs/core`              | `>=4.0.0 <12.0.0`  | `@opentelemetry/instrumentation-nestjs-core`      |

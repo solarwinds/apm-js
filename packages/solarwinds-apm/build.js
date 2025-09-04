@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import fs from "node:fs/promises"
+import module from "node:module"
 
 import { agents } from "caniuse-lite"
 import esbuild from "esbuild"
@@ -68,5 +69,5 @@ await esbuild.build({
   minify: true,
   keepNames: true,
   sourcemap: "linked",
-  external: ["node:*"],
+  external: ["node:*", ...module.builtinModules],
 })
