@@ -91,7 +91,7 @@ jobs:
       - uses: actions/download-artifact@v5
         with:
           name: layer.zip
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ inputs.type == 'production' && secrets.LAMBDA_PROD_PUBLISHER_ARN || secrets.LAMBDA_STAGE_PUBLISHER_ARN }}
           aws-region: ${{ matrix.region }}
