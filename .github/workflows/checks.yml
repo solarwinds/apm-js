@@ -9,9 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
+          package-manager-cache: false
       - run: corepack enable
 
       - uses: actions/cache@v4
@@ -52,9 +53,10 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
+          package-manager-cache: false
       - run: corepack enable
 
       - uses: actions/cache@v4
@@ -160,9 +162,10 @@ jobs:
         with:
           name: build
           path: ./
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
+          package-manager-cache: false
       - run: corepack enable
 
       - uses: actions/cache@v4
@@ -212,9 +215,10 @@ jobs:
         with:
           name: build
           path: ./
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
+          package-manager-cache: false
 
       - run: rm package.json && rm yarn.lock && npm install --no-save node-releases
       - run: node -e "require('assert').ok(${OP} require('${FILE}'))"
