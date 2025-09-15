@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/* eslint-disable @typescript-eslint/no-deprecated */
 export {
   SEMATTRS_HTTP_METHOD as ATTR_HTTP_METHOD,
   SEMATTRS_HTTP_SCHEME as ATTR_HTTP_SCHEME,
