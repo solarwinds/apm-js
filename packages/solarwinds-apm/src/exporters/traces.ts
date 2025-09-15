@@ -16,11 +16,10 @@ limitations under the License.
 
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
 
-import { type Configuration } from "../shared/config.js"
-import { exporterConfig } from "./config.js"
+import { type Configuration, exporterConfig } from "./config.js"
 
 export class TraceExporter extends OTLPTraceExporter {
-  constructor(config: Configuration & { trustedpath?: string }) {
+  constructor(config: Configuration) {
     super(exporterConfig(config, "traces"))
   }
 }

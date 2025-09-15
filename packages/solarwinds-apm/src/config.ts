@@ -84,7 +84,7 @@ const schema = v.pipe(
     v.object({
       trustedpath: v.optional(schemas.trustedpath),
 
-      proxy: v.optional(v.string()),
+      proxy: v.optional(schemas.url),
 
       runtimeMetrics: v.optional(schemas.boolean, !environment.IS_SERVERLESS),
 

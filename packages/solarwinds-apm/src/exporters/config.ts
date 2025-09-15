@@ -19,13 +19,16 @@ import { type OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-pr
 import { type OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
 import { CompressionAlgorithm } from "@opentelemetry/otlp-exporter-base"
 
-import { type Configuration } from "../shared/config.js"
+import { type Configuration as NodeConfiguration } from "../config.js"
+import { type Configuration as WebConfiguration } from "../web/config.js"
+import { agentFactory } from "./proxy.js"
 
+export type Configuration = NodeConfiguration | WebConfiguration
 type Options<Exporter extends new (options: never) => unknown> =
   Exporter extends new (options: infer Options) => unknown ? Options : never
 
 export function exporterConfig(
-  config: Configuration & { trustedpath?: string },
+  config: Configuration,
   signal: "traces" | "metrics" | "logs",
 ): Options<
   typeof OTLPTraceExporter | typeof OTLPMetricExporter | typeof OTLPLogExporter
@@ -41,12 +44,11 @@ export function exporterConfig(
     // invalid user provided endpoint url
   }
 
+  const agent = "proxy" in config && agentFactory(config)
   return {
     url,
     headers,
     compression: CompressionAlgorithm.GZIP,
-    httpAgentOptions: {
-      ca: config.trustedpath,
-    },
+    httpAgentOptions: agent || undefined,
   }
 }

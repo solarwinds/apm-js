@@ -24,11 +24,10 @@ import {
   type PeriodicExportingMetricReaderOptions,
 } from "@opentelemetry/sdk-metrics"
 
-import { type Configuration } from "../shared/config.js"
-import { exporterConfig } from "./config.js"
+import { type Configuration, exporterConfig } from "./config.js"
 
 export class MetricExporter extends OTLPMetricExporter {
-  constructor(config: Configuration & { trustedpath?: string }) {
+  constructor(config: Configuration) {
     super(exporterConfig(config, "metrics"))
   }
 

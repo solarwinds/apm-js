@@ -1,0 +1,116 @@
+/*
+Copyright 2023-2025 SolarWinds Worldwide, LLC.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+import type http from "node:http"
+import type https from "node:https"
+import { type Socket } from "node:net"
+
+import { TimeoutError } from "@opentelemetry/core"
+import { OTLPExporterError } from "@opentelemetry/otlp-exporter-base"
+
+import { type Configuration } from "../config.js"
+
+export const agentFactory =
+  (config: Configuration) =>
+  async (protocol: string): Promise<https.Agent> => {
+    const { Agent } =
+      protocol === "http:" ? await import("http") : await import("https")
+
+    if (!config.proxy) {
+      return new (Agent as typeof https.Agent)({ ca: config.trustedpath })
+    }
+
+    const { request } =
+      config.proxy.protocol === "http:"
+        ? await import("http")
+        : await import("https")
+
+    const headers: http.OutgoingHttpHeaders = {
+      ["Proxy-Connection"]: "keep-alive",
+    }
+    if (config.proxy.username) {
+      const basic = `${config.proxy.username}:${config.proxy.password}`
+      headers["Proxy-Authorization"] =
+        `Basic ${Buffer.from(basic).toString("base64")}`
+    }
+
+    class ProxyAgent extends (Agent as typeof https.Agent) {
+      override createConnection(
+        options: http.ClientRequestArgs,
+        cb: (err: Error | null, conn?: Socket) => void,
+      ): void {
+        const host = options.host ?? "localhost"
+
+        /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+        let port =
+          options.port ||
+          options.defaultPort ||
+          (protocol === "http:" ? 80 : 443)
+        if (typeof port === "string") {
+          port = Number.parseInt(port, 10)
+        }
+        /* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
+
+        const req = (request as typeof https.request)({
+          method: "CONNECT",
+          hostname: config.proxy?.hostname,
+          port: config.proxy?.port,
+          path: `${host}:${port}`,
+          headers,
+          ca: config.trustedpath,
+          timeout: options.timeout,
+        })
+
+        req
+          .on("connect", (res, conn) => {
+            if (
+              res.statusCode &&
+              res.statusCode >= 200 &&
+              res.statusCode < 300
+            ) {
+              if (protocol === "http:") {
+                cb(null, conn)
+              } else {
+                import("node:tls")
+                  .then((tls) => {
+                    cb(
+                      null,
+                      tls.connect({
+                        host,
+                        port,
+                        socket: conn,
+                        servername: host,
+                        ca: config.trustedpath,
+                        timeout: options.timeout,
+                      }),
+                    )
+                  })
+                  .catch(cb)
+              }
+            } else {
+              cb(new OTLPExporterError(res.statusMessage, res.statusCode))
+            }
+          })
+          .on("timeout", () =>
+            req.destroy(new TimeoutError("Proxy Request Timeout")),
+          )
+          .on("error", cb)
+          .end()
+      }
+    }
+
+    return new ProxyAgent({ ca: config.trustedpath, keepAlive: true })
+  }
