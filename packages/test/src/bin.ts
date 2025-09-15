@@ -20,8 +20,11 @@ import path from "node:path"
 import process from "node:process"
 
 import dotenv from "dotenv"
-import globby from "globby"
+import { globbySync } from "globby"
 import semver from "semver"
+import { createRequire } from "node:module"
+
+const require = createRequire(import.meta.url)
 
 // Patterns recognised as test files by default
 const DEFAULTS = [
@@ -76,7 +79,7 @@ if (argv.length === 0) {
 const mocha = require.resolve("mocha/bin/mocha.js")
 
 // We are not going through a shell to start the process so glob extension is done manually
-argv = globby.sync(argv, { gitignore: true, expandDirectories: DEFAULTS })
+argv = globbySync(argv, { gitignore: true, expandDirectories: DEFAULTS })
 
 const loader = semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
   ? ["--import", "@solarwinds-apm/test/ts-node/import"]

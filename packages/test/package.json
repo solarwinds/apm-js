@@ -13,14 +13,14 @@
   "bugs": {
     "url": "https://github.com/solarwinds/apm-js/issues"
   },
-  "type": "commonjs",
+  "type": "module",
   "exports": {
     ".": "./dist/index.js",
     "./ts-node/import": {
-      "import": "./dist/ts-node/import.mjs"
+      "import": "./dist/ts-node/import.js"
     },
     "./ts-node/loader": {
-      "import": "./dist/ts-node/loader.mjs"
+      "import": "./dist/ts-node/loader.js"
     }
   },
   "main": "./dist/index.js",
@@ -42,15 +42,15 @@
     "release": "node ../../scripts/publish.js"
   },
   "dependencies": {
-    "@types/chai": "^4.3.20",
-    "@types/chai-as-promised": "^7.1.8",
+    "@types/chai": "^5.2.2",
+    "@types/chai-as-promised": "^8.0.2",
     "@types/mocha": "^10.0.9",
     "@types/node": "^18.19.0",
     "c8": "^10.1.2",
     "chai": "^6.0.1",
-    "chai-as-promised": "^7.1.2",
+    "chai-as-promised": "^8.0.2",
     "dotenv": "^16.4.5",
-    "globby": "^11.1.0",
+    "globby": "^14.1.0",
     "mocha": "^11.0.1",
     "semver": "^7.6.3",
     "ts-node": "^11.0.0-beta.1"
