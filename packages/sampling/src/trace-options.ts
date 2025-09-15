@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { hmac } from "@noble/hashes/hmac"
-import { sha1 } from "@noble/hashes/legacy"
+import { hmac } from "@noble/hashes/hmac.js"
+import { sha1 } from "@noble/hashes/legacy.js"
 import { diag, type DiagLogger } from "@opentelemetry/api"
 
 const TRIGGER_TRACE_KEY = "trigger-trace"
@@ -175,7 +175,7 @@ export function validateSignature(
     return Auth.BAD_TIMESTAMP
   }
 
-  const digest = hmac(sha1, key, header).reduce(
+  const digest = hmac(sha1, key, new TextEncoder().encode(header)).reduce(
     (hex, byte) => hex + byte.toString(16).padStart(2, "0"),
     "",
   )
