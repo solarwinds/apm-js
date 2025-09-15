@@ -16,13 +16,13 @@ limitations under the License.
 */
 
 import { spawnSync } from "node:child_process"
+import { createRequire } from "node:module"
 import path from "node:path"
 import process from "node:process"
 
 import dotenv from "dotenv"
 import { globbySync } from "globby"
 import semver from "semver"
-import { createRequire } from "node:module"
 
 const require = createRequire(import.meta.url)
 
