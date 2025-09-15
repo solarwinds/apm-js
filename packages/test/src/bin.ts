@@ -22,7 +22,6 @@ import process from "node:process"
 
 import dotenv from "dotenv"
 import { globbySync } from "globby"
-import semver from "semver"
 
 const require = createRequire(import.meta.url)
 
@@ -81,13 +80,10 @@ const mocha = require.resolve("mocha/bin/mocha.js")
 // We are not going through a shell to start the process so glob extension is done manually
 argv = globbySync(argv, { gitignore: true, expandDirectories: DEFAULTS })
 
-const loader = semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
-  ? ["--import", "@solarwinds-apm/test/ts-node/import"]
-  : ["--loader", "@solarwinds-apm/test/ts-node/loader"]
-
 argv = [
   // Register ts-node loaders
-  ...loader,
+  "--import",
+  "@solarwinds-apm/test/ts-node/import",
   // Forward the rest of our parameters
   ...process.execArgv,
   // mocha and its arguments
