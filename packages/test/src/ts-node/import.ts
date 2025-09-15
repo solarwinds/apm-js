@@ -18,4 +18,4 @@ import "ts-node/register"
 
 import { register } from "node:module"
 
-register("./loader.mjs", import.meta.url)
+register("./loader.js", import.meta.url)

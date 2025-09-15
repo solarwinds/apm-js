@@ -44,7 +44,7 @@ import {
   type NodeTracerConfig,
   NodeTracerProvider,
 } from "@opentelemetry/sdk-trace-node"
-import chai from "chai"
+import * as chai from "chai"
 import chaiAsPromised from "chai-as-promised"
 import { afterEach } from "mocha"
 

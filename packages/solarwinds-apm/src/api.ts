@@ -42,7 +42,9 @@ export async function forceFlush(): Promise<void> {
     METER_PROVIDER,
     LOGGER_PROVIDER,
   ])
-  await Promise.all(providers.map((provider) => provider?.forceFlush()))
+  await Promise.all(
+    providers.map((provider) => provider?.forceFlush() ?? Promise.resolve()),
+  )
 }
 
 export { type Config } from "./config.js"

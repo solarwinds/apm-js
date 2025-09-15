@@ -67,7 +67,11 @@ if (supported && !initialised) {
 
         void Promise.all([TRACER_PROVIDER, METER_PROVIDER, LOGGER_PROVIDER])
           .then((providers) =>
-            Promise.all(providers.map((provider) => provider?.shutdown())),
+            Promise.all(
+              providers.map(
+                (provider) => provider?.shutdown() ?? Promise.resolve(),
+              ),
+            ),
           )
           .finally(() => process.exit(128 + code))
       }),

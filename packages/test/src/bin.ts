@@ -16,12 +16,14 @@ limitations under the License.
 */
 
 import { spawnSync } from "node:child_process"
+import { createRequire } from "node:module"
 import path from "node:path"
 import process from "node:process"
 
 import dotenv from "dotenv"
-import globby from "globby"
-import semver from "semver"
+import { globbySync } from "globby"
+
+const require = createRequire(import.meta.url)
 
 // Patterns recognised as test files by default
 const DEFAULTS = [
@@ -76,15 +78,12 @@ if (argv.length === 0) {
 const mocha = require.resolve("mocha/bin/mocha.js")
 
 // We are not going through a shell to start the process so glob extension is done manually
-argv = globby.sync(argv, { gitignore: true, expandDirectories: DEFAULTS })
-
-const loader = semver.satisfies(process.versions.node, "^18.19.0 || >=20.6.0")
-  ? ["--import", "@solarwinds-apm/test/ts-node/import"]
-  : ["--loader", "@solarwinds-apm/test/ts-node/loader"]
+argv = globbySync(argv, { gitignore: true, expandDirectories: DEFAULTS })
 
 argv = [
   // Register ts-node loaders
-  ...loader,
+  "--import",
+  "@solarwinds-apm/test/ts-node/import",
   // Forward the rest of our parameters
   ...process.execArgv,
   // mocha and its arguments
