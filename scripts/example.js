@@ -14,16 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const process = require("node:process")
-const cproc = require("node:child_process")
+import "dotenv/config"
 
-require("./env.js")
+import { execSync } from "node:child_process"
+import process from "node:process"
 
 const example = process.argv[2]
 const collector = process.argv[3] === "collector"
 
 function exec(cmd) {
-  return cproc.execSync(cmd, { stdio: "inherit" })
+  return execSync(cmd, { stdio: "inherit" })
 }
 
 // build example and its deps outside of the container

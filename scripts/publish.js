@@ -14,20 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const process = require("node:process")
-const cproc = require("node:child_process")
-const fs = require("node:fs")
+import { execSync } from "node:child_process"
+import { readFileSync } from "node:fs"
+import process from "node:process"
 
 const { name, version } = JSON.parse(
-  fs.readFileSync("package.json", { encoding: "utf-8" }),
+  readFileSync("package.json", { encoding: "utf-8" }),
 )
 
 let publishedVersions
 try {
   const info = JSON.parse(
-    cproc
-      .execSync(`yarn npm info ${name} --json --fields versions`)
-      .toString("utf-8"),
+    execSync(`yarn npm info ${name} --json --fields versions`).toString(
+      "utf-8",
+    ),
   )
   publishedVersions = info.versions
 } catch {
@@ -39,8 +39,8 @@ if (publishedVersions.includes(version)) {
   process.exit()
 }
 
-let command = "yarn npm publish"
+let command = "yarn npm publish --provenance"
 if (version.includes("pre")) {
   command += " --tag prerelease"
 }
-cproc.execSync(command, { stdio: "inherit" })
+execSync(command, { stdio: "inherit" })

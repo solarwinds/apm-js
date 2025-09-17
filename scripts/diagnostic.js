@@ -14,8 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const path = require("path")
-const fs = require("fs")
+let path
+let fs
+
+if (typeof require === "function") {
+  path = require("path")
+  fs = require("fs")
+} else {
+  path = await import("node:path")
+  fs = await import("node:fs")
+}
 
 function packageJson(id) {
   try {
@@ -85,30 +93,6 @@ if (appopticsInstalled) {
   )
 }
 
-const platform = process.platform
-if (platform !== "linux") {
-  console.warn(
-    `The current platform (${platform}) is not supported.`,
-    "'solarwinds-apm' currently only supports Linux.",
-  )
-}
-
-const arch = process.arch
-if (arch !== "x64" && arch !== "arm64") {
-  console.warn(
-    `The current architecture (${arch}) is not supported.`,
-    "'solarwinds-apm' currently only supports x64 and arm64.",
-  )
-}
-
-const majorNodeVersion = Number.parseInt(process.versions.node.split(".")[0])
-if (majorNodeVersion <= 14) {
-  console.warn(
-    `The current Node.js version (${process.version}) is no longer maintained and may be vulnerable.`,
-    "'solarwinds-apm' may not work properly and SolarWinds STRONGLY RECOMMENDS to upgrade to a maintained Node.js version.",
-  )
-}
-
 if (
   process.versions.ares &&
   process.env.GRPC_DNS_RESOLVER &&
@@ -124,6 +108,14 @@ if (installed) {
   const version = packages["solarwinds-apm"].version
   const majorVersion = Number.parseInt(version.split(".")[0])
   const otelBased = majorVersion >= 14
+  const nativeBased = majorVersion < 15
+
+  if (nativeBased && process.arch !== "x64" && process.arch !== "arm64") {
+    console.warn(
+      `The current architecture (${arch}) is not supported.`,
+      "'solarwinds-apm' currently only supports x64 and arm64.",
+    )
+  }
 
   if (otelBased) {
     if (!["debug", "trace"].includes(process.env.SW_APM_LOG_LEVEL)) {

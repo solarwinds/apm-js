@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const path = require("node:path")
+import path from "node:path"
 
-const js = require("@eslint/js")
-const ts = require("typescript-eslint")
-const prettier = require("eslint-config-prettier")
-const imports = require("eslint-plugin-simple-import-sort")
-const notice = require("eslint-plugin-notice")
+import js from "@eslint/js"
+import prettier from "eslint-config-prettier"
+import notice from "eslint-plugin-notice"
+import imports from "eslint-plugin-simple-import-sort"
+import ts from "typescript-eslint"
 
 const licenseTemplate = `
 Copyright [yyyy] [name of copyright owner]
@@ -51,8 +51,10 @@ const license = licenseTemplate
   .replace("[name of copyright owner]", holder)
   .trim()
 
-module.exports = ({ allowDefaultProject = ["*.js", "*.cjs", "*.mjs"] } = {}) =>
-  ts.config(
+export default function config({
+  allowDefaultProject = ["*.js", "*.cjs", "*.mjs"],
+} = {}) {
+  return ts.config(
     // dist folder is always ignored
     { ignores: ["dist/**"] },
     // all files use typescript-eslint as a baseline
@@ -75,7 +77,10 @@ module.exports = ({ allowDefaultProject = ["*.js", "*.cjs", "*.mjs"] } = {}) =>
         parserOptions: {
           projectService: {
             allowDefaultProject,
-            defaultProject: path.join(__dirname, "../../tsconfig.base.json"),
+            defaultProject: path.join(
+              import.meta.dirname,
+              "../../tsconfig.base.json",
+            ),
           },
         },
       },
@@ -138,3 +143,4 @@ module.exports = ({ allowDefaultProject = ["*.js", "*.cjs", "*.mjs"] } = {}) =>
     // disable rules that conflict with prettier
     prettier,
   )
+}

@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const process = require("node:process")
-const cproc = require("node:child_process")
+import "dotenv/config"
+
+import { execSync } from "node:child_process"
+import process from "node:process"
 
 function exec(cmd) {
-  return cproc.execSync(cmd, { stdio: "inherit" })
+  return execSync(cmd, { stdio: "inherit" })
 }
 
 const image = process.argv[2]
@@ -39,7 +41,7 @@ if (image === "collector") {
 } else if (process.argv[3] === "build") {
   exec(`docker compose -f docker/docker-compose.yml build ${image}`)
 } else {
-  require("./env.js")
+  await import("dotenv/config")
   const env = Object.entries(process.env)
     .filter(
       ([key]) =>

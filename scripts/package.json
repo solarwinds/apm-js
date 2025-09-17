@@ -1,18 +1,19 @@
 {
   "name": "@solarwinds-apm/scripts",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write ."
   },
   "dependencies": {
-    "bson": "^6.8.0"
+    "archiver": "^7.0.1",
+    "dotenv": "^16.4.5",
+    "ora": "^9.0.0"
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "archiver": "^7.0.1",
     "eslint": "^9.12.0",
-    "ora": "^5.4.1",
     "prettier": "^3.3.3",
     "typescript": "~5.9.2"
   }

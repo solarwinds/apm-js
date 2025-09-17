@@ -14,6 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const base = require(".")
+import base from "@solarwinds-apm/eslint-config"
 
-module.exports = base()
+export default base()

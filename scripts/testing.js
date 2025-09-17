@@ -14,9 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const fs = require("node:fs")
-const path = require("node:path")
-const cproc = require("node:child_process")
+import { execSync } from "node:child_process"
+import {
+  existsSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs"
+import path from "node:path"
 
 const now = new Date()
 const parts = {
@@ -30,23 +36,23 @@ const version = `${parts.year}.${parts.month}.${parts.day}-t.${parts.hours}.${pa
 
 const setVersion = (packageJsonPath) => {
   const packageJson = JSON.parse(
-    fs.readFileSync(packageJsonPath, { encoding: "utf-8" }),
+    readFileSync(packageJsonPath, { encoding: "utf-8" }),
   )
   packageJson.version = version
-  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson))
-  cproc.execSync(`prettier --write ${packageJsonPath}`, { stdio: "inherit" })
+  writeFileSync(packageJsonPath, JSON.stringify(packageJson))
+  execSync(`prettier --write ${packageJsonPath}`, { stdio: "inherit" })
 }
 
-const packages = fs.readdirSync("packages")
+const packages = readdirSync("packages")
 for (const p of packages) {
   const packagePath = path.join("packages", p)
-  if (!fs.statSync(packagePath).isDirectory()) continue
+  if (!statSync(packagePath).isDirectory()) continue
 
   setVersion(path.join(packagePath, "package.json"))
 
   const npmPath = path.join(packagePath, "npm")
-  if (fs.existsSync(npmPath)) {
-    const npmPackages = fs.readdirSync(npmPath)
+  if (existsSync(npmPath)) {
+    const npmPackages = readdirSync(npmPath)
     for (const np of npmPackages) {
       setVersion(path.join(npmPath, np, "package.json"))
     }
