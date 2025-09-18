@@ -14,17 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const process = require("node:process")
-const cproc = require("node:child_process")
-const fs = require("node:fs")
+import { execSync } from "node:child_process"
+import { readFileSync } from "node:fs"
+import process from "node:process"
 
 function exec(cmd, opts = {}) {
   console.log(`$ ${cmd}`)
-  return cproc.execSync(cmd, { stdio: "inherit", ...opts })
+  return execSync(cmd, { stdio: "inherit", ...opts })
 }
 
 function readJson(path) {
-  return JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }))
+  return JSON.parse(readFileSync(path, { encoding: "utf-8" }))
 }
 
 function gitStatus() {

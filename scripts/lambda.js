@@ -14,21 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const { execSync } = require("node:child_process")
-const {
+import { execSync } from "node:child_process"
+import {
   cpSync,
   createWriteStream,
   readFileSync,
   rmSync,
   writeFileSync,
-} = require("node:fs")
-const { argv } = require("node:process")
-const archiver = require("archiver")
-const ora = require("ora")
+} from "node:fs"
+import process from "node:process"
+
+import archiver from "archiver"
+import ora from "ora"
 
 const json = JSON.parse(readFileSync("packages/solarwinds-apm/package.json"))
 
-const [name, version = json.version] = argv.slice(2)
+const [name, version = json.version] = process.argv.slice(2)
 const apiVersion = json.peerDependencies["@opentelemetry/api"]
 
 const rm = (...args) => {
@@ -96,4 +97,5 @@ archive.file("node_modules/.lambda/wrapper", {
   mode: 0o755,
 })
 
-archive.finalize().then(() => spinner.succeed("layer built"))
+await archive.finalize()
+spinner.succeed("layer built")

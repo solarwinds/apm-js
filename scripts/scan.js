@@ -14,20 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const { execSync } = require("node:child_process")
-const {
-  mkdirSync,
-  readFileSync,
-  readdirSync,
+import { execSync } from "node:child_process"
+import {
   createWriteStream,
-} = require("node:fs")
-const { userInfo } = require("node:os")
-const path = require("node:path")
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+} from "node:fs"
+import { userInfo } from "node:os"
+import path from "node:path"
 
-const archiver = require("archiver")
-const ora = require("ora")
+import archiver from "archiver"
+import ora from "ora"
 
-const root = path.dirname(__dirname)
+const root = path.dirname(import.meta.dirname)
 const dir = path.join(root, "scan")
 mkdirSync(dir, { recursive: true })
 
@@ -93,11 +93,10 @@ if (process.cwd() === root) {
     "--submit-only",
     "--replace",
   ]
-  archive.finalize().then(() => {
-    spinner.succeed("zipped")
-    // Submit everything once it's zipped
-    execSync(command.join(" "), { stdio: "inherit" })
-  })
+  await archive.finalize()
+  spinner.succeed("zipped")
+  // Submit everything once it's zipped
+  execSync(command.join(" "), { stdio: "inherit" })
 } else {
   // We're running in a package directory, download our tarball from npm
   const { name, version } = JSON.parse(
