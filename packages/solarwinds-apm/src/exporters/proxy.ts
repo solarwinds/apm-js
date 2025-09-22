@@ -48,6 +48,7 @@ export const agentFactory =
     }
 
     class ProxyAgent extends (Agent as typeof https.Agent) {
+      // @ts-expect-error The types for the HTTP Agent are not quite right
       override createConnection(
         options: http.ClientRequestArgs,
         cb: (err: Error | null, conn?: Socket) => void,
@@ -112,5 +113,8 @@ export const agentFactory =
       }
     }
 
-    return new ProxyAgent({ ca: config.trustedpath, keepAlive: true })
+    return new ProxyAgent({
+      ca: config.trustedpath,
+      keepAlive: true,
+    }) as https.Agent
   }
