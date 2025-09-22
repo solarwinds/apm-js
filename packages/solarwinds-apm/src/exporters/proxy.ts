@@ -23,6 +23,8 @@ import { OTLPExporterError } from "@opentelemetry/otlp-exporter-base"
 
 import { type Configuration } from "../config.js"
 
+const IPV6_REGEX = /^\[(.*)\]$/
+
 export const agentFactory =
   (config: Configuration) =>
   async (protocol: string): Promise<https.Agent> => {
@@ -32,17 +34,22 @@ export const agentFactory =
     if (!config.proxy) {
       return new (Agent as typeof https.Agent)({ ca: config.trustedpath })
     }
+    const proxy = {
+      protocol: config.proxy.protocol,
+      hostname: config.proxy.hostname.replace(IPV6_REGEX, "$1"),
+      port: config.proxy.port,
+      username: config.proxy.username,
+      password: config.proxy.password,
+    }
 
     const { request } =
-      config.proxy.protocol === "http:"
-        ? await import("http")
-        : await import("https")
+      proxy.protocol === "http:" ? await import("http") : await import("https")
 
     const headers: http.OutgoingHttpHeaders = {
       ["Proxy-Connection"]: "keep-alive",
     }
-    if (config.proxy.username) {
-      const basic = `${config.proxy.username}:${config.proxy.password}`
+    if (proxy.username) {
+      const basic = `${proxy.username}:${proxy.password}`
       headers["Proxy-Authorization"] =
         `Basic ${Buffer.from(basic).toString("base64")}`
     }
@@ -53,7 +60,8 @@ export const agentFactory =
         options: http.ClientRequestArgs,
         cb: (err: Error | null, conn?: Socket) => void,
       ): void {
-        const host = options.host ?? "localhost"
+        let host = options.hostname ?? "localhost"
+        host = host.replace(IPV6_REGEX, "$1")
 
         /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
         let port =
@@ -67,10 +75,11 @@ export const agentFactory =
 
         const req = (request as typeof https.request)({
           method: "CONNECT",
-          hostname: config.proxy?.hostname,
-          port: config.proxy?.port,
+          hostname: proxy.hostname,
+          port: proxy.port,
           path: `${host}:${port}`,
           headers,
+          servername: proxy.hostname,
           ca: config.trustedpath,
           timeout: options.timeout,
         })

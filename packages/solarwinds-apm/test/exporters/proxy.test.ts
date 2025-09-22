@@ -79,8 +79,13 @@ const proxy = (
         })
         .on("listening", () => {
           const address = server.address() as net.AddressInfo
+          const host = address.family.includes("6")
+            ? `[${address.address}]`
+            : address.address
+          const port = address.port
+
           const config = {
-            proxy: new URL(`http://${address.address}:${address.port}`),
+            proxy: new URL(`http://${host}:${port}`),
           }
 
           const close = () =>
@@ -113,7 +118,7 @@ describe(agentFactory.name, () => {
     const agent = await agentFactory({} as Configuration)("https:")
     const res = await get("https://solarwinds.com", agent)
     expect(res.statusCode).to.equal(200)
-  })
+  }).timeout(10_000)
 
   it("works with public proxy", async () => {
     const [config, close] = await proxy((_, req, socket, head) => {
@@ -131,7 +136,7 @@ describe(agentFactory.name, () => {
     expect(res.statusCode).to.equal(200)
 
     await close()
-  })
+  }).timeout(10_000)
 
   it("works with private proxy", async () => {
     const [unauthorizedConfig, close] = await proxy((_, req, socket, head) => {
@@ -169,5 +174,5 @@ describe(agentFactory.name, () => {
     ).to.eventually.be.rejectedWith(/Proxy Authentication Required/)
 
     await close()
-  })
+  }).timeout(10_000)
 })
