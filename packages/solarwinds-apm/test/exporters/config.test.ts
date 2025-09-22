@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { type Agent } from "node:https"
+
 import { describe, expect, it } from "@solarwinds-apm/test"
 
-import { exporterConfig } from "../../src/exporters/config.js"
 import { type Configuration } from "../../src/config.js"
-import { Agent } from "node:https"
+import { exporterConfig } from "../../src/exporters/config.js"
 
 const SIGNALS = ["traces", "metrics", "logs"] as const
 const ENVS = ["cloud", "stage", "dev"]
@@ -43,12 +44,14 @@ describe(exporterConfig.name, () => {
             headers: { authorization: "Bearer token" },
             compression: "gzip",
           })
+
+          expect(httpAgentOptions).to.be.a("function")
         })
       }
     }
   })
 
-  describe("custom endpoints", async () => {
+  describe("custom endpoints", () => {
     for (const signal of SIGNALS) {
       it(`returns the proper ${signal} config`, async () => {
         const url = `https://localhost:4318/v1/${signal}`
@@ -78,7 +81,7 @@ describe(exporterConfig.name, () => {
     }
   })
 
-  describe("invalid endpoints", async () => {
+  describe("invalid endpoints", () => {
     for (const signal of SIGNALS) {
       it(`returns the proper ${signal} config`, async () => {
         const url = "invalid"
