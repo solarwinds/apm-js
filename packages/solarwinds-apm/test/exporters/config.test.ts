@@ -17,7 +17,8 @@ limitations under the License.
 import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { exporterConfig } from "../../src/exporters/config.js"
-import { type Configuration } from "../../src/shared/config.js"
+import { type Configuration } from "../../src/config.js"
+import { Agent } from "node:https"
 
 const SIGNALS = ["traces", "metrics", "logs"] as const
 const ENVS = ["cloud", "stage", "dev"]
@@ -33,53 +34,76 @@ describe(exporterConfig.name, () => {
             otlp: { [signal]: url },
           } as Configuration
 
-          expect(exporterConfig(config, signal)).to.loosely.deep.equal({
+          const { httpAgentOptions, ...exporter } = exporterConfig(
+            config,
+            signal,
+          )!
+          expect(exporter).to.loosely.deep.equal({
             url,
             headers: { authorization: "Bearer token" },
             compression: "gzip",
-            httpAgentOptions: {},
           })
         })
       }
     }
   })
 
-  describe("custom endpoints", () => {
+  describe("custom endpoints", async () => {
     for (const signal of SIGNALS) {
-      it(`returns the proper ${signal} config`, () => {
+      it(`returns the proper ${signal} config`, async () => {
         const url = `https://localhost:4318/v1/${signal}`
         const config = {
           token: "token",
           otlp: { [signal]: url },
           trustedpath: "certificate",
-        } as Configuration & { trustedpath?: string }
+        } as Configuration
 
-        expect(exporterConfig(config, signal)).to.loosely.deep.equal({
+        const { httpAgentOptions, ...exporter } = exporterConfig(
+          config,
+          signal,
+        )!
+        expect(exporter).to.loosely.deep.equal({
           url,
           headers: {},
           compression: "gzip",
-          httpAgentOptions: { ca: "certificate" },
         })
+
+        if (typeof httpAgentOptions === "function") {
+          const agent = (await httpAgentOptions("https:")) as Agent
+          expect(agent.options.ca).to.equal("certificate")
+        } else {
+          expect.fail("httpAgentOptions is not a function")
+        }
       })
     }
   })
 
-  describe("invalid endpoints", () => {
+  describe("invalid endpoints", async () => {
     for (const signal of SIGNALS) {
-      it(`returns the proper ${signal} config`, () => {
+      it(`returns the proper ${signal} config`, async () => {
         const url = "invalid"
         const config = {
           token: "token",
           otlp: { [signal]: url },
           trustedpath: "certificate",
-        } as Configuration & { trustedpath?: string }
+        } as Configuration
 
-        expect(exporterConfig(config, signal)).to.loosely.deep.equal({
+        const { httpAgentOptions, ...exporter } = exporterConfig(
+          config,
+          signal,
+        )!
+        expect(exporter).to.loosely.deep.equal({
           url,
           headers: {},
           compression: "gzip",
-          httpAgentOptions: { ca: "certificate" },
         })
+
+        if (typeof httpAgentOptions === "function") {
+          const agent = (await httpAgentOptions("https:")) as Agent
+          expect(agent.options.ca).to.equal("certificate")
+        } else {
+          expect.fail("httpAgentOptions is not a function")
+        }
       })
     }
   })

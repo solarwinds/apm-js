@@ -22,6 +22,7 @@ import { CompressionAlgorithm } from "@opentelemetry/otlp-exporter-base"
 import { type Configuration as NodeConfiguration } from "../config.js"
 import { type Configuration as WebConfiguration } from "../web/config.js"
 import { agentFactory } from "./proxy.js"
+import { environment } from "../env.js"
 
 export type Configuration = NodeConfiguration | WebConfiguration
 type Options<Exporter extends new (options: never) => unknown> =
@@ -44,11 +45,12 @@ export function exporterConfig(
     // invalid user provided endpoint url
   }
 
-  const agent = "proxy" in config && agentFactory(config)
   return {
     url,
     headers,
     compression: CompressionAlgorithm.GZIP,
-    httpAgentOptions: agent || undefined,
+    httpAgentOptions: environment.IS_NODE
+      ? agentFactory(config as NodeConfiguration)
+      : undefined,
   }
 }
