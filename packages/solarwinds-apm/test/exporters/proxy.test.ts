@@ -80,7 +80,7 @@ const proxy = (
         .on("listening", () => {
           const address = server.address() as net.AddressInfo
           const config = {
-            proxy: new URL(`http://localhost:${address.port}`),
+            proxy: new URL(`http://${address.address}:${address.port}`),
           }
 
           const close = () =>
