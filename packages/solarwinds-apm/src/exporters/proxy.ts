@@ -75,7 +75,7 @@ export const agentFactory =
 
         const req = (request as typeof https.request)({
           method: "CONNECT",
-          hostname: proxy.hostname,
+          host: proxy.hostname,
           port: proxy.port,
           path: `${host}:${port}`,
           headers,
