@@ -63,6 +63,7 @@ describe("patch", () => {
     })
     expect(configs["@opentelemetry/instrumentation-aws-sdk"]).to.deep.equal({})
     expect(configs["@opentelemetry/instrumentation-fs"]).to.deep.equal({
+      enabled: false,
       requireParentSpan: true,
     })
     expect(configs["@opentelemetry/instrumentation-mysql2"]).to.deep.equal({
@@ -71,6 +72,12 @@ describe("patch", () => {
     expect(configs["@opentelemetry/instrumentation-pg"]).to.deep.equal({
       requireParentSpan: true,
       addSqlCommenterCommentToQueries: false,
+    })
+    expect(configs["@opentelemetry/instrumentation-dns"]).to.deep.equal({
+      enabled: false,
+    })
+    expect(configs["@opentelemetry/instrumentation-net"]).to.deep.equal({
+      enabled: false,
     })
     expect(configs["@opentelemetry/instrumentation-bunyan"]).to.deep.include({
       disableLogCorrelation: true,
