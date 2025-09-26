@@ -169,27 +169,26 @@ const PATCHERS = [
 
 const ENV_PATCHERS = [
   envPatcher(["OTEL_SEMCONV_STABILITY_OPT_IN"], (value) => {
+    const STABLE = ["http"]
+    const DUPLICATE = ["database", "messaging", "k8s"]
+
     const flags =
       value
         ?.split(",")
         .map((f) => f.trim())
         .filter((f) => f !== "") ?? []
-    const explicit = new Set(flags.map((f) => f.split("/")[0]!))
+    const specified = new Set(flags.map((f) => f.split("/")[0]!))
 
-    // stable semconv only for http
-    if (!explicit.has("http")) {
-      flags.push("http")
+    for (const flag of STABLE) {
+      if (!specified.has(flag)) {
+        flags.push(flag)
+      }
     }
 
-    // both stable and experimental for others
-    if (!explicit.has("database")) {
-      flags.push("database/dup")
-    }
-    if (!explicit.has("messaging")) {
-      flags.push("messaging/dup")
-    }
-    if (!explicit.has("k8s")) {
-      flags.push("k8s/dup")
+    for (const flag of DUPLICATE) {
+      if (!specified.has(flag)) {
+        flags.push(`${flag}/dup`)
+      }
     }
 
     return flags.join(",")
