@@ -71,7 +71,12 @@ const PATCHERS = [
     }
   }),
 
+  patcher(["@opentelemetry/instrumentation-cassandra-driver"], (config) => {
+    config.enhancedDatabaseReporting ??= true
+  }),
+
   patcher(["@opentelemetry/instrumentation-fs"], (config) => {
+    config.enabled ??= false
     config.requireParentSpan ??= true
   }),
 
@@ -109,6 +114,16 @@ const PATCHERS = [
     ["@opentelemetry/instrumentation-runtime-node"],
     (config, options) => {
       config.enabled ??= options.runtimeMetrics
+    },
+  ),
+
+  patcher(
+    [
+      "@opentelemetry/instrumentation-dns",
+      "@opentelemetry/instrumentation-net",
+    ],
+    (config) => {
+      config.enabled ??= false
     },
   ),
 

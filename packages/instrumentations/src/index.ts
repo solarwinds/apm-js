@@ -47,10 +47,10 @@ import { type MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
 import { type MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
 import { type NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core"
 import { type NetInstrumentation } from "@opentelemetry/instrumentation-net"
+import { type OracleInstrumentation } from "@opentelemetry/instrumentation-oracledb"
 import { type PgInstrumentation } from "@opentelemetry/instrumentation-pg"
 import { type PinoInstrumentation } from "@opentelemetry/instrumentation-pino"
 import { type RedisInstrumentation as RedisInstrumentationV2 } from "@opentelemetry/instrumentation-redis"
-import { type RedisInstrumentation as RedisInstrumentationV4 } from "@opentelemetry/instrumentation-redis-4"
 import { type RestifyInstrumentation } from "@opentelemetry/instrumentation-restify"
 import { type RouterInstrumentation } from "@opentelemetry/instrumentation-router"
 import { type RuntimeNodeInstrumentation } from "@opentelemetry/instrumentation-runtime-node"
@@ -92,10 +92,10 @@ interface InstrumentationTypes {
   "@opentelemetry/instrumentation-mysql": typeof MySQLInstrumentation
   "@opentelemetry/instrumentation-nestjs-core": typeof NestInstrumentation
   "@opentelemetry/instrumentation-net": typeof NetInstrumentation
+  "@opentelemetry/instrumentation-oracledb": typeof OracleInstrumentation
   "@opentelemetry/instrumentation-pg": typeof PgInstrumentation
   "@opentelemetry/instrumentation-pino": typeof PinoInstrumentation
   "@opentelemetry/instrumentation-redis": typeof RedisInstrumentationV2
-  "@opentelemetry/instrumentation-redis-4": typeof RedisInstrumentationV4
   "@opentelemetry/instrumentation-restify": typeof RestifyInstrumentation
   "@opentelemetry/instrumentation-router": typeof RouterInstrumentation
   "@opentelemetry/instrumentation-runtime-node": typeof RuntimeNodeInstrumentation
@@ -140,10 +140,10 @@ const INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-mysql": "MySQLInstrumentation",
   "@opentelemetry/instrumentation-nestjs-core": "NestInstrumentation",
   "@opentelemetry/instrumentation-net": "NetInstrumentation",
+  "@opentelemetry/instrumentation-oracledb": "OracleInstrumentation",
   "@opentelemetry/instrumentation-pg": "PgInstrumentation",
   "@opentelemetry/instrumentation-pino": "PinoInstrumentation",
   "@opentelemetry/instrumentation-redis": "RedisInstrumentation",
-  "@opentelemetry/instrumentation-redis-4": "RedisInstrumentation",
   "@opentelemetry/instrumentation-restify": "RestifyInstrumentation",
   "@opentelemetry/instrumentation-router": "RouterInstrumentation",
   "@opentelemetry/instrumentation-runtime-node": "RuntimeNodeInstrumentation",
