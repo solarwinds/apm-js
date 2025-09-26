@@ -45,7 +45,7 @@ import { type Configuration, printError, read } from "./config.js"
 import { environment } from "./env.js"
 import { MetricReader } from "./exporters/metrics.js"
 import { Logger } from "./logger.js"
-import { patch } from "./patches.js"
+import { patch, patchEnv } from "./patches.js"
 import { ParentSpanProcessor } from "./processing/parent-span.js"
 import { ResponseTimeProcessor } from "./processing/response-time.js"
 import { StacktraceProcessor } from "./processing/stacktrace.js"
@@ -86,6 +86,7 @@ export async function init(): Promise<boolean> {
     logger.warn("Library disabled, application will not be instrumented.")
     return false
   }
+  patchEnv(config)
 
   const registerInstrumentations = await initInstrumentations(config, logger)
   const detectors = await getResourceDetectors(

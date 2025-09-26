@@ -42,6 +42,12 @@ export function patch(
   return configs
 }
 
+export function patchEnv(config: Configuration, env = process.env): void {
+  for (const patcher of ENV_PATCHERS) {
+    patcher(env, config)
+  }
+}
+
 function patcher<const Name extends keyof InstrumentationConfigMap>(
   names: readonly Name[],
   patch: (
@@ -52,6 +58,20 @@ function patcher<const Name extends keyof InstrumentationConfigMap>(
   return (configs, options) => {
     for (const name of names) {
       patch((configs[name] ??= {}), options)
+    }
+  }
+}
+
+function envPatcher(
+  names: readonly string[],
+  patch: (
+    value: string | undefined,
+    config: Configuration,
+  ) => string | undefined,
+) {
+  return (env: NodeJS.ProcessEnv, config: Configuration) => {
+    for (const name of names) {
+      env[name] = patch(env[name], config)
     }
   }
 }
@@ -145,4 +165,33 @@ const PATCHERS = [
       }
     },
   ),
+]
+
+const ENV_PATCHERS = [
+  envPatcher(["OTEL_SEMCONV_STABILITY_OPT_IN"], (value) => {
+    const flags =
+      value
+        ?.split(",")
+        .map((f) => f.trim())
+        .filter((f) => f !== "") ?? []
+    const explicit = new Set(flags.map((f) => f.split("/")[0]!))
+
+    // stable semconv only for http
+    if (!explicit.has("http")) {
+      flags.push("http")
+    }
+
+    // both stable and experimental for others
+    if (!explicit.has("database")) {
+      flags.push("database/dup")
+    }
+    if (!explicit.has("messaging")) {
+      flags.push("messaging/dup")
+    }
+    if (!explicit.has("k8s")) {
+      flags.push("k8s/dup")
+    }
+
+    return flags.join(",")
+  }),
 ]
