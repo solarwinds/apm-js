@@ -24,8 +24,8 @@ import {
 } from "@opentelemetry/api"
 import { afterEach, describe, expect, it } from "@solarwinds-apm/test"
 
+import { type Configuration } from "../src/config.js"
 import { type Options, patch, patchEnv } from "../src/patches.js"
-import { Configuration } from "../src/config.js"
 
 class TestResponsePropagator implements TextMapPropagator<unknown> {
   inject(
