@@ -24,7 +24,8 @@ import {
 } from "@opentelemetry/api"
 import { afterEach, describe, expect, it } from "@solarwinds-apm/test"
 
-import { type Options, patch } from "../src/patches.js"
+import { type Configuration } from "../src/config.js"
+import { type Options, patch, patchEnv } from "../src/patches.js"
 
 class TestResponsePropagator implements TextMapPropagator<unknown> {
   inject(
@@ -531,6 +532,55 @@ describe("patch", () => {
           instrumentation: i,
         })
       }
+    })
+  })
+})
+
+describe("patchEnv", () => {
+  const config = {} as Configuration
+
+  it("sets proper defaults", () => {
+    const env: NodeJS.ProcessEnv = {}
+    patchEnv(config, env)
+
+    expect(env).to.loosely.deep.equal({
+      OTEL_SEMCONV_STABILITY_OPT_IN: "http,database/dup,messaging/dup,k8s/dup",
+    })
+  })
+
+  describe("OTEL_SEMCONV_STABILITY_OPT_IN", () => {
+    it("respects user values", () => {
+      const env: NodeJS.ProcessEnv = {
+        OTEL_SEMCONV_STABILITY_OPT_IN:
+          "http/dup, database, foo, messaging, bar/dup, k8s",
+      }
+      patchEnv(config, env)
+
+      expect(env.OTEL_SEMCONV_STABILITY_OPT_IN).to.equal(
+        "http/dup,database,foo,messaging,bar/dup,k8s",
+      )
+    })
+
+    it("adds database and http if unspecified", () => {
+      const env: NodeJS.ProcessEnv = {
+        OTEL_SEMCONV_STABILITY_OPT_IN: "foo, messaging, bar/dup, k8s",
+      }
+      patchEnv(config, env)
+
+      expect(env.OTEL_SEMCONV_STABILITY_OPT_IN).to.equal(
+        "foo,messaging,bar/dup,k8s,http,database/dup",
+      )
+    })
+
+    it("adds messaging and k8s if unspecified", () => {
+      const env: NodeJS.ProcessEnv = {
+        OTEL_SEMCONV_STABILITY_OPT_IN: "http/dup, database",
+      }
+      patchEnv(config, env)
+
+      expect(env.OTEL_SEMCONV_STABILITY_OPT_IN).to.equal(
+        "http/dup,database,messaging/dup,k8s/dup",
+      )
     })
   })
 })
