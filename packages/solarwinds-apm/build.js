@@ -39,9 +39,6 @@ await fs.writeFile(
   ),
 )
 
-await fs.mkdir("dist/commonjs", { recursive: true })
-await fs.cp("src/commonjs/", "dist/commonjs/", { recursive: true, force: true })
-
 // Generate the web instrumentation bundle to target the Chrome/Safari/Firefox/Edge
 // versions which were the latest 1 year ago as a default
 // People can still bundle themselves if this isn't satisfactory
