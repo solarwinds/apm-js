@@ -55,7 +55,7 @@
     "provenance": true
   },
   "scripts": {
-    "build": "node build.js && tsc",
+    "build": "node build.js && tsc && node build.post.js",
     "lint": "node build.js && prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "node build.js && eslint --fix . && prettier --write .",
     "release": "node ../../scripts/publish.js",
