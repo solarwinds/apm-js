@@ -2001,7 +2001,7 @@ __metadata:
     "@opentelemetry/api": "npm:^1.9.0"
     fastify: "npm:^5.0.0"
     pg: "npm:^8.13.0"
-    pino: "npm:^9.5.0"
+    pino: "npm:^10.0.0"
     solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
@@ -6614,7 +6614,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^9.0.0, pino@npm:^9.5.0":
+"pino@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "pino@npm:10.0.0"
+  dependencies:
+    atomic-sleep: "npm:^1.0.0"
+    on-exit-leak-free: "npm:^2.1.0"
+    pino-abstract-transport: "npm:^2.0.0"
+    pino-std-serializers: "npm:^7.0.0"
+    process-warning: "npm:^5.0.0"
+    quick-format-unescaped: "npm:^4.0.3"
+    real-require: "npm:^0.2.0"
+    safe-stable-stringify: "npm:^2.3.1"
+    slow-redact: "npm:^0.3.0"
+    sonic-boom: "npm:^4.0.1"
+    thread-stream: "npm:^3.0.0"
+  bin:
+    pino: bin.js
+  checksum: 10c0/f95fcc51523310e9ece1822f8ef4d8e6c2b35f67eca9805fe18fdef21dfac81fa128f1ebaa3c9a11571120854391b10b3b339f2e5836f805edaf6936781c6e6f
+  languageName: node
+  linkType: hard
+
+"pino@npm:^9.0.0":
   version: 9.12.0
   resolution: "pino@npm:9.12.0"
   dependencies:
