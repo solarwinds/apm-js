@@ -30,7 +30,7 @@
 | `ioredis`                   | `>=2.0.0 <6.0.0`                     | `@opentelemetry/instrumentation-ioredis`          |
 | `kafkajs`                   | `>=0.3.0 <3.0.0`                     | `@opentelemetry/instrumentation-kafkajs`          |
 | `knex`                      | `>=0.10.0 <4.0.0`                    | `@opentelemetry/instrumentation-knex`             |
-| `koa`                       | `>=2.0.0 <3.0.0`                     | `@opentelemetry/instrumentation-koa`              |
+| `koa`                       | `>=2.0.0 <4.0.0`                     | `@opentelemetry/instrumentation-koa`              |
 | `lru-memoizer`              | `>=1.3.0 <3.0.0`                     | `@opentelemetry/instrumentation-lru-memoizer`     |
 | `memcached`                 | `>=2.2.0 <3.0.0`                     | `@opentelemetry/instrumentation-memcached`        |
 | `mongodb`                   | `>=3.3.0 <7.0.0`                     | `@opentelemetry/instrumentation-mongodb`          |
