@@ -2,10 +2,7 @@ FROM registry.access.redhat.com/ubi9
 
 RUN dnf install -y \
     curl-minimal \
-    git \
-    git-lfs \
-    tar \
-    xz
+    git
 
 RUN dnf module disable -y nodejs && \
     update-crypto-policies --set LEGACY && \

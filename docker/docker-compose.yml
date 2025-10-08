@@ -25,7 +25,7 @@ services:
   18-debian:
     build:
       context: .
-      dockerfile: 18-debian10.Dockerfile
+      dockerfile: 18-debian11.Dockerfile
     environment:
       YARN_IGNORE_NODE: 1
     volumes:
@@ -203,6 +203,7 @@ services:
     links:
       - apm-collector
       - otel-collector
+      - proxy
       - mysql
       - postgres
 
@@ -235,6 +236,14 @@ services:
     expose:
       - 4317
 
+  proxy:
+    image: saucelabs/forwarder
+    environment:
+      FORWARDER_PROXY_LOCALHOST: allow
+      FORWARDER_LOG_HTTP: url
+    expose:
+      - 3128
+
   mysql:
     image: mysql:9
     environment:
@@ -242,7 +251,7 @@ services:
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
   postgres:
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_PASSWORD: postgres
     volumes:

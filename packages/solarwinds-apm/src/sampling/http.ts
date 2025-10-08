@@ -19,7 +19,7 @@ import { suppressTracing } from "@opentelemetry/core"
 import { unref } from "@solarwinds-apm/module"
 import { type Settings } from "@solarwinds-apm/sampling"
 
-import { environment } from "../env.js"
+import { IS_NODE } from "../env.js"
 import { type Configuration } from "../shared/config.js"
 import { componentLogger } from "../shared/logger.js"
 import { Sampler } from "./sampler.js"
@@ -28,8 +28,8 @@ const REQUEST_INTERVAL = 60 * 1000 // 1m
 const REQUEST_TIMEOUT = 10 * 1000 // 10s
 
 /** Retrieves the hostname (or User-Agent in browsers) in URL encoded format */
-export async function hostname(): Promise<string> {
-  if (environment.IS_NODE) {
+export async function hostname() {
+  if (IS_NODE) {
     const { hostname } = await import("node:os")
     return encodeURIComponent(hostname())
   } else {
@@ -37,11 +37,31 @@ export async function hostname(): Promise<string> {
   }
 }
 
+/** Retrieves the fetch function to use */
+export async function fetcher(proxy: string | undefined) {
+  if (IS_NODE) {
+    const { fetch, ProxyAgent } = await import("undici")
+
+    const dispatcher = proxy
+      ? new ProxyAgent({ uri: proxy, proxyTunnel: true })
+      : undefined
+    const fetcher: typeof fetch = (info, init) =>
+      fetch(info, { dispatcher, ...init })
+
+    return fetcher
+  } else {
+    return fetch
+  }
+}
+
 export class HttpSampler extends Sampler {
   readonly #url: URL
+  readonly #proxy: string | undefined
   readonly #headers: HeadersInit
   readonly #service: string
+
   readonly #hostname = hostname()
+  readonly #fetch: ReturnType<typeof fetcher>
 
   #lastWarningMessage: string | undefined = undefined
 
@@ -56,6 +76,9 @@ export class HttpSampler extends Sampler {
       this.#headers.authorization = `Bearer ${config.token}`
     }
 
+    this.#proxy = "proxy" in config ? String(config.proxy) : undefined
+    this.#fetch = fetcher(this.#proxy)
+
     setTimeout(() => {
       this.#loop().catch(this.#catch.bind(this))
     }, 0)
@@ -67,7 +90,8 @@ export class HttpSampler extends Sampler {
   }
 
   override toString(): string {
-    return `HTTP Sampler (${this.#url.host})`
+    const proxy = this.#proxy ? ` via ${this.#proxy}` : ""
+    return `HTTP Sampler (${this.#url.host}${proxy})`
   }
 
   /** Logs a de-duplicated warning */
@@ -100,7 +124,7 @@ export class HttpSampler extends Sampler {
 
     const response = await context.bind(
       suppressTracing(context.active()),
-      fetch,
+      await this.#fetch,
     )(url, {
       method: "GET",
       headers: this.#headers,

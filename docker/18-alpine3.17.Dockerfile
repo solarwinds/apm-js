@@ -4,10 +4,7 @@ RUN apk add --no-cache \
     curl \
     gcompat \
     git \
-    git-lfs \
-    libc6-compat \
-    tar \
-    xz
+    libc6-compat
 
 RUN corepack enable
 

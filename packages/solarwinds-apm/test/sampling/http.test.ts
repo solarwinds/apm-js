@@ -14,14 +14,109 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import os from "node:os"
+import net from "node:net"
+
 import { trace } from "@opentelemetry/api"
 import { before, describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import { read } from "../../src/config.js"
-import { HttpSampler } from "../../src/sampling/http.js"
+import { HttpSampler, hostname, fetcher } from "../../src/sampling/http.js"
+import { proxy } from "../http.js"
 
 expect(process.env).to.include.keys("SW_APM_COLLECTOR", "SW_APM_SERVICE_KEY")
 const CONFIG = await read()
+
+describe(hostname.name, () => {
+  it("returns a properly encoded hostname", async () => {
+    const name = await hostname()
+    expect(decodeURIComponent(name)).to.equal(os.hostname())
+  })
+})
+
+describe(fetcher.name, () => {
+  it("works when no proxy specified", async () => {
+    const fetch = await fetcher(undefined)
+    const res = await fetch("https://solarwinds.com", {
+      method: "GET",
+      headers: {},
+    })
+    expect(res.status).to.equal(200)
+  }).timeout(10_000)
+
+  it("works with public proxy", async () => {
+    let proxied = false
+    const [config, close] = await proxy((_, req, socket, head) => {
+      const [hostname, port] = req.url!.split(":")
+      const proxy = net.connect(Number(port), hostname, () => {
+        proxied = true
+        socket.write("HTTP/1.1 200\r\n\r\n")
+        proxy.write(head)
+        socket.pipe(proxy)
+        proxy.pipe(socket)
+      })
+    })
+
+    const fetch = await fetcher(config.proxy!.href)
+    const res = await fetch("https://solarwinds.com", {
+      method: "GET",
+      headers: {},
+    })
+    expect(res.status).to.equal(200)
+    expect(proxied).to.be.true
+
+    await close()
+  }).timeout(10_000)
+
+  it("works with private proxy", async () => {
+    let proxied = false
+    const [unauthorizedConfig, close] = await proxy((_, req, socket, head) => {
+      if (
+        req.headers["proxy-authorization"] ===
+        `Basic ${Buffer.from("Solar:Winds").toString("base64")}`
+      ) {
+        const [hostname, port] = req.url!.split(":")
+        const proxy = net.connect(Number(port), hostname, () => {
+          proxied = true
+          socket.write("HTTP/1.1 200\r\n\r\n")
+          proxy.write(head)
+          socket.pipe(proxy)
+          proxy.pipe(socket)
+        })
+      } else {
+        socket.write("HTTP/1.1 407 Proxy Authentication Required\r\n\r\n")
+        socket.end()
+      }
+    })
+
+    const config = {
+      ...unauthorizedConfig,
+      proxy: new URL(unauthorizedConfig.proxy!),
+    }
+    config.proxy.username = "Solar"
+    config.proxy.password = "Winds"
+
+    const fetch = await fetcher(config.proxy!.href)
+    const res = await fetch("https://solarwinds.com", {
+      method: "GET",
+      headers: {
+        authorization: `Basic ${Buffer.from("Solar:Winds").toString("base64")}`,
+      },
+    })
+    expect(res.status).to.equal(200)
+    expect(proxied).to.be.true
+
+    const unauthorizedFetch = await fetcher(unauthorizedConfig.proxy!.href)
+    await expect(
+      unauthorizedFetch("https://solarwinds.com", {
+        method: "GET",
+        headers: {},
+      }),
+    ).to.eventually.be.rejected
+
+    await close()
+  })
+})
 
 describe(HttpSampler.name, () => {
   describe("valid service key", () => {

@@ -64,7 +64,11 @@ await esbuild.build({
   target: targets,
   bundle: true,
   minify: true,
+  treeShaking: true,
   keepNames: true,
   sourcemap: "linked",
-  external: ["node:*", ...module.builtinModules],
+  external: ["undici", "node:*", ...module.builtinModules],
+  define: {
+    "globalThis.process": "undefined",
+  },
 })
