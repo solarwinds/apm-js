@@ -1,4 +1,3 @@
-version: "3"
 services:
   18-alpine:
     build:
@@ -200,6 +199,8 @@ services:
       dockerfile: 22-ubuntu.Dockerfile
     volumes:
       - ..:/solarwinds-apm
+    environment:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
     links:
       - apm-collector
       - otel-collector

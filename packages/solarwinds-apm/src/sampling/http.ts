@@ -14,13 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { context } from "@opentelemetry/api"
-import { suppressTracing } from "@opentelemetry/core"
+import { type OutgoingHttpHeaders } from "node:http"
+
+import { context, diag, type DiagLogger } from "@opentelemetry/api"
+import { suppressTracing, TimeoutError } from "@opentelemetry/core"
 import { unref } from "@solarwinds-apm/module"
 import { type Settings } from "@solarwinds-apm/sampling"
 
+import { type Configuration as NodeConfiguration } from "../config.js"
 import { IS_NODE } from "../env.js"
-import { type Configuration } from "../shared/config.js"
+import { type Configuration } from "../exporters/config.js"
+import { agentFactory } from "../exporters/proxy.js"
 import { componentLogger } from "../shared/logger.js"
 import { Sampler } from "./sampler.js"
 
@@ -37,31 +41,64 @@ export async function hostname() {
   }
 }
 
-/** Retrieves the fetch function to use */
-export async function fetcher(proxy: string | undefined) {
+/** Retrieves the HTTP getter function to use */
+export async function getter(config: Configuration, logger: DiagLogger = diag) {
   if (IS_NODE) {
-    const { fetch, ProxyAgent } = await import("undici")
+    const agent = await agentFactory(config as NodeConfiguration)(
+      config.collector.protocol,
+    )
 
-    const dispatcher = proxy
-      ? new ProxyAgent({ uri: proxy, proxyTunnel: true })
-      : undefined
-    const fetcher: typeof fetch = (info, init) =>
-      fetch(info, { dispatcher, ...init })
+    return async function get(
+      url: URL,
+      options: { headers?: OutgoingHttpHeaders; signal?: AbortSignal },
+    ) {
+      const { get } =
+        url.protocol === "http:"
+          ? await import("node:http")
+          : await import("node:https")
 
-    return fetcher
+      return await new Promise<unknown>((resolve, reject) => {
+        const request = get(url, { agent, ...options }, (response) => {
+          logger.debug(`received sampling settings response`, response)
+          let data = Buffer.alloc(0)
+
+          response
+            .on("error", reject)
+            .on("data", (chunk: Buffer) => {
+              data = Buffer.concat([data, chunk])
+            })
+            .on("end", () => {
+              resolve(JSON.parse(data.toString("utf-8")))
+            })
+        })
+
+        request
+          .on("error", reject)
+          .on("timeout", () => request.destroy(new TimeoutError()))
+          .end()
+      })
+    }
   } else {
-    return fetch
+    return async function get(
+      url: URL,
+      options: { headers?: HeadersInit; signal?: AbortSignal },
+    ) {
+      const response = await fetch(url, options)
+      logger.debug(`received sampling settings response`, response)
+
+      const json: unknown = await response.json()
+      return json
+    }
   }
 }
 
 export class HttpSampler extends Sampler {
   readonly #url: URL
-  readonly #proxy: string | undefined
-  readonly #headers: HeadersInit
+  readonly #headers: HeadersInit & OutgoingHttpHeaders
   readonly #service: string
 
   readonly #hostname = hostname()
-  readonly #fetch: ReturnType<typeof fetcher>
+  readonly #get: ReturnType<typeof getter>
 
   #lastWarningMessage: string | undefined = undefined
 
@@ -76,8 +113,7 @@ export class HttpSampler extends Sampler {
       this.#headers.authorization = `Bearer ${config.token}`
     }
 
-    this.#proxy = "proxy" in config ? String(config.proxy) : undefined
-    this.#fetch = fetcher(this.#proxy)
+    this.#get = getter(config, this.logger)
 
     setTimeout(() => {
       this.#loop().catch(this.#catch.bind(this))
@@ -90,8 +126,7 @@ export class HttpSampler extends Sampler {
   }
 
   override toString(): string {
-    const proxy = this.#proxy ? ` via ${this.#proxy}` : ""
-    return `HTTP Sampler (${this.#url.host}${proxy})`
+    return `HTTP Sampler (${this.#url.host})`
   }
 
   /** Logs a de-duplicated warning */
@@ -122,20 +157,16 @@ export class HttpSampler extends Sampler {
       abort.abort("HTTP request timeout")
     }, REQUEST_TIMEOUT)
 
-    const response = await context.bind(
+    const unparsed = await context.bind(
       suppressTracing(context.active()),
-      await this.#fetch,
+      await this.#get,
     )(url, {
-      method: "GET",
       headers: this.#headers,
       signal: abort.signal,
     })
-    this.logger.debug(`received sampling settings response`, response)
     clearTimeout(cancel)
 
-    const unparsed: unknown = await response.json()
     const parsed = this.updateSettings(unparsed)
-
     if (parsed) {
       this.#reset()
     } else {
