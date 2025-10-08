@@ -1,3 +1,34 @@
+# [16.0.0](https://github.com/solarwinds/apm-js/releases/tag/v16.0.0) _(Unreleased)_
+
+## Breaking changes
+
+- Removed support for AppOptics and proprietary native code
+  - HTTP proxying is now supported on all platforms and implemented in pure JavaScript.
+  - AppOptics customers should stay on the `15.x.x` release line for the time being.
+- Migrated to stable HTTP semantic conventions
+  - A summary of the changes can be found in the [OpenTelemetry documentation](https://opentelemetry.io/docs/specs/semconv/non-normative/http-migration/#summary-of-changes).
+  - This change may affect transaction names for some applications.
+- Reworked runtime metrics to match the semantic conventions
+  - Semantic [Node.js](https://opentelemetry.io/docs/specs/semconv/runtime/nodejs-metrics/) and [V8](https://opentelemetry.io/docs/specs/semconv/runtime/v8js-metrics/) metrics are now collected.
+  - Semantic [process](https://opentelemetry.io/docs/specs/semconv/system/process-metrics/) metrics are now collected (CPU, memory, context switches, faults).
+  - This change may affect custom dashboards and alerts.
+  - A new dashboard for Node.js applications powered by these metrics will be available in the future.
+
+## New features and improvements
+
+- Per-span opt-in stacktrace collection
+  - This feature can be used via the new `spanStacktraceFilter` configuration option.
+- Declarative transaction naming
+  - This feature can be used via the new `transactionName` configuration option.
+- Stable semantic conventions for database instrumentations
+  - The previous unstable attributes are still exported for compatibility, but will be removed in a future release.
+- OracleDB instrumentation
+
+## Fixes
+
+- Proper type declarations for CommonJS
+- More Cassandra span attributes by default
+
 # [15.5.0](https://github.com/solarwinds/apm-js/releases/tag/v15.5.0)
 
 ## New features and improvements
