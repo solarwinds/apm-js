@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import os from "node:os"
 import net from "node:net"
+import os from "node:os"
 
 import { trace } from "@opentelemetry/api"
 import { before, describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import { read } from "../../src/config.js"
-import { HttpSampler, hostname, fetcher } from "../../src/sampling/http.js"
+import { fetcher, hostname, HttpSampler } from "../../src/sampling/http.js"
 import { proxy } from "../http.js"
 
 expect(process.env).to.include.keys("SW_APM_COLLECTOR", "SW_APM_SERVICE_KEY")
@@ -96,7 +96,7 @@ describe(fetcher.name, () => {
     config.proxy.username = "Solar"
     config.proxy.password = "Winds"
 
-    const fetch = await fetcher(config.proxy!.href)
+    const fetch = await fetcher(config.proxy.href)
     const res = await fetch("https://solarwinds.com", {
       method: "GET",
       headers: {
