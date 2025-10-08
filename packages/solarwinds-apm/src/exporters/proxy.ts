@@ -29,7 +29,9 @@ export const agentFactory =
   (config: Configuration) =>
   async (protocol: string): Promise<https.Agent> => {
     const { Agent } =
-      protocol === "http:" ? await import("http") : await import("https")
+      protocol === "http:"
+        ? await import("node:http")
+        : await import("node:https")
 
     if (!config.proxy) {
       return new (Agent as typeof https.Agent)({ ca: config.trustedpath })
@@ -43,7 +45,9 @@ export const agentFactory =
     }
 
     const { request } =
-      proxy.protocol === "http:" ? await import("http") : await import("https")
+      proxy.protocol === "http:"
+        ? await import("node:http")
+        : await import("node:https")
 
     const headers: http.OutgoingHttpHeaders = {
       ["Proxy-Connection"]: "keep-alive",

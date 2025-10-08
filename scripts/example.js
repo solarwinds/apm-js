@@ -20,7 +20,8 @@ import { execSync } from "node:child_process"
 import process from "node:process"
 
 const example = process.argv[2]
-const collector = process.argv[3] === "collector"
+const collector = process.argv.slice(3).includes("collector")
+const proxy = process.argv.slice(3).includes("proxy")
 
 function exec(cmd) {
   return execSync(cmd, { stdio: "inherit" })
@@ -43,6 +44,9 @@ if (collector) {
   env.SW_APM_TRUSTED_PATH =
     "/solarwinds-apm/docker/apm-collector/server-grpc.crt"
   env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4318"
+}
+if (proxy) {
+  env.SW_APM_PROXY = "http://proxy:3128"
 }
 
 // run example inside container

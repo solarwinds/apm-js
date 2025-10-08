@@ -2,10 +2,7 @@ FROM amazonlinux
 
 RUN dnf install -y \
     curl-minimal \
-    git \
-    git-lfs \
-    tar \
-    xz
+    git
 
 RUN curl -fsSL https://rpm.nodesource.com/setup_22.x | bash - && \
     dnf install -y nodejs && \

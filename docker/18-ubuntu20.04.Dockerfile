@@ -3,9 +3,7 @@ FROM ubuntu:20.04
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     curl \
-    git \
-    git-lfs \
-    xz-utils
+    git
 
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get update && \

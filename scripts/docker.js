@@ -34,6 +34,8 @@ if (image === "collector") {
   exec(
     "docker compose -f docker/docker-compose.yml logs --since 2m -f otel-collector udpdump",
   )
+} else if (image === "proxy") {
+  exec("docker compose -f docker/docker-compose.yml logs --since 2m -f proxy")
 } else if (image === "logs") {
   exec("docker compose -f docker/docker-compose.yml logs")
 } else if (image === "down") {

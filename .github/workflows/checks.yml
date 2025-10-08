@@ -80,7 +80,7 @@ jobs:
         image:
           - 18-alpine3.17
           - 18-amazonlinux2023
-          - 18-debian10
+          - 18-debian11
           - 18-ubi8
           - 18-ubuntu20.04
           - 20-alpine
