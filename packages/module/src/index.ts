@@ -54,7 +54,9 @@ export function stacktrace(filtered: boolean): string | undefined {
   Reflect.set(
     Error,
     "prepareStackTrace",
-    function filterStackTrace(this: ErrorConstructor, err, stack) {
+    function filterStackTrace(this: ErrorConstructor, _, stack) {
+      const cwd = typeof process !== "undefined" ? process.cwd() : null
+
       const file = stack[0]?.getFileName()
       while (stack.length > 0 && stack[0]?.getFileName() === file) {
         stack.shift()
@@ -70,9 +72,51 @@ export function stacktrace(filtered: boolean): string | undefined {
         })
       }
 
-      return prepareStackTrace.call(this, err, stack) as unknown
+      return stack
+        .map((frame) => {
+          let file = frame.getFileName()
+          if (file?.startsWith("file://")) {
+            file = file.slice("file://".length)
+          }
+          if (file && cwd && file.startsWith(cwd)) {
+            file = `.${file.slice(cwd.length)}`
+          }
+
+          const line = frame.getLineNumber()
+          const column = frame.getColumnNumber()
+          if (file && line != null && column != null) {
+            file = `${file}:${line}:${column}`
+          }
+
+          if (!file && frame.isNative()) {
+            file = "<native>"
+          }
+
+          let fn: string
+          const type = frame.getTypeName()
+          if (type) {
+            const method = frame.getMethodName() ?? "<anonymous>"
+            fn = `${type}.${method}`
+          } else {
+            fn = frame.getFunctionName() ?? "<anonymous>"
+          }
+
+          if (frame.isConstructor()) {
+            fn = `new ${fn}`
+          } else if (frame.isAsync()) {
+            fn = `async ${fn}`
+          }
+
+          if (file) {
+            return `${fn} (${file})`
+          } else {
+            return fn
+          }
+        })
+        .join("\n")
     },
   )
+
   const stack = new Error().stack
   Reflect.set(Error, "prepareStackTrace", prepareStackTrace)
 

@@ -1,0 +1,8 @@
+releases:
+  "@solarwinds-apm/module": patch
+  solarwinds-apm: patch
+
+declined:
+  - "@solarwinds-apm/dependencies"
+  - "@solarwinds-apm/instrumentations"
+  - "@solarwinds-apm/sampling"
