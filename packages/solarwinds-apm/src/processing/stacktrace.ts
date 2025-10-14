@@ -28,7 +28,7 @@ export class StacktraceProcessor
   extends NoopSpanProcessor
   implements SpanProcessor
 {
-  readonly #filter?: (span: ReadableSpan) => boolean
+  readonly #filter?: (span: ReadableSpan) => number
 
   constructor(config: Configuration) {
     super()
@@ -36,8 +36,9 @@ export class StacktraceProcessor
   }
 
   override onEnd(span: ReadableSpan): void {
-    if (this.#filter?.(span) ?? false) {
-      span.attributes[ATTR_CODE_STACKTRACE] = stacktrace(false)
+    const length = this.#filter?.(span) ?? 0
+    if (length > 0) {
+      span.attributes[ATTR_CODE_STACKTRACE] = stacktrace(length, false)
     }
   }
 }

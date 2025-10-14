@@ -147,7 +147,7 @@ module.exports = {
 
 ### Stacktraces
 
-The library supports attaching stacktraces to spans on end with the `code.stacktrace` attribute. However this is not a cheap operation, and as such it is always opt-in on a per-span basis. To enable stacktrace collections, provide a `spanStacktraceFilter` function taking a [`ReadableSpan`](https://open-telemetry.github.io/opentelemetry-js/interfaces/_opentelemetry_sdk-trace-base.ReadableSpan.html) as its only argument and returning whether a stacktrace should be captured.
+The library supports attaching stacktraces to spans on end with the `code.stacktrace` attribute. However this is not a cheap operation, and as such it is always opt-in on a per-span basis. To enable stacktrace collections, provide a `spanStacktraceFilter` function taking a [`ReadableSpan`](https://open-telemetry.github.io/opentelemetry-js/interfaces/_opentelemetry_sdk-trace-base.ReadableSpan.html) as its only argument and returning whether a stacktrace should be captured. The function can optionally return a number instead of a boolean, in which case it will be used as the maximum length of the collected stacktrace.
 
 ```js
 import { hrTimeToMilliseconds } from "@opentelemetry/core"

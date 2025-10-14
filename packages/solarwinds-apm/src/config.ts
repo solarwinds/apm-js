@@ -95,13 +95,17 @@ const schema = v.pipe(
 
       spanStacktraceFilter: v.optional(
         v.pipe(
-          v.custom<(span: ReadableSpan) => boolean>(
+          v.custom<(span: ReadableSpan) => boolean | number>(
             (filter) => typeof filter === "function",
           ),
-          v.transform(
-            (filter) => (span: ReadableSpan) =>
-              Boolean(filter(span) as unknown),
-          ),
+          v.transform((filter) => (span: ReadableSpan) => {
+            const length = filter(span)
+            if (typeof length === "number") {
+              return length
+            } else {
+              return length ? 16 : 0
+            }
+          }),
         ),
       ),
 

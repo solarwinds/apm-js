@@ -48,9 +48,14 @@ export async function load(url: string): Promise<unknown> {
   }
 }
 
-export function stacktrace(filtered: boolean): string | undefined {
+export function stacktrace(
+  length: number,
+  filtered: boolean,
+): string | undefined {
+  const stackTraceLimit = Reflect.get(Error, "stackTraceLimit")
   const prepareStackTrace = Reflect.get(Error, "prepareStackTrace")
 
+  Reflect.set(Error, "stackTraceLimit", length + 1)
   Reflect.set(
     Error,
     "prepareStackTrace",
@@ -118,6 +123,7 @@ export function stacktrace(filtered: boolean): string | undefined {
   )
 
   const stack = new Error().stack
+  Reflect.set(Error, "stackTraceLimit", stackTraceLimit)
   Reflect.set(Error, "prepareStackTrace", prepareStackTrace)
 
   return stack

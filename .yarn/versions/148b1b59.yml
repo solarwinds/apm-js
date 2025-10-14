@@ -1,6 +1,6 @@
 releases:
-  "@solarwinds-apm/module": patch
-  solarwinds-apm: patch
+  "@solarwinds-apm/module": minor
+  solarwinds-apm: minor
 
 declined:
   - "@solarwinds-apm/dependencies"
