@@ -19,7 +19,4 @@ export default {
   insertTraceContextIntoQueries: true,
   insertTraceContextIntoLogs: true,
   exportLogsEnabled: true,
-  spanStacktraceFilter: (span) => {
-    return true
-  },
 }
