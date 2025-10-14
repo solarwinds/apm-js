@@ -22,7 +22,7 @@ import {
 import { ATTR_CODE_STACKTRACE } from "@opentelemetry/semantic-conventions"
 import { stacktrace } from "@solarwinds-apm/module"
 
-import { type Configuration } from "../shared/config.js"
+import { type Configuration } from "../config.js"
 
 export class StacktraceProcessor
   extends NoopSpanProcessor

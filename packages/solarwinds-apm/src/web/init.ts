@@ -48,7 +48,6 @@ import { TraceExporter } from "../exporters/traces.js"
 import { LocationProcessor } from "../processing/location.js"
 import { ParentSpanProcessor } from "../processing/parent-span.js"
 import { ResponseTimeProcessor } from "../processing/response-time.js"
-import { StacktraceProcessor } from "../processing/stacktrace.js"
 import { TransactionNameProcessor } from "../processing/transaction-name.js"
 import { RequestHeadersPropagator } from "../propagation/headers.js"
 import { TraceContextPropagator } from "../propagation/trace-context.js"
@@ -131,7 +130,6 @@ function initTracing(config: Configuration, resource: Resource) {
       new ResponseTimeProcessor(),
       new BatchSpanProcessor(new TraceExporter(config)),
       new ParentSpanProcessor(),
-      new StacktraceProcessor(config),
       new LocationProcessor(),
     ],
   })

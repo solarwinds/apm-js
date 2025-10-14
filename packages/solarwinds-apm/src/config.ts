@@ -22,6 +22,7 @@ import { pathToFileURL } from "node:url"
 
 import { type Instrumentation } from "@opentelemetry/instrumentation"
 import { type ResourceDetector } from "@opentelemetry/resources"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 import {
   type InstrumentationConfigMap,
   type ResourceDetectorConfigMap,
@@ -91,6 +92,18 @@ const schema = v.pipe(
       insertTraceContextIntoLogs: v.optional(schemas.boolean, false),
 
       insertTraceContextIntoQueries: v.optional(schemas.boolean, false),
+
+      spanStacktraceFilter: v.optional(
+        v.pipe(
+          v.custom<(span: ReadableSpan) => boolean>(
+            (filter) => typeof filter === "function",
+          ),
+          v.transform(
+            (filter) => (span: ReadableSpan) =>
+              Boolean(filter(span) as unknown),
+          ),
+        ),
+      ),
 
       instrumentations: v.optional(
         v.object({
