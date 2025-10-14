@@ -50,6 +50,15 @@
     "./CHANGELOG.md",
     "./CONFIGURATION.md"
   ],
+  "sideEffects": [
+    "./src/index.ts",
+    "./src/web/index.ts",
+    "./src/commonjs/index.js",
+    "./dist/index.js",
+    "./dist/web/index.js",
+    "./dist/commonjs/index.js",
+    "./dist/web.js"
+  ],
   "publishConfig": {
     "access": "public",
     "provenance": true

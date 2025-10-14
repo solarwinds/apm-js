@@ -20,7 +20,7 @@ import { type OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto
 import { CompressionAlgorithm } from "@opentelemetry/otlp-exporter-base"
 
 import { type Configuration as NodeConfiguration } from "../config.js"
-import { environment } from "../env.js"
+import { IS_NODE } from "../env.js"
 import { type Configuration as WebConfiguration } from "../web/config.js"
 import { agentFactory } from "./proxy.js"
 
@@ -49,7 +49,7 @@ export function exporterConfig(
     url,
     headers,
     compression: CompressionAlgorithm.GZIP,
-    httpAgentOptions: environment.IS_NODE
+    httpAgentOptions: IS_NODE
       ? agentFactory(config as NodeConfiguration)
       : undefined,
   }
