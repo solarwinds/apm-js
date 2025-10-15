@@ -20,8 +20,8 @@ import { trace } from "@opentelemetry/api"
 import { hrTimeToMilliseconds } from "@opentelemetry/core"
 import { beforeEach, describe, expect, it, otel } from "@solarwinds-apm/test"
 
+import { type Configuration } from "../../src/config.js"
 import { StacktraceProcessor } from "../../src/processing/stacktrace.js"
-import { type Configuration } from "../../src/shared/config.js"
 
 describe("StacktraceProcessor", () => {
   describe("without config", () => {

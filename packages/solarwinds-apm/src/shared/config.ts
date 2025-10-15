@@ -43,7 +43,6 @@ export interface Configuration {
     tracing: boolean
     matcher: (ident: string) => boolean
   }[]
-  spanStacktraceFilter?: (span: ReadableSpan) => boolean
 }
 
 export const schemas = {
@@ -234,18 +233,6 @@ export const schema = (defaults: Defaults) =>
           ]),
         ),
       ),
-
-      spanStacktraceFilter: v.optional(
-        v.pipe(
-          v.custom<(span: ReadableSpan) => boolean>(
-            (filter) => typeof filter === "function",
-          ),
-          v.transform(
-            (filter) => (span: ReadableSpan) =>
-              Boolean(filter(span) as unknown),
-          ),
-        ),
-      ),
     }),
 
     v.transform((raw): Configuration => {
@@ -278,7 +265,6 @@ export const schema = (defaults: Defaults) =>
 
         transactionName: raw.transactionName,
         transactionSettings: raw.transactionSettings,
-        spanStacktraceFilter: raw.spanStacktraceFilter,
       }
     }),
   )
