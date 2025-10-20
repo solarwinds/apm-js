@@ -13,6 +13,8 @@
   - Semantic [process](https://opentelemetry.io/docs/specs/semconv/system/process-metrics/) metrics are now collected (CPU, memory, context switches, faults).
   - This change may affect custom dashboards and alerts.
   - A new dashboard for Node.js applications powered by these metrics will be available in the future.
+- The `fs`, `net` and `dns` instrumentations are now disabled by default as they are very noisy, and must be explicitly enabled if required.
+  - See the [configuration options for instrumentations](./CONFIGURATION.md#instrumentations).
 
 ## New features and improvements
 
