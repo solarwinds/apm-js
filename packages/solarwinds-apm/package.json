@@ -72,20 +72,20 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@opentelemetry/api-logs": "^0.206.0",
-    "@opentelemetry/context-zone": "^2.0.0",
-    "@opentelemetry/core": "^2.0.0",
-    "@opentelemetry/exporter-logs-otlp-proto": "^0.206.0",
-    "@opentelemetry/exporter-metrics-otlp-proto": "^0.206.0",
-    "@opentelemetry/exporter-trace-otlp-proto": "^0.206.0",
-    "@opentelemetry/instrumentation": "^0.206.0",
-    "@opentelemetry/otlp-exporter-base": "^0.206.0",
-    "@opentelemetry/resources": "^2.0.0",
-    "@opentelemetry/sdk-logs": "^0.206.0",
-    "@opentelemetry/sdk-metrics": "^2.0.0",
-    "@opentelemetry/sdk-trace-base": "^2.0.0",
-    "@opentelemetry/sdk-trace-node": "^2.0.0",
-    "@opentelemetry/sdk-trace-web": "^2.0.0",
+    "@opentelemetry/api-logs": "^0.207.0",
+    "@opentelemetry/context-zone": "^2.2.0",
+    "@opentelemetry/core": "^2.2.0",
+    "@opentelemetry/exporter-logs-otlp-proto": "^0.207.0",
+    "@opentelemetry/exporter-metrics-otlp-proto": "^0.207.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.207.0",
+    "@opentelemetry/instrumentation": "^0.207.0",
+    "@opentelemetry/otlp-exporter-base": "^0.207.0",
+    "@opentelemetry/resources": "^2.2.0",
+    "@opentelemetry/sdk-logs": "^0.207.0",
+    "@opentelemetry/sdk-metrics": "^2.2.0",
+    "@opentelemetry/sdk-trace-base": "^2.2.0",
+    "@opentelemetry/sdk-trace-node": "^2.2.0",
+    "@opentelemetry/sdk-trace-web": "^2.2.0",
     "@opentelemetry/semantic-conventions": "~1.37.0",
     "@solarwinds-apm/dependencies": "workspace:^",
     "@solarwinds-apm/instrumentations": "workspace:^",
@@ -93,9 +93,9 @@
     "@solarwinds-apm/sampling": "workspace:^",
     "import-in-the-middle": "^1.11.0",
     "json-stringify-safe": "^5.0.1",
-    "node-releases": "^2.0.18",
-    "semver": "^7.6.3",
-    "valibot": "^1.0.0"
+    "node-releases": "^2.0.26",
+    "semver": "^7.7.3",
+    "valibot": "^1.1.0"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.9.0"
@@ -112,10 +112,10 @@
     "@types/json-stringify-safe": "^5.0.3",
     "@types/node": "^18.19.0",
     "caniuse-lite": "^1.0",
-    "esbuild": "^0.25.0",
-    "eslint": "^9.12.0",
-    "prettier": "^3.3.3",
-    "typescript": "~5.9.2"
+    "esbuild": "^0.25.11",
+    "eslint": "^9.38.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3"
   },
   "engines": {
     "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
