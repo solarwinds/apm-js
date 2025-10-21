@@ -24,6 +24,7 @@
   - This feature can be used via the new `transactionName` configuration option.
 - Stable semantic conventions for database instrumentations
   - The previous unstable attributes are still exported for compatibility, but will be removed in a future release.
+- OpenAI instrumentation
 - OracleDB instrumentation
 
 ## Fixes

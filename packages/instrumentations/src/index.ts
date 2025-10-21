@@ -47,6 +47,7 @@ import { type MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
 import { type MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
 import { type NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core"
 import { type NetInstrumentation } from "@opentelemetry/instrumentation-net"
+import { type OpenAIInstrumentation } from "@opentelemetry/instrumentation-openai"
 import { type OracleInstrumentation } from "@opentelemetry/instrumentation-oracledb"
 import { type PgInstrumentation } from "@opentelemetry/instrumentation-pg"
 import { type PinoInstrumentation } from "@opentelemetry/instrumentation-pino"
@@ -92,6 +93,7 @@ interface InstrumentationTypes {
   "@opentelemetry/instrumentation-mysql": typeof MySQLInstrumentation
   "@opentelemetry/instrumentation-nestjs-core": typeof NestInstrumentation
   "@opentelemetry/instrumentation-net": typeof NetInstrumentation
+  "@opentelemetry/instrumentation-openai": typeof OpenAIInstrumentation
   "@opentelemetry/instrumentation-oracledb": typeof OracleInstrumentation
   "@opentelemetry/instrumentation-pg": typeof PgInstrumentation
   "@opentelemetry/instrumentation-pino": typeof PinoInstrumentation
@@ -141,6 +143,7 @@ const INSTRUMENTATIONS = {
   "@opentelemetry/instrumentation-nestjs-core": "NestInstrumentation",
   "@opentelemetry/instrumentation-net": "NetInstrumentation",
   "@opentelemetry/instrumentation-oracledb": "OracleInstrumentation",
+  "@opentelemetry/instrumentation-openai": "OpenAIInstrumentation",
   "@opentelemetry/instrumentation-pg": "PgInstrumentation",
   "@opentelemetry/instrumentation-pino": "PinoInstrumentation",
   "@opentelemetry/instrumentation-redis": "RedisInstrumentation",
