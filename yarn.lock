@@ -1352,6 +1352,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@opentelemetry/instrumentation-openai@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@opentelemetry/instrumentation-openai@npm:0.4.0"
+  dependencies:
+    "@opentelemetry/api-logs": "npm:^0.206.0"
+    "@opentelemetry/instrumentation": "npm:^0.206.0"
+    "@opentelemetry/semantic-conventions": "npm:^1.36.0"
+  peerDependencies:
+    "@opentelemetry/api": ^1.3.0
+  checksum: 10c0/f550e7133297c3c50d88c13a6864efb118f00b1283b017ebd50d7c8f47743b76fd80cb6712456a81a1e87f13b6e4d5f5bb735225bf2b321a685d512255075586
+  languageName: node
+  linkType: hard
+
 "@opentelemetry/instrumentation-oracledb@npm:^0.32.0":
   version: 0.32.0
   resolution: "@opentelemetry/instrumentation-oracledb@npm:0.32.0"
@@ -2109,6 +2122,7 @@ __metadata:
     "@opentelemetry/instrumentation-mysql2": "npm:^0.53.0"
     "@opentelemetry/instrumentation-nestjs-core": "npm:^0.53.0"
     "@opentelemetry/instrumentation-net": "npm:^0.50.0"
+    "@opentelemetry/instrumentation-openai": "npm:^0.4.0"
     "@opentelemetry/instrumentation-oracledb": "npm:^0.32.0"
     "@opentelemetry/instrumentation-pg": "npm:^0.59.0"
     "@opentelemetry/instrumentation-pino": "npm:^0.53.0"
