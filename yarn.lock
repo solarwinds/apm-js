@@ -313,7 +313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.38.0, @eslint/js@npm:^9.13.0":
+"@eslint/js@npm:9.38.0, @eslint/js@npm:^9.38.0":
   version: 9.38.0
   resolution: "@eslint/js@npm:9.38.0"
   checksum: 10c0/b4a0d561ab93f0b1bc6a3f5e3f83764c9cccade59f2c54f1d718c1dcc71ac4d1be97bef7300cca641932d72e7555c79a7bf07e4e4ce1d0a1ddccc84d6440d2a6
@@ -394,7 +394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/postgres@npm:^6.0.1":
+"@fastify/postgres@npm:^6.0.2":
   version: 6.0.2
   resolution: "@fastify/postgres@npm:6.0.2"
   dependencies:
@@ -808,7 +808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^2.0.0":
+"@noble/hashes@npm:^2.0.1":
   version: 2.0.1
   resolution: "@noble/hashes@npm:2.0.1"
   checksum: 10c0/e81769ce21c3b1c80141a3b99bd001f17edea09879aa936692ae39525477386d696101cd573928a304806efb2b9fa751e1dd83241c67d0c84d30091e85c79bdb
@@ -909,7 +909,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/context-zone@npm:^2.0.0":
+"@opentelemetry/context-zone@npm:^2.2.0":
   version: 2.2.0
   resolution: "@opentelemetry/context-zone@npm:2.2.0"
   dependencies:
@@ -919,7 +919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/core@npm:2.2.0, @opentelemetry/core@npm:^2.0.0":
+"@opentelemetry/core@npm:2.2.0, @opentelemetry/core@npm:^2.0.0, @opentelemetry/core@npm:^2.2.0":
   version: 2.2.0
   resolution: "@opentelemetry/core@npm:2.2.0"
   dependencies:
@@ -1613,7 +1613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/resource-detector-aws@npm:^2.0.0":
+"@opentelemetry/resource-detector-aws@npm:^2.7.0":
   version: 2.7.0
   resolution: "@opentelemetry/resource-detector-aws@npm:2.7.0"
   dependencies:
@@ -1639,7 +1639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/resource-detector-container@npm:^0.7.0":
+"@opentelemetry/resource-detector-container@npm:^0.7.10":
   version: 0.7.10
   resolution: "@opentelemetry/resource-detector-container@npm:0.7.10"
   dependencies:
@@ -1664,7 +1664,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/resources@npm:2.2.0, @opentelemetry/resources@npm:^2.0.0":
+"@opentelemetry/resources@npm:2.2.0, @opentelemetry/resources@npm:^2.0.0, @opentelemetry/resources@npm:^2.2.0":
   version: 2.2.0
   resolution: "@opentelemetry/resources@npm:2.2.0"
   dependencies:
@@ -1689,7 +1689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-metrics@npm:2.2.0, @opentelemetry/sdk-metrics@npm:^2.0.0":
+"@opentelemetry/sdk-metrics@npm:2.2.0, @opentelemetry/sdk-metrics@npm:^2.2.0":
   version: 2.2.0
   resolution: "@opentelemetry/sdk-metrics@npm:2.2.0"
   dependencies:
@@ -1701,7 +1701,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-trace-base@npm:2.2.0, @opentelemetry/sdk-trace-base@npm:^2.0.0":
+"@opentelemetry/sdk-trace-base@npm:2.2.0, @opentelemetry/sdk-trace-base@npm:^2.2.0":
   version: 2.2.0
   resolution: "@opentelemetry/sdk-trace-base@npm:2.2.0"
   dependencies:
@@ -1714,7 +1714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-trace-node@npm:^2.0.0":
+"@opentelemetry/sdk-trace-node@npm:^2.2.0":
   version: 2.2.0
   resolution: "@opentelemetry/sdk-trace-node@npm:2.2.0"
   dependencies:
@@ -1727,7 +1727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-trace-web@npm:2.2.0, @opentelemetry/sdk-trace-web@npm:^2.0.0":
+"@opentelemetry/sdk-trace-web@npm:2.2.0, @opentelemetry/sdk-trace-web@npm:^2.0.0, @opentelemetry/sdk-trace-web@npm:^2.2.0":
   version: 2.2.0
   resolution: "@opentelemetry/sdk-trace-web@npm:2.2.0"
   dependencies:
@@ -1781,7 +1781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:^6.0.1":
+"@prisma/client@npm:^6.17.1":
   version: 6.17.1
   resolution: "@prisma/client@npm:6.17.1"
   peerDependencies:
@@ -1854,7 +1854,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/instrumentation@npm:^6.0.1":
+"@prisma/instrumentation@npm:^6.17.1":
   version: 6.17.1
   resolution: "@prisma/instrumentation@npm:6.17.1"
   dependencies:
@@ -1977,9 +1977,9 @@ __metadata:
     "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^18.19.0"
-    eslint: "npm:^9.12.0"
-    prettier: "npm:^3.3.3"
-    typescript: "npm:~5.9.2"
+    eslint: "npm:^9.38.0"
+    prettier: "npm:^3.6.2"
+    typescript: "npm:~5.9.3"
   languageName: unknown
   linkType: soft
 
@@ -1987,14 +1987,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/eslint-config@workspace:packages/eslint-config"
   dependencies:
-    "@eslint/js": "npm:^9.13.0"
-    eslint: "npm:^9.12.0"
-    eslint-config-prettier: "npm:^10.0.1"
+    "@eslint/js": "npm:^9.38.0"
+    eslint: "npm:^9.38.0"
+    eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-notice: "npm:^1.0.0"
     eslint-plugin-simple-import-sort: "npm:^12.1.1"
-    prettier: "npm:^3.3.3"
-    typescript: "npm:~5.9.2"
-    typescript-eslint: "npm:^8.10.0"
+    prettier: "npm:^3.6.2"
+    typescript: "npm:~5.9.3"
+    typescript-eslint: "npm:^8.46.2"
   peerDependencies:
     eslint: ^9.0.0
     prettier: ^3.0.0
@@ -2015,9 +2015,9 @@ __metadata:
   dependencies:
     "@opentelemetry/api": "npm:^1.9.0"
     express: "npm:^5.1.0"
-    mysql2: "npm:^3.11.3"
+    mysql2: "npm:^3.15.2"
     solarwinds-apm: "workspace:^"
-    winston: "npm:^3.15.0"
+    winston: "npm:^3.18.3"
   languageName: unknown
   linkType: soft
 
@@ -2025,11 +2025,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/example-fastify-postgres@workspace:examples/fastify-postgres"
   dependencies:
-    "@fastify/postgres": "npm:^6.0.1"
+    "@fastify/postgres": "npm:^6.0.2"
     "@opentelemetry/api": "npm:^1.9.0"
-    fastify: "npm:^5.0.0"
-    pg: "npm:^8.13.0"
-    pino: "npm:^10.0.0"
+    fastify: "npm:^5.6.1"
+    pg: "npm:^8.16.3"
+    pino: "npm:^10.1.0"
     solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
@@ -2039,7 +2039,7 @@ __metadata:
   resolution: "@solarwinds-apm/example-hello-distributed@workspace:examples/hello-distributed"
   dependencies:
     "@opentelemetry/api": "npm:^1.9.0"
-    concurrently: "npm:^9.0.1"
+    concurrently: "npm:^9.2.1"
     solarwinds-apm: "workspace:^"
   languageName: unknown
   linkType: soft
@@ -2067,18 +2067,18 @@ __metadata:
   resolution: "@solarwinds-apm/example-next-prisma@workspace:examples/next-prisma"
   dependencies:
     "@opentelemetry/api": "npm:^1.9.0"
-    "@prisma/client": "npm:^6.0.1"
-    "@prisma/instrumentation": "npm:^6.0.1"
+    "@prisma/client": "npm:^6.17.1"
+    "@prisma/instrumentation": "npm:^6.17.1"
     "@types/node": "npm:^18.19.0"
-    "@types/react": "npm:^19.0.1"
-    eslint: "npm:^9.12.0"
-    eslint-config-next: "npm:^15.1.0"
-    next: "npm:^15.1.0"
-    prisma: "npm:^6.0.1"
-    react: "npm:^19.0.0"
-    react-dom: "npm:^19.0.0"
+    "@types/react": "npm:^19.2.2"
+    eslint: "npm:^9.38.0"
+    eslint-config-next: "npm:^15.5.6"
+    next: "npm:^15.5.6"
+    prisma: "npm:^6.17.1"
+    react: "npm:^19.2.0"
+    react-dom: "npm:^19.2.0"
     solarwinds-apm: "workspace:^"
-    typescript: "npm:~5.9.2"
+    typescript: "npm:~5.9.3"
   languageName: unknown
   linkType: soft
 
@@ -2087,9 +2087,9 @@ __metadata:
   resolution: "@solarwinds-apm/examples@workspace:examples"
   dependencies:
     "@solarwinds-apm/eslint-config": "workspace:^"
-    eslint: "npm:^9.12.0"
-    prettier: "npm:^3.3.3"
-    typescript: "npm:~5.9.2"
+    eslint: "npm:^9.38.0"
+    prettier: "npm:^3.6.2"
+    typescript: "npm:~5.9.3"
   languageName: unknown
   linkType: soft
 
@@ -2100,7 +2100,7 @@ __metadata:
     "@fastify/otel": "npm:^0.11.0"
     "@opentelemetry/api": "npm:^1.9.0"
     "@opentelemetry/auto-instrumentations-web": "npm:^0.53.0"
-    "@opentelemetry/core": "npm:^2.0.0"
+    "@opentelemetry/core": "npm:^2.2.0"
     "@opentelemetry/instrumentation": "npm:^0.207.0"
     "@opentelemetry/instrumentation-amqplib": "npm:^0.54.0"
     "@opentelemetry/instrumentation-aws-lambda": "npm:^0.59.0"
@@ -2143,21 +2143,21 @@ __metadata:
     "@opentelemetry/instrumentation-undici": "npm:^0.18.0"
     "@opentelemetry/instrumentation-winston": "npm:^0.52.0"
     "@opentelemetry/opentelemetry-browser-detector": "npm:^0.207.0"
-    "@opentelemetry/resource-detector-aws": "npm:^2.0.0"
+    "@opentelemetry/resource-detector-aws": "npm:^2.7.0"
     "@opentelemetry/resource-detector-azure": "npm:^0.15.0"
-    "@opentelemetry/resource-detector-container": "npm:^0.7.0"
+    "@opentelemetry/resource-detector-container": "npm:^0.7.10"
     "@opentelemetry/resource-detector-gcp": "npm:^0.42.0"
-    "@opentelemetry/resources": "npm:^2.0.0"
+    "@opentelemetry/resources": "npm:^2.2.0"
     "@opentelemetry/semantic-conventions": "npm:~1.37.0"
     "@opentelemetry/winston-transport": "npm:^0.18.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
-    "@types/semver": "npm:^7.5.8"
-    eslint: "npm:^9.12.0"
-    prettier: "npm:^3.3.3"
-    semver: "npm:^7.6.3"
-    typescript: "npm:~5.9.2"
+    "@types/semver": "npm:^7.7.1"
+    eslint: "npm:^9.38.0"
+    prettier: "npm:^3.6.2"
+    semver: "npm:^7.7.3"
+    typescript: "npm:~5.9.3"
     zone.js: "npm:^0.15.0"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
@@ -2174,9 +2174,9 @@ __metadata:
   dependencies:
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@types/node": "npm:^18.19.0"
-    eslint: "npm:^9.12.0"
-    prettier: "npm:^3.3.3"
-    typescript: "npm:~5.9.2"
+    eslint: "npm:^9.38.0"
+    prettier: "npm:^3.6.2"
+    typescript: "npm:~5.9.3"
   languageName: unknown
   linkType: soft
 
@@ -2184,17 +2184,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/sampling@workspace:packages/sampling"
   dependencies:
-    "@noble/hashes": "npm:^2.0.0"
+    "@noble/hashes": "npm:^2.0.1"
     "@opentelemetry/api": "npm:^1.9.0"
-    "@opentelemetry/sdk-metrics": "npm:^2.0.0"
-    "@opentelemetry/sdk-trace-base": "npm:^2.0.0"
+    "@opentelemetry/sdk-metrics": "npm:^2.2.0"
+    "@opentelemetry/sdk-trace-base": "npm:^2.2.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
     "@solarwinds-apm/module": "workspace:^"
     "@solarwinds-apm/test": "workspace:^"
     "@types/node": "npm:^18.19.0"
-    eslint: "npm:^9.12.0"
-    prettier: "npm:^3.3.3"
-    typescript: "npm:~5.9.2"
+    eslint: "npm:^9.38.0"
+    prettier: "npm:^3.6.2"
+    typescript: "npm:~5.9.3"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
   peerDependenciesMeta:
@@ -2209,11 +2209,11 @@ __metadata:
   dependencies:
     "@solarwinds-apm/eslint-config": "workspace:^"
     archiver: "npm:^7.0.1"
-    dotenv: "npm:^16.4.5"
-    eslint: "npm:^9.12.0"
+    dotenv: "npm:^16.6.1"
+    eslint: "npm:^9.38.0"
     ora: "npm:^9.0.0"
-    prettier: "npm:^3.3.3"
-    typescript: "npm:~5.9.2"
+    prettier: "npm:^3.6.2"
+    typescript: "npm:~5.9.3"
   languageName: unknown
   linkType: soft
 
@@ -2221,10 +2221,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/solarwinds-apm@workspace:."
   dependencies:
-    eslint: "npm:^9.12.0"
-    prettier: "npm:^3.3.3"
-    turbo: "npm:^2.2.0"
-    typescript: "npm:~5.9.2"
+    eslint: "npm:^9.38.0"
+    prettier: "npm:^3.6.2"
+    turbo: "npm:^2.5.8"
+    typescript: "npm:~5.9.3"
   languageName: unknown
   linkType: soft
 
@@ -2233,25 +2233,25 @@ __metadata:
   resolution: "@solarwinds-apm/test@workspace:packages/test"
   dependencies:
     "@opentelemetry/api": "npm:^1.9.0"
-    "@opentelemetry/sdk-metrics": "npm:^2.0.0"
-    "@opentelemetry/sdk-trace-base": "npm:^2.0.0"
-    "@opentelemetry/sdk-trace-node": "npm:^2.0.0"
+    "@opentelemetry/sdk-metrics": "npm:^2.2.0"
+    "@opentelemetry/sdk-trace-base": "npm:^2.2.0"
+    "@opentelemetry/sdk-trace-node": "npm:^2.2.0"
     "@solarwinds-apm/eslint-config": "workspace:^"
-    "@types/chai": "npm:^5.2.2"
+    "@types/chai": "npm:^5.2.3"
     "@types/chai-as-promised": "npm:^8.0.2"
-    "@types/mocha": "npm:^10.0.9"
+    "@types/mocha": "npm:^10.0.10"
     "@types/node": "npm:^18.19.0"
-    "@types/semver": "npm:^7.5.8"
-    c8: "npm:^10.1.2"
-    chai: "npm:^6.0.1"
+    "@types/semver": "npm:^7.7.1"
+    c8: "npm:^10.1.3"
+    chai: "npm:^6.2.0"
     chai-as-promised: "npm:^8.0.2"
-    dotenv: "npm:^16.4.5"
-    eslint: "npm:^9.12.0"
+    dotenv: "npm:^16.6.1"
+    eslint: "npm:^9.38.0"
     globby: "npm:^15.0.0"
-    mocha: "npm:^11.0.1"
-    prettier: "npm:^3.3.3"
+    mocha: "npm:^11.7.4"
+    prettier: "npm:^3.6.2"
     ts-node: "npm:^11.0.0-beta.1"
-    typescript: "npm:~5.9.2"
+    typescript: "npm:~5.9.3"
   bin:
     swtest: ./dist/bin.js
   languageName: unknown
@@ -2335,7 +2335,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chai@npm:*, @types/chai@npm:^5.2.2":
+"@types/chai@npm:*, @types/chai@npm:^5.2.3":
   version: 5.2.3
   resolution: "@types/chai@npm:5.2.3"
   dependencies:
@@ -2405,7 +2405,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.9":
+"@types/mocha@npm:^10.0.10":
   version: 10.0.10
   resolution: "@types/mocha@npm:10.0.10"
   checksum: 10c0/d2b8c48138cde6923493e42b38e839695eb42edd04629abe480a8f34c0e3f50dd82a55832c2e8d2b6e6f9e4deb492d7d733e600fbbdd5a0ceccbcfc6844ff9d5
@@ -2468,7 +2468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^19.0.1":
+"@types/react@npm:^19.2.2":
   version: 19.2.2
   resolution: "@types/react@npm:19.2.2"
   dependencies:
@@ -2477,7 +2477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.5.8":
+"@types/semver@npm:^7.7.1":
   version: 7.7.1
   resolution: "@types/semver@npm:7.7.1"
   checksum: 10c0/c938aef3bf79a73f0f3f6037c16e2e759ff40c54122ddf0b2583703393d8d3127130823facb880e694caa324eb6845628186aac1997ee8b31dc2d18fafe26268
@@ -3295,7 +3295,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"c8@npm:^10.1.2":
+"c8@npm:^10.1.3":
   version: 10.1.3
   resolution: "c8@npm:10.1.3"
   dependencies:
@@ -3385,7 +3385,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:^6.0.1":
+"chai@npm:^6.2.0":
   version: 6.2.0
   resolution: "chai@npm:6.2.0"
   checksum: 10c0/a4b7d7f5907187e09f1847afa838d6d1608adc7d822031b7900813c4ed5d9702911ac2468bf290676f22fddb3d727b1be90b57c1d0a69b902534ee29cdc6ff8a
@@ -3546,7 +3546,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:^9.0.1":
+"concurrently@npm:^9.2.1":
   version: 9.2.1
   resolution: "concurrently@npm:9.2.1"
   dependencies:
@@ -3834,7 +3834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.4.5, dotenv@npm:^16.6.1":
+"dotenv@npm:^16.6.1":
   version: 16.6.1
   resolution: "dotenv@npm:16.6.1"
   checksum: 10c0/15ce56608326ea0d1d9414a5c8ee6dcf0fffc79d2c16422b4ac2268e7e2d76ff5a572d37ffe747c377de12005f14b3cc22361e79fc7f1061cce81f77d2c973dc
@@ -4052,7 +4052,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.25.0":
+"esbuild@npm:^0.25.11":
   version: 0.25.11
   resolution: "esbuild@npm:0.25.11"
   dependencies:
@@ -4162,7 +4162,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-next@npm:^15.1.0":
+"eslint-config-next@npm:^15.5.6":
   version: 15.5.6
   resolution: "eslint-config-next@npm:15.5.6"
   dependencies:
@@ -4186,7 +4186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^10.0.1":
+"eslint-config-prettier@npm:^10.1.8":
   version: 10.1.8
   resolution: "eslint-config-prettier@npm:10.1.8"
   peerDependencies:
@@ -4381,7 +4381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.12.0":
+"eslint@npm:^9.38.0":
   version: 9.38.0
   resolution: "eslint@npm:9.38.0"
   dependencies:
@@ -4659,7 +4659,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^5.0.0":
+"fastify@npm:^5.6.1":
   version: 5.6.1
   resolution: "fastify@npm:5.6.1"
   dependencies:
@@ -6069,7 +6069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mocha@npm:^11.0.1":
+"mocha@npm:^11.7.4":
   version: 11.7.4
   resolution: "mocha@npm:11.7.4"
   dependencies:
@@ -6115,7 +6115,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mysql2@npm:^3.11.3":
+"mysql2@npm:^3.15.2":
   version: 3.15.2
   resolution: "mysql2@npm:3.15.2"
   dependencies:
@@ -6173,7 +6173,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^15.1.0":
+"next@npm:^15.5.6":
   version: 15.5.6
   resolution: "next@npm:15.5.6"
   dependencies:
@@ -6253,7 +6253,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-releases@npm:^2.0.18":
+"node-releases@npm:^2.0.26":
   version: 2.0.26
   resolution: "node-releases@npm:2.0.26"
   checksum: 10c0/033539b947ad329e0c996e563a97cdf295163ecbfd500edc3e5bc19d1a854d9515fcaae3967ac07243aff5378f572f18b36c5f50c3aa1fc3aac43fc9c4924e4d
@@ -6606,7 +6606,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg@npm:^8.13.0":
+"pg@npm:^8.16.3":
   version: 8.16.3
   resolution: "pg@npm:8.16.3"
   dependencies:
@@ -6674,7 +6674,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^10.0.0":
+"pino@npm:^10.1.0":
   version: 10.1.0
   resolution: "pino@npm:10.1.0"
   dependencies:
@@ -6782,7 +6782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.3.3":
+"prettier@npm:^3.6.2":
   version: 3.6.2
   resolution: "prettier@npm:3.6.2"
   bin:
@@ -6791,7 +6791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prisma@npm:^6.0.1":
+"prisma@npm:^6.17.1":
   version: 6.17.1
   resolution: "prisma@npm:6.17.1"
   dependencies:
@@ -6952,7 +6952,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^19.0.0":
+"react-dom@npm:^19.2.0":
   version: 19.2.0
   resolution: "react-dom@npm:19.2.0"
   dependencies:
@@ -6970,7 +6970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^19.0.0":
+"react@npm:^19.2.0":
   version: 19.2.0
   resolution: "react@npm:19.2.0"
   checksum: 10c0/1b6d64eacb9324725bfe1e7860cb7a6b8a34bc89a482920765ebff5c10578eb487e6b46b2f0df263bd27a25edbdae2c45e5ea5d81ae61404301c1a7192c38330
@@ -7326,7 +7326,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.5.3, semver@npm:^7.6.0, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.2":
+"semver@npm:^7.5.3, semver@npm:^7.6.0, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3":
   version: 7.7.3
   resolution: "semver@npm:7.7.3"
   bin:
@@ -7602,19 +7602,19 @@ __metadata:
   dependencies:
     "@opentelemetry/api": "npm:^1.9.0"
     "@opentelemetry/api-logs": "npm:^0.207.0"
-    "@opentelemetry/context-zone": "npm:^2.0.0"
-    "@opentelemetry/core": "npm:^2.0.0"
+    "@opentelemetry/context-zone": "npm:^2.2.0"
+    "@opentelemetry/core": "npm:^2.2.0"
     "@opentelemetry/exporter-logs-otlp-proto": "npm:^0.207.0"
     "@opentelemetry/exporter-metrics-otlp-proto": "npm:^0.207.0"
     "@opentelemetry/exporter-trace-otlp-proto": "npm:^0.207.0"
     "@opentelemetry/instrumentation": "npm:^0.207.0"
     "@opentelemetry/otlp-exporter-base": "npm:^0.207.0"
-    "@opentelemetry/resources": "npm:^2.0.0"
+    "@opentelemetry/resources": "npm:^2.2.0"
     "@opentelemetry/sdk-logs": "npm:^0.207.0"
-    "@opentelemetry/sdk-metrics": "npm:^2.0.0"
-    "@opentelemetry/sdk-trace-base": "npm:^2.0.0"
-    "@opentelemetry/sdk-trace-node": "npm:^2.0.0"
-    "@opentelemetry/sdk-trace-web": "npm:^2.0.0"
+    "@opentelemetry/sdk-metrics": "npm:^2.2.0"
+    "@opentelemetry/sdk-trace-base": "npm:^2.2.0"
+    "@opentelemetry/sdk-trace-node": "npm:^2.2.0"
+    "@opentelemetry/sdk-trace-web": "npm:^2.2.0"
     "@opentelemetry/semantic-conventions": "npm:~1.37.0"
     "@solarwinds-apm/dependencies": "workspace:^"
     "@solarwinds-apm/eslint-config": "workspace:^"
@@ -7625,15 +7625,15 @@ __metadata:
     "@types/json-stringify-safe": "npm:^5.0.3"
     "@types/node": "npm:^18.19.0"
     caniuse-lite: "npm:^1.0"
-    esbuild: "npm:^0.25.0"
-    eslint: "npm:^9.12.0"
+    esbuild: "npm:^0.25.11"
+    eslint: "npm:^9.38.0"
     import-in-the-middle: "npm:^1.11.0"
     json-stringify-safe: "npm:^5.0.1"
-    node-releases: "npm:^2.0.18"
-    prettier: "npm:^3.3.3"
-    semver: "npm:^7.6.3"
-    typescript: "npm:~5.9.2"
-    valibot: "npm:^1.0.0"
+    node-releases: "npm:^2.0.26"
+    prettier: "npm:^3.6.2"
+    semver: "npm:^7.7.3"
+    typescript: "npm:~5.9.3"
+    valibot: "npm:^1.1.0"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
   peerDependenciesMeta:
@@ -8146,7 +8146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo@npm:^2.2.0":
+"turbo@npm:^2.5.8":
   version: 2.5.8
   resolution: "turbo@npm:2.5.8"
   dependencies:
@@ -8248,7 +8248,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.10.0":
+"typescript-eslint@npm:^8.46.2":
   version: 8.46.2
   resolution: "typescript-eslint@npm:8.46.2"
   dependencies:
@@ -8263,7 +8263,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.9.2":
+"typescript@npm:~5.9.3":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -8273,7 +8273,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.9.2#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A~5.9.3#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:
@@ -8433,7 +8433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"valibot@npm:^1.0.0":
+"valibot@npm:^1.1.0":
   version: 1.1.0
   resolution: "valibot@npm:1.1.0"
   peerDependencies:
@@ -8552,7 +8552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston@npm:^3.15.0":
+"winston@npm:^3.18.3":
   version: 3.18.3
   resolution: "winston@npm:3.18.3"
   dependencies:
