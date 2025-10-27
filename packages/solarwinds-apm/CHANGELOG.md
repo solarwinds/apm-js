@@ -1,3 +1,9 @@
+# [15.5.2](https://github.com/solarwinds/apm-js/releases/tag/v15.5.2)
+
+## Fixes
+
+- Proper calculation of event loop delay metrics
+
 # [15.5.1](https://github.com/solarwinds/apm-js/releases/tag/v15.5.1)
 
 ## Fixes
