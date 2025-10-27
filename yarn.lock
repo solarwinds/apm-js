@@ -5230,7 +5230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"import-in-the-middle@npm:^1.11.0, import-in-the-middle@npm:^1.8.1":
+"import-in-the-middle@npm:^1.8.1":
   version: 1.15.0
   resolution: "import-in-the-middle@npm:1.15.0"
   dependencies:
@@ -7627,7 +7627,7 @@ __metadata:
     caniuse-lite: "npm:^1.0"
     esbuild: "npm:^0.25.11"
     eslint: "npm:^9.38.0"
-    import-in-the-middle: "npm:^1.11.0"
+    import-in-the-middle: "npm:^2.0.0"
     json-stringify-safe: "npm:^5.0.1"
     node-releases: "npm:^2.0.26"
     prettier: "npm:^3.6.2"
