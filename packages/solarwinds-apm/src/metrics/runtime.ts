@@ -99,6 +99,10 @@ const latency = {
 
   histogram: monitorEventLoopDelay(),
   callback(batch: BatchObservableResult) {
+    if (this.histogram.count <= 0) {
+      return
+    }
+
     batch.observe(this.mean, this.histogram.mean)
     batch.observe(this.min, this.histogram.min)
     batch.observe(this.max, this.histogram.max)
@@ -119,6 +123,7 @@ const latency = {
       this.stddev,
       ...this.percentiles.map(({ meter }) => meter),
     ])
+    this.histogram.enable()
   },
 }
 
