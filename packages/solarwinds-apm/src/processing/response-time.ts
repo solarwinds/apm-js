@@ -54,6 +54,8 @@ export class ResponseTimeProcessor
     .createHistogram("trace.service.response_time", {
       valueType: ValueType.DOUBLE,
       unit: "ms",
+      description:
+        "Duration of each entry span for the service, typically meaning the time taken to process an inbound request.",
     })
 
   override onEnd(span: ReadableSpan): void {
