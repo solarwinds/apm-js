@@ -19,8 +19,6 @@ jobs:
 
       - run: yarn install --immutable
       - run: yarn publish
-        env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Export version
         id: version
