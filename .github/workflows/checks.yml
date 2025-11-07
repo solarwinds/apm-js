@@ -74,7 +74,7 @@ jobs:
     if: github.event_name == 'pull_request'
     needs:
       - checks
-    runs-on: ${{ matrix.arch == 'arm64' && fromJSON('{"group":"apm-arm-runner"}') || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     strategy:
       matrix:
         image:
@@ -101,16 +101,6 @@ jobs:
         arch:
           - x64
           - arm64
-        # https://github.com/actions/runner/issues/801
-        exclude:
-          - image: 18-alpine3.17
-            arch: arm64
-          - image: 20-alpine
-            arch: arm64
-          - image: 22-alpine
-            arch: arm64
-          - image: 24-alpine
-            arch: arm64
       fail-fast: false
     container:
       image: ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
