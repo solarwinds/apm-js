@@ -101,6 +101,16 @@ jobs:
         arch:
           - x64
           - arm64
+        # https://github.com/actions/runner/issues/801
+        exclude:
+          - image: 18-alpine3.17
+            arch: arm64
+          - image: 20-alpine
+            arch: arm64
+          - image: 22-alpine
+            arch: arm64
+          - image: 24-alpine
+            arch: arm64
       fail-fast: false
     container:
       image: ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
