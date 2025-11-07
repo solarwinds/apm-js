@@ -2,7 +2,7 @@
   "name": "@solarwinds-apm/solarwinds-apm",
   "private": true,
   "license": "Apache-2.0",
-  "packageManager": "yarn@4.9.4",
+  "packageManager": "yarn@4.11.0",
   "workspaces": [
     "examples",
     "examples/*",
@@ -26,9 +26,9 @@
     "version:testing": "node scripts/testing.js"
   },
   "devDependencies": {
-    "eslint": "^9.38.0",
+    "eslint": "^9.39.1",
     "prettier": "^3.6.2",
-    "turbo": "^2.5.8",
+    "turbo": "^2.6.0",
     "typescript": "~5.9.3"
   }
 }
