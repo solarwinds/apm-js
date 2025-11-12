@@ -1,4 +1,4 @@
-# [16.0.0](https://github.com/solarwinds/apm-js/releases/tag/v16.0.0) _(Unreleased)_
+# [16.0.0](https://github.com/solarwinds/apm-js/releases/tag/v16.0.0)
 
 ## Breaking changes
 
@@ -31,6 +31,19 @@
 
 - Proper type declarations for CommonJS
 - More Cassandra span attributes by default
+- Explicit units and descriptions for all metrics
+
+# [15.5.2](https://github.com/solarwinds/apm-js/releases/tag/v15.5.2)
+
+## Fixes
+
+- Proper calculation of event loop delay metrics
+
+# [15.5.1](https://github.com/solarwinds/apm-js/releases/tag/v15.5.1)
+
+## Fixes
+
+- Check for compatibility against library build date instead of current date
 
 # [15.5.0](https://github.com/solarwinds/apm-js/releases/tag/v15.5.0)
 

@@ -1,8 +1,0 @@
-releases:
-  "@solarwinds-apm/test": patch
-
-declined:
-  - "@solarwinds-apm/dependencies"
-  - "@solarwinds-apm/instrumentations"
-  - "@solarwinds-apm/sampling"
-  - solarwinds-apm
