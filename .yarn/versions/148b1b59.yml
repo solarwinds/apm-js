@@ -1,8 +1,0 @@
-releases:
-  "@solarwinds-apm/module": minor
-  solarwinds-apm: minor
-
-declined:
-  - "@solarwinds-apm/dependencies"
-  - "@solarwinds-apm/instrumentations"
-  - "@solarwinds-apm/sampling"

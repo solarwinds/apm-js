@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/eslint-config",
-  "version": "3.0.0-pre.3",
+  "version": "3.0.0",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -57,6 +57,5 @@
     "eslint": "^9.39.1",
     "prettier": "^3.6.2",
     "typescript": "~5.9.3"
-  },
-  "stableVersion": "2.0.0"
+  }
 }
