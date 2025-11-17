@@ -97,7 +97,6 @@ export class TransactionNameProcessor
 }
 
 /** Computes a transaction name from a span and its attributes */
-/* eslint-disable @typescript-eslint/no-deprecated */
 export function computedTransactionName(span: ReadableSpan): string {
   // split on slashes and keep the first 3 segments
   // where the first segment is an empty string before the first slash
@@ -115,7 +114,6 @@ export function computedTransactionName(span: ReadableSpan): string {
     return span.name
   }
 }
-/* eslint-enable @typescript-eslint/no-deprecated */
 
 /**
  * A pool that prevents explosion of cardinality in transaction names
