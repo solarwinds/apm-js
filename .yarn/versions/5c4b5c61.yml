@@ -1,0 +1,5 @@
+releases:
+  "@solarwinds-apm/instrumentations": patch
+
+declined:
+  - solarwinds-apm
