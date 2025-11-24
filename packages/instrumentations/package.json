@@ -71,7 +71,7 @@
     "@opentelemetry/instrumentation-mysql2": "^0.55.0",
     "@opentelemetry/instrumentation-nestjs-core": "^0.55.0",
     "@opentelemetry/instrumentation-net": "^0.52.0",
-    "@opentelemetry/instrumentation-openai": "^0.6.0",
+    "@opentelemetry/instrumentation-openai": "^0.7.0",
     "@opentelemetry/instrumentation-oracledb": "^0.34.0",
     "@opentelemetry/instrumentation-pg": "^0.61.0",
     "@opentelemetry/instrumentation-pino": "^0.55.0",
@@ -111,7 +111,7 @@
     "prettier": "^3.6.2",
     "semver": "^7.7.3",
     "typescript": "~5.9.3",
-    "zone.js": "^0.15.0"
+    "zone.js": "^0.16.0"
   },
   "engines": {
     "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
