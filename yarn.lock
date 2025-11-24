@@ -1560,7 +1560,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation@npm:0.208.0, @opentelemetry/instrumentation@npm:>=0.52.0 <1, @opentelemetry/instrumentation@npm:^0.208.0":
+"@opentelemetry/instrumentation@npm:0.208.0, @opentelemetry/instrumentation@npm:^0.208.0":
   version: 0.208.0
   resolution: "@opentelemetry/instrumentation@npm:0.208.0"
   dependencies:
@@ -1874,14 +1874,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/instrumentation@npm:^6.19.0":
-  version: 6.19.0
-  resolution: "@prisma/instrumentation@npm:6.19.0"
+"@prisma/instrumentation@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@prisma/instrumentation@npm:7.0.0"
   dependencies:
-    "@opentelemetry/instrumentation": "npm:>=0.52.0 <1"
+    "@opentelemetry/instrumentation": "npm:^0.207.0"
   peerDependencies:
     "@opentelemetry/api": ^1.8
-  checksum: 10c0/17a6b61f1b90e97d21f8a7edb6a9c21f8e5db6b0999b9a776236402778fc187457e40766f9f2ee9df1de56bc22deba4e5dd789b1ea35ffd85d49e8ef119c2129
+  checksum: 10c0/51730a673e87fc1146b80f1fb30bb203d86906e3d53ddc8205499eb4eff115c981875f61eaa7d9f62db78dcfa90737d96f1282d3c751a206bbbd6c298ffb0044
   languageName: node
   linkType: hard
 
@@ -2088,7 +2088,7 @@ __metadata:
   dependencies:
     "@opentelemetry/api": "npm:^1.9.0"
     "@prisma/client": "npm:^6.19.0"
-    "@prisma/instrumentation": "npm:^6.19.0"
+    "@prisma/instrumentation": "npm:^7.0.0"
     "@types/node": "npm:^18.19.0"
     "@types/react": "npm:^19.2.2"
     eslint: "npm:^9.39.1"
