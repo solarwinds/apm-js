@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS items (
 )
 `
 
-const app = await fastify({ logger: true })
+const app = fastify({ logger: true })
 app.register(pg, {
   host: "postgres",
   user: "postgres",

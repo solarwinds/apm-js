@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
+  provider               = "prisma-client"
+  output                 = "../app/db/"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = "file:db.sqlite"
 }
 
 model Item {

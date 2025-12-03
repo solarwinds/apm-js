@@ -1,7 +1,7 @@
-const { PrismaInstrumentation } = require("@prisma/instrumentation")
+import { PrismaInstrumentation } from "@prisma/instrumentation"
 
 /** @type {import("solarwinds-apm").Config} */
-module.exports = {
+export default {
   instrumentations: {
     configs: {
       // Next.js provides its own HTTP instrumentation

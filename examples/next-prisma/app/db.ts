@@ -1,11 +1,14 @@
 "use server"
 
-import { PrismaClient, type Item } from "@prisma/client"
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3"
+import { PrismaClient, type Item } from "./db/client"
 import { revalidatePath } from "next/cache"
 
 let client: PrismaClient | undefined
 function db(): PrismaClient {
-  return (client ??= new PrismaClient())
+  return (client ??= new PrismaClient({
+    adapter: new PrismaBetterSqlite3({ url: "./prisma/db.sqlite" }),
+  }))
 }
 
 export async function listItems(done: boolean): Promise<Item[]> {
