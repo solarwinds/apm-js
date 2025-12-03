@@ -134,7 +134,7 @@ jobs:
           restore-keys: |
             yarn-
 
-      - run: yarn install --immutable
+      - run: yarn install --immutable || YARN_ENABLE_SCRIPTS=0 yarn install --immutable
       - run: yarn test --only
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
