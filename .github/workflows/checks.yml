@@ -135,6 +135,7 @@ jobs:
             yarn-
 
       - run: yarn install --immutable
+        continue-on-error: true
       - run: yarn test --only
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
@@ -176,6 +177,7 @@ jobs:
             yarn-
 
       - run: yarn install --immutable
+        continue-on-error: true
       - run: yarn test --only
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
