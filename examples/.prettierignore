@@ -1,3 +1,4 @@
 next-prisma/.next/
 next-prisma/.prisma/
+next-prisma/next-env.d.ts
 next-prisma/app/db/
