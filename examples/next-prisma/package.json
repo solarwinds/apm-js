@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "prisma generate && prisma migrate deploy && next build",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false next lint",
+    "build": "prisma generate && prisma migrate deploy && next build --webpack",
+    "lint": "eslint . --max-warnings=0",
     "start": "prisma generate && prisma migrate deploy && next start"
   },
   "dependencies": {
@@ -12,16 +12,16 @@
     "@prisma/adapter-better-sqlite3": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "@prisma/instrumentation": "^7.1.0",
-    "next": "^15.5.6",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "next": "^16.0.7",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^18.19.0",
-    "@types/react": "^19.2.2",
+    "@types/react": "^19.2.7",
     "eslint": "^9.39.1",
-    "eslint-config-next": "^15.5.6",
+    "eslint-config-next": "^16.0.7",
     "prisma": "^7.1.0",
     "typescript": "~5.9.3"
   }
