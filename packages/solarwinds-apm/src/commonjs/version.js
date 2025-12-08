@@ -21,9 +21,8 @@ try {
   // By default assume the Node version is too recent to be in the releases list
   module.exports = true;
 
-  var file = require.resolve(
-    "node-releases/data/release-schedule/release-schedule.json"
-  );
+  var file =
+    require.resolve("node-releases/data/release-schedule/release-schedule.json");
   var versions = JSON.parse(fs.readFileSync(file, { encoding: "utf8" }));
   for (var major in versions) {
     if (process.version.substring(0, major.length) !== major) {
