@@ -37,8 +37,7 @@ export class MetricExporter extends OTLPMetricExporter {
 }
 
 const DEFAULT_CARDINALITY_LIMIT = 200
-export interface MetricReaderOptions
-  extends PeriodicExportingMetricReaderOptions {
+export interface MetricReaderOptions extends PeriodicExportingMetricReaderOptions {
   cardinalityLimit?: number
 }
 
