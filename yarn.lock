@@ -617,17 +617,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/otel@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "@fastify/otel@npm:0.14.0"
+"@fastify/otel@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@fastify/otel@npm:0.16.0"
   dependencies:
     "@opentelemetry/core": "npm:^2.0.0"
-    "@opentelemetry/instrumentation": "npm:^0.207.0"
+    "@opentelemetry/instrumentation": "npm:^0.208.0"
     "@opentelemetry/semantic-conventions": "npm:^1.28.0"
     minimatch: "npm:^10.0.3"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
-  checksum: 10c0/580a98a3960fc9796ca4e2979b42b8627012ae24cadfa9349af91bc7ba51c8b842e9cb80680b65beefd72a0e0eb34ecede81d638a5a5645cbfc912d21c3ac1c8
+  checksum: 10c0/38a797e131444b36174edb294e99634f70ee522c8cf74bcba9b4d1b880f5bad7b868d2dedae6bc88b896e5ce1be6ba14b153e23dfc86ddf9c888faa99f98a64b
   languageName: node
   linkType: hard
 
@@ -2505,7 +2505,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@solarwinds-apm/instrumentations@workspace:packages/instrumentations"
   dependencies:
-    "@fastify/otel": "npm:^0.14.0"
+    "@fastify/otel": "npm:^0.16.0"
     "@opentelemetry/api": "npm:^1.9.0"
     "@opentelemetry/auto-instrumentations-web": "npm:^0.54.0"
     "@opentelemetry/core": "npm:^2.2.0"
