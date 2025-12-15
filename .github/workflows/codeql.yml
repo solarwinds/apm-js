@@ -34,7 +34,7 @@ jobs:
           config-file: ./.github/codeql.yml
           languages: ${{ matrix.language }}
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: .yarn/cache
           key: yarn-${{ hashFiles('yarn.lock') }}
