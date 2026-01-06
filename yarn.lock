@@ -486,18 +486,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint-community/eslint-utils@npm:^4.8.0":
-  version: 4.9.0
-  resolution: "@eslint-community/eslint-utils@npm:4.9.0"
-  dependencies:
-    eslint-visitor-keys: "npm:^3.4.3"
-  peerDependencies:
-    eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
-  checksum: 10c0/8881e22d519326e7dba85ea915ac7a143367c805e6ba1374c987aa2fbdd09195cc51183d2da72c0e2ff388f84363e1b220fd0d19bef10c272c63455162176817
-  languageName: node
-  linkType: hard
-
-"@eslint-community/eslint-utils@npm:^4.9.1":
+"@eslint-community/eslint-utils@npm:^4.8.0, @eslint-community/eslint-utils@npm:^4.9.1":
   version: 4.9.1
   resolution: "@eslint-community/eslint-utils@npm:4.9.1"
   dependencies:
@@ -3616,21 +3605,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"baseline-browser-mapping@npm:^2.8.3":
+"baseline-browser-mapping@npm:^2.8.3, baseline-browser-mapping@npm:^2.9.0":
   version: 2.9.11
   resolution: "baseline-browser-mapping@npm:2.9.11"
   bin:
     baseline-browser-mapping: dist/cli.js
   checksum: 10c0/eba49fcc1b33ab994aeeb73a4848f2670e06a0886dd5b903689ae6f60d47e7f1bea9262dbb2548c48179e858f7eda2b82ddf941ae783b862f4dcc51085a246f2
-  languageName: node
-  linkType: hard
-
-"baseline-browser-mapping@npm:^2.9.0":
-  version: 2.9.3
-  resolution: "baseline-browser-mapping@npm:2.9.3"
-  bin:
-    baseline-browser-mapping: dist/cli.js
-  checksum: 10c0/5d17ae997e41036756b32c22df74ed222c2f31c1e6970d0bfe7912a6f00dc2b4a45c2ac68740ce9de7d0ee9ae049a5d22683b3ba692bdb981880189795ccb8b5
   languageName: node
   linkType: hard
 
