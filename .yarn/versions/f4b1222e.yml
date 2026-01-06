@@ -1,0 +1,8 @@
+releases:
+  "@solarwinds-apm/dependencies": patch
+  "@solarwinds-apm/eslint-config": patch
+  "@solarwinds-apm/instrumentations": minor
+  "@solarwinds-apm/module": patch
+  "@solarwinds-apm/sampling": patch
+  "@solarwinds-apm/test": patch
+  solarwinds-apm: minor
