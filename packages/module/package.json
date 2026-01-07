@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/module",
-  "version": "4.0.1-pre.1",
+  "version": "4.0.1",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -44,6 +44,5 @@
   },
   "engines": {
     "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
-  },
-  "stableVersion": "4.0.0"
+  }
 }

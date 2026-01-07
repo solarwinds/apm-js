@@ -1,6 +1,6 @@
 {
   "name": "@solarwinds-apm/dependencies",
-  "version": "2.0.2-pre.1",
+  "version": "2.0.2",
   "license": "Apache-2.0",
   "contributors": [
     "Raphaël Thériault <raphael.theriault@solarwinds.com>"
@@ -48,6 +48,5 @@
   },
   "engines": {
     "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
-  },
-  "stableVersion": "2.0.1"
+  }
 }
