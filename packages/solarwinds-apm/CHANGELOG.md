@@ -1,3 +1,13 @@
+# [16.1.0](https://github.com/solarwinds/apm-js/releases/tag/v16.1.0)
+
+## New features and improvements
+
+- Support for Node.js 24 on Lambda
+
+## Fixes
+
+- Lambda auto-instrumentation for ESM handlers
+
 # [16.0.0](https://github.com/solarwinds/apm-js/releases/tag/v16.0.0)
 
 ## Breaking changes
