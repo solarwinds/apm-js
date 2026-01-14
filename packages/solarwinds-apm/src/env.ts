@@ -33,4 +33,8 @@ export const environment = {
   get IS_SERVERLESS() {
     return this.IS_AWS_LAMBDA
   },
+
+  get DEV() {
+    return IS_NODE ? process.env.SW_APM_DANGEROUS_ENV === "dev" : false
+  },
 }

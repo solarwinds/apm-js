@@ -22,7 +22,7 @@ import { unref } from "@solarwinds-apm/module"
 import { type Settings } from "@solarwinds-apm/sampling"
 
 import { type Configuration as NodeConfiguration } from "../config.js"
-import { IS_NODE } from "../env.js"
+import { environment, IS_NODE } from "../env.js"
 import { type Configuration } from "../exporters/config.js"
 import { agentFactory } from "../exporters/proxy.js"
 import { componentLogger } from "../shared/logger.js"
@@ -109,7 +109,7 @@ export class HttpSampler extends Sampler {
     this.#service = encodeURIComponent(config.service)
 
     this.#headers = { ...config.headers }
-    if (this.#url.hostname.endsWith(".solarwinds.com")) {
+    if (this.#url.hostname.endsWith(".solarwinds.com") || environment.DEV) {
       this.#headers.authorization = `Bearer ${config.token}`
     }
 

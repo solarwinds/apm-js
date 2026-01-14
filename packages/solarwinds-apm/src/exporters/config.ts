@@ -20,7 +20,7 @@ import { type OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto
 import { CompressionAlgorithm } from "@opentelemetry/otlp-exporter-base"
 
 import { type Configuration as NodeConfiguration } from "../config.js"
-import { IS_NODE } from "../env.js"
+import { environment, IS_NODE } from "../env.js"
 import { type Configuration as WebConfiguration } from "../web/config.js"
 import { agentFactory } from "./proxy.js"
 
@@ -38,7 +38,10 @@ export function exporterConfig(
   const headers = { ...config.headers }
 
   try {
-    if (config.token && new URL(url).hostname.endsWith(".solarwinds.com")) {
+    if (
+      config.token &&
+      (new URL(url).hostname.endsWith(".solarwinds.com") || environment.DEV)
+    ) {
       headers.authorization = `Bearer ${config.token}`
     }
   } catch {
