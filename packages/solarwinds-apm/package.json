@@ -86,7 +86,7 @@
     "@opentelemetry/sdk-trace-base": "^2.2.0",
     "@opentelemetry/sdk-trace-node": "^2.2.0",
     "@opentelemetry/sdk-trace-web": "^2.2.0",
-    "@opentelemetry/semantic-conventions": "~1.38.0",
+    "@opentelemetry/semantic-conventions": "~1.39.0",
     "@solarwinds-apm/dependencies": "workspace:^",
     "@solarwinds-apm/instrumentations": "workspace:^",
     "@solarwinds-apm/module": "workspace:^",
