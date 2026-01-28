@@ -39,7 +39,9 @@ describe(getter.name, () => {
 
   it("works when no proxy specified", async () => {
     const get = await getter({ collector } as Configuration)
-    const res = await get(collector, {})
+    const res = await get(collector, {
+      headers: { "user-agent": "solarwinds/apm-js" },
+    })
     expect(res).to.include.keys("id")
   }).timeout(10_000)
 
@@ -57,7 +59,9 @@ describe(getter.name, () => {
     })
 
     const get = await getter({ ...config, collector })
-    const res = await get(collector, {})
+    const res = await get(collector, {
+      headers: { "user-agent": "solarwinds/apm-js" },
+    })
     expect(res).to.include.keys("id")
     expect(proxied).to.be.true
 
@@ -93,7 +97,9 @@ describe(getter.name, () => {
     config.proxy.password = "Winds"
 
     const get = await getter({ ...config, collector })
-    const res = await get(collector, {})
+    const res = await get(collector, {
+      headers: { "user-agent": "solarwinds/apm-js" },
+    })
     expect(res).to.include.keys("id")
     expect(proxied).to.be.true
 
