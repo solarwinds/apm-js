@@ -26,10 +26,12 @@ import { environment, IS_NODE } from "../env.js"
 import { type Configuration } from "../exporters/config.js"
 import { agentFactory } from "../exporters/proxy.js"
 import { componentLogger } from "../shared/logger.js"
+import { VERSION } from "../version.js"
 import { Sampler } from "./sampler.js"
 
 const REQUEST_INTERVAL = 60 * 1000 // 1m
 const REQUEST_TIMEOUT = 10 * 1000 // 10s
+const USER_AGENT = `solarwinds/apm-js/${VERSION}`
 
 /** Retrieves the hostname (or User-Agent in browsers) in URL encoded format */
 export async function hostname() {
@@ -68,7 +70,12 @@ export async function getter(config: Configuration, logger: DiagLogger = diag) {
               data = Buffer.concat([data, chunk])
             })
             .on("end", () => {
-              resolve(JSON.parse(data.toString("utf-8")))
+              const text = data.toString("utf-8")
+              try {
+                resolve(JSON.parse(text))
+              } catch {
+                reject(new Error(text))
+              }
             })
         })
 
@@ -108,7 +115,7 @@ export class HttpSampler extends Sampler {
     this.#url = config.collector
     this.#service = encodeURIComponent(config.service)
 
-    this.#headers = { ...config.headers }
+    this.#headers = { "User-Agent": USER_AGENT, ...config.headers }
     if (this.#url.hostname.endsWith(".solarwinds.com") || environment.DEV) {
       this.#headers.authorization = `Bearer ${config.token}`
     }
