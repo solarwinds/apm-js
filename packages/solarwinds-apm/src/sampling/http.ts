@@ -26,8 +26,8 @@ import { environment, IS_NODE } from "../env.js"
 import { type Configuration } from "../exporters/config.js"
 import { agentFactory } from "../exporters/proxy.js"
 import { componentLogger } from "../shared/logger.js"
-import { Sampler } from "./sampler.js"
 import { VERSION } from "../version.js"
+import { Sampler } from "./sampler.js"
 
 const REQUEST_INTERVAL = 60 * 1000 // 1m
 const REQUEST_TIMEOUT = 10 * 1000 // 10s
