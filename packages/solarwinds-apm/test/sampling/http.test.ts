@@ -35,14 +35,12 @@ describe(hostname.name, () => {
 })
 
 describe(getter.name, () => {
-  const collector = new URL(
-    "https://apm.collector.na-01.cloud.solarwinds.com/v1/settings/test/test",
-  )
+  const collector = new URL("https://api.github.com/repos/solarwinds/apm-js")
 
   it("works when no proxy specified", async () => {
     const get = await getter({ collector } as Configuration)
     const res = await get(collector, {})
-    expect(res).to.include.keys("warning")
+    expect(res).to.include.keys("id")
   }).timeout(10_000)
 
   it("works with public proxy", async () => {
@@ -60,7 +58,7 @@ describe(getter.name, () => {
 
     const get = await getter({ ...config, collector })
     const res = await get(collector, {})
-    expect(res).to.include.keys("warning")
+    expect(res).to.include.keys("id")
     expect(proxied).to.be.true
 
     await close()
@@ -96,7 +94,7 @@ describe(getter.name, () => {
 
     const get = await getter({ ...config, collector })
     const res = await get(collector, {})
-    expect(res).to.include.keys("warning")
+    expect(res).to.include.keys("id")
     expect(proxied).to.be.true
 
     const unauthorizedGet = await getter({ ...unauthorizedConfig, collector })
