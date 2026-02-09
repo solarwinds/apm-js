@@ -2918,11 +2918,11 @@ __metadata:
   linkType: hard
 
 "@types/react@npm:^19.2.7":
-  version: 19.2.10
-  resolution: "@types/react@npm:19.2.10"
+  version: 19.2.13
+  resolution: "@types/react@npm:19.2.13"
   dependencies:
     csstype: "npm:^3.2.2"
-  checksum: 10c0/17b96203a79ad3fa3cee8f1f1f324b93f005bc125755e29ac149402807275feaf3f00a4e65b8405f633923ac993da5737fd9800d27ee49911f3ed51dc27478f9
+  checksum: 10c0/e512dc53b805b9066f5c6ad42944372e1204290d618dbaec634d8bbd80d3aadcc1b8cdd7251329936bbdafae0425c02f531083213473bb370df903f20bb66e91
   languageName: node
   linkType: hard
 
@@ -3906,9 +3906,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0, caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001759":
-  version: 1.0.30001767
-  resolution: "caniuse-lite@npm:1.0.30001767"
-  checksum: 10c0/37067c6d2b26623f81494a1f206adbff2b80baed3318ba430684e428bd7d81be889f39db8ef081501d1db5f7dd5d15972892f173eb59c9f3bb780e0b38e6610a
+  version: 1.0.30001769
+  resolution: "caniuse-lite@npm:1.0.30001769"
+  checksum: 10c0/161b8c30ab967371807d45d361f0d5bc06e38ef2dbf811493d70cd97c21e1522f5b91fd944c419a00047ee09c931ca64627f125a9ffa7a17a9fdff8dad9765b0
   languageName: node
   linkType: hard
 
@@ -7054,8 +7054,8 @@ __metadata:
   linkType: hard
 
 "mysql2@npm:^3.15.3":
-  version: 3.16.2
-  resolution: "mysql2@npm:3.16.2"
+  version: 3.16.3
+  resolution: "mysql2@npm:3.16.3"
   dependencies:
     aws-ssl-profiles: "npm:^1.1.2"
     denque: "npm:^2.1.0"
@@ -7066,7 +7066,7 @@ __metadata:
     named-placeholders: "npm:^1.1.6"
     seq-queue: "npm:^0.0.5"
     sqlstring: "npm:^2.3.3"
-  checksum: 10c0/50716477b89aa0b393d714fb49173dcbabb76072ac526b468cb6134c32c833e30910fcb50d472b1e5e80c4362fe4b7b784ec6f4fec5e294978de5fd8658c15f8
+  checksum: 10c0/11ff1e391f57fe84a59b29f1f274c5bae0754e01c8555133c140e72cf92775f01dec152abccc81312c2eb77de4069aa72c4ac7cc446a3d2896c17fabc930aaf2
   languageName: node
   linkType: hard
 
@@ -7413,8 +7413,8 @@ __metadata:
   linkType: hard
 
 "ora@npm:^9.0.0":
-  version: 9.1.0
-  resolution: "ora@npm:9.1.0"
+  version: 9.3.0
+  resolution: "ora@npm:9.3.0"
   dependencies:
     chalk: "npm:^5.6.2"
     cli-cursor: "npm:^5.0.0"
@@ -7422,9 +7422,9 @@ __metadata:
     is-interactive: "npm:^2.0.0"
     is-unicode-supported: "npm:^2.1.0"
     log-symbols: "npm:^7.0.1"
-    stdin-discarder: "npm:^0.2.2"
+    stdin-discarder: "npm:^0.3.1"
     string-width: "npm:^8.1.0"
-  checksum: 10c0/8a8f02809d8b7b0e2534a0232eb2d8a01e1fa84a0f346a830ad3d70405a0ae7b947cb5b6a2f6be3007bccc2518d100330a6c505a833862899e37465dda7f82c6
+  checksum: 10c0/1d25c0f43e20389757285f740686958bce78ccb9d03dda190ecc92ae585cbc498fa54cf13933fea2f96cb97a0be82e927cf0fd8c96217459f9c43d915a380531
   languageName: node
   linkType: hard
 
@@ -8397,11 +8397,11 @@ __metadata:
   linkType: hard
 
 "semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.6.0, semver@npm:^7.7.1, semver@npm:^7.7.3":
-  version: 7.7.3
-  resolution: "semver@npm:7.7.3"
+  version: 7.7.4
+  resolution: "semver@npm:7.7.4"
   bin:
     semver: bin/semver.js
-  checksum: 10c0/4afe5c986567db82f44c8c6faef8fe9df2a9b1d98098fc1721f57c696c4c21cebd572f297fc21002f81889492345b8470473bc6f4aff5fb032a6ea59ea2bc45e
+  checksum: 10c0/5215ad0234e2845d4ea5bb9d836d42b03499546ddafb12075566899fc617f68794bb6f146076b6881d755de17d6c6cc73372555879ec7dce2c2feee947866ad2
   languageName: node
   linkType: hard
 
@@ -8838,10 +8838,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stdin-discarder@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "stdin-discarder@npm:0.2.2"
-  checksum: 10c0/c78375e82e956d7a64be6e63c809c7f058f5303efcaf62ea48350af072bacdb99c06cba39209b45a071c1acbd49116af30df1df9abb448df78a6005b72f10537
+"stdin-discarder@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "stdin-discarder@npm:0.3.1"
+  checksum: 10c0/2fda9b230e72f092a933dbc755fadbfd53b721b103acddd06c2642a81793565f1673f249dc54fc0c63b141f222e9d09494cdf4db6ab7998f54e0b0be8526cba5
   languageName: node
   linkType: hard
 
