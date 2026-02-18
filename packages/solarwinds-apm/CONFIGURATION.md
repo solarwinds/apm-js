@@ -138,7 +138,8 @@ module.exports = {
       tracing: "disabled",
       matcher: (id) => {
         const [ty] = id.split(":")
-        if (ty === "CLIENT") return true
+const [kind] = id.split(":")
+if (kind === "CLIENT") return true
       },
     },
   ],
