@@ -121,7 +121,7 @@ Note that both the function and scheme approaches operate on the local root span
 
 ### Transaction Settings
 
-Transaction settings allow filtering out certain transactions, based on URL for web requests, and the type and name concatenated with a colon for everything else. This option should be set to an array of objects.
+Transaction settings allow filtering out certain transactions, based on URL for web requests, and the span kind and name concatenated with a colon for everything else. This option should be set to an array of objects.
 
 Each entry must have a `tracing` key set to either `enabled` or `disabled` which determines the outcome if it is matched against. The entry must also either have a `regex` key set to a string or `RegExp` object which will be matched against, or a `matcher` key set to a function taking a string and returning `true` if it should match.
 
@@ -137,8 +137,8 @@ module.exports = {
     {
       tracing: "disabled",
       matcher: (id) => {
-        const [ty] = id.split(":")
-        if (ty === "CLIENT") return true
+        const [kind] = id.split(":")
+        if (kind === "CLIENT") return true
       },
     },
   ],
