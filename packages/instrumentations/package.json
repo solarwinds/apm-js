@@ -107,7 +107,7 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/semver": "^7.7.1",
-    "eslint": "^9.39.1",
+    "eslint": "^10.0.0",
     "prettier": "^3.6.2",
     "semver": "^7.7.3",
     "typescript": "~5.9.3",
