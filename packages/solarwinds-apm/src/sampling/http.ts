@@ -69,10 +69,10 @@ export async function getter(config: Configuration, logger: DiagLogger = diag) {
             })
             .on("end", () => {
               try {
-                const json = JSON.parse(data.toString("utf-8"))
+                const json: unknown = JSON.parse(data.toString("utf-8"))
                 resolve(json)
               } catch (error) {
-                reject(error)
+                reject(error as Error)
               }
             })
         })
