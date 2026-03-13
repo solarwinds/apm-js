@@ -68,7 +68,12 @@ export async function getter(config: Configuration, logger: DiagLogger = diag) {
               data = Buffer.concat([data, chunk])
             })
             .on("end", () => {
-              resolve(JSON.parse(data.toString("utf-8")))
+              try {
+                const json = JSON.parse(data.toString("utf-8"))
+                resolve(json)
+              } catch (error) {
+                reject(error)
+              }
             })
         })
 
