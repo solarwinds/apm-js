@@ -185,4 +185,29 @@ describe(HttpSampler.name, () => {
       expect(spans).to.be.empty
     })
   })
+
+  describe("non-JSON collector", () => {
+    before(async () => {
+      const config = {
+        ...CONFIG,
+        collector: new URL("https://example.com"),
+      }
+
+      const sampler = new HttpSampler(config)
+      await otel.reset({ trace: { sampler } })
+      await sampler.waitUntilReady(1000)
+    })
+
+    it("does not sample created spans", async () => {
+      const tracer = trace.getTracer("test")
+
+      tracer.startActiveSpan("test", (span) => {
+        expect(span.isRecording()).to.be.false
+        span.end()
+      })
+
+      const spans = await otel.spans()
+      expect(spans).to.be.empty
+    })
+  })
 })
