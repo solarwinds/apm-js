@@ -39,7 +39,7 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@fastify/otel": "^0.17.1",
+    "@fastify/otel": "^0.18.0",
     "@opentelemetry/auto-instrumentations-web": "^0.58.0",
     "@opentelemetry/core": "^2.4.0",
     "@opentelemetry/instrumentation": "^0.213.0",
