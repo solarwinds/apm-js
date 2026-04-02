@@ -75,7 +75,7 @@ Assertion.addChainableMethod(
 // however we sometimes want that behaviour in tests and patch the default assertion to add that option
 
 function loosely<B extends Chai.Equal | Chai.Include>(base: B): B {
-  return new Proxy<B>(base, {
+  return new Proxy(base, {
     apply(
       base: B,
       assertion: Chai.AssertionPrototype & Chai.Assertion,
