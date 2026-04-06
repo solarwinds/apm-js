@@ -60,11 +60,19 @@ export class ParentSpanProcessor
   implements SpanProcessor
 {
   override onStart(span: Span, parentContext: Context): void {
-    const parentSpan = trace.getSpan(parentContext)
-    PARENT_STORAGE.set(span, parentSpan ?? false)
+    try {
+      const parentSpan = trace.getSpan(parentContext)
+      PARENT_STORAGE.set(span, parentSpan ?? false)
+    } catch {
+      return
+    }
   }
 
   override onEnd(span: ReadableSpan): void {
-    PARENT_STORAGE.delete(span)
+    try {
+      PARENT_STORAGE.delete(span)
+    } catch {
+      return
+    }
   }
 }
