@@ -23,6 +23,8 @@ import {
 } from "@opentelemetry/api"
 import { W3CTraceContextPropagator } from "@opentelemetry/core"
 
+import { componentLogger } from "../shared/logger.js"
+
 const TRACE_STATE_KEY = "tracestate"
 
 export function swValue(context: SpanContext): string {
@@ -30,25 +32,31 @@ export function swValue(context: SpanContext): string {
 }
 
 export class TraceContextPropagator extends W3CTraceContextPropagator {
+  readonly #logger = componentLogger(TraceContextPropagator)
+
   override inject(
     context: Context,
     carrier: unknown,
     setter: TextMapSetter,
   ): void {
-    super.inject(context, carrier, {
-      set: (carrier, key, value) => {
-        if (key !== TRACE_STATE_KEY) {
-          setter.set(carrier, key, value)
-        }
-      },
-    })
+    try {
+      super.inject(context, carrier, {
+        set: (carrier, key, value) => {
+          if (key !== TRACE_STATE_KEY) {
+            setter.set(carrier, key, value)
+          }
+        },
+      })
 
-    const span = trace.getSpanContext(context)
-    if (span) {
-      const traceState = (span.traceState ?? createTraceState())
-        .set("sw", swValue(span))
-        .serialize()
-      setter.set(carrier, TRACE_STATE_KEY, traceState)
+      const span = trace.getSpanContext(context)
+      if (span) {
+        const traceState = (span.traceState ?? createTraceState())
+          .set("sw", swValue(span))
+          .serialize()
+        setter.set(carrier, TRACE_STATE_KEY, traceState)
+      }
+    } catch (error) {
+      this.#logger.error("failed to inject trace context", error)
     }
   }
 }

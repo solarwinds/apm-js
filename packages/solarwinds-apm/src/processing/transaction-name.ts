@@ -80,19 +80,23 @@ export class TransactionNameProcessor
   }
 
   override onEnd(span: ReadableSpan): void {
-    if (!isRootOrEntry(span)) {
-      return
-    }
+    try {
+      if (!isRootOrEntry(span)) {
+        return
+      }
 
-    let name = span.attributes[TRANSACTION_NAME_ATTRIBUTE]
-    this.#logger.debug("initial transaction name", name, span.attributes)
-    if (typeof name !== "string") {
-      name = this.#defaultName?.(span) ?? computedTransactionName(span)
-    }
-    name = this.#pool.registered(name)
-    this.#logger.debug("final transaction name", name)
+      let name = span.attributes[TRANSACTION_NAME_ATTRIBUTE]
+      this.#logger.debug("initial transaction name", name, span.attributes)
+      if (typeof name !== "string") {
+        name = this.#defaultName?.(span) ?? computedTransactionName(span)
+      }
+      name = this.#pool.registered(name)
+      this.#logger.debug("final transaction name", name)
 
-    span.attributes[TRANSACTION_NAME_ATTRIBUTE] = name
+      span.attributes[TRANSACTION_NAME_ATTRIBUTE] = name
+    } catch (error) {
+      this.#logger.error("failed to compute transaction name", error)
+    }
   }
 }
 

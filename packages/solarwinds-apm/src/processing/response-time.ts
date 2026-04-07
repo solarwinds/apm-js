@@ -59,33 +59,37 @@ export class ResponseTimeProcessor
     })
 
   override onEnd(span: ReadableSpan): void {
-    if (!isRootOrEntry(span)) {
-      return
-    }
-
-    const time = hrTimeToMilliseconds(span.duration)
-    const attributes: Attributes = {
-      "sw.is_error": span.status.code === SpanStatusCode.ERROR,
-    }
-
-    const copy = [TRANSACTION_NAME_ATTRIBUTE]
-    if (span.kind === SpanKind.SERVER) {
-      copy.push(
-        ATTR_HTTP_REQUEST_METHOD,
-        ATTR_HTTP_RESPONSE_STATUS_CODE,
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        ATTR_HTTP_METHOD,
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        ATTR_HTTP_STATUS_CODE,
-      )
-    }
-    for (const a of copy) {
-      if (a in span.attributes) {
-        attributes[a] = span.attributes[a]
+    try {
+      if (!isRootOrEntry(span)) {
+        return
       }
-    }
 
-    this.#logger.debug("recording response time", time, attributes)
-    this.#responseTime.record(time, attributes)
+      const time = hrTimeToMilliseconds(span.duration)
+      const attributes: Attributes = {
+        "sw.is_error": span.status.code === SpanStatusCode.ERROR,
+      }
+
+      const copy = [TRANSACTION_NAME_ATTRIBUTE]
+      if (span.kind === SpanKind.SERVER) {
+        copy.push(
+          ATTR_HTTP_REQUEST_METHOD,
+          ATTR_HTTP_RESPONSE_STATUS_CODE,
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          ATTR_HTTP_METHOD,
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          ATTR_HTTP_STATUS_CODE,
+        )
+      }
+      for (const a of copy) {
+        if (a in span.attributes) {
+          attributes[a] = span.attributes[a]
+        }
+      }
+
+      this.#logger.debug("recording response time", time, attributes)
+      this.#responseTime.record(time, attributes)
+    } catch (error) {
+      this.#logger.error("failed to record response time", error)
+    }
   }
 }

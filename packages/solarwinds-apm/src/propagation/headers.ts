@@ -25,6 +25,7 @@ import {
 } from "@opentelemetry/api"
 import type * as sampling from "@solarwinds-apm/sampling"
 
+import { componentLogger } from "../shared/logger.js"
 import { contextStorage } from "../storage.js"
 import { swValue } from "./trace-context.js"
 
@@ -61,23 +62,30 @@ const ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers"
  * Propagator that extracts SolarWinds request headers
  */
 export class RequestHeadersPropagator implements TextMapPropagator<unknown> {
+  readonly #logger = componentLogger(RequestHeadersPropagator)
+
   extract(
     context: Context,
     carrier: unknown,
     getter: TextMapGetter<unknown>,
   ): Context {
-    return HEADERS_STORAGE.set(context, {
-      request: {
-        [X_TRACE_OPTIONS]: joinIfArray(
-          getter.get(carrier, X_TRACE_OPTIONS.toLowerCase()),
-          ";",
-        ),
-        [X_TRACE_OPTIONS_SIGNATURE]: firstIfArray(
-          getter.get(carrier, X_TRACE_OPTIONS_SIGNATURE.toLowerCase()),
-        ),
-      },
-      response: {},
-    })
+    try {
+      return HEADERS_STORAGE.set(context, {
+        request: {
+          [X_TRACE_OPTIONS]: joinIfArray(
+            getter.get(carrier, X_TRACE_OPTIONS.toLowerCase()),
+            ";",
+          ),
+          [X_TRACE_OPTIONS_SIGNATURE]: firstIfArray(
+            getter.get(carrier, X_TRACE_OPTIONS_SIGNATURE.toLowerCase()),
+          ),
+        },
+        response: {},
+      })
+    } catch (error) {
+      this.#logger.error("failed to extract request headers", error)
+      return context
+    }
   }
 
   inject(): void {
@@ -98,27 +106,33 @@ export class RequestHeadersPropagator implements TextMapPropagator<unknown> {
  * until an official response propagation API is added.
  */
 export class ResponseHeadersPropagator implements TextMapPropagator<unknown> {
+  readonly #logger = componentLogger(ResponseHeadersPropagator)
+
   inject(
     context: Context,
     carrier: unknown,
     setter: TextMapSetter<unknown>,
   ): void {
-    const exposed: string[] = []
+    try {
+      const exposed: string[] = []
 
-    const spanContext = trace.getSpanContext(context)
-    if (spanContext && isSpanContextValid(spanContext)) {
-      setter.set(carrier, X_TRACE, traceParent(spanContext))
-      exposed.push(X_TRACE)
+      const spanContext = trace.getSpanContext(context)
+      if (spanContext && isSpanContextValid(spanContext)) {
+        setter.set(carrier, X_TRACE, traceParent(spanContext))
+        exposed.push(X_TRACE)
+      }
+
+      const headers = HEADERS_STORAGE.get(context)?.response ?? {}
+      for (const [name, value] of Object.entries(headers)) {
+        if (!value) continue
+        setter.set(carrier, name, value as string)
+        exposed.push(name)
+      }
+
+      setter.set(carrier, ACCESS_CONTROL_EXPOSE_HEADERS, exposed.join(", "))
+    } catch (error) {
+      this.#logger.error("failed to inject response headers", error)
     }
-
-    const headers = HEADERS_STORAGE.get(context)?.response ?? {}
-    for (const [name, value] of Object.entries(headers)) {
-      if (!value) continue
-      setter.set(carrier, name, value as string)
-      exposed.push(name)
-    }
-
-    setter.set(carrier, ACCESS_CONTROL_EXPOSE_HEADERS, exposed.join(", "))
   }
 
   fields(): ResponseHeader[] {
