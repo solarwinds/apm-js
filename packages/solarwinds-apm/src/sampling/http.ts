@@ -74,7 +74,9 @@ export async function getter(config: Configuration, logger: DiagLogger = diag) {
                 const json: unknown = JSON.parse(data.toString("utf-8"))
                 resolve(json)
               } catch (error) {
-                reject(error as Error)
+                /* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion --
+                 * removing the cast makes it complain about passing unknown to reject */
+                reject(error as SyntaxError)
               }
             })
         })

@@ -77,7 +77,7 @@ export const agentFactory =
         }
         /* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
 
-        const req = (request as typeof https.request)({
+        const req = request({
           method: "CONNECT",
           host: proxy.hostname,
           port: proxy.port,

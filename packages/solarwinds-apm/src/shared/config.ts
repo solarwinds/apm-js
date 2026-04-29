@@ -173,9 +173,11 @@ export const schema = (defaults: Defaults) =>
               (name) => typeof name === "function",
             ),
             v.transform((f) => (span: ReadableSpan) => {
-              const name = f(span)
+              const name: unknown = f(span)
               if (name != null) {
-                return String(name as unknown)
+                /* eslint-disable-next-line @typescript-eslint/no-base-to-string --
+                 * we want whatever the user function returns to be converted to a string */
+                return String(name)
               } else {
                 return undefined
               }
