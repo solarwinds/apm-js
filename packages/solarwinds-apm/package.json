@@ -115,7 +115,7 @@
     "esbuild": "^0.28.0",
     "eslint": "^9.39.1",
     "prettier": "^3.6.2",
-    "typescript": "~5.9.3"
+    "typescript": "~6.0.3"
   },
   "engines": {
     "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
