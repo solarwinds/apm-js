@@ -12,7 +12,7 @@
 | `@redis/client`             | `>=1.0.0 <2.0.0 \|\| >=5.0.0 <6.0.0` | `@opentelemetry/instrumentation-redis`            |
 | `@smithy/middleware-stack`  | `>=2.0.0`                            | `@opentelemetry/instrumentation-aws-sdk`          |
 | `@smithy/smithy-client`     | `>=1.0.3`                            | `@opentelemetry/instrumentation-aws-sdk`          |
-| `amqplib`                   | `>=0.5.5 <1.0.0`                     | `@opentelemetry/instrumentation-amqplib`          |
+| `amqplib`                   | `>=0.5.5 <2.0.0`                     | `@opentelemetry/instrumentation-amqplib`          |
 | `bunyan`                    | `>=1.0.0 <2.0.0`                     | `@opentelemetry/instrumentation-bunyan`           |
 | `cassandra-driver`          | `>=4.4.0 <5.0.0`                     | `@opentelemetry/instrumentation-cassandra-driver` |
 | `connect`                   | `>=2.0.0 <4.0.0`                     | `@opentelemetry/instrumentation-connect`          |
