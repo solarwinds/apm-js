@@ -39,7 +39,7 @@ await fs.writeFile(
   await prettier.format(
     [
       `"use strict";`,
-      `module.exports = ${new Date(2026, 3, 24).getTime()};`,
+      `module.exports = ${Date.parse("2026-04-24T00:00:00Z")};`,
     ].join("\n"),
     { parser: "typescript" },
   ),
