@@ -10,6 +10,17 @@ var RELEASED = require("./timestamp");
 var NOW = Date.now();
 var YEAR = 1000 * 60 * 60 * 24 * 365;
 
+var PACKAGE = null;
+try {
+  PACKAGE = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "../../package.json"), {
+      encoding: "utf8"
+    })
+  );
+} catch (error) {
+  log(error);
+}
+
 try {
   if (
     typeof process.version !== "string" ||
@@ -34,6 +45,15 @@ try {
 
     var maintained = NOW - eol <= 0;
     var supported = RELEASED - eol <= (lts ? YEAR : 0);
+
+    // only try and perform a full semver check on modern Node.js
+    // so we don't break on old versions that can't run it
+    if (supported && PACKAGE) {
+      supported = require("semver/functions/satisfies")(
+        process.version.slice(1),
+        PACKAGE.engines.node
+      );
+    }
 
     if (!maintained) {
       log(
@@ -64,13 +84,7 @@ try {
 try {
   var node = process.versions.node;
   log("Node.js " + node);
-
-  var solarwinds = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../../package.json"), {
-      encoding: "utf8"
-    })
-  ).version;
-  log("solarwinds-apm " + solarwinds);
+  log("solarwinds-apm " + PACKAGE.version);
 
   function logVersion(module) {
     var dir = require.resolve(module);

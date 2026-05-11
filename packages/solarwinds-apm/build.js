@@ -31,10 +31,16 @@ await fs.writeFile(
     parser: "typescript",
   }),
 )
+console.warn(
+  "HARDCODED TIMESTAMP FOR NODE 18 SUPPORT, UPDATE BEFORE NEXT BREAKING RELEASE",
+)
 await fs.writeFile(
   "src/commonjs/timestamp.js",
   await prettier.format(
-    [`"use strict";`, `module.exports = ${Date.now()};`].join("\n"),
+    [
+      `"use strict";`,
+      `module.exports = ${Date.parse("2026-04-24T00:00:00Z")};`,
+    ].join("\n"),
     { parser: "typescript" },
   ),
 )

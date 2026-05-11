@@ -222,7 +222,7 @@ jobs:
           node-version: ${{ matrix.node }}
           package-manager-cache: false
 
-      - run: rm package.json && rm yarn.lock && npm install --no-save node-releases
+      - run: rm package.json && rm yarn.lock && npm install --no-save node-releases semver
       - run: node -e "require('assert').ok(${OP} require('${FILE}'))"
         env:
           OP: ${{ !matrix.pass && '!' || '' }}
