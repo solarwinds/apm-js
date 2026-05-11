@@ -1,3 +1,20 @@
+# [16.2.0](https://github.com/solarwinds/apm-js/releases/tag/v16.2.0)
+
+## New features and improvements
+
+- Support a wider range of instrumented library versions
+
+## Internal changes
+
+- Better error handling for rare edge cases
+- Updated OTel SDK to latest versions (silences upstream CVE warnings that _did not_ affect the library)
+
+# [16.1.1](https://github.com/solarwinds/apm-js/releases/tag/v16.1.1)
+
+## Fixes
+
+- Properly handle exceptions caused by upstream pipeline crashes
+
 # [16.1.0](https://github.com/solarwinds/apm-js/releases/tag/v16.1.0)
 
 ## New features and improvements
