@@ -18,15 +18,17 @@ jobs:
       fail-fast: false
       matrix:
         language:
-          - javascript-typescript
+          - javascript
+          - actions
 
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
-          package-manager-cache: false
-      - run: corepack enable
+          node-version: lts/*
+      - uses: pnpm/action-setup@v6
+        with:
+          version: ^11
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
@@ -34,15 +36,8 @@ jobs:
           config-file: ./.github/codeql.yml
           languages: ${{ matrix.language }}
 
-      - uses: actions/cache@v5
-        with:
-          path: .yarn/cache
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-
-
-      - run: yarn install --immutable
-      - run: yarn build
+      - run: pnpm install
+      - run: pnpm run build
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4

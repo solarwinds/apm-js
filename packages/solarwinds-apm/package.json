@@ -72,33 +72,34 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@opentelemetry/api-logs": "^0.217.0",
-    "@opentelemetry/context-zone": "^2.4.0",
-    "@opentelemetry/core": "^2.4.0",
-    "@opentelemetry/exporter-logs-otlp-proto": "^0.217.0",
-    "@opentelemetry/exporter-metrics-otlp-proto": "^0.217.0",
-    "@opentelemetry/exporter-trace-otlp-proto": "^0.217.0",
-    "@opentelemetry/instrumentation": "^0.217.0",
-    "@opentelemetry/otlp-exporter-base": "^0.217.0",
-    "@opentelemetry/resources": "^2.2.0",
-    "@opentelemetry/sdk-logs": "^0.217.0",
-    "@opentelemetry/sdk-metrics": "^2.2.0",
-    "@opentelemetry/sdk-trace-base": "^2.2.0",
-    "@opentelemetry/sdk-trace-node": "^2.2.0",
-    "@opentelemetry/sdk-trace-web": "^2.2.0",
-    "@opentelemetry/semantic-conventions": "~1.40.0",
+    "@opentelemetry/api-logs": "catalog:",
+    "@opentelemetry/context-zone": "catalog:",
+    "@opentelemetry/core": "catalog:",
+    "@opentelemetry/exporter-logs-otlp-proto": "catalog:",
+    "@opentelemetry/exporter-metrics-otlp-proto": "catalog:",
+    "@opentelemetry/exporter-trace-otlp-proto": "catalog:",
+    "@opentelemetry/instrumentation": "catalog:",
+    "@opentelemetry/otlp-exporter-base": "catalog:",
+    "@opentelemetry/resources": "catalog:",
+    "@opentelemetry/sdk-logs": "catalog:",
+    "@opentelemetry/sdk-metrics": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "@opentelemetry/sdk-trace-node": "catalog:",
+    "@opentelemetry/sdk-trace-web": "catalog:",
+    "@opentelemetry/semantic-conventions": "catalog:",
     "@solarwinds-apm/dependencies": "workspace:^",
     "@solarwinds-apm/instrumentations": "workspace:^",
     "@solarwinds-apm/module": "workspace:^",
     "@solarwinds-apm/sampling": "workspace:^",
     "import-in-the-middle": "^3.0.1",
     "json-stringify-safe": "^5.0.1",
-    "node-releases": "^2.0.27",
+    "node-releases": "^2",
     "semver": "^7.7.3",
     "valibot": "^1.1.0"
   },
   "peerDependencies": {
-    "@opentelemetry/api": "^1.9.0"
+    "@opentelemetry/api": "catalog:",
+    "zone.js": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^0.14.0 || ^0.15.0 || ^0.16.0"
   },
   "peerDependenciesMeta": {
     "@opentelemetry/api": {
@@ -106,16 +107,16 @@
     }
   },
   "devDependencies": {
-    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/api": "catalog:",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/json-stringify-safe": "^5.0.3",
-    "@types/node": "^18.19.0",
+    "@types/node": "catalog:",
     "caniuse-lite": "^1.0",
     "esbuild": "^0.28.0",
-    "eslint": "^9.39.1",
-    "prettier": "^3.6.2",
-    "typescript": "~5.9.3"
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
   },
   "engines": {
     "node": "^18.19.0 || ^20.8.0 || >=22.0.0"

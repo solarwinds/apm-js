@@ -28,9 +28,7 @@ import archiver from "archiver"
 import ora from "ora"
 
 const json = JSON.parse(readFileSync("packages/solarwinds-apm/package.json"))
-
 const [name, version = json.version] = process.argv.slice(2)
-const apiVersion = json.peerDependencies["@opentelemetry/api"]
 
 const rm = (...args) => {
   try {
@@ -45,7 +43,6 @@ const replace = (file) => {
   contents = contents
     .replaceAll("{{name}}", name)
     .replaceAll("{{version}}", version)
-    .replaceAll("{{api-version}}", apiVersion)
   writeFileSync(file, contents)
 }
 
@@ -55,7 +52,7 @@ cpSync("lambda", "node_modules/.lambda", { recursive: true })
 replace("node_modules/.lambda/package.json")
 replace("node_modules/.lambda/shim.mjs")
 
-execSync("touch yarn.lock && yarn install", {
+execSync("pnpm install --prod", {
   cwd: "node_modules/.lambda",
   env: { ...process.env, NODE_ENV: "production" },
   stdio: "inherit",

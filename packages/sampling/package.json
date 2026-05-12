@@ -37,11 +37,11 @@
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1",
-    "@opentelemetry/sdk-trace-base": "^2.2.0",
+    "@opentelemetry/sdk-trace-base": "catalog:",
     "@solarwinds-apm/module": "workspace:^"
   },
   "peerDependencies": {
-    "@opentelemetry/api": "^1.9.0"
+    "@opentelemetry/api": "catalog:"
   },
   "peerDependenciesMeta": {
     "@opentelemetry/api": {
@@ -49,14 +49,14 @@
     }
   },
   "devDependencies": {
-    "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/sdk-metrics": "^2.2.0",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/sdk-metrics": "catalog:",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
-    "@types/node": "^18.19.0",
-    "eslint": "^9.39.1",
-    "prettier": "^3.6.2",
-    "typescript": "~5.9.3"
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
   },
   "engines": {
     "node": "^18.19.0 || ^20.8.0 || >=22.0.0"

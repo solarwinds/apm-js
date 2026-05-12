@@ -1,8 +1,4 @@
-# Ignore yarn cache except version bump info
 node_modules/
-.yarn/*
-!.yarn/patches/
-!.yarn/versions/
 
 # Turborepo cache
 .turbo/
@@ -17,3 +13,4 @@ scan/
 
 # User-specific files
 .env
+.npmrc

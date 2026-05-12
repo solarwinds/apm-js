@@ -2,13 +2,6 @@
   "name": "@solarwinds-apm/solarwinds-apm",
   "private": true,
   "license": "Apache-2.0",
-  "packageManager": "yarn@4.13.0",
-  "workspaces": [
-    "examples",
-    "examples/*",
-    "packages/*",
-    "scripts"
-  ],
   "scripts": {
     "build": "turbo run build --continue",
     "build:watch": "turbo watch build",
@@ -25,10 +18,20 @@
     "version:prerelease": "node scripts/version.js pre",
     "version:testing": "node scripts/testing.js"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "^18.19.0 || ^20.8.0 || >=22.0.0"
+    }
+  },
   "devDependencies": {
-    "eslint": "^9.39.1",
-    "prettier": "^3.6.2",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
     "turbo": "^2.6.0",
-    "typescript": "~5.9.3"
+    "typescript": "catalog:"
   }
 }

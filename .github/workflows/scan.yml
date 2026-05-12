@@ -11,15 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RLPORTAL_ACCESS_TOKEN: ${{ secrets.RLPORTAL_ACCESS_TOKEN }}
-      YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
-          package-manager-cache: false
-      - run: corepack enable
+          node-version: lts/*
+      - uses: pnpm/action-setup@v6
+        with:
+          version: ^11
+          cache: false
 
-      - run: yarn install
-      - run: yarn scan
+      - run: pnpm install
+      - run: pnpm run scan

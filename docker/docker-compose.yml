@@ -3,8 +3,6 @@ services:
     build:
       context: .
       dockerfile: 18-alpine3.17.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -14,8 +12,6 @@ services:
     build:
       context: .
       dockerfile: 18-amazonlinux2023.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -25,8 +21,6 @@ services:
     build:
       context: .
       dockerfile: 18-debian11.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -36,8 +30,6 @@ services:
     build:
       context: .
       dockerfile: 18-ubi8.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -47,8 +39,6 @@ services:
     build:
       context: .
       dockerfile: 18-ubuntu20.04.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -222,7 +212,7 @@ services:
     build:
       context: .
       dockerfile: 22-alpine.Dockerfile
-    command: [yarn node udpdump.js]
+    command: [pnpm node udpdump.js]
     working_dir: /solarwinds-apm/scripts
     volumes:
       - ..:/solarwinds-apm

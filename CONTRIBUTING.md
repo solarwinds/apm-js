@@ -2,16 +2,7 @@
 
 ## Requirements
 
-- Node.js 22 or higher with corepack enabled
-
-## Project setup
-
-```sh
-# Enable corepack
-corepack enable
-# Install dependencies
-yarn install
-```
+- Node.js 24 or higher and pnpm
 
 ## Project structure
 
@@ -35,19 +26,19 @@ The project includes a set of Docker images for various combinations of Node ver
 
 The lowest supported Node version should be coupled with the oldest supported distro versions, while the newest supported Node version should be coupled with the latest distro versions. This is to cover a wide range of environments while keeping the number of images manageable.
 
-It is possible to start a development environment in any of the images using `yarn docker <image>`. This will start a shell session in the image with the project mounted under `/solarwinds-apm`. The environment will also have both the APM test collector and the OTel collector available at `apm-collector:12224` and `otel-collector:4317` respectively.
+It is possible to start a development environment in any of the images using `pnpm run docker <image>`. This will start a shell session in the image with the project mounted under `/solarwinds-apm`. The environment will also have both the APM test collector and the OTel collector available at `apm-collector:12224` and `otel-collector:4317` respectively.
 
 ## Running tests
 
-Tests can be run with `yarn test`, either at the project root for all packages or in a package's directory for just that package. Additionally, when running in a package directory, any arguments accepted by Jest can be passed to the command.
+Tests can be run with `pnpm test`, either at the project root for all packages or in a package's directory for just that package. Additionally, when running in a package directory, any arguments accepted by Jest can be passed to the command.
 
-There's also a `yarn test:watch` command to intelligently run tests on code changes, which is only available at the project root.
+There's also a `pnpm run test:watch` command to intelligently run tests on code changes, which is only available at the project root.
 
 ## Code style
 
 Code style is enforced throughout the entire project with Prettier and ESLint. The Prettier configuration is at [`.prettierrc.json`](./.prettierrc.json) and the ESLint configuration [lives under its own package](./packages/eslint-config/index.js) and uses the new flat config format. The native C++ code is checked more summarily with clang-format.
 
-Code style can be checked using `yarn lint` and fixed as much as possible with `yarn lint:fix`. Note that `yarn lint` is run in CI. It's recommended to set your editor to format on save and use an ESLint integration.
+Code style can be checked using `pnpm run lint` and fixed as much as possible with `pnpm run lint:fix`. Note that `pnpm run lint` is run in CI. It's recommended to set your editor to format on save and use an ESLint integration.
 
 ## Node version support
 
@@ -57,25 +48,13 @@ When a new future LTS is released (any even-numbered Node versions) the project 
 
 When a version has been EOL for over a year, support for it should be removed. This project should not encourage customers to use unsupported, potentially insecure Node versions. The version of `@types/node` depended on by all packages should be updated to the next LTS version, for instance going from `^14.0.0` to `^16.0.0`. The `target` in the [base tsconfig](./tsconfig.base.json) should be updated to the highest standard supported by the next LTS version (check [`node.green`](https://node.green) for this). The Docker images for the old LTS should be removed, and the distro versions used by the Docker images for the next LTS should be changed to the lowest supported versions if necessary, for instance removing `14-alpine3.12` and moving from `16-alpine` to `16-alpine:3.12`. All `package.json` `engines` fields should also be updated to the next LTS version.
 
-## Upgrading dependencies
-
-Shared dependencies across the project should all use the same version whenever possible. Most of the dependencies can be updated using `yarn upgrade-interactive`, with special care taken when the version change is breaking. All non-OTel dependencies should use caret ranges whenever possible.
-
-OTel dependencies should not be upgraded using this command and the work should be done manually. Special care must be taken to consider version compatibility between different OTel packages, and their version should be specified using tilde notation so that only the patch version is variable, for instance `~1.10.0`. One special case is the `@opentelemetry/api` package, which should never be listed in the `dependencies` and always in `peerDependencies` and `devDependencies` if needed instead. The only version of it in the dependency tree should always be the one provided by the instrumented application. The `@opentelemetry/api` package should be specified using caret notation (`^1.0.0`) and unlike OTel dependencies the required version should only be bumped if newer features are required, for maximum compatibility with the wider OTel ecosystem.
-
-Dependencies on other packages in the workspace never need to be updated as they should always use `workspace:^` ranges which ensures versions stay in sync.
-
-The Yarn version can be updated using `yarn set version latest`.
-
-After completing this process, it is often useful to also run `yarn dedupe` to reduce the number of duplicate versions for any given package in the dependency tree to the bare minimum.
-
 ## Versioning
 
-All packages in the workspace are versioned independently following semver. After making changes to packages, the required version bump strategy for the changes should be specified by running `yarn version check --interactive`. This requirement is checked in CI using `yarn version check`. When ready to publish the new packages, `yarn version:latest` can be run to change the version of each package by going through all the bump strategies required by changes since the last release and picking the highest one. Tags will be created for all the new versions. It is also possible to use `yarn version:prerelease` to create a prerelease version instead.
+All packages in the workspace are versioned independently following semver. After making changes to packages, the required version bump strategy for the changes should be specified by running `TODO`. This requirement is checked in CI using `TODO`. When ready to publish the new packages, `pnpm run version:latest` can be run to change the version of each package by going through all the bump strategies required by changes since the last release and picking the highest one. Tags will be created for all the new versions. It is also possible to use `pnpm run version:prerelease` to create a prerelease version instead.
 
 ## Releasing
 
-Releasing is done through a manually triggered GitHub workflow, which internally uses the `yarn publish` command, which in turns lints then builds then publishes every public package.
+Releasing is done through a manually triggered GitHub workflow, which internally uses the `pnpm publish` command, which in turns lints then builds then publishes every public package.
 
 ## Adding packages
 

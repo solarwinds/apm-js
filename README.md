@@ -5,12 +5,12 @@ This repo holds the source code for the OpenTelemetry-based SolarWinds APM Node.
 ## Repository Setup
 
 ```sh
-yarn install
+pnpm install
 ```
 
 ## Examples
 
-This project contains a few examples of how to use the library in the [`examples/`](./examples/) directory. They can be run using `yarn example <name>` from the project root.
+This project contains a few examples of how to use the library in the [`examples/`](./examples/) directory. They can be run using `pnpm run example <name>` from the project root.
 
 - [`hello`](./examples/hello) is a simple hello world HTTP server.
 - [`hello-distributed`](./examples/hello-distributed/) is a simple distributed example where the main HTTP server sends a request to a secondary one and uses the response as its own response.

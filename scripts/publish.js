@@ -25,9 +25,7 @@ const { name, version } = JSON.parse(
 let publishedVersions
 try {
   const info = JSON.parse(
-    execSync(`yarn npm info ${name} --json --fields versions`).toString(
-      "utf-8",
-    ),
+    execSync(`pnpm view ${name} --json`).toString("utf-8"),
   )
   publishedVersions = info.versions
 } catch {
@@ -39,7 +37,7 @@ if (publishedVersions.includes(version)) {
   process.exit()
 }
 
-let command = "yarn npm publish --provenance"
+let command = "pnpm publish"
 if (version.includes("pre")) {
   command += " --tag prerelease"
 }
