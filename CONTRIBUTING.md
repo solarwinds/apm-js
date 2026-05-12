@@ -54,7 +54,7 @@ All packages in the workspace are versioned independently following semver. Afte
 
 ## Releasing
 
-Releasing is done through a manually triggered GitHub workflow, which internally uses the `pnpm publish` command, which in turns lints then builds then publishes every public package.
+Releasing is done through a manually triggered GitHub workflow, which internally uses `pnpm run publish`, which in turn lints, builds, and publishes every public package.
 
 ## Adding packages
 
