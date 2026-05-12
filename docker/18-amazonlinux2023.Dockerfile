@@ -1,7 +1,7 @@
 FROM amazonlinux:2023
 
 ENV PNPM_HOME=/pnpm
-ENV PATH="$PNPM_HOME:$PATH"
+ENV PATH="$PNPM_HOME/bin:$PATH"
 
 RUN dnf install -y \
     curl-minimal \

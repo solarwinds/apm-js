@@ -1,7 +1,7 @@
 FROM alpine
 
 ENV PNPM_HOME=/pnpm
-ENV PATH="$PNPM_HOME:$PATH"
+ENV PATH="$PNPM_HOME/bin:$PATH"
 
 RUN apk add --no-cache \
     curl \

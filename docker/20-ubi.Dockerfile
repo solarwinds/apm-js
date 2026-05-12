@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi10
 
 ENV PNPM_HOME=/pnpm
-ENV PATH="$PNPM_HOME:$PATH"
+ENV PATH="$PNPM_HOME/bin:$PATH"
 
 RUN dnf install -y \
     curl-minimal \

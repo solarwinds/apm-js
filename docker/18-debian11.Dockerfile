@@ -1,7 +1,7 @@
 FROM debian:11-slim
 
 ENV PNPM_HOME=/pnpm
-ENV PATH="$PNPM_HOME:$PATH"
+ENV PATH="$PNPM_HOME/bin:$PATH"
 
 RUN apt-get update && apt-get install -y \
     curl \
