@@ -20,7 +20,7 @@ jobs:
 
       - run: pnpm install
 
-      - run: pnpm build
+      - run: pnpm build --filter=...solarwinds-apm
       - run: pnpm run lint --affected
       - run: pnpm run test --affected
         env:
@@ -180,7 +180,7 @@ jobs:
           - node: 16
             pass: false
           # Unstable
-          - node: 25
+          - node: 23
             pass: false
           # Sanity check
           - node: 8

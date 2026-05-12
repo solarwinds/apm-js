@@ -35,7 +35,7 @@ jobs:
           languages: ${{ matrix.language }}
 
       - run: pnpm install
-      - run: pnpm run build
+      - run: pnpm run build --filter=...solarwinds-apm
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
