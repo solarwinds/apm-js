@@ -1,6 +1,5 @@
 FROM registry.access.redhat.com/ubi8
 
-ENV PNPM_VERSION=11
 ENV PNPM_HOME=/pnpm
 ENV PATH="$PNPM_HOME:$PATH"
 

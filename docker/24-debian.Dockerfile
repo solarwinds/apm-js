@@ -1,6 +1,5 @@
 FROM debian:slim
 
-ENV PNPM_VERSION=11
 ENV PNPM_HOME=/pnpm
 ENV PATH="$PNPM_HOME:$PATH"
 
