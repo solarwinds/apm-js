@@ -1,11 +1,17 @@
-FROM node:18-bullseye-slim
+FROM debian:11-slim
+
+ENV PNPM_VERSION=11
+ENV PNPM_HOME=/pnpm
+ENV PATH="$PNPM_HOME:$PATH"
 
 RUN apt-get update && apt-get install -y \
     curl \
     git \
+    libatomic1 \
     && apt-get clean
 
-RUN corepack enable
+RUN curl -fsSL https://get.pnpm.io/install.sh | sh -
+RUN pnpm runtime set node 18 -g
 
 WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/bash", "-c"]

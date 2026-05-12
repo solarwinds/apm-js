@@ -112,10 +112,6 @@ jobs:
         with:
           name: build
           path: ./
-      - uses: pnpm/action-setup@v6
-        with:
-          cache: true
-          standalone: true
 
       - run: pnpm install
         continue-on-error: true
@@ -149,7 +145,6 @@ jobs:
           node-version: ${{ matrix.node }}
       - uses: pnpm/action-setup@v6
         with:
-          cache: true
           standalone: true
 
       - run: pnpm install

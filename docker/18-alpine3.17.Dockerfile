@@ -1,4 +1,8 @@
-FROM node:18-alpine3.17
+FROM alpine:3.17
+
+ENV PNPM_VERSION=11
+ENV PNPM_HOME=/pnpm
+ENV PATH="$PNPM_HOME:$PATH"
 
 RUN apk add --no-cache \
     curl \
@@ -6,7 +10,8 @@ RUN apk add --no-cache \
     git \
     libc6-compat
 
-RUN corepack enable
+RUN curl -fsSL https://get.pnpm.io/install.sh | sh -
+RUN pnpm runtime set node 18 -g
 
 WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/sh", "-c"]
