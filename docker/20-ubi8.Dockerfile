@@ -10,7 +10,7 @@ RUN dnf install -y \
     libatomic
 
 RUN curl -fsSL https://get.pnpm.io/install.sh | SHELL=/bin/bash sh -
-RUN pnpm runtime set node 18 -g
+RUN pnpm runtime set node 20 -g
 
 WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/bash", "-c"]

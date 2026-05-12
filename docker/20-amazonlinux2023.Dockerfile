@@ -1,13 +1,13 @@
-FROM debian:stable-slim
+FROM amazonlinux:2023
 
 ENV PNPM_HOME=/pnpm
 ENV PATH="$PNPM_HOME/bin:$PATH"
 
-RUN apt-get update && apt-get install -y \
-    curl \
+RUN dnf install -y \
+    curl-minimal \
     git \
-    libatomic1 \
-    && apt-get clean
+    tar \
+    libatomic
 
 RUN curl -fsSL https://get.pnpm.io/install.sh | SHELL=/bin/bash sh -
 RUN pnpm runtime set node 20 -g

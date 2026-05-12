@@ -66,16 +66,11 @@ jobs:
     strategy:
       matrix:
         image:
-          - 18-alpine3.19
-          - 18-amazonlinux2023
-          - 18-debian11
-          - 18-ubi8
-          - 18-ubuntu20.04
-          - 20-alpine
-          - 20-amazonlinux
-          - 20-debian
-          - 20-ubi
-          - 20-ubuntu
+          - 20-alpine3.20
+          - 20-amazonlinux2023
+          - 20-debian12
+          - 20-ubi8
+          - 20-ubuntu22.04
           - 22-alpine
           - 22-amazonlinux
           - 22-debian
@@ -91,9 +86,7 @@ jobs:
           - arm64
         # https://github.com/actions/runner/issues/801
         exclude:
-          - image: 18-alpine3.18
-            arch: arm64
-          - image: 20-alpine
+          - image: 20-alpine3.20
             arch: arm64
           - image: 22-alpine
             arch: arm64
@@ -128,7 +121,6 @@ jobs:
     strategy:
       matrix:
         node:
-          - 18
           - 20
           - 22
           - 24
@@ -171,8 +163,6 @@ jobs:
           - node: 20
             pass: true
           - node: 18
-            pass: true
-          - node: 16
             pass: false
           # Unstable
           - node: 23

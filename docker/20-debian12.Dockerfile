@@ -1,4 +1,4 @@
-FROM debian:11-slim
+FROM debian:12-slim
 
 ENV PNPM_HOME=/pnpm
 ENV PATH="$PNPM_HOME/bin:$PATH"
@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 RUN curl -fsSL https://get.pnpm.io/install.sh | SHELL=/bin/bash sh -
-RUN pnpm runtime set node 18 -g
+RUN pnpm runtime set node 20 -g
 
 WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/bash", "-c"]
