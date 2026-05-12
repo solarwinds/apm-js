@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     libatomic1 \
-    python3 \
     && apt-get clean
 
 RUN curl -fsSL https://get.pnpm.io/install.sh | SHELL=/bin/bash sh -
