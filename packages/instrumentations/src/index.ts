@@ -238,7 +238,7 @@ export function getInstrumentations(
   // Load and instantiate all of the instrumentations concurrently
   return Promise.all(
     instrumentations.map(async ({ module, name, config }) => {
-      const loaded = await load(module)
+      const loaded = await load(import.meta.resolve(module))
 
       if (typeof loaded === "function") {
         // there is a single export which we assume to be the instrumentation

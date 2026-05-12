@@ -94,8 +94,8 @@
     "import-in-the-middle": "^3.0.1",
     "json-stringify-safe": "^5.0.1",
     "node-releases": "^2",
-    "semver": "^7.7.3",
-    "valibot": "^1.1.0"
+    "semver": "^7.8.0",
+    "valibot": "^1.4.0"
   },
   "peerDependencies": {
     "@opentelemetry/api": "catalog:",
@@ -110,9 +110,10 @@
     "@opentelemetry/api": "catalog:",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
-    "@types/json-stringify-safe": "^5.0.3",
+    "@types/json-stringify-safe": "^5",
     "@types/node": "catalog:",
-    "caniuse-lite": "^1.0",
+    "@types/semver": "^7",
+    "caniuse-lite": "^1",
     "esbuild": "^0.28.0",
     "eslint": "catalog:",
     "prettier": "catalog:",

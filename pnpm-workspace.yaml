@@ -42,10 +42,10 @@ blockExoticSubdeps: true
 
 allowBuilds:
   "@prisma/engines": false
-  better-sqlite3: false
+  better-sqlite3: true
   esbuild: false
   prisma: false
-  protobufjs: false
+  protobufjs: true
   sharp: false
   unrs-resolver: false
 
