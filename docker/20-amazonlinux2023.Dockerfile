@@ -8,7 +8,8 @@ RUN dnf install -y \
     git \
     tar \
     libatomic \
-    python3
+    python3 \
+    && dnf clean all
 
 RUN curl -fsSL https://get.pnpm.io/install.sh | SHELL=/bin/bash sh -
 RUN pnpm runtime set node 20 -g
