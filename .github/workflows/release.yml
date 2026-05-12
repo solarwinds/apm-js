@@ -16,7 +16,6 @@ jobs:
           registry-url: https://registry.npmjs.org
       - uses: pnpm/action-setup@v6
         with:
-          version: ^11
           cache: false
 
       - run: pnpm install

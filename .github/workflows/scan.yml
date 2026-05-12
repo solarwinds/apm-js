@@ -19,7 +19,6 @@ jobs:
           node-version: lts/*
       - uses: pnpm/action-setup@v6
         with:
-          version: ^11
           cache: false
 
       - run: pnpm install

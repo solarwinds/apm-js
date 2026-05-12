@@ -48,7 +48,7 @@ jobs:
           node-version: lts/*
       - uses: pnpm/action-setup@v6
         with:
-          version: ^11
+          cache: false
 
       - run: pnpm install
       - run: pnpm run lambda $PACKAGE_NAME $PACKAGE_VERSION
