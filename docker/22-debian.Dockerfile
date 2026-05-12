@@ -1,4 +1,4 @@
-FROM debian:slim
+FROM debian:stable-slim
 
 ENV PNPM_HOME=/pnpm
 ENV PATH="$PNPM_HOME/bin:$PATH"

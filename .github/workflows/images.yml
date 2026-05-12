@@ -50,7 +50,7 @@ jobs:
         with:
           context: docker
           file: docker/${{ matrix.image }}.Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ contains(matrix.image, 'alpine') && 'linux/amd64' || 'linux/amd64,linux/arm64' }}
           push: true
           tags: ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
           cache-from: type=gha
