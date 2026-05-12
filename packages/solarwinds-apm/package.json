@@ -111,7 +111,6 @@
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/json-stringify-safe": "^5",
-    "@types/node": "catalog:",
     "@types/semver": "^7",
     "caniuse-lite": "^1",
     "esbuild": "^0.28.0",

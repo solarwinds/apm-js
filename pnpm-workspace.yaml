@@ -40,6 +40,9 @@ minimumReleaseAgeStrict: true
 trustPolicy: no-downgrade
 blockExoticSubdeps: true
 
+publicHoistPattern:
+  - "@types/*"
+
 allowBuilds:
   "@prisma/engines": false
   better-sqlite3: true

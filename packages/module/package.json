@@ -37,7 +37,6 @@
   },
   "devDependencies": {
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "@types/node": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
