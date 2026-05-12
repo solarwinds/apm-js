@@ -7,7 +7,7 @@
     "lint:fix": "eslint --fix . && prettier --write ."
   },
   "dependencies": {
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "dotenv": "^16.6.1",
     "ora": "^9.0.0"
   },
