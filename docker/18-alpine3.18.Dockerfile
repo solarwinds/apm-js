@@ -1,4 +1,4 @@
-FROM alpine:3.17
+FROM alpine:8
 
 ENV PNPM_HOME=/pnpm
 ENV PATH="$PNPM_HOME/bin:$PATH"

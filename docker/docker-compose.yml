@@ -2,7 +2,7 @@ services:
   18-alpine:
     build:
       context: .
-      dockerfile: 18-alpine3.17.Dockerfile
+      dockerfile: 18-alpine3.18.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:

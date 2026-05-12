@@ -66,7 +66,7 @@ jobs:
     strategy:
       matrix:
         image:
-          - 18-alpine3.17
+          - 18-alpine3.19
           - 18-amazonlinux2023
           - 18-debian11
           - 18-ubi8
@@ -91,7 +91,7 @@ jobs:
           - arm64
         # https://github.com/actions/runner/issues/801
         exclude:
-          - image: 18-alpine3.17
+          - image: 18-alpine3.18
             arch: arm64
           - image: 20-alpine
             arch: arm64
