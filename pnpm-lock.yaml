@@ -263,8 +263,8 @@ catalogs:
       specifier: ~1.40.0
       version: 1.40.0
     '@types/node':
-      specifier: ^18.9.0
-      version: 18.19.130
+      specifier: ^20.19.0
+      version: 20.19.40
     eslint:
       specifier: ^9.39.4
       version: 9.39.4
@@ -281,7 +281,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
-        version: 18.19.130
+        version: 20.19.40
       eslint:
         specifier: 'catalog:'
         version: 9.39.4(jiti@2.7.0)
@@ -320,7 +320,7 @@ importers:
         version: 5.2.1
       mysql2:
         specifier: ^3.15.3
-        version: 3.22.3(@types/node@18.19.130)
+        version: 3.22.3(@types/node@20.19.40)
       solarwinds-apm:
         specifier: workspace:^
         version: link:../../packages/solarwinds-apm
@@ -410,6 +410,9 @@ importers:
         specifier: workspace:^
         version: link:../../packages/solarwinds-apm
     devDependencies:
+      '@types/node':
+        specifier: '*'
+        version: 18.19.130
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.14
@@ -837,7 +840,7 @@ importers:
         version: 10.0.10
       '@types/node':
         specifier: 'catalog:'
-        version: 18.19.130
+        version: 20.19.40
       c8:
         specifier: ^11.0.0
         version: 11.0.0
@@ -858,7 +861,7 @@ importers:
         version: 11.7.5
       ts-node:
         specifier: ^11.0.0-beta.1
-        version: 11.0.0-beta.1(@types/node@18.19.130)(typescript@5.9.3)
+        version: 11.0.0-beta.1(@types/node@20.19.40)(typescript@5.9.3)
     devDependencies:
       '@opentelemetry/api':
         specifier: 'catalog:'
@@ -2262,6 +2265,9 @@ packages:
 
   '@types/node@18.19.130':
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
+
+  '@types/node@20.19.40':
+    resolution: {integrity: sha512-xxx6M2IpSTnnKcR0cMvIiohkiCx20/oRPtWGbenFygKCGl3zqUzdNjQ/1V4solq1LU+dgv0nQzeGOuqkqZGg0Q==}
 
   '@types/oracledb@6.5.2':
     resolution: {integrity: sha512-kK1eBS/Adeyis+3OlBDMeQQuasIDLUYXsi2T15ccNJ0iyUpQ4xDF7svFu3+bGVrI0CMBUclPciz+lsQR3JX3TQ==}
@@ -4816,6 +4822,9 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
+  undici-types@6.21.0:
+    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+
   unicorn-magic@0.4.0:
     resolution: {integrity: sha512-wH590V9VNgYH9g3lH9wWjTrUoKsjLF6sGLjhR4sH1LWpLmCOH0Zf7PukhDA8BiS7KHe4oPNkcTHqYkj7SOGUOw==}
     engines: {node: '>=20'}
@@ -6350,6 +6359,10 @@ snapshots:
   '@types/node@18.19.130':
     dependencies:
       undici-types: 5.26.5
+
+  '@types/node@20.19.40':
+    dependencies:
+      undici-types: 6.21.0
 
   '@types/oracledb@6.5.2':
     dependencies:
@@ -8244,9 +8257,9 @@ snapshots:
       seq-queue: 0.0.5
       sqlstring: 2.3.3
 
-  mysql2@3.22.3(@types/node@18.19.130):
+  mysql2@3.22.3(@types/node@20.19.40):
     dependencies:
-      '@types/node': 18.19.130
+      '@types/node': 20.19.40
       aws-ssl-profiles: 1.1.2
       denque: 2.1.0
       generate-function: 2.3.1
@@ -9164,14 +9177,14 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  ts-node@11.0.0-beta.1(@types/node@18.19.130)(typescript@5.9.3):
+  ts-node@11.0.0-beta.1(@types/node@20.19.40)(typescript@5.9.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node14': 14.1.8
       '@tsconfig/node16': 16.1.8
       '@tsconfig/node18': 18.2.6
       '@tsconfig/node20': 20.1.9
-      '@types/node': 18.19.130
+      '@types/node': 20.19.40
       acorn: 8.16.0
       acorn-walk: 8.3.5
       arg: 4.1.3
@@ -9266,6 +9279,8 @@ snapshots:
       which-boxed-primitive: 1.1.1
 
   undici-types@5.26.5: {}
+
+  undici-types@6.21.0: {}
 
   unicorn-magic@0.4.0: {}
 
