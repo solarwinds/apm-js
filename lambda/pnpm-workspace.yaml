@@ -1,0 +1,13 @@
+nodeLinker: hoisted
+minimumReleaseAge: 0
+blockExoticSubdeps: true
+
+supportedArchitectures:
+  os:
+    - linux
+  cpu:
+    - x64
+    - arm64
+
+allowBuilds:
+  protobufjs: true

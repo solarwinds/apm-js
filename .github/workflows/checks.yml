@@ -11,22 +11,16 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
-          package-manager-cache: false
-      - run: corepack enable
-
-      - uses: actions/cache@v5
+          node-version: lts/*
+      - uses: pnpm/action-setup@v6
         with:
-          path: .yarn/cache
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-
+          cache: true
 
-      - run: yarn install --immutable
+      - run: pnpm install
 
-      - run: yarn build
-      - run: yarn lint --affected
-      - run: yarn test --affected
+      - run: pnpm build --filter=solarwinds-apm...
+      - run: pnpm run lint --affected
+      - run: pnpm run test --affected
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
@@ -55,20 +49,12 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
-          package-manager-cache: false
-      - run: corepack enable
-
-      - uses: actions/cache@v5
+          node-version: lts/*
+      - uses: pnpm/action-setup@v6
         with:
-          path: .yarn/cache
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-
+          cache: true
 
-      - run: yarn install --immutable
-
-      - run: yarn version check
+      - run: pnpm install
 
   linux:
     if: github.event_name == 'pull_request'
@@ -78,16 +64,11 @@ jobs:
     strategy:
       matrix:
         image:
-          - 18-alpine3.17
-          - 18-amazonlinux2023
-          - 18-debian11
-          - 18-ubi8
-          - 18-ubuntu20.04
-          - 20-alpine
-          - 20-amazonlinux
-          - 20-debian
-          - 20-ubi
-          - 20-ubuntu
+          - 20-alpine3.20
+          - 20-amazonlinux2023
+          - 20-debian12
+          - 20-ubi8
+          - 20-ubuntu22.04
           - 22-alpine
           - 22-amazonlinux
           - 22-debian
@@ -103,9 +84,7 @@ jobs:
           - arm64
         # https://github.com/actions/runner/issues/801
         exclude:
-          - image: 18-alpine3.17
-            arch: arm64
-          - image: 20-alpine
+          - image: 20-alpine3.20
             arch: arm64
           - image: 22-alpine
             arch: arm64
@@ -117,8 +96,6 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    env:
-      YARN_IGNORE_NODE: 1
 
     steps:
       - uses: actions/checkout@v6
@@ -127,16 +104,9 @@ jobs:
           name: build
           path: ./
 
-      - uses: actions/cache@v5
-        with:
-          path: .yarn/cache
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-
-
-      - run: yarn install --immutable
+      - run: pnpm install --ignore-scripts
         continue-on-error: true
-      - run: yarn test --only
+      - run: pnpm run test --only --affected
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
@@ -149,13 +119,10 @@ jobs:
     strategy:
       matrix:
         node:
-          - 18
           - 20
           - 22
           - 24
       fail-fast: false
-    env:
-      YARN_IGNORE_NODE: 1
 
     steps:
       - uses: actions/checkout@v6
@@ -166,19 +133,13 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
-          package-manager-cache: false
-      - run: corepack enable
-
-      - uses: actions/cache@v5
+      - uses: pnpm/action-setup@v6
         with:
-          path: .yarn/cache
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-
+          standalone: true
 
-      - run: yarn install --immutable
+      - run: pnpm install --ignore-scripts
         continue-on-error: true
-      - run: yarn test --only
+      - run: pnpm run test --only --affected
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
@@ -200,8 +161,6 @@ jobs:
           - node: 20
             pass: true
           - node: 18
-            pass: true
-          - node: 16
             pass: false
           # Unstable
           - node: 23
@@ -220,9 +179,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
-          package-manager-cache: false
 
-      - run: rm package.json && rm yarn.lock && npm install --no-save node-releases semver
+      - run: rm package.json && rm pnpm-lock.yaml && npm install --no-save node-releases semver
       - run: node -e "require('assert').ok(${OP} require('${FILE}'))"
         env:
           OP: ${{ !matrix.pass && '!' || '' }}

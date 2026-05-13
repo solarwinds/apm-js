@@ -1,12 +1,15 @@
-FROM node:24-alpine
+FROM alpine
+
+ENV PNPM_HOME=/pnpm
+ENV PATH="$PNPM_HOME/bin:$PATH"
 
 RUN apk add --no-cache \
     curl \
-    gcompat \
     git \
-    libc6-compat
+    libstdc++
 
-RUN corepack enable
+RUN curl -fsSL https://get.pnpm.io/install.sh | ENV=/root/.profile SHELL=/bin/sh sh -
+RUN pnpm runtime set node 24 -g
 
 WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/sh", "-c"]

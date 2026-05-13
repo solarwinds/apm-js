@@ -1,17 +1,16 @@
-FROM registry.access.redhat.com/ubi9
+FROM registry.access.redhat.com/ubi10
+
+ENV PNPM_HOME=/pnpm
+ENV PATH="$PNPM_HOME/bin:$PATH"
 
 RUN dnf install -y \
     curl-minimal \
-    git
+    git \
+    libatomic \
+    && dnf clean all
 
-RUN dnf module disable -y nodejs && \
-    update-crypto-policies --set LEGACY && \
-    curl -fsSL https://rpm.nodesource.com/setup_24.x | bash - && \
-    dnf install -y nodejs && \
-    update-crypto-policies --set DEFAULT && \
-    dnf clean -y all
-
-RUN corepack enable
+RUN curl -fsSL https://get.pnpm.io/install.sh | SHELL=/bin/bash sh -
+RUN pnpm runtime set node 24 -g
 
 WORKDIR /solarwinds-apm
 ENTRYPOINT ["/bin/bash", "-c"]

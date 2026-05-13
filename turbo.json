@@ -36,16 +36,16 @@
   },
   "globalDependencies": [
     ".prettierrc.json",
-    ".yarnrc.yml",
+    "pnpm-workspace.yaml",
+    "pnpm-lock.yaml",
     "tsconfig.base.json",
     "tsconfig.base.test.json",
-    "yarn.lock",
     "packages/eslint-config/index.js"
   ],
   "globalPassThroughEnv": [
     "SW_APM_*",
     "OTEL_*",
-    "YARN_*",
+    "PNPM_*",
     "GITHUB_*",
     "AWS_LAMBDA_*",
     "NODE_*",

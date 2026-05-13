@@ -8,7 +8,7 @@
         "kind": "build",
         "isDefault": true
       },
-      "label": "yarn build"
+      "label": "pnpm build"
     },
     {
       "type": "npm",
@@ -17,7 +17,7 @@
         "kind": "test",
         "isDefault": true
       },
-      "label": "yarn test"
+      "label": "pnpm test"
     }
   ]
 }

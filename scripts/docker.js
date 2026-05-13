@@ -54,10 +54,10 @@ if (image === "collector") {
     .map(([k, v]) => `-e ${k}=${v}`)
     .join(" ")
 
-  // first run yarn install in the context of the container so that platform specific modules get installed
+  // first run pnpm install in the context of the container so that platform specific modules get installed
   // then start a shell session with `|| true` so that if the last ran command in the shell errors node doesn't throw
-  // finally run yarn install back on the host to reset the platform specific modules
+  // finally run pnpm install back on the host to reset the platform specific modules
   exec(
-    `docker compose -f docker/docker-compose.yml run ${env} --rm ${image} '(yarn install) && (${shell} || true)'; yarn install`,
+    `docker compose -f docker/docker-compose.yml run ${env} --rm ${image} '(pnpm install) && (${shell} || true)'; pnpm install`,
   )
 }

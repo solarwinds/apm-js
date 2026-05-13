@@ -1,64 +1,8 @@
 services:
-  18-alpine:
-    build:
-      context: .
-      dockerfile: 18-alpine3.17.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-  18-amazonlinux:
-    build:
-      context: .
-      dockerfile: 18-amazonlinux2023.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-  18-debian:
-    build:
-      context: .
-      dockerfile: 18-debian11.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-  18-ubi:
-    build:
-      context: .
-      dockerfile: 18-ubi8.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-  18-ubuntu:
-    build:
-      context: .
-      dockerfile: 18-ubuntu20.04.Dockerfile
-    environment:
-      YARN_IGNORE_NODE: 1
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - apm-collector
-      - otel-collector
-
   20-alpine:
     build:
       context: .
-      dockerfile: 20-alpine.Dockerfile
+      dockerfile: 20-alpine3.20.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -67,7 +11,7 @@ services:
   20-amazonlinux:
     build:
       context: .
-      dockerfile: 20-amazonlinux.Dockerfile
+      dockerfile: 20-amazonlinux2023.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -76,7 +20,7 @@ services:
   20-debian:
     build:
       context: .
-      dockerfile: 20-debian.Dockerfile
+      dockerfile: 20-debian12.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -85,7 +29,7 @@ services:
   20-ubi:
     build:
       context: .
-      dockerfile: 20-ubi.Dockerfile
+      dockerfile: 20-ubi8.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -94,7 +38,7 @@ services:
   20-ubuntu:
     build:
       context: .
-      dockerfile: 20-ubuntu.Dockerfile
+      dockerfile: 20-ubuntu22.04.Dockerfile
     volumes:
       - ..:/solarwinds-apm
     links:
@@ -222,7 +166,7 @@ services:
     build:
       context: .
       dockerfile: 22-alpine.Dockerfile
-    command: [yarn node udpdump.js]
+    command: [pnpm node udpdump.js]
     working_dir: /solarwinds-apm/scripts
     volumes:
       - ..:/solarwinds-apm

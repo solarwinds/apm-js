@@ -12,13 +12,14 @@
     "@prisma/adapter-better-sqlite3": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "@prisma/instrumentation": "^7.1.0",
+    "better-sqlite3": "^12.9.0",
     "next": "^16.0.7",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
-    "@types/node": "^18.19.0",
+    "@types/node": "*",
     "@types/react": "^19.2.7",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.7",

@@ -25,9 +25,10 @@
   },
   "main": "./dist/index.js",
   "bin": {
-    "swtest": "./dist/bin.js"
+    "swtest": "./bin.js"
   },
   "files": [
+    "./bin.js",
     "./src/",
     "./dist/"
   ],
@@ -45,7 +46,7 @@
     "@types/chai": "^5.2.3",
     "@types/chai-as-promised": "^8.0.2",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^18.19.0",
+    "@types/node": "catalog:",
     "c8": "^11.0.0",
     "chai": "^6.2.0",
     "chai-as-promised": "^8.0.2",
@@ -55,17 +56,16 @@
     "ts-node": "^11.0.0-beta.1"
   },
   "devDependencies": {
-    "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/sdk-metrics": "^2.2.0",
-    "@opentelemetry/sdk-trace-base": "^2.2.0",
-    "@opentelemetry/sdk-trace-node": "^2.2.0",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/sdk-metrics": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "@opentelemetry/sdk-trace-node": "catalog:",
     "@solarwinds-apm/eslint-config": "workspace:^",
-    "@types/semver": "^7.7.1",
-    "eslint": "^9.39.1",
-    "prettier": "^3.6.2",
-    "typescript": "~5.9.3"
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
   },
   "engines": {
-    "node": "^18.19.0 || ^20.8.0 || >=22.0.0"
+    "node": "^20.19.0 || ^22.13.0 || >=24"
   }
 }

@@ -104,7 +104,7 @@ if (process.cwd() === root) {
       encoding: "utf-8",
     }),
   )
-  execSync(`npm pack ${name}@${version} --pack-destination ${dir}`, {
+  execSync(`pnpm pack ${name}@${version} --pack-destination ${dir}`, {
     stdio: "inherit",
   })
 }

@@ -1,8 +1,7 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "search.exclude": {
-    "**/node_modules": true,
-    "**/.yarn": true
+    "**/node_modules": true
   },
   "eslint.useFlatConfig": true,
   "eslint.workingDirectories": [
