@@ -1,3 +1,9 @@
+# [16.2.1](https://github.com/solarwinds/apm-js/releases/tag/v16.2.1)
+
+## Internal changes
+
+- Drop transitive dependency on Protobuf.js
+
 # [16.2.0](https://github.com/solarwinds/apm-js/releases/tag/v16.2.0)
 
 ## New features and improvements
