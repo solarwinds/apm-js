@@ -25,9 +25,10 @@
   },
   "main": "./dist/index.js",
   "bin": {
-    "swtest": "./dist/bin.js"
+    "swtest": "./bin.js"
   },
   "files": [
+    "./bin.js",
     "./src/",
     "./dist/"
   ],
@@ -37,7 +38,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "prepare": "tsc",
     "lint": "prettier --check . && eslint . --max-warnings=0",
     "lint:fix": "eslint --fix . && prettier --write .",
     "release": "node ../../scripts/publish.js"

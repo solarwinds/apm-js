@@ -106,7 +106,7 @@ jobs:
           name: build
           path: ./
 
-      - run: pnpm install
+      - run: pnpm install --ignore-scripts
         continue-on-error: true
       - run: pnpm run test --only --affected
         env:
@@ -139,7 +139,7 @@ jobs:
         with:
           standalone: true
 
-      - run: pnpm install
+      - run: pnpm install --ignore-scripts
         continue-on-error: true
       - run: pnpm run test --only --affected
         env:
