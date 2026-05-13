@@ -36,8 +36,8 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@noble/hashes": "^2.0.1",
-    "@opentelemetry/sdk-trace-base": "^2.2.0",
+    "@noble/hashes": "^2.2.0",
+    "@opentelemetry/sdk-trace-base": "^2.7.1",
     "@solarwinds-apm/module": "workspace:^"
   },
   "peerDependencies": {
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/sdk-metrics": "^2.2.0",
+    "@opentelemetry/sdk-metrics": "^2.7.1",
     "@solarwinds-apm/eslint-config": "workspace:^",
     "@solarwinds-apm/test": "workspace:^",
     "@types/node": "^18.19.0",
