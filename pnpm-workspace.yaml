@@ -5,7 +5,10 @@ packages:
   - examples/*
 
 catalog:
+  # The API package should *never* be added as a dependency,
+  # always as a peer dependency if it is used
   "@opentelemetry/api": ^1.9.0
+
   "@opentelemetry/api-logs": ^0.217.0
   "@opentelemetry/semantic-conventions": ~1.40.0
 
