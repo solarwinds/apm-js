@@ -8,12 +8,11 @@ on:
       - ".github/workflows/images.yml"
   workflow_dispatch:
 
-permissions:
-  contents: read
 jobs:
   build-push:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       packages: write
       id-token: write
     strategy:
@@ -35,6 +34,7 @@ jobs:
           - 24-ubi
           - 24-ubuntu
       fail-fast: false
+
     steps:
       - uses: actions/checkout@v6
 

@@ -2,12 +2,11 @@ name: Testing Packages
 on:
   - workflow_dispatch
 
-permissions:
-  contents: read
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       packages: write
       id-token: write
     outputs:

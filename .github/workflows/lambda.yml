@@ -33,11 +33,11 @@ on:
       LAMBDA_STAGE_PUBLISHER_ARN:
         required: true
 
-permissions:
-  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PACKAGE_NAME: ${{ inputs.type == 'production' && 'solarwinds-apm' || '@solarwinds/solarwinds-apm' }}
@@ -63,6 +63,7 @@ jobs:
   publish:
     needs: build
     permissions:
+      contents: read
       id-token: write
     outputs:
       arn: ${{ steps.publish.outputs.arn }}
