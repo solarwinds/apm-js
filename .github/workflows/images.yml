@@ -7,9 +7,15 @@ on:
       - "docker/*.Dockerfile"
       - ".github/workflows/images.yml"
   workflow_dispatch:
+
+permissions:
+  contents: read
 jobs:
   build-push:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      id-token: write
     strategy:
       matrix:
         image:

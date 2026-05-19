@@ -6,6 +6,8 @@ on:
       RLPORTAL_ACCESS_TOKEN:
         required: true
 
+permissions:
+  contents: read
 jobs:
   scan:
     runs-on: ubuntu-latest
