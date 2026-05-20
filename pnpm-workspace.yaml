@@ -10,7 +10,7 @@ catalog:
   "@opentelemetry/api": ^1.9.0
 
   "@opentelemetry/api-logs": ^0.218.0
-  "@opentelemetry/semantic-conventions": ~1.40.0
+  "@opentelemetry/semantic-conventions": ~1.41.1
 
   # Stable SDK components
   "@opentelemetry/core": ^2.7.1

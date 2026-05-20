@@ -33,7 +33,7 @@
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "turbo": "^2.6.0",
+    "turbo": "^2.9.14",
     "typescript": "catalog:"
   }
 }
