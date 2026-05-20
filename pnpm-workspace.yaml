@@ -9,8 +9,8 @@ catalog:
   # always as a peer dependency if it is used
   "@opentelemetry/api": ^1.9.0
 
-  "@opentelemetry/api-logs": ^0.217.0
-  "@opentelemetry/semantic-conventions": ~1.40.0
+  "@opentelemetry/api-logs": ^0.218.0
+  "@opentelemetry/semantic-conventions": ~1.41.1
 
   # Stable SDK components
   "@opentelemetry/core": ^2.7.1
@@ -22,15 +22,15 @@ catalog:
   "@opentelemetry/sdk-trace-web": ^2.7.1
 
   # Experimental SDK components
-  "@opentelemetry/instrumentation": ^0.217.0
-  "@opentelemetry/exporter-logs-otlp-proto": ^0.217.0
-  "@opentelemetry/exporter-metrics-otlp-proto": ^0.217.0
-  "@opentelemetry/exporter-trace-otlp-proto": ^0.217.0
-  "@opentelemetry/instrumentation-grpc": ^0.217.0
-  "@opentelemetry/instrumentation-http": ^0.217.0
-  "@opentelemetry/opentelemetry-browser-detector": ^0.217.0
-  "@opentelemetry/otlp-exporter-base": ^0.217.0
-  "@opentelemetry/sdk-logs": ^0.217.0
+  "@opentelemetry/instrumentation": ^0.218.0
+  "@opentelemetry/exporter-logs-otlp-proto": ^0.218.0
+  "@opentelemetry/exporter-metrics-otlp-proto": ^0.218.0
+  "@opentelemetry/exporter-trace-otlp-proto": ^0.218.0
+  "@opentelemetry/instrumentation-grpc": ^0.218.0
+  "@opentelemetry/instrumentation-http": ^0.218.0
+  "@opentelemetry/opentelemetry-browser-detector": ^0.218.0
+  "@opentelemetry/otlp-exporter-base": ^0.218.0
+  "@opentelemetry/sdk-logs": ^0.218.0
 
   "@types/node": ^20.19.0
   eslint: ^9.39.4
