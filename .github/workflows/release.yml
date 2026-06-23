@@ -18,6 +18,7 @@ jobs:
           registry-url: https://registry.npmjs.org
       - uses: pnpm/action-setup@v6
         with:
+          version: ^11
           cache: false
 
       - run: pnpm install
@@ -36,11 +37,16 @@ jobs:
       type: production
       version: ${{ needs.publish.outputs.version }}
     secrets: inherit
+    permissions:
+      contents: read
+      id-token: write
 
   scan:
     needs: publish
     uses: ./.github/workflows/scan.yml
     secrets: inherit
+    permissions:
+      contents: read
 
   draft:
     needs:

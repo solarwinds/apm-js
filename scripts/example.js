@@ -28,7 +28,7 @@ function exec(cmd) {
 }
 
 // build example and its deps outside of the container
-exec(`turbo run build --filter=./examples/${example}...`)
+exec(`nx run @solarwinds-apm/example-${example}:build`)
 
 // get env vars that will be passed to the container
 const env = Object.fromEntries(

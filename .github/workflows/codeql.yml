@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: lts/*
       - uses: pnpm/action-setup@v6
+        with:
+          version: ^11
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4

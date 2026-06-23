@@ -1,0 +1,78 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "parallel": 8,
+  "namedInputs": {
+    "sharedGlobals": [
+      "{workspaceRoot}/.prettierrc.json",
+      "{workspaceRoot}/pnpm-workspace.yaml",
+      "{workspaceRoot}/pnpm-lock.yaml",
+      "{workspaceRoot}/tsconfig.base.json",
+      "{workspaceRoot}/tsconfig.base.test.json",
+      "{workspaceRoot}/packages/eslint-config/index.js"
+    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"]
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "{projectRoot}/build.js",
+        "{projectRoot}/build.*.js",
+        "{projectRoot}/package.json",
+        "{projectRoot}/tsconfig.json",
+        "{projectRoot}/src/**"
+      ],
+      "outputs": [
+        "{projectRoot}/dist/**",
+        "{projectRoot}/src/version.ts",
+        "{projectRoot}/.next/**",
+        "{projectRoot}/COMPATIBILITY.md"
+      ],
+      "cache": true
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "release": {
+      "dependsOn": ["^release"],
+      "cache": false
+    },
+    "scan": {
+      "inputs": ["{projectRoot}/package.json"],
+      "outputs": ["{projectRoot}/*.tgz"],
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["@solarwinds-apm/test#build", "build"],
+      "inputs": [
+        "{projectRoot}/package.json",
+        "{projectRoot}/tsconfig.json",
+        "{projectRoot}/src/**",
+        "{projectRoot}/test/**"
+      ],
+      "cache": true
+    }
+  },
+  "release": {
+    "projects": ["packages/*"],
+    "projectsRelationship": "independent",
+    "versionPlans": {
+      "ignorePatternsForPlanCheck": ["**/*.test.ts", "eslint.config.js"]
+    },
+    "releaseTag": {
+      "requireSemver": true,
+      "strictPreid": true
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github"
+      }
+    }
+  },
+  "analytics": false
+}

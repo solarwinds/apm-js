@@ -16,6 +16,7 @@ jobs:
           node-version: lts/*
       - uses: pnpm/action-setup@v6
         with:
+          version: ^11
           cache: true
 
       - run: pnpm install
@@ -54,9 +55,12 @@ jobs:
           node-version: lts/*
       - uses: pnpm/action-setup@v6
         with:
+          version: ^11
           cache: true
+      - uses: nrwl/nx-set-shas@v5
 
       - run: pnpm install
+      - run: pnpm run version:check
 
   linux:
     if: github.event_name == 'pull_request'
@@ -137,6 +141,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - uses: pnpm/action-setup@v6
         with:
+          version: ^11
           standalone: true
 
       - run: pnpm install --ignore-scripts

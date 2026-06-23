@@ -34,9 +34,8 @@ updates:
 
       build:
         patterns:
-          - "esbuild"
           - "node-releases"
-          - "turbo"
+          - "nx"
           - "typescript"
         update-types:
           - minor

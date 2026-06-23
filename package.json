@@ -3,22 +3,20 @@
   "private": true,
   "license": "Apache-2.0",
   "scripts": {
-    "build": "turbo run build --continue",
-    "build:watch": "turbo watch build",
+    "build": "nx run-many -t build",
     "docker": "node scripts/docker.js",
     "example": "node scripts/example.js",
     "lambda": "node scripts/lambda.js",
-    "lint": "prettier --check *.json *.md .github && turbo run lint --continue",
-    "lint:fix": "prettier --write *.json *.md .github && turbo run lint:fix --continue",
-    "publish": "turbo run build --filter=solarwinds-apm... && turbo run release --env-mode=loose",
-    "scan": "turbo run scan && node scripts/lambda.js solarwinds-apm && node scripts/scan.js",
-    "test": "turbo run test --continue",
-    "test:watch": "turbo watch test",
+    "lint": "prettier --check *.json *.md .github && nx run-many -t lint",
+    "lint:fix": "prettier --write *.json *.md .github && nx run-many -t lint:fix",
+    "publish": "nx run solarwinds-apm:build && nx run solarwinds-apm:release",
+    "scan": "nx run-many -t scan && node scripts/lambda.js solarwinds-apm && node scripts/scan.js",
+    "test": "nx run-many -t test",
+    "version:check": "nx release plan:check",
     "version:latest": "node scripts/version.js",
     "version:prerelease": "node scripts/version.js pre",
     "version:testing": "node scripts/testing.js"
   },
-  "packageManager": "pnpm@11.10.0",
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
@@ -33,7 +31,7 @@
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "turbo": "^2.9.14",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "nx": "^22.7.3"
   }
 }

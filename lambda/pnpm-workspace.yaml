@@ -8,6 +8,3 @@ supportedArchitectures:
   cpu:
     - x64
     - arm64
-
-allowBuilds:
-  protobufjs: true
