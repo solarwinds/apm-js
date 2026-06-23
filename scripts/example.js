@@ -28,7 +28,9 @@ function exec(cmd) {
 }
 
 // build example and its deps outside of the container
-exec(`nx run @solarwinds-apm/example-${example}:build`)
+exec(
+  `pnpm -r --filter @solarwinds-apm/example-${example}... --if-present build`,
+)
 
 // get env vars that will be passed to the container
 const env = Object.fromEntries(
