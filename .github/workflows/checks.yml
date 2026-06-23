@@ -21,7 +21,7 @@ jobs:
 
       - run: pnpm install
 
-      - run: pnpm build --filter=solarwinds-apm...
+      - run: pnpm build -p solarwinds-apm
       - run: pnpm run lint --affected
       - run: pnpm run test --affected
         env:
