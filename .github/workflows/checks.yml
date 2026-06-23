@@ -22,8 +22,8 @@ jobs:
       - run: pnpm install
 
       - run: pnpm build -p solarwinds-apm
-      - run: pnpm run lint --affected
-      - run: pnpm run test --affected
+      - run: pnpm run lint
+      - run: pnpm run test
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
@@ -112,7 +112,7 @@ jobs:
 
       - run: pnpm install --ignore-scripts
         continue-on-error: true
-      - run: pnpm run test --only --affected
+      - run: pnpm run test --excludeTaskDependencies
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
@@ -146,7 +146,7 @@ jobs:
 
       - run: pnpm install --ignore-scripts
         continue-on-error: true
-      - run: pnpm run test --only --affected
+      - run: pnpm run test --excludeTaskDependencies
         env:
           SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
