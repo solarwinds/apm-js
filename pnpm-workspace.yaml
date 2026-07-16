@@ -50,8 +50,8 @@ allowBuilds:
   "@prisma/engines": false
   better-sqlite3: true
   esbuild: false
+  nx: true
   prisma: false
-  protobufjs: true
   sharp: false
   unrs-resolver: false
 

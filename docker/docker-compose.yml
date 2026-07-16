@@ -6,7 +6,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   20-amazonlinux:
     build:
@@ -15,7 +14,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   20-debian:
     build:
@@ -24,7 +22,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   20-ubi:
     build:
@@ -33,7 +30,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   20-ubuntu:
     build:
@@ -42,7 +38,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
 
   22-alpine:
@@ -52,7 +47,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   22-amazonlinux:
     build:
@@ -61,7 +55,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   22-debian:
     build:
@@ -70,7 +63,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   22-ubi:
     build:
@@ -79,7 +71,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   22-ubuntu:
     build:
@@ -88,7 +79,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
 
   24-alpine:
@@ -98,7 +88,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   24-amazonlinux:
     build:
@@ -107,7 +96,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   24-debian:
     build:
@@ -116,7 +104,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   24-ubi:
     build:
@@ -125,7 +112,6 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
   24-ubuntu:
     build:
@@ -134,44 +120,7 @@ services:
     volumes:
       - ..:/solarwinds-apm
     links:
-      - apm-collector
       - otel-collector
-
-  example:
-    build:
-      context: .
-      dockerfile: 22-ubuntu.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    environment:
-      COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
-    links:
-      - apm-collector
-      - otel-collector
-      - proxy
-      - mysql
-      - postgres
-
-  apm-collector:
-    image: ${TEST_COLLECTOR_IMAGE:-ghcr.io/solarwinds-cloud/apm-agent-test-collector:2.1.3}
-    volumes:
-      - ..:/solarwinds-apm
-    expose:
-      - 12224
-    environment:
-      PROGRAM_ARGS: /solarwinds-apm/docker/apm-collector/config.json
-    depends_on:
-      - udpdump
-  udpdump:
-    build:
-      context: .
-      dockerfile: 22-alpine.Dockerfile
-    command: [pnpm node udpdump.js]
-    working_dir: /solarwinds-apm/scripts
-    volumes:
-      - ..:/solarwinds-apm
-    expose:
-      - 12225
 
   otel-collector:
     image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector}

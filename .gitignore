@@ -1,7 +1,9 @@
 node_modules/
 
-# Turborepo cache
+# Cache
 .turbo/
+.nx/cache
+.nx/workspace-data
 
 # Package archives
 *.tgz

@@ -28,7 +28,9 @@ function exec(cmd) {
 }
 
 // build example and its deps outside of the container
-exec(`turbo run build --filter=./examples/${example}...`)
+exec(
+  `nx run-many -t build -p solarwinds-apm,@solarwinds-apm/example-${example}`,
+)
 
 // get env vars that will be passed to the container
 const env = Object.fromEntries(
@@ -40,9 +42,6 @@ const env = Object.fromEntries(
   ),
 )
 if (collector) {
-  env.SW_APM_COLLECTOR = "apm-collector:12224"
-  env.SW_APM_TRUSTED_PATH =
-    "/solarwinds-apm/docker/apm-collector/server-grpc.crt"
   env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4318"
 }
 if (proxy) {
@@ -54,5 +53,5 @@ const dockerEnv = Object.entries(env)
   .map(([k, v]) => `-e ${k}=${v}`)
   .join(" ")
 exec(
-  `docker compose -f docker/docker-compose.yml run ${dockerEnv} -e PORT=8080 -p 8080:8080 --rm example 'cd ./examples/${example} && pnpm install && (pnpm start || true)'; pnpm install`,
+  `docker compose -f docker/docker-compose.yml run ${dockerEnv} -e PORT=8080 -p 8080:8080 --rm example 'pnpm install && cd ./examples/${example} && (pnpm start || true)'; pnpm install`,
 )
