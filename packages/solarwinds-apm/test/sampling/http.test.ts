@@ -25,7 +25,7 @@ import { getter, hostname, HttpSampler } from "../../src/sampling/http.js"
 import { proxy } from "../http.js"
 
 expect(process.env).to.include.keys("SW_APM_COLLECTOR", "SW_APM_SERVICE_KEY")
-const CONFIG = await read()
+const CONFIG = read()
 
 describe(hostname.name, () => {
   it("returns a properly encoded hostname", async () => {

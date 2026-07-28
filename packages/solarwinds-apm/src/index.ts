@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { register } from "node:module"
+import { createRequire, register } from "node:module"
 
 import { createAddHookMessageChannel } from "import-in-the-middle"
 
@@ -29,8 +29,12 @@ import {
   TRACER_PROVIDER,
 } from "./shared/init.js"
 
+const require = createRequire(import.meta.url)
+
 const supported =
-  environment.IS_SERVERLESS || (await import("./commonjs/version.js")).default
+  environment.IS_SERVERLESS ||
+  (require("./commonjs/version.js") as { default: boolean }).default
+
 let initialised = Reflect.has(globalThis, INIT)
 
 if (supported && !initialised) {
@@ -45,7 +49,8 @@ if (supported && !initialised) {
     const { registerOptions, waitForAllMessagesAcknowledged } =
       createAddHookMessageChannel()
     register("./hooks.js", import.meta.url, registerOptions)
-    initialised = await init()
+    initialised = init()
+    // TODO: this is the last bit of async code
     await waitForAllMessagesAcknowledged()
 
     Reflect.defineProperty(globalThis, INIT, {

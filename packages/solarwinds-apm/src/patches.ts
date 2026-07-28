@@ -21,7 +21,10 @@ import {
   type TextMapPropagator,
   trace,
 } from "@opentelemetry/api"
-import { type InstrumentationConfigMap } from "@solarwinds-apm/instrumentations"
+import {
+  type InstrumentationConfigMap,
+  type ResourceDetectorConfigMap,
+} from "@solarwinds-apm/instrumentations"
 
 import { type Configuration } from "./config.js"
 import { environment } from "./env.js"
@@ -31,15 +34,22 @@ export interface Options extends Configuration {
 }
 
 export function patch(
-  configs: InstrumentationConfigMap,
+  instrumentations: InstrumentationConfigMap,
+  resourceDetectors: ResourceDetectorConfigMap,
   options: Options,
   logger: DiagLogger,
-): InstrumentationConfigMap {
-  for (const patcher of PATCHERS) {
-    patcher(configs, options)
+): [InstrumentationConfigMap, ResourceDetectorConfigMap] {
+  for (const patcher of INSTRUMENTATION_PATCHERS) {
+    patcher(instrumentations, options)
   }
-  logger.debug("patched instrumentation configs", configs)
-  return configs
+  logger.debug("patched instrumentation configs", instrumentations)
+
+  for (const patcher of RESOURCE_DETECTOR_PATCHERS) {
+    patcher(resourceDetectors)
+  }
+  logger.debug("patched resource detector configs", resourceDetectors)
+
+  return [instrumentations, resourceDetectors]
 }
 
 export function patchEnv(config: Configuration, env = process.env): void {
@@ -48,7 +58,9 @@ export function patchEnv(config: Configuration, env = process.env): void {
   }
 }
 
-function patcher<const Name extends keyof InstrumentationConfigMap>(
+function instrumentationPatcher<
+  const Name extends keyof InstrumentationConfigMap,
+>(
   names: readonly Name[],
   patch: (
     config: NonNullable<InstrumentationConfigMap[Name]>,
@@ -58,6 +70,17 @@ function patcher<const Name extends keyof InstrumentationConfigMap>(
   return (configs, options) => {
     for (const name of names) {
       patch((configs[name] ??= {}), options)
+    }
+  }
+}
+
+function resourceDetectorPatcher(
+  names: readonly (keyof ResourceDetectorConfigMap)[],
+  patch: (enabled: boolean | undefined) => boolean | undefined,
+): (configs: ResourceDetectorConfigMap) => void {
+  return (configs) => {
+    for (const name of names) {
+      configs[name] = patch(configs[name])
     }
   }
 }
@@ -76,68 +99,86 @@ function envPatcher(
   }
 }
 
-const PATCHERS = [
-  patcher(["@fastify/otel"], (config) => {
+const INSTRUMENTATION_PATCHERS = [
+  instrumentationPatcher(["@fastify/otel"], (config) => {
     config.registerOnInitialization ??= true
   }),
 
-  patcher(["@opentelemetry/instrumentation-aws-lambda"], (config) => {
-    config.enabled ??= environment.IS_AWS_LAMBDA
-  }),
+  instrumentationPatcher(
+    ["@opentelemetry/instrumentation-aws-lambda"],
+    (config) => {
+      config.enabled ??= environment.IS_AWS_LAMBDA
+    },
+  ),
 
-  patcher(["@opentelemetry/instrumentation-aws-sdk"], (config) => {
-    if (environment.IS_AWS_LAMBDA) {
-      config.enabled ??= true
-    }
-  }),
+  instrumentationPatcher(
+    ["@opentelemetry/instrumentation-aws-sdk"],
+    (config) => {
+      if (environment.IS_AWS_LAMBDA) {
+        config.enabled ??= true
+      }
+    },
+  ),
 
-  patcher(["@opentelemetry/instrumentation-cassandra-driver"], (config) => {
-    config.enhancedDatabaseReporting ??= true
-  }),
+  instrumentationPatcher(
+    ["@opentelemetry/instrumentation-cassandra-driver"],
+    (config) => {
+      config.enhancedDatabaseReporting ??= true
+    },
+  ),
 
-  patcher(["@opentelemetry/instrumentation-fs"], (config) => {
+  instrumentationPatcher(["@opentelemetry/instrumentation-fs"], (config) => {
     config.enabled ??= false
     config.requireParentSpan ??= true
   }),
 
-  patcher(["@opentelemetry/instrumentation-http"], (config, options) => {
-    const original = config.responseHook
-    config.responseHook = (span, response) => {
-      // only for server responses originating from the instrumented app
-      if ("setHeader" in response) {
-        const ctx = trace.setSpan(context.active(), span)
-        options.responsePropagator.inject(ctx, response, {
-          set: (res: typeof response, k, v) => {
-            if (!res.hasHeader(k)) {
-              res.setHeader(k, v)
-            }
-          },
-        })
+  instrumentationPatcher(
+    ["@opentelemetry/instrumentation-http"],
+    (config, options) => {
+      const original = config.responseHook
+      config.responseHook = (span, response) => {
+        // only for server responses originating from the instrumented app
+        if ("setHeader" in response) {
+          const ctx = trace.setSpan(context.active(), span)
+          options.responsePropagator.inject(ctx, response, {
+            set: (res: typeof response, k, v) => {
+              if (!res.hasHeader(k)) {
+                res.setHeader(k, v)
+              }
+            },
+          })
+        }
+
+        original?.(span, response)
       }
+    },
+  ),
 
-      original?.(span, response)
-    }
-  }),
+  instrumentationPatcher(
+    ["@opentelemetry/instrumentation-mysql2"],
+    (config, options) => {
+      config.addSqlCommenterCommentToQueries ??=
+        options.insertTraceContextIntoQueries
+    },
+  ),
 
-  patcher(["@opentelemetry/instrumentation-mysql2"], (config, options) => {
-    config.addSqlCommenterCommentToQueries ??=
-      options.insertTraceContextIntoQueries
-  }),
+  instrumentationPatcher(
+    ["@opentelemetry/instrumentation-pg"],
+    (config, options) => {
+      config.requireParentSpan ??= true
+      config.addSqlCommenterCommentToQueries ??=
+        options.insertTraceContextIntoQueries
+    },
+  ),
 
-  patcher(["@opentelemetry/instrumentation-pg"], (config, options) => {
-    config.requireParentSpan ??= true
-    config.addSqlCommenterCommentToQueries ??=
-      options.insertTraceContextIntoQueries
-  }),
-
-  patcher(
+  instrumentationPatcher(
     ["@opentelemetry/instrumentation-runtime-node"],
     (config, options) => {
       config.enabled ??= options.runtimeMetrics
     },
   ),
 
-  patcher(
+  instrumentationPatcher(
     [
       "@opentelemetry/instrumentation-dns",
       "@opentelemetry/instrumentation-net",
@@ -147,7 +188,7 @@ const PATCHERS = [
     },
   ),
 
-  patcher(
+  instrumentationPatcher(
     [
       "@opentelemetry/instrumentation-bunyan",
       "@opentelemetry/instrumentation-pino",
@@ -165,6 +206,12 @@ const PATCHERS = [
       }
     },
   ),
+]
+
+const RESOURCE_DETECTOR_PATCHERS = [
+  resourceDetectorPatcher(["@opentelemetry/awsLambdaDetector"], (enabled) => {
+    return enabled ?? environment.IS_AWS_LAMBDA
+  }),
 ]
 
 const ENV_PATCHERS = [

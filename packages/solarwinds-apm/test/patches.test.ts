@@ -54,54 +54,79 @@ describe("patch", () => {
   } as unknown as Options
 
   it("sets proper defaults", () => {
-    const configs = patch({}, options, diag)
+    const [instrumentations, resourceDetectors] = patch({}, {}, options, diag)
 
-    expect(configs["@fastify/otel"]).to.deep.equal({
+    expect(instrumentations["@fastify/otel"]).to.deep.equal({
       registerOnInitialization: true,
     })
-    expect(configs["@opentelemetry/instrumentation-aws-lambda"]).to.deep.equal({
+    expect(
+      instrumentations["@opentelemetry/instrumentation-aws-lambda"],
+    ).to.deep.equal({
       enabled: false,
     })
-    expect(configs["@opentelemetry/instrumentation-aws-sdk"]).to.deep.equal({})
-    expect(configs["@opentelemetry/instrumentation-fs"]).to.deep.equal({
-      enabled: false,
-      requireParentSpan: true,
-    })
-    expect(configs["@opentelemetry/instrumentation-mysql2"]).to.deep.equal({
+    expect(
+      instrumentations["@opentelemetry/instrumentation-aws-sdk"],
+    ).to.deep.equal({})
+    expect(instrumentations["@opentelemetry/instrumentation-fs"]).to.deep.equal(
+      {
+        enabled: false,
+        requireParentSpan: true,
+      },
+    )
+    expect(
+      instrumentations["@opentelemetry/instrumentation-mysql2"],
+    ).to.deep.equal({
       addSqlCommenterCommentToQueries: false,
     })
-    expect(configs["@opentelemetry/instrumentation-pg"]).to.deep.equal({
-      requireParentSpan: true,
-      addSqlCommenterCommentToQueries: false,
-    })
-    expect(configs["@opentelemetry/instrumentation-dns"]).to.deep.equal({
+    expect(instrumentations["@opentelemetry/instrumentation-pg"]).to.deep.equal(
+      {
+        requireParentSpan: true,
+        addSqlCommenterCommentToQueries: false,
+      },
+    )
+    expect(
+      instrumentations["@opentelemetry/instrumentation-dns"],
+    ).to.deep.equal({
       enabled: false,
     })
-    expect(configs["@opentelemetry/instrumentation-net"]).to.deep.equal({
+    expect(
+      instrumentations["@opentelemetry/instrumentation-net"],
+    ).to.deep.equal({
       enabled: false,
     })
-    expect(configs["@opentelemetry/instrumentation-bunyan"]).to.deep.include({
+    expect(
+      instrumentations["@opentelemetry/instrumentation-bunyan"],
+    ).to.deep.include({
       disableLogCorrelation: true,
       disableLogSending: true,
     })
-    expect(configs["@opentelemetry/instrumentation-pino"]).to.deep.include({
+    expect(
+      instrumentations["@opentelemetry/instrumentation-pino"],
+    ).to.deep.include({
       disableLogCorrelation: true,
       disableLogSending: true,
     })
-    expect(configs["@opentelemetry/instrumentation-winston"]).to.deep.include({
+    expect(
+      instrumentations["@opentelemetry/instrumentation-winston"],
+    ).to.deep.include({
       disableLogCorrelation: true,
       disableLogSending: true,
+    })
+
+    expect(resourceDetectors).to.deep.equal({
+      "@opentelemetry/awsLambdaDetector": false,
     })
   })
 
   describe("@fastify/otel", () => {
     it("respects user values", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@fastify/otel": {
             registerOnInitialization: false,
           },
         },
+        {},
         options,
         diag,
       )
@@ -120,7 +145,7 @@ describe("patch", () => {
     it("is enabled in lambda environments", () => {
       process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
 
-      const configs = patch({}, options, diag)
+      const [configs] = patch({}, {}, options, diag)
 
       expect(
         configs["@opentelemetry/instrumentation-aws-lambda"],
@@ -130,12 +155,13 @@ describe("patch", () => {
     })
 
     it("respects user values outside lambda environments", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-aws-lambda": {
             enabled: true,
           },
         },
+        {},
         options,
         diag,
       )
@@ -150,12 +176,13 @@ describe("patch", () => {
     it("respects user values in lambda environments", () => {
       process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
 
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-aws-lambda": {
             enabled: false,
           },
         },
+        {},
         options,
         diag,
       )
@@ -176,7 +203,7 @@ describe("patch", () => {
     it("is enabled in lambda environments", () => {
       process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
 
-      const configs = patch({}, options, diag)
+      const [configs] = patch({}, {}, options, diag)
 
       expect(configs["@opentelemetry/instrumentation-aws-sdk"]).to.deep.equal({
         enabled: true,
@@ -186,12 +213,13 @@ describe("patch", () => {
     it("respects user values in lambda environments", () => {
       process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
 
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-aws-sdk": {
             enabled: false,
           },
         },
+        {},
         options,
         diag,
       )
@@ -204,7 +232,7 @@ describe("patch", () => {
 
   describe("@opentelemetry/instrumentation-http", () => {
     it("injects headers in response hook", () => {
-      const configs = patch({}, options, diag)
+      const [configs] = patch({}, {}, options, diag)
       const response = {
         headers: {} as Record<string, string>,
         hasHeader(name: string) {
@@ -223,7 +251,7 @@ describe("patch", () => {
     })
 
     it("doesn't inject headers for incoming responses in response hook", () => {
-      const configs = patch({}, options, diag)
+      const [configs] = patch({}, {}, options, diag)
       const response = {
         headers: {} as Record<string, string>,
       }
@@ -236,7 +264,7 @@ describe("patch", () => {
     })
 
     it("doesn't override headers in response hook", () => {
-      const configs = patch({}, options, diag)
+      const [configs] = patch({}, {}, options, diag)
       const response = {
         headers: {
           "X-Test": "goodbye",
@@ -257,7 +285,7 @@ describe("patch", () => {
     })
 
     it("calls custom response hook in response hook", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-http": {
             responseHook(_span, response) {
@@ -265,6 +293,7 @@ describe("patch", () => {
             },
           },
         },
+        {},
         options,
         diag,
       )
@@ -291,7 +320,8 @@ describe("patch", () => {
 
   describe("@opentelemetry/instrumentation-mysql2", () => {
     it("respects custom config", () => {
-      const configs = patch(
+      const [configs] = patch(
+        {},
         {},
         { ...options, insertTraceContextIntoQueries: true },
         diag,
@@ -303,12 +333,13 @@ describe("patch", () => {
     })
 
     it("respects user values over defaults", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-mysql2": {
             addSqlCommenterCommentToQueries: true,
           },
         },
+        {},
         options,
         diag,
       )
@@ -319,12 +350,13 @@ describe("patch", () => {
     })
 
     it("respects user values over custom config", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-mysql2": {
             addSqlCommenterCommentToQueries: false,
           },
         },
+        {},
         { ...options, insertTraceContextIntoQueries: true },
         diag,
       )
@@ -337,7 +369,8 @@ describe("patch", () => {
 
   describe("@opentelemetry/instrumentation-pg", () => {
     it("respects custom config", () => {
-      const configs = patch(
+      const [configs] = patch(
+        {},
         {},
         { ...options, insertTraceContextIntoQueries: true },
         diag,
@@ -350,13 +383,14 @@ describe("patch", () => {
     })
 
     it("respects user values over defaults", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-pg": {
             requireParentSpan: false,
             addSqlCommenterCommentToQueries: true,
           },
         },
+        {},
         options,
         diag,
       )
@@ -368,13 +402,14 @@ describe("patch", () => {
     })
 
     it("respects user values over custom config", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-pg": {
             requireParentSpan: false,
             addSqlCommenterCommentToQueries: false,
           },
         },
+        {},
         { ...options, insertTraceContextIntoQueries: true },
         diag,
       )
@@ -394,7 +429,8 @@ describe("patch", () => {
     ] as const
 
     it("respect custom config", () => {
-      const configs = patch(
+      const [configs] = patch(
+        {},
         {},
         {
           ...options,
@@ -413,7 +449,7 @@ describe("patch", () => {
     })
 
     it("respect user values over defaults", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-bunyan": {
             disableLogCorrelation: false,
@@ -428,6 +464,7 @@ describe("patch", () => {
             disableLogSending: false,
           },
         },
+        {},
         options,
         diag,
       )
@@ -441,7 +478,7 @@ describe("patch", () => {
     })
 
     it("respect user values over custom config", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-bunyan": {
             disableLogCorrelation: true,
@@ -456,6 +493,7 @@ describe("patch", () => {
             disableLogSending: true,
           },
         },
+        {},
         {
           ...options,
           insertTraceContextIntoLogs: true,
@@ -473,7 +511,7 @@ describe("patch", () => {
     })
 
     it("add service name in log hook", () => {
-      const configs = patch({}, options, diag)
+      const [configs] = patch({}, {}, options, diag)
 
       for (const i of INSTRUMENTATIONS) {
         const record: Record<string, unknown> = {}
@@ -486,7 +524,7 @@ describe("patch", () => {
     })
 
     it("don't override service name in log hook", () => {
-      const configs = patch({}, options, diag)
+      const [configs] = patch({}, {}, options, diag)
 
       for (const i of INSTRUMENTATIONS) {
         const record: Record<string, unknown> = {
@@ -501,7 +539,7 @@ describe("patch", () => {
     })
 
     it("calls custom log hook in log hook", () => {
-      const configs = patch(
+      const [configs] = patch(
         {
           "@opentelemetry/instrumentation-bunyan": {
             logHook(_span, record) {
@@ -519,6 +557,7 @@ describe("patch", () => {
             },
           },
         },
+        {},
         options,
         diag,
       )

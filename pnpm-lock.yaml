@@ -637,9 +637,6 @@ importers:
       '@opentelemetry/winston-transport':
         specifier: ^0.28.0
         version: 0.28.0
-      '@solarwinds-apm/module':
-        specifier: workspace:^
-        version: link:../module
     devDependencies:
       '@opentelemetry/api':
         specifier: 'catalog:'

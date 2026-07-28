@@ -14,12 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import {
-  diag,
-  type DiagLogger,
-  metrics,
-  type TracerProvider,
-} from "@opentelemetry/api"
+import { createRequire } from "node:module"
+
+import { diag, type DiagLogger, metrics } from "@opentelemetry/api"
+import { logs } from "@opentelemetry/api-logs"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
 import {
@@ -28,6 +26,10 @@ import {
   type Resource,
   resourceFromAttributes,
 } from "@opentelemetry/resources"
+import {
+  BatchLogRecordProcessor,
+  LoggerProvider,
+} from "@opentelemetry/sdk-logs"
 import { MeterProvider } from "@opentelemetry/sdk-metrics"
 import {
   BatchSpanProcessor,
@@ -45,6 +47,7 @@ import { type Configuration, printError, read } from "./config.js"
 import { environment } from "./env.js"
 import { MetricReader } from "./exporters/metrics.js"
 import { Logger } from "./logger.js"
+import { enableRuntimeMetrics } from "./metrics.js"
 import { patch, patchEnv } from "./patches.js"
 import { ParentSpanProcessor } from "./processing/parent-span.js"
 import { ResponseTimeProcessor } from "./processing/response-time.js"
@@ -65,10 +68,12 @@ import {
 import { componentLogger } from "./shared/logger.js"
 import { VERSION } from "./version.js"
 
-export async function init(): Promise<boolean> {
+const require = createRequire(import.meta.url)
+
+export function init(): boolean {
   let config: Configuration
   try {
-    config = await read()
+    config = read()
   } catch (err) {
     log(
       "Invalid SolarWinds APM configuration, application will not be instrumented.",
@@ -87,17 +92,31 @@ export async function init(): Promise<boolean> {
     return false
   }
   patchEnv(config)
+  patch(
+    config.instrumentations.configs,
+    config.resourceDetectors.configs,
+    {
+      ...config,
+      responsePropagator: new ResponseHeadersPropagator(),
+    },
+    logger,
+  )
 
-  const registerInstrumentations = await initInstrumentations(config, logger)
-  const detectors = await getResourceDetectors(
+  const instrumentations = getInstrumentations(
+    config.instrumentations.configs,
+    config.instrumentations.set,
+  )
+  const detectors = getResourceDetectors(
     config.resourceDetectors.configs,
     config.resourceDetectors.set,
   )
 
-  const resource = detectResources({
-    detectors: [...detectors, ...config.resourceDetectors.extra],
-  })
-    .merge(defaultResource())
+  const resource = defaultResource()
+    .merge(
+      detectResources({
+        detectors: [...detectors, ...config.resourceDetectors.extra],
+      }),
+    )
     .merge(
       resourceFromAttributes({
         [ATTR_SERVICE_NAME]: config.service,
@@ -106,49 +125,20 @@ export async function init(): Promise<boolean> {
       }),
     )
 
-  if (resource.asyncAttributesPending) {
-    await resource.waitForAsyncAttributes?.()
-  }
+  const meterProvider = initMetrics(config, resource, logger)
+  const tracerProvider = initTracing(config, resource, logger)
+  initLogs(config, resource, logger)
 
-  const meterProvider = await initMetrics(config, resource, logger)
-  const [tracerProvider] = await Promise.all([
-    initTracing(config, resource, logger),
-    initLogs(config, resource, logger),
-  ])
-
-  registerInstrumentations(tracerProvider, meterProvider)
-  logger.debug("resource", resource.attributes)
+  registerInstrumentations({
+    instrumentations: [...instrumentations, ...config.instrumentations.extra],
+    tracerProvider,
+    meterProvider,
+  })
 
   return true
 }
 
-async function initInstrumentations(config: Configuration, logger: DiagLogger) {
-  logger.debug("initialising instrumentations")
-
-  const provided = await getInstrumentations(
-    patch(
-      config.instrumentations.configs,
-      {
-        ...config,
-        responsePropagator: new ResponseHeadersPropagator(),
-      },
-      logger,
-    ),
-    config.instrumentations.set,
-  )
-  const extra = config.instrumentations.extra
-
-  return (tracerProvider: TracerProvider, meterProvider: MeterProvider) => {
-    registerInstrumentations({
-      instrumentations: [...provided, ...extra],
-      tracerProvider,
-      meterProvider,
-    })
-    logger.debug("initialised instrumentations")
-  }
-}
-
-async function initTracing(
+function initTracing(
   config: Configuration,
   resource: Resource,
   logger: DiagLogger,
@@ -166,10 +156,10 @@ async function initTracing(
   })
 
   if (environment.IS_AWS_LAMBDA) {
-    const [{ JsonSampler }, { TraceExporter }] = await Promise.all([
-      import("./sampling/json.js"),
-      import("./exporters/traces.js"),
-    ])
+    const { JsonSampler } =
+      require("./sampling/json.js") as typeof import("./sampling/json.js")
+    const { TraceExporter } =
+      require("./exporters/traces.js") as typeof import("./exporters/traces.js")
 
     sampler = new JsonSampler(config, "/tmp/solarwinds-apm-settings.json")
     processors = [
@@ -180,10 +170,10 @@ async function initTracing(
       new StacktraceProcessor(config),
     ]
   } else {
-    const [{ HttpSampler }, { TraceExporter }] = await Promise.all([
-      import("./sampling/http.js"),
-      import("./exporters/traces.js"),
-    ])
+    const { HttpSampler } =
+      require("./sampling/http.js") as typeof import("./sampling/http.js")
+    const { TraceExporter } =
+      require("./exporters/traces.js") as typeof import("./exporters/traces.js")
 
     sampler = new HttpSampler(config)
     processors = [
@@ -208,14 +198,15 @@ async function initTracing(
   return provider
 }
 
-async function initMetrics(
+function initMetrics(
   config: Configuration,
   resource: Resource,
   logger: DiagLogger,
 ) {
   logger.debug("initialiing metrics")
 
-  const { MetricExporter } = await import("./exporters/metrics.js")
+  const { MetricExporter } =
+    require("./exporters/metrics.js") as typeof import("./exporters/metrics.js")
   const readers: MetricReader[] = [
     new MetricReader({
       exporter: new MetricExporter(config),
@@ -230,9 +221,7 @@ async function initMetrics(
 
   if (config.runtimeMetrics) {
     logger.debug("initialising runtime metrics")
-
-    const { enable } = await import("./metrics.js")
-    enable()
+    enableRuntimeMetrics()
   }
 
   METER_PROVIDER.resolve(provider)
@@ -240,7 +229,7 @@ async function initMetrics(
   return provider
 }
 
-async function initLogs(
+function initLogs(
   config: Configuration,
   resource: Resource,
   logger: DiagLogger,
@@ -251,15 +240,8 @@ async function initLogs(
   }
   logger.debug("initialising logs")
 
-  const [
-    { logs },
-    { BatchLogRecordProcessor, LoggerProvider },
-    { LogExporter },
-  ] = await Promise.all([
-    import("@opentelemetry/api-logs"),
-    import("@opentelemetry/sdk-logs"),
-    import("./exporters/logs.js"),
-  ])
+  const { LogExporter } =
+    require("./exporters/logs.js") as typeof import("./exporters/logs.js")
 
   const provider = new LoggerProvider({
     resource,

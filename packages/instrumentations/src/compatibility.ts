@@ -30,10 +30,7 @@ interface Instrumentation extends InstrumentationBase {
   }
 }
 
-const instrumentations = (await getInstrumentations(
-  {},
-  "all",
-)) as Instrumentation[]
+const instrumentations = getInstrumentations({}, "all") as Instrumentation[]
 
 const versions = new Map<
   string,

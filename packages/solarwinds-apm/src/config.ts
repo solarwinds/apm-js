@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import fsync from "node:fs"
-import fs from "node:fs/promises"
+import fs from "node:fs"
+import { createRequire } from "node:module"
 import path from "node:path"
 import process from "node:process"
-import { pathToFileURL } from "node:url"
 
 import { type Instrumentation } from "@opentelemetry/instrumentation"
 import { type ResourceDetector } from "@opentelemetry/resources"
@@ -28,7 +27,6 @@ import {
   type ResourceDetectorConfigMap,
   type Set,
 } from "@solarwinds-apm/instrumentations"
-import { load } from "@solarwinds-apm/module"
 import * as v from "valibot"
 
 import log from "./commonjs/log.js"
@@ -38,6 +36,8 @@ import {
   schema as sharedSchema,
   schemas as sharedSchemas,
 } from "./shared/config.js"
+
+const require = createRequire(import.meta.url)
 
 interface Instrumentations {
   configs?: InstrumentationConfigMap
@@ -61,7 +61,7 @@ const schemas = {
     v.string(),
     v.rawTransform(({ dataset: { value }, addIssue, NEVER }) => {
       try {
-        return fsync.readFileSync(value, "utf-8")
+        return fs.readFileSync(value, "utf-8")
       } catch (err) {
         addIssue({
           label: "File",
@@ -158,7 +158,7 @@ export interface Configuration extends v.InferOutput<typeof schema> {
   source?: string
 }
 
-export async function read(): Promise<Configuration> {
+export function read(): Configuration {
   const paths: string[] = []
   if (typeof process.env.SW_APM_CONFIG_FILE === "string") {
     paths.push(process.env.SW_APM_CONFIG_FILE)
@@ -174,24 +174,18 @@ export async function read(): Promise<Configuration> {
     )
   }
 
-  const exists = (path: string) =>
-    fs
-      .stat(path)
-      .then((stat) => stat.isFile())
-      .catch(() => false)
-
   let file: object = {}
   let source: string | undefined
 
   for (let option of paths) {
     option = path.resolve(option)
 
-    if (await exists(option)) {
+    if (fs.existsSync(option)) {
       try {
         const read: unknown =
           path.extname(option) === ".json"
-            ? JSON.parse(await fs.readFile(option, { encoding: "utf-8" }))
-            : await load(pathToFileURL(option).href)
+            ? JSON.parse(fs.readFileSync(option, { encoding: "utf-8" }))
+            : require(option)
 
         if (typeof read !== "object" || read === null) {
           throw new Error(`Expected config object, got ${typeof read}.`)
@@ -210,7 +204,7 @@ export async function read(): Promise<Configuration> {
   return { source, ...v.parse(schema, { ...file, ...env.object(process.env) }) }
 }
 
-export function printError(err: unknown) {
+export function printError(err: unknown): string {
   if (err instanceof v.ValiError) {
     const issues = err.issues as v.ValiError<typeof schema>["issues"]
     const flattened = v.flatten(issues)
@@ -226,7 +220,10 @@ export function printError(err: unknown) {
     for (const issue of formatted) {
       log(issue)
     }
+
+    return formatted.join("\n")
   } else {
     log(err)
+    return String(err)
   }
 }
