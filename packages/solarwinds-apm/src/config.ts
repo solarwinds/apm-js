@@ -47,7 +47,6 @@ interface Instrumentations {
 
 interface ResourceDetectors {
   configs?: ResourceDetectorConfigMap
-
   extra?: ResourceDetector[]
   set?: Set
 }
@@ -123,10 +122,7 @@ const schema = v.pipe(
 
       resourceDetectors: v.optional(
         v.object({
-          configs: v.optional(
-            v.record(v.string(), v.record(v.string(), v.boolean())),
-            {},
-          ),
+          configs: v.optional(v.record(v.string(), v.boolean()), {}),
           extra: v.optional(v.array(v.unknown()), []),
           set: v.optional(
             schemas.set,
