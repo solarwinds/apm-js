@@ -178,10 +178,21 @@ export function read(): Configuration {
 
     if (fs.existsSync(option)) {
       try {
-        const read: unknown =
+        let read: unknown =
           path.extname(option) === ".json"
             ? JSON.parse(fs.readFileSync(option, { encoding: "utf-8" }))
             : require(option)
+
+        // https://nodejs.org/docs/latest-v24.x/api/modules.html#loading-ecmascript-modules-using-require
+        if (
+          typeof read === "object" &&
+          read !== null &&
+          "default" in read &&
+          "__esModule" in read &&
+          read.__esModule
+        ) {
+          read = read.default
+        }
 
         if (typeof read !== "object" || read === null) {
           throw new Error(`Expected config object, got ${typeof read}.`)
@@ -189,6 +200,7 @@ export function read(): Configuration {
 
         file = read
         source = option
+        break
       } catch (error) {
         log(`The config file (${option}) could not be read.`, error)
       }
