@@ -430,10 +430,6 @@ importers:
         version: 5.9.3
 
   packages/dependencies:
-    dependencies:
-      '@solarwinds-apm/module':
-        specifier: workspace:^
-        version: link:../module
     devDependencies:
       '@solarwinds-apm/eslint-config':
         specifier: workspace:^
@@ -637,9 +633,6 @@ importers:
       '@opentelemetry/winston-transport':
         specifier: ^0.28.0
         version: 0.28.0
-      '@solarwinds-apm/module':
-        specifier: workspace:^
-        version: link:../module
     devDependencies:
       '@opentelemetry/api':
         specifier: 'catalog:'

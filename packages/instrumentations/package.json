@@ -90,8 +90,7 @@
     "@opentelemetry/resource-detector-gcp": "^0.53.0",
     "@opentelemetry/resources": "catalog:",
     "@opentelemetry/semantic-conventions": "catalog:",
-    "@opentelemetry/winston-transport": "^0.28.0",
-    "@solarwinds-apm/module": "workspace:^"
+    "@opentelemetry/winston-transport": "^0.28.0"
   },
   "peerDependencies": {
     "@opentelemetry/api": "catalog:"

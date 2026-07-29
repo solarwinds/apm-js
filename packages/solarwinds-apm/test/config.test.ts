@@ -18,7 +18,7 @@ import { DiagLogLevel } from "@opentelemetry/api"
 import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
-import { type Configuration, read } from "../src/config.js"
+import { type Configuration, printError, read } from "../src/config.js"
 
 describe("read", () => {
   beforeEach(() => {
@@ -30,8 +30,8 @@ describe("read", () => {
     process.env.SW_APM_SERVICE_KEY = "token:name"
   })
 
-  it("returns proper defaults", async () => {
-    const config = await read()
+  it("returns proper defaults", () => {
+    const config = read()
     const expected: Configuration = {
       service: "name",
       token: "token",
@@ -56,10 +56,10 @@ describe("read", () => {
     expect(config).to.loosely.deep.equal(expected)
   })
 
-  it("properly sets OTLP endpoints", async () => {
+  it("properly sets OTLP endpoints", () => {
     process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
 
-    const config = await read()
+    const config = read()
     expect(config.otlp).to.deep.equal({
       traces: "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
       metrics: "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
@@ -67,13 +67,13 @@ describe("read", () => {
     })
   })
 
-  it("properly uses OTLP env endpoints", async () => {
+  it("properly uses OTLP env endpoints", () => {
     process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
     process.env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://custom.endpoint"
     process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT =
       "http://custom.traces.endpoint/v1/traces"
 
-    const config = await read()
+    const config = read()
     expect(config.otlp).to.deep.equal({
       traces: "http://custom.traces.endpoint/v1/traces",
       metrics: "http://custom.endpoint/v1/metrics",
@@ -81,79 +81,83 @@ describe("read", () => {
     })
   })
 
-  it("parses booleans", async () => {
+  it("parses booleans", () => {
     process.env.SW_APM_ENABLED = "0"
 
-    const config = await read()
+    const config = read()
     expect(config).to.include({ enabled: false })
   })
 
-  it("parses tracing mode", async () => {
+  it("parses tracing mode", () => {
     process.env.SW_APM_TRACING_MODE = "enabled"
 
-    const config = await read()
+    const config = read()
     expect(config).to.include({ tracingMode: true })
   })
 
-  it("parses trusted path", async () => {
+  it("parses trusted path", () => {
     process.env.SW_APM_TRUSTEDPATH = "package.json"
 
-    const config = await read()
+    const config = read()
     expect(config.trustedpath).to.include("solarwinds-apm")
   })
 
-  it("parses otel service name", async () => {
+  it("parses otel service name", () => {
     process.env.OTEL_SERVICE_NAME = "otel-name"
 
-    const config = await read()
+    const config = read()
     expect(config.service).to.equal("otel-name")
   })
 
-  it("properly disables logging", async () => {
+  it("properly disables logging", () => {
     process.env.SW_APM_LOG_LEVEL = "none"
 
-    const config = await read()
+    const config = read()
     expect(config.logLevel).to.equal(DiagLogLevel.NONE)
   })
 
-  it("throws on bad boolean", async () => {
+  it("throws on bad boolean", () => {
     process.env.SW_APM_ENABLED = "foo"
 
-    await expect(read()).to.be.rejected
+    expect(read)
+      .to.throw(Error)
+      .which.satisfies((error: unknown) =>
+        printError(error).includes("enabled"),
+      )
   })
 
-  it("throws on bad tracing mode", async () => {
+  it("throws on bad tracing mode", () => {
     process.env.SW_APM_TRACING_MODE = "foo"
 
-    await expect(read()).to.be.rejected
+    expect(read)
+      .to.throw(Error)
+      .which.satisfies((error: unknown) =>
+        printError(error).includes("tracingMode"),
+      )
   })
 
-  it("throws on non-existent trusted path", async () => {
+  it("throws on non-existent trusted path", () => {
     process.env.SW_APM_TRUSTEDPATH = "foo"
 
-    await expect(read()).to.be.rejected
+    expect(read)
+      .to.throw(Error)
+      .which.satisfies((error: unknown) =>
+        printError(error).includes("trustedpath"),
+      )
   })
 
-  it("supports logs export by default", async () => {
+  it("supports logs export by default", () => {
     process.env.SW_APM_EXPORT_LOGS_ENABLED = "true"
 
-    const config = await read()
+    const config = read()
     expect(config.exportLogsEnabled).to.be.true
-  })
-
-  it("supports cjs configs", async () => {
-    process.env.SW_APM_CONFIG_FILE = "test/configs/commonjs.cjs"
-
-    const config = await read()
-    expect(config.transactionName).not.to.be.undefined
-    expect(config.transactionName!(null!)).to.equal("cjs")
   })
 
   describe("transactionSettings", () => {
     let config: Configuration
-    before(async () => {
-      process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-settings.js"
-      config = await read()
+    before(() => {
+      process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-settings.cjs"
+      config = read()
     })
 
     it("supports regex literals", () => {
@@ -182,18 +186,18 @@ describe("read", () => {
   })
 
   describe("transactionName", () => {
-    it("supports string literals", async () => {
+    it("supports string literals", () => {
       process.env.SW_APM_CONFIG_FILE =
-        "test/configs/transaction-name.literal.js"
-      const config = await read()
+        "test/configs/transaction-name.literal.cjs"
+      const config = read()
 
       expect(config.transactionName?.(null!)).to.equal("name")
     })
 
-    it("supports functions", async () => {
+    it("supports functions", () => {
       process.env.SW_APM_CONFIG_FILE =
-        "test/configs/transaction-name.function.js"
-      const config = await read()
+        "test/configs/transaction-name.function.cjs"
+      const config = read()
 
       expect(
         config.transactionName?.({ name: "one" } as ReadableSpan),
@@ -203,10 +207,10 @@ describe("read", () => {
       ).to.equal("two")
     })
 
-    it("supports schemes", async () => {
+    it("supports schemes", () => {
       process.env.SW_APM_CONFIG_FILE =
-        "test/configs/transaction-name.schemes.js"
-      const config = await read()
+        "test/configs/transaction-name.schemes.cjs"
+      const config = read()
 
       expect(
         config.transactionName?.({
