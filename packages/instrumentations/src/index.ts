@@ -68,7 +68,7 @@ import {
   azureFunctionsDetector,
   azureVmDetector,
 } from "@opentelemetry/resource-detector-azure"
-import { containerDetector } from "@opentelemetry/resource-detector-container/build/src/detectors/index.js"
+import { containerDetector } from "@opentelemetry/resource-detector-container"
 import { gcpDetector } from "@opentelemetry/resource-detector-gcp"
 import {
   envDetector,
