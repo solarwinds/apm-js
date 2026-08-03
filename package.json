@@ -30,8 +30,8 @@
   "devDependencies": {
     "@types/node": "catalog:",
     "eslint": "catalog:",
+    "nx": "^23.1.1",
     "prettier": "catalog:",
-    "typescript": "catalog:",
-    "nx": "^22.7.3"
+    "typescript": "catalog:"
   }
 }
