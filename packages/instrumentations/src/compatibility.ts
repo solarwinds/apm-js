@@ -121,7 +121,7 @@ for (const { range } of ranges) {
 
       // if our lower bound is the same as the previous upper bound
       // merge the two ranges into a single one
-      if (compare(previousUpper.semver, currentLower.semver) === 0) {
+      if (compare(previousUpper.semver, currentLower.semver) >= 0) {
         filter.add(previous)
         currentLower.semver = previousLower.semver
         update(currentLower)
