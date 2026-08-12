@@ -41,8 +41,6 @@ import {
 import {
   InMemorySpanExporter,
   SimpleSpanProcessor,
-} from "@opentelemetry/sdk-trace"
-import {
   TracerProvider,
   type TracerProviderOptions,
 } from "@opentelemetry/sdk-trace"
