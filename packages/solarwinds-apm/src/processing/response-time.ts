@@ -26,7 +26,7 @@ import {
   NoopSpanProcessor,
   type ReadableSpan,
   type SpanProcessor,
-} from "@opentelemetry/sdk-trace-base"
+} from "@opentelemetry/sdk-trace"
 import {
   ATTR_HTTP_REQUEST_METHOD,
   ATTR_HTTP_RESPONSE_STATUS_CODE,

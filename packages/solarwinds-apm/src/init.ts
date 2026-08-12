@@ -16,8 +16,16 @@ limitations under the License.
 
 import { createRequire } from "node:module"
 
-import { diag, type DiagLogger, metrics } from "@opentelemetry/api"
+import {
+  context,
+  diag,
+  type DiagLogger,
+  metrics,
+  propagation,
+  trace,
+} from "@opentelemetry/api"
 import { logs } from "@opentelemetry/api-logs"
+import { AsyncLocalStorageContextManager } from "@opentelemetry/context-async-hooks"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"
 import {
@@ -34,8 +42,8 @@ import { MeterProvider } from "@opentelemetry/sdk-metrics"
 import {
   BatchSpanProcessor,
   type SpanProcessor,
-} from "@opentelemetry/sdk-trace-base"
-import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
+  TracerProvider,
+} from "@opentelemetry/sdk-trace"
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
 import {
   getInstrumentations,
@@ -154,6 +162,7 @@ function initTracing(
       new W3CBaggagePropagator(),
     ],
   })
+  const contextManager = new AsyncLocalStorageContextManager()
 
   if (environment.IS_AWS_LAMBDA) {
     const { JsonSampler } =
@@ -165,7 +174,7 @@ function initTracing(
     processors = [
       new TransactionNameProcessor(config),
       new ResponseTimeProcessor(),
-      new BatchSpanProcessor(new TraceExporter(config)),
+      new BatchSpanProcessor({ exporter: new TraceExporter(config) }),
       new ParentSpanProcessor(),
       new StacktraceProcessor(config),
     ]
@@ -179,18 +188,21 @@ function initTracing(
     processors = [
       new TransactionNameProcessor(config),
       new ResponseTimeProcessor(),
-      new BatchSpanProcessor(new TraceExporter(config)),
+      new BatchSpanProcessor({ exporter: new TraceExporter(config) }),
       new ParentSpanProcessor(),
       new StacktraceProcessor(config),
     ]
   }
 
-  const provider = new NodeTracerProvider({
+  const provider = new TracerProvider({
     resource,
     sampler,
     spanProcessors: processors,
   })
-  provider.register({ propagator })
+  trace.setGlobalTracerProvider(provider)
+  propagation.setGlobalPropagator(propagator)
+  contextManager.enable()
+  context.setGlobalContextManager(contextManager)
 
   SAMPLER.resolve(sampler)
   TRACER_PROVIDER.resolve(provider)
@@ -245,7 +257,9 @@ function initLogs(
 
   const provider = new LoggerProvider({
     resource,
-    processors: [new BatchLogRecordProcessor(new LogExporter(config))],
+    processors: [
+      new BatchLogRecordProcessor({ exporter: new LogExporter(config) }),
+    ],
   })
   logs.setGlobalLoggerProvider(provider)
 

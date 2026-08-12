@@ -36,8 +36,8 @@
     "test": "swtest -p test/tsconfig.json -c src"
   },
   "dependencies": {
-    "@noble/hashes": "^2.0.1",
-    "@opentelemetry/sdk-trace-base": "catalog:",
+    "@noble/hashes": "^2.3.0",
+    "@opentelemetry/sdk-trace": "catalog:",
     "@solarwinds-apm/module": "workspace:^"
   },
   "peerDependencies": {

@@ -18,7 +18,7 @@ import {
   NoopSpanProcessor,
   type ReadableSpan,
   type SpanProcessor,
-} from "@opentelemetry/sdk-trace-base"
+} from "@opentelemetry/sdk-trace"
 import { ATTR_CODE_STACKTRACE } from "@opentelemetry/semantic-conventions"
 import { stacktrace } from "@solarwinds-apm/module"
 

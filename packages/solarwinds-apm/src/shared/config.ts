@@ -16,7 +16,7 @@ limitations under the License.
 
 import { DiagLogLevel } from "@opentelemetry/api"
 import { getStringFromEnv } from "@opentelemetry/core"
-import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace"
 import * as v from "valibot"
 
 /** Processed configuration shared by web and Node.js */

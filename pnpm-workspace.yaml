@@ -9,32 +9,31 @@ catalog:
   # always as a peer dependency if it is used
   "@opentelemetry/api": ^1.9.0
 
-  "@opentelemetry/api-logs": ^0.218.0
-  "@opentelemetry/semantic-conventions": ~1.41.1
+  "@opentelemetry/api-logs": ^0.221.0
+  "@opentelemetry/semantic-conventions": ~1.43.0
 
   # Stable SDK components
-  "@opentelemetry/core": ^2.7.1
-  "@opentelemetry/context-zone": ^2.7.1
-  "@opentelemetry/resources": ^2.7.1
-  "@opentelemetry/sdk-metrics": ^2.7.1
-  "@opentelemetry/sdk-trace-base": ^2.7.1
-  "@opentelemetry/sdk-trace-node": ^2.7.1
-  "@opentelemetry/sdk-trace-web": ^2.7.1
+  "@opentelemetry/core": ^2.10.0
+  "@opentelemetry/context-async-hooks": ^2.10.0
+  "@opentelemetry/context-zone": ^2.10.0
+  "@opentelemetry/resources": ^2.10.0
+  "@opentelemetry/sdk-metrics": ^2.10.0
+  "@opentelemetry/sdk-trace": ^2.10.0
 
   # Experimental SDK components
-  "@opentelemetry/instrumentation": ^0.218.0
-  "@opentelemetry/exporter-logs-otlp-proto": ^0.218.0
-  "@opentelemetry/exporter-metrics-otlp-proto": ^0.218.0
-  "@opentelemetry/exporter-trace-otlp-proto": ^0.218.0
-  "@opentelemetry/instrumentation-grpc": ^0.218.0
-  "@opentelemetry/instrumentation-http": ^0.218.0
-  "@opentelemetry/opentelemetry-browser-detector": ^0.218.0
-  "@opentelemetry/otlp-exporter-base": ^0.218.0
-  "@opentelemetry/sdk-logs": ^0.218.0
+  "@opentelemetry/instrumentation": ^0.221.0
+  "@opentelemetry/exporter-logs-otlp-proto": ^0.221.0
+  "@opentelemetry/exporter-metrics-otlp-proto": ^0.221.0
+  "@opentelemetry/exporter-trace-otlp-proto": ^0.221.0
+  "@opentelemetry/instrumentation-grpc": ^0.221.0
+  "@opentelemetry/instrumentation-http": ^0.221.0
+  "@opentelemetry/opentelemetry-browser-detector": ^0.221.0
+  "@opentelemetry/otlp-exporter-base": ^0.221.0
+  "@opentelemetry/sdk-logs": ^0.221.0
 
   "@types/node": ^20.19.0
   eslint: ^9.39.4
-  prettier: ^3.8.3
+  prettier: ^3.9.6
   typescript: ~5.9.3
 
 minimumReleaseAge: 2880 # 2 days
@@ -48,7 +47,7 @@ publicHoistPattern:
 
 allowBuilds:
   "@prisma/engines": false
-  better-sqlite3: true
+  better-sqlite3: false
   esbuild: false
   nx: true
   prisma: false

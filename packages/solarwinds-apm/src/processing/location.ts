@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import { SpanKind } from "@opentelemetry/api"
-import { NoopSpanProcessor, type Span } from "@opentelemetry/sdk-trace-base"
+import { NoopSpanProcessor, type Span } from "@opentelemetry/sdk-trace"
 import {
   ATTR_URL_FULL,
   ATTR_URL_PATH,

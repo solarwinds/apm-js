@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { diag, metrics } from "@opentelemetry/api"
+import { context, diag, metrics, propagation, trace } from "@opentelemetry/api"
 import { logs } from "@opentelemetry/api-logs"
 import { ZoneContextManager } from "@opentelemetry/context-zone"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
@@ -30,10 +30,7 @@ import {
   LoggerProvider,
 } from "@opentelemetry/sdk-logs"
 import { MeterProvider } from "@opentelemetry/sdk-metrics"
-import {
-  BatchSpanProcessor,
-  WebTracerProvider,
-} from "@opentelemetry/sdk-trace-web"
+import { BatchSpanProcessor, TracerProvider } from "@opentelemetry/sdk-trace"
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions"
 import {
   getInstrumentations,
@@ -122,27 +119,32 @@ function initTracing(config: Configuration, resource: Resource) {
     ttl: 10,
   })
 
-  const provider = new WebTracerProvider({
+  const provider = new TracerProvider({
     resource,
     sampler,
     spanProcessors: [
       new TransactionNameProcessor(config),
       new ResponseTimeProcessor(),
-      new BatchSpanProcessor(new TraceExporter(config)),
+      new BatchSpanProcessor({ exporter: new TraceExporter(config) }),
       new ParentSpanProcessor(),
       new LocationProcessor(),
     ],
   })
-  provider.register({
-    contextManager: new ZoneContextManager(),
-    propagator: new CompositePropagator({
+  trace.setGlobalTracerProvider(provider)
+
+  propagation.setGlobalPropagator(
+    new CompositePropagator({
       propagators: [
         new RequestHeadersPropagator(),
         new TraceContextPropagator(),
         new W3CBaggagePropagator(),
       ],
     }),
-  })
+  )
+
+  const contextManager = new ZoneContextManager()
+  contextManager.enable()
+  context.setGlobalContextManager(contextManager)
 
   SAMPLER.resolve(sampler)
   TRACER_PROVIDER.resolve(provider)
@@ -172,7 +174,9 @@ function initLogs(config: Configuration, resource: Resource) {
 
   const provider = new LoggerProvider({
     resource,
-    processors: [new BatchLogRecordProcessor(new LogExporter(config))],
+    processors: [
+      new BatchLogRecordProcessor({ exporter: new LogExporter(config) }),
+    ],
   })
   logs.setGlobalLoggerProvider(provider)
 

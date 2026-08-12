@@ -27,7 +27,7 @@ import {
   TraceFlags,
 } from "@opentelemetry/api"
 import { DataPointType } from "@opentelemetry/sdk-metrics"
-import { SamplingDecision } from "@opentelemetry/sdk-trace-base"
+import { SamplingDecision } from "@opentelemetry/sdk-trace"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
 import {

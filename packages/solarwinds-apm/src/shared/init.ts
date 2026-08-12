@@ -16,7 +16,7 @@ limitations under the License.
 
 import { type LoggerProvider } from "@opentelemetry/sdk-logs"
 import { type MeterProvider } from "@opentelemetry/sdk-metrics"
-import { type BasicTracerProvider } from "@opentelemetry/sdk-trace-base"
+import { type TracerProvider } from "@opentelemetry/sdk-trace"
 
 import { type Sampler } from "../sampling/sampler.js"
 import { cellStorage } from "../storage.js"
@@ -25,7 +25,7 @@ import { cellStorage } from "../storage.js"
 export const SAMPLER = cellStorage<Sampler | undefined>("sampler")
 
 /** Global reference to the current tracer provider */
-export const TRACER_PROVIDER = cellStorage<BasicTracerProvider | undefined>(
+export const TRACER_PROVIDER = cellStorage<TracerProvider | undefined>(
   "tracer provider",
 )
 

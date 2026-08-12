@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import { DiagLogLevel } from "@opentelemetry/api"
-import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace"
 import { beforeEach, describe, expect, it } from "@solarwinds-apm/test"
 
 import { type Configuration, printError, read } from "../src/config.js"

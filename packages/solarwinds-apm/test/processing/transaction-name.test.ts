@@ -17,7 +17,7 @@ limitations under the License.
 import { setTimeout } from "node:timers/promises"
 
 import { trace } from "@opentelemetry/api"
-import type * as sdk from "@opentelemetry/sdk-trace-base"
+import type * as sdk from "@opentelemetry/sdk-trace"
 import {
   ATTR_HTTP_ROUTE,
   ATTR_URL_PATH,
