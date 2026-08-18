@@ -8,11 +8,12 @@
 | `@grpc/grpc-js`             | `>=1.0.0 <2.0.0`                     | `@opentelemetry/instrumentation-grpc`             |
 | `@hapi/hapi`                | `>=17.0.0 <22.0.0`                   | `@opentelemetry/instrumentation-hapi`             |
 | `@nestjs/core`              | `>=4.0.0 <12.0.0`                    | `@opentelemetry/instrumentation-nestjs-core`      |
-| `@node-redis/client`        | `>=1.0.0 <2.0.0 \|\| >=5.0.0 <6.0.0` | `@opentelemetry/instrumentation-redis`            |
-| `@redis/client`             | `>=1.0.0 <2.0.0 \|\| >=5.0.0 <6.0.0` | `@opentelemetry/instrumentation-redis`            |
+| `@node-redis/client`        | `>=1.0.0 <2.0.0 \|\| >=5.0.0 <7.0.0` | `@opentelemetry/instrumentation-redis`            |
+| `@redis/client`             | `>=1.0.0 <2.0.0 \|\| >=5.0.0 <7.0.0` | `@opentelemetry/instrumentation-redis`            |
+| `@smithy/core`              | `>=3.24.0`                           | `@opentelemetry/instrumentation-aws-sdk`          |
 | `@smithy/middleware-stack`  | `>=2.0.0`                            | `@opentelemetry/instrumentation-aws-sdk`          |
 | `@smithy/smithy-client`     | `>=1.0.3`                            | `@opentelemetry/instrumentation-aws-sdk`          |
-| `amqplib`                   | `>=0.5.5 <2.0.0`                     | `@opentelemetry/instrumentation-amqplib`          |
+| `amqplib`                   | `>=0.5.5 <3.0.0`                     | `@opentelemetry/instrumentation-amqplib`          |
 | `bunyan`                    | `>=1.0.0 <2.0.0`                     | `@opentelemetry/instrumentation-bunyan`           |
 | `cassandra-driver`          | `>=4.4.0 <5.0.0`                     | `@opentelemetry/instrumentation-cassandra-driver` |
 | `connect`                   | `>=2.0.0 <4.0.0`                     | `@opentelemetry/instrumentation-connect`          |
@@ -39,7 +40,7 @@
 | `mysql2`                    | `>=1.4.2 <4.0.0`                     | `@opentelemetry/instrumentation-mysql2`           |
 | `net`                       | `*`                                  | `@opentelemetry/instrumentation-net`              |
 | `openai`                    | `>=4.19.0 <7.0.0`                    | `@opentelemetry/instrumentation-openai`           |
-| `oracledb`                  | `>=6.7.0 <7.0.0`                     | `@opentelemetry/instrumentation-oracledb`         |
+| `oracledb`                  | `>=6.7.0 <8.0.0`                     | `@opentelemetry/instrumentation-oracledb`         |
 | `pg`                        | `>=8.0.3 <9.0.0`                     | `@opentelemetry/instrumentation-pg`               |
 | `pg-pool`                   | `>=2.0.0 <4.0.0`                     | `@opentelemetry/instrumentation-pg`               |
 | `pino`                      | `>=5.14.0 <11.0.0`                   | `@opentelemetry/instrumentation-pino`             |
@@ -47,5 +48,5 @@
 | `restify`                   | `>=4.1.0 <12.0.0`                    | `@opentelemetry/instrumentation-restify`          |
 | `router`                    | `>=1.0.0 <3.0.0`                     | `@opentelemetry/instrumentation-router`           |
 | `socket.io`                 | `>=2.0.0 <5.0.0`                     | `@opentelemetry/instrumentation-socket.io`        |
-| `tedious`                   | `>=1.11.0 <20.0.0`                   | `@opentelemetry/instrumentation-tedious`          |
+| `tedious`                   | `>=1.11.0 <21.0.0`                   | `@opentelemetry/instrumentation-tedious`          |
 | `winston`                   | `>=1.0.0 <4.0.0`                     | `@opentelemetry/instrumentation-winston`          |

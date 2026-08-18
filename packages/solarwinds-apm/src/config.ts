@@ -21,7 +21,7 @@ import process from "node:process"
 
 import { type Instrumentation } from "@opentelemetry/instrumentation"
 import { type ResourceDetector } from "@opentelemetry/resources"
-import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace"
 import {
   type InstrumentationConfigMap,
   type ResourceDetectorConfigMap,

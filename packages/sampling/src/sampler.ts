@@ -25,7 +25,7 @@ import {
   type Sampler,
   SamplingDecision,
   type SamplingResult,
-} from "@opentelemetry/sdk-trace-base"
+} from "@opentelemetry/sdk-trace"
 
 import { Dice } from "./dice.js"
 import { counters } from "./metrics.js"

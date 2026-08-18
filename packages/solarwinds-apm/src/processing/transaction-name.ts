@@ -19,7 +19,7 @@ import {
   NoopSpanProcessor,
   type ReadableSpan,
   type SpanProcessor,
-} from "@opentelemetry/sdk-trace-base"
+} from "@opentelemetry/sdk-trace"
 import {
   ATTR_HTTP_ROUTE,
   ATTR_URL_PATH,

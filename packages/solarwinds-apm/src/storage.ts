@@ -20,7 +20,7 @@ import {
   diag,
   type Span,
 } from "@opentelemetry/api"
-import { type ReadableSpan } from "@opentelemetry/sdk-trace-base"
+import { type ReadableSpan } from "@opentelemetry/sdk-trace"
 
 /**
  * Creates a global value shared between ESM and CommonJS contexts

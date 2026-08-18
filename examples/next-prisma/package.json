@@ -9,21 +9,21 @@
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
-    "@prisma/adapter-better-sqlite3": "^7.1.0",
-    "@prisma/client": "^7.1.0",
-    "@prisma/instrumentation": "^7.1.0",
-    "better-sqlite3": "^12.10.0",
-    "next": "^16.0.7",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
+    "@prisma/adapter-better-sqlite3": "^7.9.1",
+    "@prisma/client": "^7.9.1",
+    "@prisma/instrumentation": "^7.9.1",
+    "better-sqlite3": "^13.0.3",
+    "next": "^16.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "solarwinds-apm": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "*",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19",
     "eslint": "^9.39.1",
-    "eslint-config-next": "^16.0.7",
-    "prisma": "^7.1.0",
+    "eslint-config-next": "^16.3.0",
+    "prisma": "^7.9.1",
     "typescript": "~5.9.3"
   }
 }

@@ -20,14 +20,17 @@ import { setTimeout } from "node:timers/promises"
 
 import {
   context,
+  type ContextManager,
   diag,
   type DiagLogFunction,
   type DiagLogger,
   DiagLogLevel,
   metrics,
   propagation,
+  type TextMapPropagator,
   trace,
 } from "@opentelemetry/api"
+import { AsyncLocalStorageContextManager } from "@opentelemetry/context-async-hooks"
 import {
   AggregationTemporality,
   InMemoryMetricExporter,
@@ -37,13 +40,10 @@ import {
 } from "@opentelemetry/sdk-metrics"
 import {
   InMemorySpanExporter,
-  type SDKRegistrationConfig,
   SimpleSpanProcessor,
-} from "@opentelemetry/sdk-trace-base"
-import {
-  type NodeTracerConfig,
-  NodeTracerProvider,
-} from "@opentelemetry/sdk-trace-node"
+  TracerProvider,
+  type TracerProviderOptions,
+} from "@opentelemetry/sdk-trace"
 import * as chai from "chai"
 import chaiAsPromised from "chai-as-promised"
 import { afterEach } from "mocha"
@@ -100,7 +100,9 @@ diag.setLogger(diagLogger, DiagLogLevel.ALL)
 
 let spanExporter: InMemorySpanExporter
 let spanProcessor: SimpleSpanProcessor
-let tracerProvider: NodeTracerProvider
+let tracerProvider: TracerProvider
+let propagator: TextMapPropagator<unknown> | undefined
+let contextManager: ContextManager
 let shouldResetTrace = true
 
 let metricExporter: InMemoryMetricExporter
@@ -109,7 +111,10 @@ let meterProvider: MeterProvider
 let shouldResetMetrics = true
 
 export interface OtelConfig {
-  trace?: NodeTracerConfig & SDKRegistrationConfig
+  trace?: TracerProviderOptions & {
+    propagator?: TextMapPropagator<unknown>
+    contextManager?: ContextManager
+  }
   metrics?: MeterProviderOptions
 }
 
@@ -122,11 +127,26 @@ async function resetOtel(config: OtelConfig = {}) {
     trace.disable()
 
     spanExporter = new InMemorySpanExporter()
-    spanProcessor = new SimpleSpanProcessor(spanExporter)
+    spanProcessor = new SimpleSpanProcessor({ exporter: spanExporter })
     ;((config.trace ??= {}).spanProcessors ??= []).push(spanProcessor)
 
-    tracerProvider = new NodeTracerProvider(config.trace)
-    tracerProvider.register(config.trace)
+    tracerProvider = new TracerProvider(config.trace)
+    trace.setGlobalTracerProvider(tracerProvider)
+
+    if (config.trace.propagator) {
+      propagator = config.trace.propagator
+      propagation.setGlobalPropagator(propagator)
+    } else {
+      propagator = undefined
+    }
+
+    if (config.trace.contextManager) {
+      contextManager = config.trace.contextManager
+    } else {
+      contextManager = new AsyncLocalStorageContextManager()
+    }
+    contextManager.enable()
+    context.setGlobalContextManager(contextManager)
   } else {
     await spanProcessor.forceFlush()
     spanExporter.reset()

@@ -119,9 +119,9 @@ for (const { range } of ranges) {
       const [currentLower] = comparators
       const [previousLower, previousUpper] = previous
 
-      // if our lower bound is the same as the previous upper bound
+      // if our lower bound overlaps with or touches the previous upper bound
       // merge the two ranges into a single one
-      if (compare(previousUpper.semver, currentLower.semver) === 0) {
+      if (compare(previousUpper.semver, currentLower.semver) >= 0) {
         filter.add(previous)
         currentLower.semver = previousLower.semver
         update(currentLower)
