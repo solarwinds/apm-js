@@ -27,11 +27,22 @@ export const environment = {
     return this.AWS_LAMBDA_NAME !== undefined
   },
 
+  get AZURE_SERVICE_NAME() {
+    return IS_NODE ? process.env.WEBSITE_SITE_NAME : undefined
+  },
+  get IS_AZURE_SERVICE() {
+    return this.AZURE_SERVICE_NAME !== undefined
+  },
+
   get SERVERLESS_NAME() {
-    return this.AWS_LAMBDA_NAME
+    return this.AWS_LAMBDA_NAME ?? this.AZURE_SERVICE_NAME
   },
   get IS_SERVERLESS() {
-    return this.IS_AWS_LAMBDA
+    return this.IS_AWS_LAMBDA || this.IS_AZURE_SERVICE
+  },
+
+  get NEEDS_TOKEN() {
+    return !this.IS_AWS_LAMBDA
   },
 
   get DEV() {
