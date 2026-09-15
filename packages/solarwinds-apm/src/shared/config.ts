@@ -147,8 +147,8 @@ export const schema = (options: Options) =>
       enabled: v.optional(schemas.boolean, true),
 
       serviceKey: options.needsToken
-        ? v.optional(schemas.serviceKey)
-        : schemas.serviceKey,
+        ? schemas.serviceKey
+        : v.optional(schemas.serviceKey),
 
       collector: v.optional(
         schemas.url,
