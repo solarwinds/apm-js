@@ -42,7 +42,7 @@ interface Instrumentations {
 }
 
 const schema = v.intersect([
-  sharedSchema({ triggerTraceEnabled: false }),
+  sharedSchema({ needsToken: true, triggerTraceEnabled: false }),
 
   v.pipe(
     v.object({

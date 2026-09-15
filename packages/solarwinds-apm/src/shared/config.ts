@@ -136,18 +136,19 @@ export const schemas = {
   ]),
 } as const
 
-export interface Defaults {
-  serviceKey?: string
+export interface Options {
+  service?: string
+  needsToken: boolean
   triggerTraceEnabled: boolean
 }
-export const schema = (defaults: Defaults) =>
+export const schema = (options: Options) =>
   v.pipe(
     v.object({
       enabled: v.optional(schemas.boolean, true),
 
-      serviceKey: defaults.serviceKey
-        ? v.optional(schemas.serviceKey, defaults.serviceKey)
-        : schemas.serviceKey,
+      serviceKey: options.needsToken
+        ? schemas.serviceKey
+        : v.optional(schemas.serviceKey),
 
       collector: v.optional(
         schemas.url,
@@ -158,7 +159,7 @@ export const schema = (defaults: Defaults) =>
       tracingMode: v.optional(schemas.tracingMode),
       triggerTraceEnabled: v.optional(
         schemas.boolean,
-        defaults.triggerTraceEnabled,
+        options.triggerTraceEnabled,
       ),
       exportLogsEnabled: v.optional(schemas.boolean, false),
 
@@ -239,8 +240,11 @@ export const schema = (defaults: Defaults) =>
 
     v.transform((raw): Configuration => {
       const service =
-        getStringFromEnv("OTEL_SERVICE_NAME") ?? raw.serviceKey.name
-      const token = raw.serviceKey.token
+        getStringFromEnv("OTEL_SERVICE_NAME") ??
+        options.service ??
+        raw.serviceKey?.name ??
+        "unknown_service:js"
+      const token = raw.serviceKey?.token
 
       const collector = raw.collector
       const headers: Configuration["headers"] = {}

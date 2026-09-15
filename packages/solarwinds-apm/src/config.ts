@@ -76,9 +76,8 @@ const schemas = {
 const schema = v.pipe(
   v.intersect([
     sharedSchema({
-      serviceKey: environment.SERVERLESS_NAME
-        ? `:${environment.SERVERLESS_NAME}`
-        : undefined,
+      service: environment.SERVERLESS_NAME,
+      needsToken: environment.NEEDS_TOKEN,
       triggerTraceEnabled: true,
     }),
 
