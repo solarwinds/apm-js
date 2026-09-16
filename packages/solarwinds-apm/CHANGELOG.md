@@ -1,3 +1,9 @@
+# [16.3.0](https://github.com/solarwinds/apm-js/releases/tag/v16.3.0)
+
+## New features and improvements
+
+- Detect service name from Azure environment
+
 # [16.2.1](https://github.com/solarwinds/apm-js/releases/tag/v16.2.1)
 
 ## Internal changes
