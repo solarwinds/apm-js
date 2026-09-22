@@ -52,6 +52,7 @@ async function runBuild() {
 				},
 			},
 			cjs: {
+				target: ["es2015"],
 				entry: {
 					version: "./src/version.ts",
 				},
