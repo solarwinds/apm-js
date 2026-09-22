@@ -1,3 +1,4 @@
 .next/
 /app/db/
 /prisma/db.*
+next-env.d.ts
