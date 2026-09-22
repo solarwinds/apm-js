@@ -1,14 +1,14 @@
 {
-  "name": "@solarwinds-apm/example-express-mysql",
-  "private": true,
-  "scripts": {
-    "start": "node --import solarwinds-apm index.js"
-  },
-  "dependencies": {
-    "@opentelemetry/api": "^1.9.0",
-    "express": "^5.1.0",
-    "mysql2": "^3.23.2",
-    "solarwinds-apm": "workspace:^",
-    "winston": "^3.18.3"
-  }
+	"name": "@solarwinds-apm/example-express-mysql",
+	"private": true,
+	"scripts": {
+		"start": "node --import solarwinds-apm index.js"
+	},
+	"dependencies": {
+		"@opentelemetry/api": "^1.9.0",
+		"express": "^5.1.0",
+		"mysql2": "^3.24.4",
+		"solarwinds-apm": "workspace:^",
+		"winston": "^3.18.3"
+	}
 }

@@ -1,32 +1,32 @@
 {
-  "port": 8181,
-  "settingsLocation": "settings.db",
-  "sslResourceFolder": "/solarwinds-apm/docker/apm-collector/",
-  "defaultCollectors": [
-    {
-      "port": 12224,
-      "protocol": "grpc",
-      "output": {
-        "console": {
-          "EVENT": {},
-          "METRIC": {},
-          "STATUS": {}
-        },
-        "udp": {
-          "EVENT": {
-            "host": "udpdump",
-            "port": 12225
-          },
-          "METRIC": {
-            "host": "udpdump",
-            "port": 12225
-          },
-          "STATUS": {
-            "host": "udpdump",
-            "port": 12225
-          }
-        }
-      }
-    }
-  ]
+	"port": 8181,
+	"settingsLocation": "settings.db",
+	"sslResourceFolder": "/solarwinds-apm/docker/apm-collector/",
+	"defaultCollectors": [
+		{
+			"port": 12224,
+			"protocol": "grpc",
+			"output": {
+				"console": {
+					"EVENT": {},
+					"METRIC": {},
+					"STATUS": {}
+				},
+				"udp": {
+					"EVENT": {
+						"host": "udpdump",
+						"port": 12225
+					},
+					"METRIC": {
+						"host": "udpdump",
+						"port": 12225
+					},
+					"STATUS": {
+						"host": "udpdump",
+						"port": 12225
+					}
+				}
+			}
+		}
+	]
 }

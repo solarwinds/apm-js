@@ -53,7 +53,7 @@ import { setTransactionName } from "solarwinds-apm"
 const { setTransactionName } = require("solarwinds-apm")
 
 function calledFromWithinTransaction() {
-  setTransactionName("custom-transaction")
+	setTransactionName("custom-transaction")
 }
 ```
 

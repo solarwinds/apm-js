@@ -1,12 +1,12 @@
 .title {
-  font-size: x-large;
+	font-size: x-large;
 }
 
 .container {
-  margin: 64px auto;
-  max-width: 480px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  align-items: center;
+	margin: 64px auto;
+	max-width: 480px;
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+	align-items: center;
 }

@@ -1,17 +1,6 @@
 /*
-Copyright 2023-2026 SolarWinds Worldwide, LLC.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Copyright SolarWinds Worldwide, LLC.
+SPDX-License-Identifier: Apache-2.0
 */
 
 import "./plugin.js"
@@ -19,30 +8,30 @@ import "./plugin.js"
 import { setTimeout } from "node:timers/promises"
 
 import {
-  context,
-  type ContextManager,
-  diag,
-  type DiagLogFunction,
-  type DiagLogger,
-  DiagLogLevel,
-  metrics,
-  propagation,
-  type TextMapPropagator,
-  trace,
+	context,
+	type ContextManager,
+	diag,
+	type DiagLogFunction,
+	type DiagLogger,
+	DiagLogLevel,
+	metrics,
+	propagation,
+	type TextMapPropagator,
+	trace,
 } from "@opentelemetry/api"
 import { AsyncLocalStorageContextManager } from "@opentelemetry/context-async-hooks"
 import {
-  AggregationTemporality,
-  InMemoryMetricExporter,
-  MeterProvider,
-  type MeterProviderOptions,
-  PeriodicExportingMetricReader,
+	AggregationTemporality,
+	InMemoryMetricExporter,
+	MeterProvider,
+	type MeterProviderOptions,
+	PeriodicExportingMetricReader,
 } from "@opentelemetry/sdk-metrics"
 import {
-  InMemorySpanExporter,
-  SimpleSpanProcessor,
-  TracerProvider,
-  type TracerProviderOptions,
+	InMemorySpanExporter,
+	SimpleSpanProcessor,
+	TracerProvider,
+	type TracerProviderOptions,
 } from "@opentelemetry/sdk-trace"
 import * as chai from "chai"
 import chaiAsPromised from "chai-as-promised"
@@ -56,43 +45,43 @@ export { after, afterEach, before, beforeEach, describe, it } from "mocha"
 type Log = [message: string, ...args: unknown[]]
 
 export class TestDiagLogger implements DiagLogger {
-  readonly error: DiagLogFunction
-  readonly warn: DiagLogFunction
-  readonly info: DiagLogFunction
-  readonly debug: DiagLogFunction
-  readonly verbose: DiagLogFunction
+	readonly error: DiagLogFunction
+	readonly warn: DiagLogFunction
+	readonly info: DiagLogFunction
+	readonly debug: DiagLogFunction
+	readonly verbose: DiagLogFunction
 
-  constructor() {
-    this.error = this.#log("error")
-    this.warn = this.#log("warn")
-    this.info = this.#log("info")
-    this.debug = this.#log("debug")
-    this.verbose = this.#log("verbose")
-  }
+	constructor() {
+		this.error = this.#log("error")
+		this.warn = this.#log("warn")
+		this.info = this.#log("info")
+		this.debug = this.#log("debug")
+		this.verbose = this.#log("verbose")
+	}
 
-  #logs: Record<keyof DiagLogger, Log[]> = {
-    error: [],
-    warn: [],
-    info: [],
-    debug: [],
-    verbose: [],
-  }
-  #log(level: keyof DiagLogger): DiagLogFunction {
-    return (...log) => {
-      this.#logs[level].push(log)
-      if (process.env.SW_APM_TEST_LOG) {
-        console.log(level.toUpperCase().padEnd(7, " "), "|", ...log)
-      }
-    }
-  }
+	#logs: Record<keyof DiagLogger, Log[]> = {
+		error: [],
+		warn: [],
+		info: [],
+		debug: [],
+		verbose: [],
+	}
+	#log(level: keyof DiagLogger): DiagLogFunction {
+		return (...log) => {
+			this.#logs[level].push(log)
+			if (process.env.SW_APM_TEST_LOG) {
+				console.log(level.toUpperCase().padEnd(7, " "), "|", ...log)
+			}
+		}
+	}
 
-  get logs(): Record<keyof DiagLogger, Log[]> {
-    return this.#logs
-  }
+	get logs(): Record<keyof DiagLogger, Log[]> {
+		return this.#logs
+	}
 
-  reset() {
-    this.#logs = { error: [], warn: [], info: [], debug: [], verbose: [] }
-  }
+	reset() {
+		this.#logs = { error: [], warn: [], info: [], debug: [], verbose: [] }
+	}
 }
 
 const diagLogger = new TestDiagLogger()
@@ -111,95 +100,95 @@ let meterProvider: MeterProvider
 let shouldResetMetrics = true
 
 export interface OtelConfig {
-  trace?: TracerProviderOptions & {
-    propagator?: TextMapPropagator<unknown>
-    contextManager?: ContextManager
-  }
-  metrics?: MeterProviderOptions
+	trace?: TracerProviderOptions & {
+		propagator?: TextMapPropagator<unknown>
+		contextManager?: ContextManager
+	}
+	metrics?: MeterProviderOptions
 }
 
 async function resetOtel(config: OtelConfig = {}) {
-  if (shouldResetTrace || config.trace) {
-    shouldResetTrace = Boolean(config.trace)
+	if (shouldResetTrace || config.trace) {
+		shouldResetTrace = Boolean(config.trace)
 
-    context.disable()
-    propagation.disable()
-    trace.disable()
+		context.disable()
+		propagation.disable()
+		trace.disable()
 
-    spanExporter = new InMemorySpanExporter()
-    spanProcessor = new SimpleSpanProcessor({ exporter: spanExporter })
-    ;((config.trace ??= {}).spanProcessors ??= []).push(spanProcessor)
+		spanExporter = new InMemorySpanExporter()
+		spanProcessor = new SimpleSpanProcessor({ exporter: spanExporter })
+		;((config.trace ??= {}).spanProcessors ??= []).push(spanProcessor)
 
-    tracerProvider = new TracerProvider(config.trace)
-    trace.setGlobalTracerProvider(tracerProvider)
+		tracerProvider = new TracerProvider(config.trace)
+		trace.setGlobalTracerProvider(tracerProvider)
 
-    if (config.trace.propagator) {
-      propagator = config.trace.propagator
-      propagation.setGlobalPropagator(propagator)
-    } else {
-      propagator = undefined
-    }
+		if (config.trace.propagator) {
+			propagator = config.trace.propagator
+			propagation.setGlobalPropagator(propagator)
+		} else {
+			propagator = undefined
+		}
 
-    if (config.trace.contextManager) {
-      contextManager = config.trace.contextManager
-    } else {
-      contextManager = new AsyncLocalStorageContextManager()
-    }
-    contextManager.enable()
-    context.setGlobalContextManager(contextManager)
-  } else {
-    await spanProcessor.forceFlush()
-    spanExporter.reset()
-  }
+		if (config.trace.contextManager) {
+			contextManager = config.trace.contextManager
+		} else {
+			contextManager = new AsyncLocalStorageContextManager()
+		}
+		contextManager.enable()
+		context.setGlobalContextManager(contextManager)
+	} else {
+		await spanProcessor.forceFlush()
+		spanExporter.reset()
+	}
 
-  if (shouldResetMetrics || config.metrics) {
-    shouldResetMetrics = Boolean(config.metrics)
+	if (shouldResetMetrics || config.metrics) {
+		shouldResetMetrics = Boolean(config.metrics)
 
-    metrics.disable()
+		metrics.disable()
 
-    metricExporter = new InMemoryMetricExporter(AggregationTemporality.DELTA)
-    metricReader = new PeriodicExportingMetricReader({
-      exporter: metricExporter,
-    })
+		metricExporter = new InMemoryMetricExporter(AggregationTemporality.DELTA)
+		metricReader = new PeriodicExportingMetricReader({
+			exporter: metricExporter,
+		})
 
-    meterProvider = new MeterProvider({
-      ...config.metrics,
-      readers: [...(config.metrics?.readers ?? []), metricReader],
-    })
-    metrics.setGlobalMeterProvider(meterProvider)
-  } else {
-    await metricReader.forceFlush()
-    metricExporter.reset()
-  }
+		meterProvider = new MeterProvider({
+			...config.metrics,
+			readers: [...(config.metrics?.readers ?? []), metricReader],
+		})
+		metrics.setGlobalMeterProvider(meterProvider)
+	} else {
+		await metricReader.forceFlush()
+		metricExporter.reset()
+	}
 }
 void resetOtel()
 afterEach(() => resetOtel())
 
 export const otel = Object.freeze({
-  /** Spans processed during the current test */
-  spans: async () => {
-    await spanProcessor.forceFlush()
-    return spanExporter.getFinishedSpans()
-  },
-  /** Metrics processed during the current test */
-  metrics: async () => {
-    await metricReader.forceFlush()
-    return metricExporter.getMetrics()
-  },
-  /** Logs processed during the current test */
-  get logs() {
-    return diagLogger.logs
-  },
-  /** Reset OTel, optionally with a custom config */
-  reset: (config?: OtelConfig) => resetOtel(config),
+	/** Spans processed during the current test. */
+	spans: async () => {
+		await spanProcessor.forceFlush()
+		return spanExporter.getFinishedSpans()
+	},
+	/** Metrics processed during the current test. */
+	metrics: async () => {
+		await metricReader.forceFlush()
+		return metricExporter.getMetrics()
+	},
+	/** Logs processed during the current test. */
+	get logs() {
+		return diagLogger.logs
+	},
+	/** Reset OTel, optionally with a custom config. */
+	reset: (config?: OtelConfig) => resetOtel(config),
 })
 
 beforeEach(async function () {
-  const CURRENT_RETRY = "currentRetry"
-  const currentRetry = this.currentTest?.[CURRENT_RETRY]()
+	const CURRENT_RETRY = "currentRetry"
+	const currentRetry = this.currentTest?.[CURRENT_RETRY]()
 
-  if (currentRetry) {
-    this.timeout(1000 + this.timeout())
-    await setTimeout(currentRetry * 1000)
-  }
+	if (currentRetry) {
+		this.timeout(1000 + this.timeout())
+		await setTimeout(currentRetry * 1000)
+	}
 })

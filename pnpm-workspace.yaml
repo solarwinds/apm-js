@@ -9,53 +9,54 @@ catalog:
   # always as a peer dependency if it is used
   "@opentelemetry/api": ^1.9.0
 
-  "@opentelemetry/api-logs": ^0.221.0
+  "@opentelemetry/api-logs": ^0.222.0
   "@opentelemetry/semantic-conventions": ~1.43.0
 
   # Stable SDK components
-  "@opentelemetry/core": ^2.10.0
-  "@opentelemetry/context-async-hooks": ^2.10.0
-  "@opentelemetry/context-zone": ^2.10.0
-  "@opentelemetry/resources": ^2.10.0
-  "@opentelemetry/sdk-metrics": ^2.10.0
-  "@opentelemetry/sdk-trace": ^2.10.0
+  "@opentelemetry/core": ^2.11.0
+  "@opentelemetry/context-async-hooks": ^2.11.0
+  "@opentelemetry/context-zone": ^2.11.0
+  "@opentelemetry/resources": ^2.11.0
+  "@opentelemetry/sdk-metrics": ^2.11.0
+  "@opentelemetry/sdk-trace": ^2.11.0
 
   # Experimental SDK components
-  "@opentelemetry/instrumentation": ^0.221.0
-  "@opentelemetry/exporter-logs-otlp-proto": ^0.221.0
-  "@opentelemetry/exporter-metrics-otlp-proto": ^0.221.0
-  "@opentelemetry/exporter-trace-otlp-proto": ^0.221.0
-  "@opentelemetry/instrumentation-grpc": ^0.221.0
-  "@opentelemetry/instrumentation-http": ^0.221.0
-  "@opentelemetry/opentelemetry-browser-detector": ^0.221.0
-  "@opentelemetry/otlp-exporter-base": ^0.221.0
-  "@opentelemetry/sdk-logs": ^0.221.0
+  "@opentelemetry/instrumentation": ^0.222.0
+  "@opentelemetry/exporter-logs-otlp-proto": ^0.222.0
+  "@opentelemetry/exporter-metrics-otlp-proto": ^0.222.0
+  "@opentelemetry/exporter-trace-otlp-proto": ^0.222.0
+  "@opentelemetry/instrumentation-grpc": ^0.222.0
+  "@opentelemetry/instrumentation-http": ^0.222.0
+  "@opentelemetry/opentelemetry-browser-detector": ^0.222.0
+  "@opentelemetry/otlp-exporter-base": ^0.222.0
+  "@opentelemetry/sdk-logs": ^0.222.0
 
-  "@types/node": ^20.19.0
-  eslint: ^9.39.4
-  prettier: ^3.9.6
-  typescript: ~5.9.3
+  "@types/node": ^26.6.2
+  oxfmt: ^0.68.0
+  oxlint: ^1.83.0
+  oxlint-tsgolint: ~7.0.2002
+  tsdown: ^0.23.0
+  typescript: ~7.0.2
 
 minimumReleaseAge: 2880 # 2 days
 minimumReleaseAgeIgnoreMissingTime: false
 minimumReleaseAgeStrict: true
 trustPolicy: no-downgrade
 blockExoticSubdeps: true
+autoDedupe: true
 
 publicHoistPattern:
   - "@types/*"
+  - oxlint-tsgolint
 
 allowBuilds:
   "@prisma/engines": false
   better-sqlite3: false
-  esbuild: false
   nx: true
   prisma: false
   sharp: false
-  unrs-resolver: false
 
 trustPolicyExclude:
   - chokidar@4.0.3
-  - eslint-import-resolver-typescript@3.10.1
   - semver@6.3.1
   - undici-types@6.21.0

@@ -1,12 +1,12 @@
 .list {
-  border-collapse: collapse;
+	border-collapse: collapse;
 }
 
 .list td {
-  padding: 4px 8px;
-  text-decoration: line-through;
+	padding: 4px 8px;
+	text-decoration: line-through;
 }
 
 .list tr:not(:first-child) td {
-  border-top: 1px solid grey;
+	border-top: 1px solid grey;
 }

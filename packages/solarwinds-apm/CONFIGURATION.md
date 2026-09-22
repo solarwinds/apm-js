@@ -22,7 +22,7 @@ The package exports a type for the config file which can be used to type check i
 import type { Config } from "solarwinds-apm"
 
 const config: Config = {
-  // ...
+	// ...
 }
 export default config
 ```
@@ -30,7 +30,7 @@ export default config
 ```js
 /** @type {import("solarwinds-apm").Config} */
 module.exports = {
-  // ...
+	// ...
 }
 ```
 
@@ -89,12 +89,12 @@ When set to a string literal, every transaction will use the name without except
 
 ```js
 export default {
-  transactionName: (span) => {
-    const route = span.attributes["http.route"]
-    if (route) {
-      return `${span.name} ${route}`
-    }
-  },
+	transactionName: (span) => {
+		const route = span.attributes["http.route"]
+		if (route) {
+			return `${span.name} ${route}`
+		}
+	},
 }
 ```
 
@@ -129,19 +129,19 @@ If multiple entries match, the first one will be used. Note that setting `tracin
 
 ```js
 module.exports = {
-  transactionSettings: [
-    {
-      tracing: "disabled",
-      regex: /\/auth\/.*$/,
-    },
-    {
-      tracing: "disabled",
-      matcher: (id) => {
-        const [kind] = id.split(":")
-        if (kind === "CLIENT") return true
-      },
-    },
-  ],
+	transactionSettings: [
+		{
+			tracing: "disabled",
+			regex: /\/auth\/.*$/,
+		},
+		{
+			tracing: "disabled",
+			matcher: (id) => {
+				const [kind] = id.split(":")
+				if (kind === "CLIENT") return true
+			},
+		},
+	],
 }
 ```
 
@@ -153,10 +153,10 @@ The library supports attaching stacktraces to spans on end with the `code.stackt
 import { hrTimeToMilliseconds } from "@opentelemetry/core"
 
 export default {
-  spanStacktraceFilter: (span) => {
-    // capture stacktraces for spans longer than 5 seconds
-    return hrTimeToMilliseconds(span.duration) >= 5000
-  },
+	spanStacktraceFilter: (span) => {
+		// capture stacktraces for spans longer than 5 seconds
+		return hrTimeToMilliseconds(span.duration) >= 5000
+	},
 }
 ```
 
@@ -169,13 +169,13 @@ A [default set of instrumentations](../instrumentations/COMPATIBILITY.md) are pr
 
 ```js
 module.exports = {
-  instrumentations: {
-    configs: {
-      "@opentelemetry/instrumentation-pg": { requireParentSpan: true },
-      // it is also possible to disable instrumentations completely if preferred
-      "@opentelemetry/instrumentation-fs": { enabled: false },
-    },
-    extra: [new CustomInstrumentation(customInstrumentationConfig)],
-  },
+	instrumentations: {
+		configs: {
+			"@opentelemetry/instrumentation-pg": { requireParentSpan: true },
+			// it is also possible to disable instrumentations completely if preferred
+			"@opentelemetry/instrumentation-fs": { enabled: false },
+		},
+		extra: [new CustomInstrumentation(customInstrumentationConfig)],
+	},
 }
 ```

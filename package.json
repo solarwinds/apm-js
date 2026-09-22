@@ -1,37 +1,36 @@
 {
-  "name": "@solarwinds-apm/solarwinds-apm",
-  "private": true,
-  "license": "Apache-2.0",
-  "scripts": {
-    "build": "nx run-many -t build",
-    "docker": "node scripts/docker.js",
-    "example": "node scripts/example.js",
-    "lambda": "node scripts/lambda.js",
-    "lint": "prettier --check *.json *.md .github && nx run-many -t lint",
-    "lint:fix": "prettier --write *.json *.md .github && nx run-many -t lint:fix",
-    "publish": "nx run solarwinds-apm:build && nx run solarwinds-apm:release",
-    "scan": "nx run-many -t scan && node scripts/lambda.js solarwinds-apm && node scripts/scan.js",
-    "test": "nx run-many -t test",
-    "version:check": "nx release plan:check",
-    "version:latest": "node scripts/version.js",
-    "version:prerelease": "node scripts/version.js pre",
-    "version:testing": "node scripts/testing.js"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.10.0"
-    },
-    "runtime": {
-      "name": "node",
-      "version": "^20.19.0 || ^22.13.0 || >=24"
-    }
-  },
-  "devDependencies": {
-    "@types/node": "catalog:",
-    "eslint": "catalog:",
-    "nx": "^23.1.1",
-    "prettier": "catalog:",
-    "typescript": "catalog:"
-  }
+	"name": "@solarwinds-apm/solarwinds-apm",
+	"private": true,
+	"license": "Apache-2.0",
+	"scripts": {
+		"build": "nx run-many -t build",
+		"docker": "node scripts/docker.js",
+		"example": "node scripts/example.js",
+		"lambda": "node scripts/lambda.js",
+		"lint": "oxfmt --check !packages !scripts !examples && nx run-many -t lint",
+		"lint:fix": "oxfmt !packages !scripts !examples && nx run-many -t lint:fix",
+		"publish": "nx run solarwinds-apm:build && nx run solarwinds-apm:release",
+		"scan": "nx run-many -t scan && node scripts/lambda.js solarwinds-apm && node scripts/scan.js",
+		"test": "nx run-many -t test",
+		"version:check": "nx release plan:check",
+		"version:latest": "node scripts/version.js",
+		"version:prerelease": "node scripts/version.js pre",
+		"version:testing": "node scripts/testing.js"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"nx": "^23.2.1",
+		"oxfmt": "catalog:",
+		"typescript": "catalog:"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "pnpm",
+			"version": "^12.6.0"
+		},
+		"runtime": {
+			"name": "node",
+			"version": "^20.19.0 || ^22.13.0 || >=24"
+		}
+	}
 }

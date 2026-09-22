@@ -1,29 +1,28 @@
 {
-  "name": "@solarwinds-apm/example-next-prisma",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "prisma generate && prisma migrate deploy && next build --webpack",
-    "lint": "eslint . --max-warnings=0",
-    "start": "prisma generate && prisma migrate deploy && next start"
-  },
-  "dependencies": {
-    "@opentelemetry/api": "^1.9.0",
-    "@prisma/adapter-better-sqlite3": "^7.9.1",
-    "@prisma/client": "^7.9.1",
-    "@prisma/instrumentation": "^7.9.1",
-    "better-sqlite3": "^13.0.3",
-    "next": "^16.3.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "solarwinds-apm": "workspace:^"
-  },
-  "devDependencies": {
-    "@types/node": "*",
-    "@types/react": "^19",
-    "eslint": "^9.39.1",
-    "eslint-config-next": "^16.3.0",
-    "prisma": "^7.9.1",
-    "typescript": "~5.9.3"
-  }
+	"name": "@solarwinds-apm/example-next-prisma",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "prisma generate && prisma migrate deploy && next build --webpack",
+		"lint": "oxlint",
+		"start": "prisma generate && prisma migrate deploy && next start"
+	},
+	"dependencies": {
+		"@opentelemetry/api": "^1.9.0",
+		"@prisma/adapter-better-sqlite3": "^7.9.1",
+		"@prisma/client": "^7.9.1",
+		"@prisma/instrumentation": "^7.9.1",
+		"better-sqlite3": "^13.0.3",
+		"next": "^16.3.5",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
+		"solarwinds-apm": "workspace:^"
+	},
+	"devDependencies": {
+		"@types/node": "^26.6.2",
+		"@types/react": "^19.3.0",
+		"oxlint": "^1.83.0",
+		"prisma": "^7.9.1",
+		"typescript": "~7.0.2"
+	}
 }

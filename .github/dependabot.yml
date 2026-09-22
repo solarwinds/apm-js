@@ -34,8 +34,8 @@ updates:
 
       build:
         patterns:
-          - "node-releases"
           - "nx"
+          - "tsdown"
           - "typescript"
         update-types:
           - minor
@@ -43,11 +43,9 @@ updates:
 
       lint:
         patterns:
-          - "eslint"
-          - "prettier"
-          - "typescript-eslint"
-          - "@eslint/*"
-          - "eslint-*"
+          - "oxfmt"
+          - "oxlint"
+          - "oxlint-tsgolint"
         update-types:
           - minor
           - patch

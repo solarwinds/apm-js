@@ -1,0 +1,62 @@
+{
+	"name": "@solarwinds-apm/configs",
+	"version": "3.1.0",
+	"license": "Apache-2.0",
+	"contributors": [
+		"Raphaël Thériault <raphael.theriault@solarwinds.com>"
+	],
+	"files": [
+		"./src/",
+		"./dist/"
+	],
+	"type": "module",
+	"exports": {
+		"./oxlint": "./dist/oxlint.mjs",
+		"./tsdown": "./dist/tsdown.mjs",
+		"./package.json": "./package.json",
+		"./tsconfig.json": "./tsconfig.json"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsdown && oxfmt package.json",
+		"lint": "oxfmt --check && oxlint --deny-warnings",
+		"lint:fix": "oxlint --fix && oxfmt",
+		"release": "node ../../scripts/publish.js"
+	},
+	"dependencies": {
+		"@tsconfig/node-ts": "*",
+		"@tsconfig/node22": "*",
+		"eslint-plugin-license-header": "^0.9.0",
+		"oxlint-config-presets": "^0.1.20",
+		"oxlint-tsgolint": "catalog:"
+	},
+	"devDependencies": {
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	},
+	"peerDependenciesMeta": {
+		"oxfmt": {
+			"optional": true
+		},
+		"oxlint": {
+			"optional": true
+		},
+		"tsdown": {
+			"optional": true
+		},
+		"typescript": {
+			"optional": true
+		}
+	}
+}

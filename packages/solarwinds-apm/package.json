@@ -1,123 +1,122 @@
 {
-  "name": "solarwinds-apm",
-  "version": "16.2.0",
-  "description": "OpenTelemetry-based SolarWinds APM library",
-  "license": "Apache-2.0",
-  "contributors": [
-    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/solarwinds/apm-js.git",
-    "directory": "packages/solarwinds-apm"
-  },
-  "bugs": {
-    "url": "https://github.com/solarwinds/apm-js/issues"
-  },
-  "homepage": "https://github.com/solarwinds/apm-js/tree/main/packages/solarwinds-apm#readme",
-  "keywords": [
-    "tracing",
-    "instrumentation",
-    "performance",
-    "monitoring",
-    "profiling",
-    "debugging",
-    "analytics",
-    "metrics",
-    "apm",
-    "otel",
-    "opentelemetry",
-    "telemetry",
-    "solarwinds"
-  ],
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/commonjs/index.js"
-    },
-    "./web": {
-      "import": "./dist/web/index.js"
-    },
-    "./web.js": {
-      "import": "./dist/web.js"
-    }
-  },
-  "main": "./dist/commonjs/index.js",
-  "files": [
-    "./src/",
-    "./dist/",
-    "./CHANGELOG.md",
-    "./CONFIGURATION.md"
-  ],
-  "sideEffects": [
-    "./src/index.ts",
-    "./src/web/index.ts",
-    "./src/commonjs/index.js",
-    "./dist/index.js",
-    "./dist/web/index.js",
-    "./dist/commonjs/index.js",
-    "./dist/web.js"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "scripts": {
-    "build": "node build.js && tsc && node build.post.js",
-    "lint": "node build.js && prettier --check . && eslint . --max-warnings=0",
-    "lint:fix": "node build.js && eslint --fix . && prettier --write .",
-    "release": "node ../../scripts/publish.js",
-    "scan": "node ../../scripts/scan.js",
-    "test": "swtest -p test/tsconfig.json -c src"
-  },
-  "dependencies": {
-    "@opentelemetry/api-logs": "catalog:",
-    "@opentelemetry/context-async-hooks": "catalog:",
-    "@opentelemetry/context-zone": "catalog:",
-    "@opentelemetry/core": "catalog:",
-    "@opentelemetry/exporter-logs-otlp-proto": "catalog:",
-    "@opentelemetry/exporter-metrics-otlp-proto": "catalog:",
-    "@opentelemetry/exporter-trace-otlp-proto": "catalog:",
-    "@opentelemetry/instrumentation": "catalog:",
-    "@opentelemetry/otlp-exporter-base": "catalog:",
-    "@opentelemetry/resources": "catalog:",
-    "@opentelemetry/sdk-logs": "catalog:",
-    "@opentelemetry/sdk-metrics": "catalog:",
-    "@opentelemetry/sdk-trace": "catalog:",
-    "@opentelemetry/semantic-conventions": "catalog:",
-    "@solarwinds-apm/dependencies": "workspace:^",
-    "@solarwinds-apm/instrumentations": "workspace:^",
-    "@solarwinds-apm/module": "workspace:^",
-    "@solarwinds-apm/sampling": "workspace:^",
-    "import-in-the-middle": "^3.0.1",
-    "json-stringify-safe": "^5.0.1",
-    "node-releases": "^2",
-    "semver": "^7.8.5",
-    "valibot": "^1.4.2"
-  },
-  "peerDependencies": {
-    "@opentelemetry/api": "catalog:",
-    "zone.js": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^0.14.0 || ^0.15.0 || ^0.16.0"
-  },
-  "peerDependenciesMeta": {
-    "@opentelemetry/api": {
-      "optional": false
-    }
-  },
-  "devDependencies": {
-    "@opentelemetry/api": "catalog:",
-    "@solarwinds-apm/eslint-config": "workspace:^",
-    "@solarwinds-apm/test": "workspace:^",
-    "@types/json-stringify-safe": "^5",
-    "@types/semver": "^7",
-    "caniuse-lite": "^1",
-    "esbuild": "^0.28.2",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "typescript": "catalog:"
-  },
-  "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24"
-  }
+	"name": "solarwinds-apm",
+	"version": "16.2.0",
+	"description": "OpenTelemetry-based SolarWinds APM library",
+	"keywords": [
+		"analytics",
+		"apm",
+		"debugging",
+		"instrumentation",
+		"metrics",
+		"monitoring",
+		"opentelemetry",
+		"otel",
+		"performance",
+		"profiling",
+		"solarwinds",
+		"telemetry",
+		"tracing"
+	],
+	"homepage": "https://github.com/solarwinds/apm-js/tree/main/packages/solarwinds-apm#readme",
+	"bugs": {
+		"url": "https://github.com/solarwinds/apm-js/issues"
+	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Raphaël Thériault <raphael.theriault@solarwinds.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/solarwinds/apm-js.git",
+		"directory": "packages/solarwinds-apm"
+	},
+	"files": [
+		"./src/",
+		"./dist/",
+		"./index.cjs",
+		"./index.d.cts",
+		"./CHANGELOG.md",
+		"./CONFIGURATION.md"
+	],
+	"type": "module",
+	"sideEffects": [
+		"./src/index.ts",
+		"./src/web/index.ts",
+		"./src/commonjs/index.js",
+		"./dist/index.js",
+		"./dist/web/index.js",
+		"./dist/commonjs/index.js",
+		"./dist/web.js"
+	],
+	"main": "./index.cjs",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./index.cjs"
+		},
+		"./web": "./dist/web.mjs",
+		"./hook.mjs": "./hook.mjs",
+		"./package.json": "./package.json"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "node build.ts && oxfmt package.json",
+		"lint": "oxfmt --check && oxlint --deny-warnings",
+		"lint:fix": "oxlint --fix && oxfmt",
+		"release": "node ../../scripts/publish.js",
+		"scan": "node ../../scripts/scan.js",
+		"test": "swtest -p test/tsconfig.json -c src"
+	},
+	"dependencies": {
+		"@opentelemetry/api-logs": "catalog:",
+		"@opentelemetry/core": "catalog:",
+		"@solarwinds-apm/instrumentations": "workspace:^",
+		"import-in-the-middle": "^3.5.1",
+		"node-releases": "^2.0.56",
+		"require-in-the-middle": "^8.0.0"
+	},
+	"devDependencies": {
+		"@opentelemetry/api": "catalog:",
+		"@opentelemetry/context-async-hooks": "catalog:",
+		"@opentelemetry/context-zone": "catalog:",
+		"@opentelemetry/exporter-logs-otlp-proto": "catalog:",
+		"@opentelemetry/exporter-metrics-otlp-proto": "catalog:",
+		"@opentelemetry/exporter-trace-otlp-proto": "catalog:",
+		"@opentelemetry/instrumentation": "catalog:",
+		"@opentelemetry/otlp-exporter-base": "catalog:",
+		"@opentelemetry/resources": "catalog:",
+		"@opentelemetry/sdk-logs": "catalog:",
+		"@opentelemetry/sdk-metrics": "catalog:",
+		"@opentelemetry/sdk-trace": "catalog:",
+		"@opentelemetry/semantic-conventions": "catalog:",
+		"@solarwinds-apm/configs": "workspace:^",
+		"@solarwinds-apm/dependencies": "workspace:^",
+		"@solarwinds-apm/module": "workspace:^",
+		"@solarwinds-apm/sampling": "workspace:^",
+		"@solarwinds-apm/test": "workspace:^",
+		"@types/json-stringify-safe": "^5",
+		"@types/semver": "^7",
+		"json-stringify-safe": "^5.0.1",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"semver": "^7.8.5",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"valibot": "^1.5.0"
+	},
+	"peerDependencies": {
+		"@opentelemetry/api": "catalog:",
+		"zone.js": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^0.14.0 || ^0.15.0 || ^0.16.0"
+	},
+	"peerDependenciesMeta": {
+		"@opentelemetry/api": {
+			"optional": false
+		}
+	},
+	"engines": {
+		"node": "^20.19.0 || ^22.13.0 || >=24"
+	}
 }
