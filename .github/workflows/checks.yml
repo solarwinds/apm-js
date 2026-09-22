@@ -170,7 +170,7 @@ jobs:
           - node: 23
             pass: false
           # Sanity check
-          - node: 8
+          - node: 10
             pass: false
       fail-fast: false
 
