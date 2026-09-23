@@ -244,8 +244,8 @@ catalogs:
       specifier: ~1.43.0
       version: 1.43.0
     '@types/node':
-      specifier: ^26.6.2
-      version: 26.6.2
+      specifier: ^22
+      version: 22.20.4
     oxfmt:
       specifier: ^0.68.0
       version: 0.68.0
@@ -268,7 +268,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
-        version: 26.6.2
+        version: 22.20.4
       nx:
         specifier: ^23.2.1
         version: 23.2.1
@@ -304,7 +304,7 @@ importers:
         version: 5.2.1(supports-color@10.2.2)
       mysql2:
         specifier: ^3.24.4
-        version: 3.24.4(@types/node@26.6.2)
+        version: 3.24.4(@types/node@22.20.4)
       solarwinds-apm:
         specifier: workspace:^
         version: link:../../packages/solarwinds-apm
@@ -395,7 +395,7 @@ importers:
         version: link:../../packages/solarwinds-apm
     devDependencies:
       '@types/node':
-        specifier: ^26.6.2
+        specifier: '*'
         version: 26.6.2
       '@types/react':
         specifier: ^19.3.0
@@ -844,7 +844,7 @@ importers:
         version: 10.0.10
       '@types/node':
         specifier: 'catalog:'
-        version: 26.6.2
+        version: 22.20.4
       c8:
         specifier: ^11.0.0
         version: 11.0.0
@@ -2541,6 +2541,9 @@ packages:
 
   '@types/mocha@10.0.10':
     resolution: {integrity: sha512-xPyYSz1cMPnJQhl0CLMH68j3gprKZaTjG3s5Vi+fDgx+uhG9NOXwbVt52eFS8ECyXhyKcjDLCBEqBExKuiZb7Q==}
+
+  '@types/node@22.20.4':
+    resolution: {integrity: sha512-zJRE40jpHtKqE/C4fgHrAKQLJuSpzEnP9ff9Y7YtoR3Wd2pwqzlekDeEuUQXjRd+QCYnVnNwuJYmhdk9XV8gvA==}
 
   '@types/node@26.6.2':
     resolution: {integrity: sha512-X1P21scMv4zGKLYqjdGjaKa7COa0RKVYYZZN/NfvLQ1JegxFhdhpZG/Lyn8AXx6CDUavKAd11v6BvfpkDByK8g==}
@@ -5106,6 +5109,9 @@ packages:
   unconfig-core@7.5.0:
     resolution: {integrity: sha512-Su3FauozOGP44ZmKdHy2oE6LPjk51M/TRRjHv2HNCWiDvfvCoxC2lno6jevMA91MYAdCdwP05QnWdWpSbncX/w==}
 
+  undici-types@6.21.0:
+    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
@@ -6823,6 +6829,10 @@ snapshots:
 
   '@types/mocha@10.0.10': {}
 
+  '@types/node@22.20.4':
+    dependencies:
+      undici-types: 6.21.0
+
   '@types/node@26.6.2':
     dependencies:
       undici-types: 8.9.0
@@ -8402,9 +8412,9 @@ snapshots:
       seq-queue: 0.0.5
       sqlstring: 2.3.3
 
-  mysql2@3.24.4(@types/node@26.6.2):
+  mysql2@3.24.4(@types/node@22.20.4):
     dependencies:
-      '@types/node': 26.6.2
+      '@types/node': 22.20.4
       aws-ssl-profiles: 1.1.2
       generate-function: 2.3.1
       iconv-lite: 0.7.3
@@ -9522,6 +9532,8 @@ snapshots:
     dependencies:
       '@quansync/fs': 1.0.0
       quansync: 1.0.0
+
+  undici-types@6.21.0: {}
 
   undici-types@8.9.0: {}
 

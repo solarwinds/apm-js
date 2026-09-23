@@ -31,7 +31,7 @@ catalog:
   "@opentelemetry/otlp-exporter-base": ^0.222.0
   "@opentelemetry/sdk-logs": ^0.222.0
 
-  "@types/node": ^26.6.2
+  "@types/node": ^22
   oxfmt: ^0.68.0
   oxlint: ^1.83.0
   oxlint-tsgolint: ~7.0.2002

@@ -19,7 +19,7 @@
 		"solarwinds-apm": "workspace:^"
 	},
 	"devDependencies": {
-		"@types/node": "^26.6.2",
+		"@types/node": "*",
 		"@types/react": "^19.3.0",
 		"oxlint": "^1.83.0",
 		"prisma": "^7.9.1",

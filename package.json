@@ -27,10 +27,6 @@
 		"packageManager": {
 			"name": "pnpm",
 			"version": "^12.6.0"
-		},
-		"runtime": {
-			"name": "node",
-			"version": "^20.19.0 || ^22.13.0 || >=24"
 		}
 	}
 }
