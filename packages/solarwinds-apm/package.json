@@ -115,5 +115,27 @@
 	},
 	"engines": {
 		"node": "^22.18.0 || ^24.3.0 || >=26"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"outputs": [
+					"{projectRoot}/src/timestamp.ts",
+					"..."
+				]
+			},
+			"lint": {
+				"dependsOn": [
+					"build",
+					"..."
+				]
+			},
+			"lint:fix": {
+				"dependsOn": [
+					"build",
+					"..."
+				]
+			}
+		}
 	}
 }

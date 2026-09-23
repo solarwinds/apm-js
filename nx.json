@@ -6,9 +6,7 @@
 			"{workspaceRoot}/.oxfmtrc.json",
 			"{workspaceRoot}/pnpm-workspace.yaml",
 			"{workspaceRoot}/pnpm-lock.yaml",
-			"{workspaceRoot}/packages/configs/tsconfig.json",
-			"{workspaceRoot}/packages/configs/src/oxlint.ts",
-			"{workspaceRoot}/packages/configs/src/tsdown.ts"
+			"{workspaceRoot}/packages/configs/tsconfig.json"
 		],
 		"default": ["{projectRoot}/**/*", "sharedGlobals"]
 	},
@@ -16,26 +14,20 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				"{projectRoot}/build.ts",
-				"{projectRoot}/tsdown.config.ts",
 				"{projectRoot}/package.json",
 				"{projectRoot}/tsconfig.json",
+				"{projectRoot}/tsdown.config.ts",
 				"{projectRoot}/src/**"
 			],
-			"outputs": [
-				"{projectRoot}/dist/**",
-				"{projectRoot}/src/timestamp.ts",
-				"{projectRoot}/COMPATIBILITY.md",
-				"{projectRoot}/.next/**"
-			],
+			"outputs": ["{projectRoot}/dist/**"],
 			"cache": true
 		},
 		"lint": {
-			"dependsOn": ["build"],
+			"dependsOn": ["^build"],
 			"cache": true
 		},
 		"lint:fix": {
-			"dependsOn": ["build"],
+			"dependsOn": ["^build"],
 			"cache": true
 		},
 		"release": {
@@ -48,7 +40,7 @@
 			"cache": false
 		},
 		"test": {
-			"dependsOn": ["build"],
+			"dependsOn": ["^build"],
 			"inputs": [
 				"{projectRoot}/package.json",
 				"{projectRoot}/tsconfig.json",
