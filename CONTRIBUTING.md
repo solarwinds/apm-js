@@ -36,9 +36,9 @@ There's also a `pnpm run test:watch` command to intelligently run tests on code 
 
 ## Code style
 
-Code style is enforced throughout the entire project with Prettier and ESLint. The Prettier configuration is at [`.prettierrc.json`](./.prettierrc.json) and the ESLint configuration [lives under its own package](./packages/configs/index.js) and uses the new flat config format. The native C++ code is checked more summarily with clang-format.
+Code style is enforced throughout the entire project with `oxfmt` and `oxlint`. The `oxfmt` configuration is at [`.oxfmtrc.json`](./.oxfmtrc.json) and the `oxlint` configuration [lives under its own package](./packages/configs/src/oxlint.ts).
 
-Code style can be checked using `pnpm run lint` and fixed as much as possible with `pnpm run lint:fix`. Note that `pnpm run lint` is run in CI. It's recommended to set your editor to format on save and use an ESLint integration.
+Code style can be checked using `pnpm run lint` and fixed as much as possible with `pnpm run lint:fix`. Note that `pnpm run lint` is run in CI. It's recommended to set your editor to format on save and use an `oxc` extension.
 
 ## Node version support
 
