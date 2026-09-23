@@ -28,7 +28,7 @@
 		},
 		"lint:fix": {
 			"dependsOn": ["^build"],
-			"cache": true
+			"cache": false
 		},
 		"release": {
 			"dependsOn": ["^release"],
