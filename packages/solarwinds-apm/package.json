@@ -35,18 +35,15 @@
 		"./dist/",
 		"./index.cjs",
 		"./index.d.cts",
+		"./hook.mjs",
 		"./CHANGELOG.md",
 		"./CONFIGURATION.md"
 	],
 	"type": "module",
 	"sideEffects": [
 		"./src/index.ts",
-		"./src/web/index.ts",
-		"./src/commonjs/index.js",
-		"./dist/index.js",
-		"./dist/web/index.js",
-		"./dist/commonjs/index.js",
-		"./dist/web.js"
+		"./dist/index.mjs",
+		"./index.cjs"
 	],
 	"main": "./index.cjs",
 	"exports": {
@@ -117,6 +114,6 @@
 		}
 	},
 	"engines": {
-		"node": "^20.19.0 || ^22.13.0 || >=24"
+		"node": "^22.18.0 || ^24.3.0 || >=26"
 	}
 }

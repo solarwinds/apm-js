@@ -471,10 +471,10 @@ importers:
         specifier: ^0.32.0
         version: 0.32.0
       import-in-the-middle:
-        specifier: ^3.0.0
+        specifier: '*'
         version: 3.5.1
       require-in-the-middle:
-        specifier: ^8.0.1
+        specifier: '*'
         version: 8.0.1(supports-color@10.2.2)
     devDependencies:
       '@fastify/otel':

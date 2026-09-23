@@ -15,7 +15,8 @@
 	},
 	"files": [
 		"./src/",
-		"./dist/"
+		"./dist/",
+		"./COMPATIBILITY.md"
 	],
 	"type": "module",
 	"exports": {
@@ -103,8 +104,8 @@
 	},
 	"peerDependencies": {
 		"@opentelemetry/api": "catalog:",
-		"import-in-the-middle": "^3.0.0",
-		"require-in-the-middle": "^8.0.1"
+		"import-in-the-middle": "*",
+		"require-in-the-middle": "*"
 	},
 	"peerDependenciesMeta": {
 		"@opentelemetry/api": {
@@ -118,6 +119,6 @@
 		}
 	},
 	"engines": {
-		"node": "^20.19.0 || ^22.13.0 || >=24"
+		"node": "^22.18.0 || ^24.3.0 || >=26"
 	}
 }
