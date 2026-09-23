@@ -34,7 +34,7 @@
 		"lint:fix": "oxlint --fix && oxfmt",
 		"release": "node ../../scripts/publish.js",
 		"scan": "node ../../scripts/scan.js",
-		"test": "swtest -p test/tsconfig.json -c src"
+		"test": "swtest -c src"
 	},
 	"dependencies": {
 		"@opentelemetry/core": "catalog:",

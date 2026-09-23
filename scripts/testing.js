@@ -21,7 +21,7 @@ const setVersion = (packageJsonPath) => {
 	const packageJson = JSON.parse(readFileSync(packageJsonPath, { encoding: "utf-8" }))
 	packageJson.version = version
 	writeFileSync(packageJsonPath, JSON.stringify(packageJson))
-	execSync(`prettier --write ${packageJsonPath}`, { stdio: "inherit" })
+	execSync(`oxfmt ${packageJsonPath}`, { stdio: "inherit" })
 }
 
 const packages = readdirSync("packages")

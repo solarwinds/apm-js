@@ -42,7 +42,7 @@ if (process.argv[2] === "pre") {
 }
 
 exec(command)
-exec("prettier --write 'packages/*/package.json'")
+exec("oxfmt 'packages/*/package.json'")
 
 exec("git add yarn.lock .yarn 'packages/**/package.json'")
 
