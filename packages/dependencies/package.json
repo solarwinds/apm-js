@@ -1,48 +1,37 @@
 {
-  "name": "@solarwinds-apm/dependencies",
-  "version": "2.0.2",
-  "license": "Apache-2.0",
-  "contributors": [
-    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/solarwinds/apm-js.git",
-    "directory": "packages/dependencies"
-  },
-  "bugs": {
-    "url": "https://github.com/solarwinds/apm-js/issues"
-  },
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "./src/",
-    "./dist/"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "scripts": {
-    "build": "tsc",
-    "lint": "prettier --check . && eslint . --max-warnings=0",
-    "lint:fix": "eslint --fix . && prettier --write .",
-    "release": "node ../../scripts/publish.js",
-    "scan": "node ../../scripts/scan.js",
-    "test": "swtest -p test/tsconfig.json -c src"
-  },
-  "devDependencies": {
-    "@solarwinds-apm/eslint-config": "workspace:^",
-    "@solarwinds-apm/test": "workspace:^",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "typescript": "catalog:"
-  },
-  "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24"
-  }
+	"name": "@solarwinds-apm/dependencies",
+	"version": "2.0.2",
+	"license": "Apache-2.0",
+	"contributors": [
+		"Raphaël Thériault <raphael.theriault@solarwinds.com>"
+	],
+	"files": [
+		"./src/",
+		"./dist/"
+	],
+	"type": "module",
+	"exports": {
+		".": "./dist/index.mjs",
+		"./package.json": "./package.json"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsdown && oxfmt package.json",
+		"lint": "oxfmt --check && oxlint --deny-warnings",
+		"lint:fix": "oxlint --fix && oxfmt",
+		"release": "node ../../scripts/publish.js",
+		"scan": "node ../../scripts/scan.js",
+		"test": "swtest -c src"
+	},
+	"devDependencies": {
+		"@solarwinds-apm/configs": "workspace:^",
+		"@solarwinds-apm/test": "workspace:^",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	}
 }

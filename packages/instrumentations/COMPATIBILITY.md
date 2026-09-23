@@ -28,7 +28,7 @@
 | `graphql`                   | `>=14.0.0 <17.0.0`                   | `@opentelemetry/instrumentation-graphql`          |
 | `http`                      | `*`                                  | `@opentelemetry/instrumentation-http`             |
 | `https`                     | `*`                                  | `@opentelemetry/instrumentation-http`             |
-| `ioredis`                   | `>=2.0.0 <6.0.0`                     | `@opentelemetry/instrumentation-ioredis`          |
+| `ioredis`                   | `>=2.0.0 <7.0.0`                     | `@opentelemetry/instrumentation-ioredis`          |
 | `kafkajs`                   | `>=0.3.0 <3.0.0`                     | `@opentelemetry/instrumentation-kafkajs`          |
 | `knex`                      | `>=0.10.0 <4.0.0`                    | `@opentelemetry/instrumentation-knex`             |
 | `koa`                       | `>=2.0.0 <4.0.0`                     | `@opentelemetry/instrumentation-koa`              |

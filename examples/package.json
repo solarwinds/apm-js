@@ -1,15 +1,15 @@
 {
-  "name": "@solarwinds-apm/examples",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "lint": "prettier --check . && eslint . --max-warnings=0",
-    "lint:fix": "eslint --fix . && prettier --write ."
-  },
-  "devDependencies": {
-    "@solarwinds-apm/eslint-config": "workspace:^",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "typescript": "catalog:"
-  }
+	"name": "@solarwinds-apm/examples",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"lint": "oxfmt --check && oxlint --deny-warnings --ignore-pattern next-prisma",
+		"lint:fix": "oxlint --fix --ignore-pattern next-prisma && oxfmt"
+	},
+	"devDependencies": {
+		"@solarwinds-apm/configs": "workspace:^",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"typescript": "catalog:"
+	}
 }

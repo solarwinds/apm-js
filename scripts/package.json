@@ -1,20 +1,21 @@
 {
-  "name": "@solarwinds-apm/scripts",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "lint": "prettier --check . && eslint . --max-warnings=0",
-    "lint:fix": "eslint --fix . && prettier --write ."
-  },
-  "dependencies": {
-    "archiver": "^8.0.0",
-    "dotenv": "^16.6.1",
-    "ora": "^9.4.1"
-  },
-  "devDependencies": {
-    "@solarwinds-apm/eslint-config": "workspace:^",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "typescript": "catalog:"
-  }
+	"name": "@solarwinds-apm/scripts",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"lint": "oxfmt --check && oxlint --deny-warnings",
+		"lint:fix": "oxlint --fix && oxfmt"
+	},
+	"dependencies": {
+		"archiver": "^8.0.0",
+		"dotenv": "^16.6.1",
+		"ora": "^9.4.1"
+	},
+	"devDependencies": {
+		"@solarwinds-apm/configs": "workspace:^",
+		"@types/archiver": "^8.0.0",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"typescript": "catalog:"
+	}
 }

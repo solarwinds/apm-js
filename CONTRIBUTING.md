@@ -36,9 +36,9 @@ There's also a `pnpm run test:watch` command to intelligently run tests on code 
 
 ## Code style
 
-Code style is enforced throughout the entire project with Prettier and ESLint. The Prettier configuration is at [`.prettierrc.json`](./.prettierrc.json) and the ESLint configuration [lives under its own package](./packages/eslint-config/index.js) and uses the new flat config format. The native C++ code is checked more summarily with clang-format.
+Code style is enforced throughout the entire project with `oxfmt` and `oxlint`. The `oxfmt` configuration is at [`.oxfmtrc.json`](./.oxfmtrc.json) and the `oxlint` configuration [lives under its own package](./packages/configs/src/oxlint.ts).
 
-Code style can be checked using `pnpm run lint` and fixed as much as possible with `pnpm run lint:fix`. Note that `pnpm run lint` is run in CI. It's recommended to set your editor to format on save and use an ESLint integration.
+Code style can be checked using `pnpm run lint` and fixed as much as possible with `pnpm run lint:fix`. Note that `pnpm run lint` is run in CI. It's recommended to set your editor to format on save and use an `oxc` extension.
 
 ## Node version support
 
@@ -46,7 +46,7 @@ This project aims to support all currently maintained and future LTS Node versio
 
 When a new future LTS is released (any even-numbered Node versions) the project should be updated to support it so that by the time it becomes an LTS it has already been well-tested. In most cases this doesn't require any change apart from updating the Docker images. It is however possible, although unlikely, that a future release may break native code or a dependency, which should be kept in mind.
 
-When a version has been EOL for over a year, support for it should be removed. This project should not encourage customers to use unsupported, potentially insecure Node versions. The version of `@types/node` depended on by all packages should be updated to the next LTS version, for instance going from `^14.0.0` to `^16.0.0`. The `target` in the [base tsconfig](./tsconfig.base.json) should be updated to the highest standard supported by the next LTS version (check [`node.green`](https://node.green) for this). The Docker images for the old LTS should be removed, and the distro versions used by the Docker images for the next LTS should be changed to the lowest supported versions if necessary, for instance removing `14-alpine3.12` and moving from `16-alpine` to `16-alpine:3.12`. All `package.json` `engines` fields should also be updated to the next LTS version.
+When a version has been EOL for over a year, support for it should be removed. This project should not encourage customers to use unsupported, potentially insecure Node versions. The version of `@types/node` depended on by all packages should be updated to the next LTS version, for instance going from `^14.0.0` to `^16.0.0`. The [base tsconfig](./packages/configs/tsconfig.json) and [`tsdown` config](./packages/configs/tsdown.config.ts) should be updated. The Docker images for the old LTS should be removed, and the distro versions used by the Docker images for the next LTS should be changed to the lowest supported versions if necessary, for instance removing `14-alpine3.12` and moving from `16-alpine` to `16-alpine:3.12`. All `package.json` `engines` fields should also be updated to the next LTS version.
 
 ## Versioning
 

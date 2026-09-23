@@ -1,0 +1,16 @@
+{
+	"extends": ["@tsconfig/node22/tsconfig.json", "@tsconfig/node-ts/tsconfig.json"],
+
+	"compilerOptions": {
+		"strict": true,
+		"types": ["node"],
+		"noEmit": true,
+		"skipLibCheck": true,
+		"composite": true,
+
+		"forceConsistentCasingInFileNames": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true
+	}
+}

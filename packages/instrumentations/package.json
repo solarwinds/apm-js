@@ -1,117 +1,134 @@
 {
-  "name": "@solarwinds-apm/instrumentations",
-  "version": "3.2.0",
-  "license": "Apache-2.0",
-  "contributors": [
-    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/solarwinds/apm-js.git",
-    "directory": "packages/instrumentations"
-  },
-  "bugs": {
-    "url": "https://github.com/solarwinds/apm-js/issues"
-  },
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js"
-    },
-    "./web": {
-      "import": "./dist/web/index.js"
-    }
-  },
-  "files": [
-    "./src/",
-    "./dist/"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "scripts": {
-    "build": "tsc && node ./dist/compatibility.js",
-    "lint": "prettier --check . && eslint . --max-warnings=0",
-    "lint:fix": "eslint --fix . && prettier --write .",
-    "release": "node ../../scripts/publish.js",
-    "scan": "node ../../scripts/scan.js",
-    "test": "swtest -p test/tsconfig.json -c src"
-  },
-  "dependencies": {
-    "@fastify/otel": "^0.20.1",
-    "@opentelemetry/auto-instrumentations-web": "^0.66.0",
-    "@opentelemetry/core": "catalog:",
-    "@opentelemetry/instrumentation": "catalog:",
-    "@opentelemetry/instrumentation-amqplib": "^0.68.0",
-    "@opentelemetry/instrumentation-aws-lambda": "^0.73.0",
-    "@opentelemetry/instrumentation-aws-sdk": "^0.76.0",
-    "@opentelemetry/instrumentation-bunyan": "^0.66.0",
-    "@opentelemetry/instrumentation-cassandra-driver": "^0.66.0",
-    "@opentelemetry/instrumentation-connect": "^0.64.0",
-    "@opentelemetry/instrumentation-cucumber": "^0.37.0",
-    "@opentelemetry/instrumentation-dataloader": "^0.38.0",
-    "@opentelemetry/instrumentation-dns": "^0.64.0",
-    "@opentelemetry/instrumentation-express": "^0.69.0",
-    "@opentelemetry/instrumentation-fs": "^0.40.0",
-    "@opentelemetry/instrumentation-generic-pool": "^0.64.0",
-    "@opentelemetry/instrumentation-graphql": "^0.69.0",
-    "@opentelemetry/instrumentation-grpc": "catalog:",
-    "@opentelemetry/instrumentation-hapi": "^0.67.0",
-    "@opentelemetry/instrumentation-http": "catalog:",
-    "@opentelemetry/instrumentation-ioredis": "^0.69.0",
-    "@opentelemetry/instrumentation-kafkajs": "^0.30.0",
-    "@opentelemetry/instrumentation-knex": "^0.65.0",
-    "@opentelemetry/instrumentation-koa": "^0.69.0",
-    "@opentelemetry/instrumentation-lru-memoizer": "^0.65.0",
-    "@opentelemetry/instrumentation-memcached": "^0.64.0",
-    "@opentelemetry/instrumentation-mongodb": "^0.74.0",
-    "@opentelemetry/instrumentation-mongoose": "^0.67.0",
-    "@opentelemetry/instrumentation-mysql": "^0.67.0",
-    "@opentelemetry/instrumentation-mysql2": "^0.67.0",
-    "@opentelemetry/instrumentation-nestjs-core": "^0.67.0",
-    "@opentelemetry/instrumentation-net": "^0.65.0",
-    "@opentelemetry/instrumentation-openai": "^0.19.0",
-    "@opentelemetry/instrumentation-oracledb": "^0.46.0",
-    "@opentelemetry/instrumentation-pg": "^0.73.0",
-    "@opentelemetry/instrumentation-pino": "^0.67.0",
-    "@opentelemetry/instrumentation-redis": "^0.69.0",
-    "@opentelemetry/instrumentation-restify": "^0.66.0",
-    "@opentelemetry/instrumentation-router": "^0.65.0",
-    "@opentelemetry/instrumentation-runtime-node": "^0.34.0",
-    "@opentelemetry/instrumentation-socket.io": "^0.68.0",
-    "@opentelemetry/instrumentation-tedious": "^0.40.0",
-    "@opentelemetry/instrumentation-undici": "^0.31.0",
-    "@opentelemetry/instrumentation-winston": "^0.65.0",
-    "@opentelemetry/opentelemetry-browser-detector": "catalog:",
-    "@opentelemetry/resource-detector-aws": "^2.21.0",
-    "@opentelemetry/resource-detector-azure": "^0.29.0",
-    "@opentelemetry/resource-detector-container": "^0.8.12",
-    "@opentelemetry/resource-detector-gcp": "^0.56.0",
-    "@opentelemetry/resources": "catalog:",
-    "@opentelemetry/semantic-conventions": "catalog:",
-    "@opentelemetry/winston-transport": "^0.31.0"
-  },
-  "peerDependencies": {
-    "@opentelemetry/api": "catalog:"
-  },
-  "peerDependenciesMeta": {
-    "@opentelemetry/api": {
-      "optional": false
-    }
-  },
-  "devDependencies": {
-    "@opentelemetry/api": "catalog:",
-    "@solarwinds-apm/eslint-config": "workspace:^",
-    "@solarwinds-apm/test": "workspace:^",
-    "@types/semver": "^7",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "semver": "^7.8.5",
-    "typescript": "catalog:",
-    "zone.js": "^0.16.0"
-  },
-  "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24"
-  }
+	"name": "@solarwinds-apm/instrumentations",
+	"version": "3.2.0",
+	"bugs": {
+		"url": "https://github.com/solarwinds/apm-js/issues"
+	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Raphaël Thériault <raphael.theriault@solarwinds.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/solarwinds/apm-js.git",
+		"directory": "packages/instrumentations"
+	},
+	"files": [
+		"./src/",
+		"./dist/",
+		"./COMPATIBILITY.md"
+	],
+	"type": "module",
+	"exports": {
+		".": "./dist/index.mjs",
+		"./web": "./dist/web/index.mjs",
+		"./package.json": "./package.json"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsdown && node compatibility.ts && oxfmt package.json COMPATIBILITY.md",
+		"lint": "oxfmt --check && oxlint --deny-warnings",
+		"lint:fix": "oxlint --fix && oxfmt",
+		"release": "node ../../scripts/publish.js",
+		"scan": "node ../../scripts/scan.js",
+		"test": "swtest -c src"
+	},
+	"dependencies": {
+		"@opentelemetry/core": "catalog:",
+		"@opentelemetry/winston-transport": "^0.32.0"
+	},
+	"devDependencies": {
+		"@fastify/otel": "^0.21.0",
+		"@opentelemetry/api": "catalog:",
+		"@opentelemetry/auto-instrumentations-web": "^0.67.0",
+		"@opentelemetry/instrumentation": "catalog:",
+		"@opentelemetry/instrumentation-amqplib": "^0.69.0",
+		"@opentelemetry/instrumentation-aws-lambda": "^0.74.0",
+		"@opentelemetry/instrumentation-aws-sdk": "^0.77.0",
+		"@opentelemetry/instrumentation-bunyan": "^0.67.0",
+		"@opentelemetry/instrumentation-cassandra-driver": "^0.67.0",
+		"@opentelemetry/instrumentation-connect": "^0.65.0",
+		"@opentelemetry/instrumentation-cucumber": "^0.38.0",
+		"@opentelemetry/instrumentation-dataloader": "^0.39.0",
+		"@opentelemetry/instrumentation-dns": "^0.65.0",
+		"@opentelemetry/instrumentation-express": "^0.70.0",
+		"@opentelemetry/instrumentation-fs": "^0.41.0",
+		"@opentelemetry/instrumentation-generic-pool": "^0.65.0",
+		"@opentelemetry/instrumentation-graphql": "^0.70.0",
+		"@opentelemetry/instrumentation-grpc": "catalog:",
+		"@opentelemetry/instrumentation-hapi": "^0.68.0",
+		"@opentelemetry/instrumentation-http": "catalog:",
+		"@opentelemetry/instrumentation-ioredis": "^0.70.0",
+		"@opentelemetry/instrumentation-kafkajs": "^0.31.0",
+		"@opentelemetry/instrumentation-knex": "^0.66.0",
+		"@opentelemetry/instrumentation-koa": "^0.70.0",
+		"@opentelemetry/instrumentation-lru-memoizer": "^0.66.0",
+		"@opentelemetry/instrumentation-memcached": "^0.65.0",
+		"@opentelemetry/instrumentation-mongodb": "^0.75.0",
+		"@opentelemetry/instrumentation-mongoose": "^0.68.0",
+		"@opentelemetry/instrumentation-mysql": "^0.68.0",
+		"@opentelemetry/instrumentation-mysql2": "^0.68.0",
+		"@opentelemetry/instrumentation-nestjs-core": "^0.68.0",
+		"@opentelemetry/instrumentation-net": "^0.66.0",
+		"@opentelemetry/instrumentation-openai": "^0.20.0",
+		"@opentelemetry/instrumentation-oracledb": "^0.47.0",
+		"@opentelemetry/instrumentation-pg": "^0.74.0",
+		"@opentelemetry/instrumentation-pino": "^0.68.0",
+		"@opentelemetry/instrumentation-redis": "^0.70.0",
+		"@opentelemetry/instrumentation-restify": "^0.67.0",
+		"@opentelemetry/instrumentation-router": "^0.66.0",
+		"@opentelemetry/instrumentation-runtime-node": "^0.35.0",
+		"@opentelemetry/instrumentation-socket.io": "^0.69.0",
+		"@opentelemetry/instrumentation-tedious": "^0.41.0",
+		"@opentelemetry/instrumentation-undici": "^0.32.0",
+		"@opentelemetry/instrumentation-winston": "^0.66.0",
+		"@opentelemetry/opentelemetry-browser-detector": "catalog:",
+		"@opentelemetry/resource-detector-aws": "^2.22.0",
+		"@opentelemetry/resource-detector-azure": "^0.30.0",
+		"@opentelemetry/resource-detector-container": "^0.8.13",
+		"@opentelemetry/resource-detector-gcp": "^0.57.0",
+		"@opentelemetry/resources": "catalog:",
+		"@opentelemetry/semantic-conventions": "catalog:",
+		"@solarwinds-apm/configs": "workspace:^",
+		"@solarwinds-apm/test": "workspace:^",
+		"@types/semver": "^7",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"semver": "^7.8.5",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"zone.js": "^0.16.3"
+	},
+	"peerDependencies": {
+		"@opentelemetry/api": "catalog:",
+		"import-in-the-middle": "*",
+		"require-in-the-middle": "*"
+	},
+	"peerDependenciesMeta": {
+		"@opentelemetry/api": {
+			"optional": false
+		},
+		"import-in-the-middle": {
+			"optional": false
+		},
+		"require-in-the-middle": {
+			"optional": false
+		}
+	},
+	"engines": {
+		"node": "^22.18.0 || ^24.3.0 || >=26"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"outputs": [
+					"{projectRoot}/COMPATIBILITY.md",
+					"..."
+				]
+			}
+		}
+	}
 }

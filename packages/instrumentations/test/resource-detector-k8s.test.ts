@@ -1,17 +1,6 @@
 /*
-Copyright 2023-2026 SolarWinds Worldwide, LLC.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Copyright SolarWinds Worldwide, LLC.
+SPDX-License-Identifier: Apache-2.0
 */
 
 import { randomBytes, randomUUID } from "node:crypto"
@@ -23,7 +12,7 @@ import process from "node:process"
 import { detectResources } from "@opentelemetry/resources"
 import { afterEach, describe, expect, it } from "@solarwinds-apm/test"
 
-import { K8sDetector } from "../src/resource-detector-k8s.js"
+import { K8sDetector } from "../src/resource-detector-k8s.ts"
 
 const NAMESPACE_FILE = path.join(os.tmpdir(), "solarwinds-apm-k8s-namespace")
 const MOUNTINFO_FILE = path.join(os.tmpdir(), "solarwinds-apm-mountinfo")
@@ -37,19 +26,19 @@ const FILE_UID = randomUUID()
 const ENV_NAME = randomBytes(4).toString("hex")
 
 const envNamespace = () => {
-  process.env.SW_K8S_POD_NAMESPACE = ENV_NAMESPACE
+	process.env.SW_K8S_POD_NAMESPACE = ENV_NAMESPACE
 }
 const fileNamespace = async () => {
-  await fs.writeFile(NAMESPACE_FILE, `${FILE_NAMESPACE}\n`)
+	await fs.writeFile(NAMESPACE_FILE, `${FILE_NAMESPACE}\n`)
 }
 
 const envUid = () => {
-  process.env.SW_K8S_POD_UID = ENV_UID
+	process.env.SW_K8S_POD_UID = ENV_UID
 }
 const fileUid = async () => {
-  await fs.writeFile(
-    MOUNTINFO_FILE,
-    `
+	await fs.writeFile(
+		MOUNTINFO_FILE,
+		`
 757 605 0:139 / / rw,relatime master:180 - overlay overlay rw,context="system_u:object_r:data_t:s0:c171,c852",lowerdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/25/fs,upperdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/26/fs,workdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/26/work
 758 757 0:143 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw
 760 757 0:145 / /dev rw,nosuid - tmpfs tmpfs rw,context="system_u:object_r:data_t:s0:c171,c852",size=65536k,mode=755
@@ -77,85 +66,85 @@ const fileUid = async () => {
 627 758 0:150 / /proc/scsi ro,relatime - tmpfs tmpfs ro,context="system_u:object_r:data_t:s0:c171,c852"
 628 765 0:151 / /sys/firmware ro,relatime - tmpfs tmpfs ro,context="system_u:object_r:data_t:s0:c171,c852"
     `,
-  )
+	)
 }
 
 const envName = () => {
-  process.env.SW_K8S_POD_NAME = ENV_NAME
+	process.env.SW_K8S_POD_NAME = ENV_NAME
 }
 
 describe("k8sDetector", () => {
-  const k8sDetector = new K8sDetector(NAMESPACE_FILE, MOUNTINFO_FILE)
+	const k8sDetector = new K8sDetector(NAMESPACE_FILE, MOUNTINFO_FILE)
 
-  afterEach(async () => {
-    Reflect.deleteProperty(process.env, "SW_K8S_POD_NAMESPACE")
-    Reflect.deleteProperty(process.env, "SW_K8S_POD_UID")
-    Reflect.deleteProperty(process.env, "SW_K8S_POD_NAME")
-    await fs.rm(NAMESPACE_FILE, { force: true })
-    await fs.rm(MOUNTINFO_FILE, { force: true })
-  })
+	afterEach(async () => {
+		Reflect.deleteProperty(process.env, "SW_K8S_POD_NAMESPACE")
+		Reflect.deleteProperty(process.env, "SW_K8S_POD_UID")
+		Reflect.deleteProperty(process.env, "SW_K8S_POD_NAME")
+		await fs.rm(NAMESPACE_FILE, { force: true })
+		await fs.rm(MOUNTINFO_FILE, { force: true })
+	})
 
-  it("detects attributes from env", async () => {
-    envNamespace()
-    envUid()
-    envName()
+	it("detects attributes from env", async () => {
+		envNamespace()
+		envUid()
+		envName()
 
-    const resource = detectResources({ detectors: [k8sDetector] })
-    await resource.waitForAsyncAttributes?.()
+		const resource = detectResources({ detectors: [k8sDetector] })
+		await resource.waitForAsyncAttributes?.()
 
-    expect(resource.attributes).to.deep.equal({
-      "k8s.namespace.name": ENV_NAMESPACE,
-      "k8s.pod.uid": ENV_UID,
-      "k8s.pod.name": ENV_NAME,
-    })
-  })
+		expect(resource.attributes).to.deep.equal({
+			"k8s.namespace.name": ENV_NAMESPACE,
+			"k8s.pod.uid": ENV_UID,
+			"k8s.pod.name": ENV_NAME,
+		})
+	})
 
-  it("detects attributes from files", async () => {
-    await fileNamespace()
-    await fileUid()
+	it("detects attributes from files", async () => {
+		await fileNamespace()
+		await fileUid()
 
-    const resource = detectResources({ detectors: [k8sDetector] })
-    await resource.waitForAsyncAttributes?.()
+		const resource = detectResources({ detectors: [k8sDetector] })
+		await resource.waitForAsyncAttributes?.()
 
-    if (process.platform === "win32") {
-      expect(resource.attributes).to.deep.equal({
-        "k8s.namespace.name": FILE_NAMESPACE,
-        "k8s.pod.name": os.hostname(),
-      })
-    } else {
-      expect(resource.attributes).to.deep.equal({
-        "k8s.namespace.name": FILE_NAMESPACE,
-        "k8s.pod.uid": FILE_UID,
-        "k8s.pod.name": os.hostname(),
-      })
-    }
-  })
+		if (process.platform === "win32") {
+			expect(resource.attributes).to.deep.equal({
+				"k8s.namespace.name": FILE_NAMESPACE,
+				"k8s.pod.name": os.hostname(),
+			})
+		} else {
+			expect(resource.attributes).to.deep.equal({
+				"k8s.namespace.name": FILE_NAMESPACE,
+				"k8s.pod.uid": FILE_UID,
+				"k8s.pod.name": os.hostname(),
+			})
+		}
+	})
 
-  it("prefers env over files", async () => {
-    envNamespace()
-    await fileNamespace()
-    envUid()
-    await fileUid()
-    envName()
+	it("prefers env over files", async () => {
+		envNamespace()
+		await fileNamespace()
+		envUid()
+		await fileUid()
+		envName()
 
-    const resource = detectResources({ detectors: [k8sDetector] })
-    await resource.waitForAsyncAttributes?.()
+		const resource = detectResources({ detectors: [k8sDetector] })
+		await resource.waitForAsyncAttributes?.()
 
-    expect(resource.attributes).to.deep.equal({
-      "k8s.namespace.name": ENV_NAMESPACE,
-      "k8s.pod.uid": ENV_UID,
-      "k8s.pod.name": ENV_NAME,
-    })
-  })
+		expect(resource.attributes).to.deep.equal({
+			"k8s.namespace.name": ENV_NAMESPACE,
+			"k8s.pod.uid": ENV_UID,
+			"k8s.pod.name": ENV_NAME,
+		})
+	})
 
-  it("doesn't detect uid or name without namespace", async () => {
-    envUid()
-    await fileUid()
-    envName()
+	it("doesn't detect uid or name without namespace", async () => {
+		envUid()
+		await fileUid()
+		envName()
 
-    const resource = detectResources({ detectors: [k8sDetector] })
-    await resource.waitForAsyncAttributes?.()
+		const resource = detectResources({ detectors: [k8sDetector] })
+		await resource.waitForAsyncAttributes?.()
 
-    expect(resource.attributes).to.deep.equal({})
-  })
+		expect(resource.attributes).to.deep.equal({})
+	})
 })

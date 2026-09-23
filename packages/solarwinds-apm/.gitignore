@@ -1,3 +1,2 @@
 dist/
-src/version.ts
-src/commonjs/timestamp.js
+src/timestamp.ts

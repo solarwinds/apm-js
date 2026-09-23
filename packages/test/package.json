@@ -1,71 +1,87 @@
 {
-  "name": "@solarwinds-apm/test",
-  "version": "3.1.0",
-  "license": "Apache-2.0",
-  "contributors": [
-    "Raphaël Thériault <raphael.theriault@solarwinds.com>"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/solarwinds/apm-js.git",
-    "directory": "packages/test"
-  },
-  "bugs": {
-    "url": "https://github.com/solarwinds/apm-js/issues"
-  },
-  "type": "module",
-  "exports": {
-    ".": "./dist/index.js",
-    "./ts-node/import": {
-      "import": "./dist/ts-node/import.js"
-    },
-    "./ts-node/loader": {
-      "import": "./dist/ts-node/loader.js"
-    }
-  },
-  "main": "./dist/index.js",
-  "bin": {
-    "swtest": "./bin.js"
-  },
-  "files": [
-    "./bin.js",
-    "./src/",
-    "./dist/"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "scripts": {
-    "build": "tsc",
-    "lint": "prettier --check . && eslint . --max-warnings=0",
-    "lint:fix": "eslint --fix . && prettier --write .",
-    "release": "node ../../scripts/publish.js"
-  },
-  "dependencies": {
-    "@types/chai": "^5.2.3",
-    "@types/chai-as-promised": "^8",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "catalog:",
-    "c8": "^11.0.0",
-    "chai": "^6.2.0",
-    "chai-as-promised": "^8.0.2",
-    "dotenv": "^16.6.1",
-    "globby": "^16.2.3",
-    "mocha": "^11.8.0",
-    "ts-node": "^11.0.0-beta.1"
-  },
-  "devDependencies": {
-    "@opentelemetry/api": "catalog:",
-    "@opentelemetry/context-async-hooks": "catalog:",
-    "@opentelemetry/sdk-metrics": "catalog:",
-    "@opentelemetry/sdk-trace": "catalog:",
-    "@solarwinds-apm/eslint-config": "workspace:^",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "typescript": "catalog:"
-  },
-  "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24"
-  }
+	"name": "@solarwinds-apm/test",
+	"version": "3.1.0",
+	"license": "Apache-2.0",
+	"contributors": [
+		"Raphaël Thériault <raphael.theriault@solarwinds.com>"
+	],
+	"bin": {
+		"swtest": "./bin.js"
+	},
+	"files": [
+		"./bin.js",
+		"./src/",
+		"./dist/"
+	],
+	"type": "module",
+	"exports": {
+		".": "./dist/index.mjs",
+		"./package.json": "./package.json"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsdown && oxfmt package.json",
+		"lint": "oxfmt --check && oxlint --deny-warnings",
+		"lint:fix": "oxfmt && oxlint --fix",
+		"release": "node ../../scripts/publish.js"
+	},
+	"dependencies": {
+		"@opentelemetry/context-async-hooks": "catalog:",
+		"@opentelemetry/sdk-metrics": "catalog:",
+		"@opentelemetry/sdk-trace": "catalog:",
+		"@types/chai": "^5.2.3",
+		"@types/chai-as-promised": "^8",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "catalog:",
+		"c8": "^11.0.0",
+		"chai": "^6.2.0",
+		"chai-as-promised": "^8.0.2",
+		"dotenv": "^16.6.1",
+		"mocha": "^11.8.0"
+	},
+	"devDependencies": {
+		"@solarwinds-apm/configs": "workspace:^",
+		"globby": "^16.2.4",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"@opentelemetry/api": "catalog:"
+	},
+	"peerDependenciesMeta": {
+		"@opentelemetry/api": {
+			"optional": false
+		}
+	},
+	"inlinedDependencies": {
+		"@nodelib/fs.scandir": "2.1.5",
+		"@nodelib/fs.stat": "2.0.5",
+		"@nodelib/fs.walk": "1.2.8",
+		"@sindresorhus/merge-streams": "4.0.0",
+		"braces": "3.0.3",
+		"fast-glob": "3.3.3",
+		"fastq": "1.20.1",
+		"fill-range": "7.1.1",
+		"glob-parent": "5.1.2",
+		"globby": "16.2.4",
+		"ignore": "7.0.6",
+		"is-extglob": "2.1.1",
+		"is-glob": "4.0.3",
+		"is-number": "7.0.0",
+		"is-path-inside": "4.0.0",
+		"merge2": "1.4.1",
+		"micromatch": "4.0.8",
+		"picomatch": "2.3.2",
+		"queue-microtask": "1.2.3",
+		"reusify": "1.1.0",
+		"run-parallel": "1.2.0",
+		"slash": "5.1.0",
+		"to-regex-range": "5.0.1",
+		"unicorn-magic": "0.4.0"
+	}
 }

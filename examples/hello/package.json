@@ -1,12 +1,12 @@
 {
-  "name": "@solarwinds-apm/example-hello",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "start": "node --import solarwinds-apm index.js"
-  },
-  "dependencies": {
-    "@opentelemetry/api": "^1.9.0",
-    "solarwinds-apm": "workspace:^"
-  }
+	"name": "@solarwinds-apm/example-hello",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "node --import solarwinds-apm index.js"
+	},
+	"dependencies": {
+		"@opentelemetry/api": "^1.9.0",
+		"solarwinds-apm": "workspace:^"
+	}
 }
