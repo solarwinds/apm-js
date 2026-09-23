@@ -11,10 +11,10 @@ module.exports = {
 		return Promise.resolve()
 	},
 	setTransactionName(_name) {
-		return true
+		return false
 	},
 	waitUntilReady() {
-		return Promise.resolve(true)
+		return Promise.resolve(false)
 	},
 }
 
