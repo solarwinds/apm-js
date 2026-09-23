@@ -7,8 +7,9 @@
 	],
 	"files": [
 		"./src/",
-		"./dist/"
-	],
+		"./dist/",
+		"./tsconfig.json"
+	]
 	"type": "module",
 	"exports": {
 		"./oxlint": "./dist/oxlint.mjs",
