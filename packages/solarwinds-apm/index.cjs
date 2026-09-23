@@ -28,11 +28,13 @@ try {
 if (supported) {
 	const { register } = require("node:module")
 	const { pathToFileURL } = require("node:url")
-	const log = require("./dist/log.mjs")
+	const { default: log } = require("./dist/log.mjs")
 	const { INIT } = require("./dist/flags.mjs")
 	const { init, initNoop } = require("./dist/init.mjs")
 
+	module.exports = require("./dist/api.mjs")
 	let initialised = Reflect.has(globalThis, INIT)
+
 	if (!initialised) {
 		try {
 			Reflect.defineProperty(globalThis, INIT, {
@@ -51,8 +53,6 @@ if (supported) {
 				configurable: false,
 				writable: false,
 			})
-
-			module.exports = require("./dist/api.mjs")
 		} catch (error) {
 			log(error)
 		}
