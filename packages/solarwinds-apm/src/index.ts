@@ -34,7 +34,6 @@ if (supported && !initialised) {
 		})
 
 		const { registerOptions, waitForAllMessagesAcknowledged } = createAddHookMessageChannel()
-		// oxlint-disable-next-line typescript/no-deprecated
 		register("../hook.mjs", import.meta.url, registerOptions)
 		initialised = init()
 		// TODO: this is the last bit of async code

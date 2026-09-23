@@ -25,8 +25,8 @@
 			"outputs": [
 				"{projectRoot}/dist/**",
 				"{projectRoot}/src/timestamp.ts",
-				"{projectRoot}/.next/**",
-				"{projectRoot}/COMPATIBILITY.md"
+				"{projectRoot}/COMPATIBILITY.md",
+				"{projectRoot}/.next/**"
 			],
 			"cache": true
 		},
@@ -48,7 +48,7 @@
 			"cache": false
 		},
 		"test": {
-			"dependsOn": ["build"],
+			"dependsOn": ["^build"],
 			"inputs": [
 				"{projectRoot}/package.json",
 				"{projectRoot}/tsconfig.json",
