@@ -10,7 +10,9 @@ export default defineConfig({
 	sourcemap: true,
 	dts: { sourcemap: true },
 	minify: { mangle: { keepNames: true } },
-	exports: true,
+	exports: {
+		inlinedDependencies: false,
+	},
 	deps: {
 		neverBundle: [
 			"@opentelemetry/api",

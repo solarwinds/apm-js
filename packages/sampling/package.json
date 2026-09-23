@@ -48,8 +48,5 @@
 		"@opentelemetry/api": {
 			"optional": false
 		}
-	},
-	"inlinedDependencies": {
-		"@noble/hashes": "2.4.0"
 	}
 }
