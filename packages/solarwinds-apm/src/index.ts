@@ -9,7 +9,7 @@ import { createAddHookMessageChannel } from "import-in-the-middle"
 
 import { environment } from "./env.ts"
 import { INIT } from "./flags.ts"
-import { init } from "./init.ts"
+import { init, initNoop } from "./init.ts"
 import log from "./log.ts"
 
 const supportedCheck = () => {
@@ -49,6 +49,10 @@ if (supported && !initialised) {
 	} catch (error) {
 		log(error)
 	}
+}
+
+if (!initialised) {
+	initNoop()
 }
 
 export * from "./api.ts"

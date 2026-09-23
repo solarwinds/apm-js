@@ -5,6 +5,19 @@ SPDX-License-Identifier: Apache-2.0
 
 "use strict"
 
+/** @type {import("./src/api.ts")} */
+module.exports = {
+	forceFlush() {
+		return Promise.resolve()
+	},
+	setTransactionName(_name) {
+		return true
+	},
+	waitUntilReady() {
+		return Promise.resolve(true)
+	},
+}
+
 let supported
 try {
 	supported = require("./dist/version.cjs")
@@ -13,16 +26,15 @@ try {
 }
 
 if (supported) {
+	const { register } = require("node:module")
+	const { pathToFileURL } = require("node:url")
 	const log = require("./dist/log.mjs")
+	const { INIT } = require("./dist/flags.mjs")
+	const { init, initNoop } = require("./dist/init.mjs")
 
-	try {
-		const { register } = require("node:module")
-		const { pathToFileURL } = require("node:url")
-		const { INIT } = require("./dist/flags.mjs")
-		const { init } = require("./dist/init.mjs")
-
-		let initialised = Reflect.has(globalThis, INIT)
-		if (!initialised) {
+	let initialised = Reflect.has(globalThis, INIT)
+	if (!initialised) {
+		try {
 			Reflect.defineProperty(globalThis, INIT, {
 				value: false,
 				enumerable: false,
@@ -39,23 +51,14 @@ if (supported) {
 				configurable: false,
 				writable: false,
 			})
-		}
 
-		module.exports = require("./dist/api.mjs")
-	} catch (error) {
-		log(error)
+			module.exports = require("./dist/api.mjs")
+		} catch (error) {
+			log(error)
+		}
 	}
-} else {
-	// NOOP
-	module.exports = {
-		forceFlush() {
-			return Promise.resolve()
-		},
-		setTransactionName(_name) {
-			return true
-		},
-		waitUntilReady() {
-			return Promise.resolve(true)
-		},
+
+	if (!initialised) {
+		initNoop()
 	}
 }

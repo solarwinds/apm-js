@@ -53,7 +53,6 @@ export function init(): boolean {
 	} catch (err) {
 		log("Invalid SolarWinds APM configuration, application will not be instrumented.")
 		printError(err)
-		resolveUndefinedProviders()
 		return false
 	}
 
@@ -64,7 +63,6 @@ export function init(): boolean {
 
 	if (!config.enabled) {
 		logger.warn("Library disabled, application will not be instrumented.")
-		resolveUndefinedProviders()
 		return false
 	}
 	patchEnv(config)
@@ -130,6 +128,12 @@ export function init(): boolean {
 	)
 
 	return true
+}
+
+export function initNoop() {
+	;[SAMPLER, TRACER_PROVIDER, METER_PROVIDER, LOGGER_PROVIDER].map((c) => {
+		c.resolve(undefined)
+	})
 }
 
 function initTracing(config: Configuration, resource: Resource, logger: DiagLogger) {
@@ -223,10 +227,4 @@ function initLogs(config: Configuration, resource: Resource, logger: DiagLogger)
 	LOGGER_PROVIDER.resolve(provider)
 	logger.debug("logs initialised")
 	return provider
-}
-
-function resolveUndefinedProviders() {
-	;[SAMPLER, TRACER_PROVIDER, METER_PROVIDER, LOGGER_PROVIDER].map((c) => {
-		c.resolve(undefined)
-	})
 }
