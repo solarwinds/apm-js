@@ -18,6 +18,7 @@ export default defineConfig({
 	...base,
 	entry: ["./src/index.ts", "./src/web/index.ts"],
 	deps: {
+		neverBundle: base.deps?.neverBundle,
 		dts: {
 			neverBundle: [
 				"@types/*",

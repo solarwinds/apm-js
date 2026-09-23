@@ -31,11 +31,11 @@
 			"cache": true
 		},
 		"lint": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["build"],
 			"cache": true
 		},
 		"lint:fix": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["build"],
 			"cache": true
 		},
 		"release": {
@@ -48,7 +48,7 @@
 			"cache": false
 		},
 		"test": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["build"],
 			"inputs": [
 				"{projectRoot}/package.json",
 				"{projectRoot}/tsconfig.json",

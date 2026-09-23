@@ -32,7 +32,7 @@ export const Flags = {
 	SAMPLE_THROUGH_ALWAYS: 0x10,
 	TRIGGERED_TRACE: 0x20,
 } as const
-export type Flags = (typeof Flags)[keyof typeof Flags]
+export type Flags = number
 
 export const TracingMode = {
 	ALWAYS: Flags.SAMPLE_START | Flags.SAMPLE_THROUGH_ALWAYS,
