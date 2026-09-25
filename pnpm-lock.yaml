@@ -265,11 +265,10 @@ catalogs:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@nx/js':
         specifier: ^23.2.1
         version: 23.2.1(@babel/traverse@7.29.8(supports-color@7.2.0))(nx@23.2.1)(supports-color@7.2.0)
-    devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4

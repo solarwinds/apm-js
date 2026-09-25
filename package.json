@@ -19,10 +19,8 @@
 		"version:prerelease": "nx release version --preid pre",
 		"version:testing": "node scripts/testing.js"
 	},
-	"dependencies": {
-		"@nx/js": "^23.2.1"
-	},
 	"devDependencies": {
+		"@nx/js": "^23.2.1",
 		"@types/node": "catalog:",
 		"nx": "^23.2.1",
 		"oxfmt": "catalog:",
