@@ -10,7 +10,7 @@
 		"lint": "oxfmt --check !packages !scripts !examples && nx run-many -t lint",
 		"lint:fix": "oxfmt !packages !scripts !examples && nx run-many -t lint:fix",
 		"nx": "nx",
-		"publish": "nx run-many -t build -p solarwinds-apm -p @solarwinds-apm/instrumentations && nx release publish",
+		"publish": "nx run-many -t build -p solarwinds-apm -p @solarwinds-apm/instrumentations && pnpm publish -r",
 		"scan": "nx run-many -t scan && node scripts/lambda.js solarwinds-apm && node scripts/scan.js",
 		"test": "nx run-many -t test",
 		"version:check": "nx release plan:check",

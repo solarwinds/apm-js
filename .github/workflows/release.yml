@@ -21,9 +21,10 @@ jobs:
           cache: false
 
       - run: pnpm install
-      - run: pnpm run publish --tag $(cat packages/solarwinds-apm/package.json | jq -r '.version' | grep -q 'pre' && echo 'prerelease' || echo 'latest')
-        env:
-          npm_config_force: "true"
+      - run: |
+          pnpm run publish \
+          --tag $(cat packages/solarwinds-apm/package.json | jq -r '.version' | grep -q 'pre' && echo 'prerelease' || echo 'latest') \
+          --publish-branch ${{ github.ref_name }}
 
       - name: Export version
         id: version
