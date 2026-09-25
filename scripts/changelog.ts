@@ -1,3 +1,8 @@
+/*
+Copyright SolarWinds Worldwide, LLC.
+SPDX-License-Identifier: Apache-2.0
+*/
+
 import renderer from "nx/release/changelog-renderer"
 
 export default class ChangelogRenderer extends renderer.default {
