@@ -21,7 +21,7 @@ jobs:
           cache: false
 
       - run: pnpm install
-      - run: pnpm run publish --tag $(cat packages/solarwinds-apm/package.json | jq -r '.version' | grep 'pre' && echo 'prerelease' || echo 'latest')
+      - run: pnpm run publish --tag $(cat packages/solarwinds-apm/package.json | jq -r '.version' | grep -q 'pre' && echo 'prerelease' || echo 'latest')
 
       - name: Export version
         id: version
