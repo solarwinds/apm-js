@@ -21,7 +21,7 @@ jobs:
           cache: false
 
       - run: pnpm install
-      - run: pnpm run publish
+      - run: pnpm run publish --tag $(cat packages/solarwinds-apm/package.json | jq -r '.version' | grep 'pre' && echo 'prerelease' || echo 'latest')
 
       - name: Export version
         id: version
@@ -61,7 +61,7 @@ jobs:
         run: |
           API=$(cat packages/solarwinds-apm/package.json | jq -r '.peerDependencies."@opentelemetry/api"')
           CORE=$(cat packages/solarwinds-apm/package.json | jq -r '.dependencies."@opentelemetry/core"')
-          INSTRUMENTATION=$(cat packages/solarwinds-apm/package.json | jq -r '.dependencies."@opentelemetry/instrumentation"')
+          INSTRUMENTATION=$(cat packages/solarwinds-apm/package.json | jq -r '.devDependencies."@opentelemetry/instrumentation"')
           sed -i 's/{{arn}}/${{ needs.lambda.outputs.arn }}/' .github/RELEASE.md
           sed -i "s/{{api}}/${API}/" .github/RELEASE.md
           sed -i "s/{{core}}/${CORE}/" .github/RELEASE.md

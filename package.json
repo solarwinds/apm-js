@@ -15,8 +15,12 @@
 		"test": "nx run-many -t test",
 		"version:check": "nx release plan:check",
 		"version:latest": "nx release version && nx release changelog",
-		"version:prerelease": "nx release version prerelease",
+		"version:plan": "nx release plan",
+		"version:prerelease": "nx release version --preid pre",
 		"version:testing": "node scripts/testing.js"
+	},
+	"dependencies": {
+		"@nx/js": "^23.2.1"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
