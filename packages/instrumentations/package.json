@@ -1,6 +1,6 @@
 {
 	"name": "@solarwinds-apm/instrumentations",
-	"version": "3.2.0",
+	"version": "4.0.0-pre.0",
 	"bugs": {
 		"url": "https://github.com/solarwinds/apm-js/issues"
 	},
