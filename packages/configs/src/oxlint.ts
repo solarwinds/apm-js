@@ -3,10 +3,12 @@ Copyright SolarWinds Worldwide, LLC.
 SPDX-License-Identifier: Apache-2.0
 */
 
-import { defineConfig } from "oxlint"
+import { defineConfig, type OxlintConfig } from "oxlint"
 import recommended from "oxlint-config-presets/@eslint/recommended.json" with { type: "json" }
 import tsStrict from "oxlint-config-presets/@typescript-eslint/strict-type-checked.json" with { type: "json" }
 import tsStylistic from "oxlint-config-presets/@typescript-eslint/stylistic-type-checked.json" with { type: "json" }
+
+import base from "../../../.oxlintrc.json" with { type: "json" }
 
 const license = `/*
 Copyright SolarWinds Worldwide, LLC.
@@ -14,14 +16,9 @@ SPDX-License-Identifier: Apache-2.0
 */`
 
 export default defineConfig({
-	extends: [recommended],
+	extends: [base as OxlintConfig, recommended],
 	plugins: ["oxc", "eslint", "import", "node", "promise"],
 	jsPlugins: ["eslint-plugin-license-header"],
-	options: {
-		typeAware: true,
-		typeCheck: true,
-		reportUnusedDisableDirectives: "warn",
-	},
 	categories: {
 		correctness: "error",
 		suspicious: "warn",
@@ -58,8 +55,8 @@ export default defineConfig({
 			files: ["*.{ts,cts,mts}"],
 			plugins: ["oxc", "eslint", "typescript", "import", "node", "jsdoc", "promise"],
 			rules: {
-				...(tsStrict.rules as Record<never, string>),
-				...(tsStylistic.rules as Record<never, string>),
+				...(tsStrict.rules as {}),
+				...(tsStylistic.rules as {}),
 
 				"typescript/consistent-type-imports": [
 					"warn",
@@ -78,6 +75,7 @@ export default defineConfig({
 				"typescript/no-deprecated": "warn",
 
 				"typescript/consistent-return": "off",
+				"typescript/no-empty-object-type": "off",
 				"typescript/no-non-null-assertion": "off",
 				"typescript/no-unsafe-type-assertion": "off",
 				"typescript/prefer-literal-enum-member": "off",

@@ -7,7 +7,7 @@
 	"dependencies": {
 		"@opentelemetry/api": "^1.9.0",
 		"express": "^5.1.0",
-		"mysql2": "^3.24.4",
+		"mysql2": "^3.24.5",
 		"solarwinds-apm": "workspace:^",
 		"winston": "^3.18.3"
 	}

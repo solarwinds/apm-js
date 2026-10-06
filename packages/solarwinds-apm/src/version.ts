@@ -7,7 +7,6 @@ import fs from "fs"
 import path from "path"
 
 import instrumentation from "@opentelemetry/instrumentation/package.json" with { type: "json" }
-import releases from "node-releases/data/release-schedule/release-schedule.json" with { type: "json" }
 import satisfies from "semver/functions/satisfies.js"
 
 import meta from "../package.json" with { type: "json" }
@@ -17,13 +16,26 @@ import RELEASED from "./timestamp.ts"
 const NOW = Date.now()
 const YEAR = 1000 * 60 * 60 * 24 * 365
 
+type Releases = typeof import("node-releases/data/release-schedule/release-schedule.json")
+let releases: Releases
+try {
+	releases = JSON.parse(
+		fs.readFileSync(
+			require.resolve("node-releases/data/release-schedule/release-schedule.json"),
+			{ encoding: "utf8" },
+		),
+	) as Releases
+} catch {
+	releases = {} as Releases
+}
+
 let supported = true
 for (const major in releases) {
 	if (!process.version.startsWith(major)) {
 		continue
 	}
 
-	const release = releases[major as keyof typeof releases]
+	const release = releases[major as keyof Releases]
 	const lts = "lts" in release
 	const eol = new Date(release.end).valueOf()
 

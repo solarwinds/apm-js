@@ -55,8 +55,8 @@ async function runBuild() {
 				target: ["es2015"],
 				entry: {
 					version: "./src/version.ts",
+					misc: "./src/misc.ts",
 				},
-				dts: false,
 			},
 		},
 		exports: false,

@@ -2,6 +2,7 @@
 	"name": "@solarwinds-apm/solarwinds-apm",
 	"private": true,
 	"license": "Apache-2.0",
+	"type": "module",
 	"scripts": {
 		"build": "nx run-many -t build",
 		"docker": "node scripts/docker.js",
