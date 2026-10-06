@@ -52,7 +52,10 @@ export async function dependencies(): Promise<Dependency[]> {
 		const key = await fs.realpath(dir)
 
 		const cached = resolved.get(key)
-		if (cached) {
+		if (cached?.paths.has(dir)) {
+			// break dependency cycles
+			return
+		} else if (cached) {
 			cached.paths.add(dir)
 		} else {
 			resolved.set(key, { name: dep, version: meta.version, paths: new Set([key, dir]) })
