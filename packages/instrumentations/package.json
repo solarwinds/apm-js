@@ -41,7 +41,7 @@
 		"@opentelemetry/winston-transport": "^0.32.0"
 	},
 	"devDependencies": {
-		"@fastify/otel": "^0.21.0",
+		"@fastify/otel": "^0.21.1",
 		"@opentelemetry/api": "catalog:",
 		"@opentelemetry/auto-instrumentations-web": "^0.67.0",
 		"@opentelemetry/instrumentation": "catalog:",

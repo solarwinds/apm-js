@@ -51,6 +51,7 @@
 			"import": "./dist/index.mjs",
 			"require": "./index.cjs"
 		},
+		"./misc": "./dist/misc.cjs",
 		"./web": "./dist/web.mjs",
 		"./hook.mjs": "./hook.mjs",
 		"./package.json": "./package.json"
@@ -72,7 +73,7 @@
 		"@opentelemetry/core": "catalog:",
 		"@solarwinds-apm/instrumentations": "workspace:^",
 		"import-in-the-middle": "^3.5.1",
-		"node-releases": "^2.0.56",
+		"node-releases": "^2.0.57",
 		"require-in-the-middle": "^8.0.0"
 	},
 	"devDependencies": {
@@ -96,6 +97,7 @@
 		"@solarwinds-apm/test": "workspace:^",
 		"@types/json-stringify-safe": "^5",
 		"@types/semver": "^7",
+		"enhanced-resolve": "^5.26.0",
 		"json-stringify-safe": "^5.0.1",
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",
