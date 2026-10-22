@@ -47,7 +47,7 @@ import { type Configuration } from "../shared/config.ts"
  * @param attributes - Span attributes.
  */
 export function httpSpanMetadata(kind: SpanKind, attributes: Attributes) {
-	/* oxlint-disable typescript/no-deprecated */
+	// oxlint-disable typescript/no-deprecated
 
 	// The method attribute is always required so we can tell whether this is HTTP from it
 	if (
@@ -62,10 +62,12 @@ export function httpSpanMetadata(kind: SpanKind, attributes: Attributes) {
 		attributes[ATTR_HTTP_RESPONSE_STATUS_CODE] ?? attributes[ATTR_HTTP_STATUS_CODE] ?? 0,
 	)
 
+	// oxlint-disable typescript/no-base-to-string
 	const scheme = String(attributes[ATTR_URL_SCHEME] ?? attributes[ATTR_HTTP_SCHEME] ?? "http")
 	const hostname = String(
 		attributes[ATTR_SERVER_ADDRESS] ?? attributes[ATTR_NET_HOST_NAME] ?? "localhost",
 	)
+	// oxlint-enable typescript/no-base-to-string
 	const path = String(attributes[ATTR_URL_PATH] ?? attributes[ATTR_HTTP_TARGET])
 	const url = `${scheme}://${hostname}${path}`
 
@@ -79,7 +81,7 @@ export function httpSpanMetadata(kind: SpanKind, attributes: Attributes) {
 		url,
 	} as const
 
-	/* oxlint-enable typescript/no-deprecated */
+	// oxlint-enable typescript/no-deprecated
 }
 
 /**

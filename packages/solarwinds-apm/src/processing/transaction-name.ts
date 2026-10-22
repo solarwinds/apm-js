@@ -90,7 +90,7 @@ export function computedTransactionName(span: ReadableSpan): string {
 	// oxlint-disable-next-line unicorn/consistent-function-scoping
 	const trim = (path: string) => path.split("/", 3).join("/")
 
-	/* oxlint-disable typescript/no-deprecated */
+	// oxlint-disable typescript/no-deprecated
 	if (environment.SERVERLESS_NAME) {
 		return environment.SERVERLESS_NAME
 	} else if (typeof span.attributes[ATTR_HTTP_ROUTE] === "string") {
@@ -102,7 +102,7 @@ export function computedTransactionName(span: ReadableSpan): string {
 	} else {
 		return span.name
 	}
-	/* oxlint-enable typescript/no-deprecated */
+	// oxlint-enable typescript/no-deprecated
 }
 
 /**

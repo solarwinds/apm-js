@@ -68,7 +68,7 @@ export const agentFactory =
 					timeout: options.timeout,
 				})
 
-				/* oxlint-disable promise/no-callback-in-promise */
+				// oxlint-disable promise/no-callback-in-promise
 				req
 					.on("connect", (res, conn) => {
 						if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
@@ -98,7 +98,7 @@ export const agentFactory =
 					.on("timeout", () => req.destroy(new TimeoutError("Proxy Request Timeout")))
 					.on("error", cb)
 					.end()
-				/* oxlint-enable promise/no-callback-in-promise */
+				// oxlint-enable promise/no-callback-in-promise
 			}
 		}
 
