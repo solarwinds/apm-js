@@ -3,14 +3,8 @@ Copyright SolarWinds Worldwide, LLC.
 SPDX-License-Identifier: Apache-2.0
 */
 
-import {
-	type Context,
-	createTraceState,
-	type SpanContext,
-	type TextMapSetter,
-	trace,
-} from "@opentelemetry/api"
-import { W3CTraceContextPropagator } from "@opentelemetry/core"
+import { type Context, type SpanContext, type TextMapSetter, trace } from "@opentelemetry/api"
+import { TraceState, W3CTraceContextPropagator } from "@opentelemetry/core"
 
 import { componentLogger } from "../shared/logger.ts"
 
@@ -35,7 +29,7 @@ export class TraceContextPropagator extends W3CTraceContextPropagator {
 
 			const span = trace.getSpanContext(context)
 			if (span) {
-				const traceState = (span.traceState ?? createTraceState())
+				const traceState = (span.traceState ?? new TraceState())
 					.set("sw", swValue(span))
 					.serialize()
 				setter.set(carrier, TRACE_STATE_KEY, traceState)

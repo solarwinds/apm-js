@@ -27,6 +27,7 @@ export default defineConfig({
 				...deps,
 				...(base.deps!.neverBundle as string[]),
 			],
+			alwaysBundle: ["@fastify/otel"],
 		},
 	},
 })

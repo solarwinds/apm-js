@@ -6,7 +6,6 @@ SPDX-License-Identifier: Apache-2.0
 import fs from "fs"
 import path from "path"
 
-import instrumentation from "@opentelemetry/instrumentation/package.json" with { type: "json" }
 import releases from "node-releases/data/release-schedule/release-schedule.json" with { type: "json" }
 import satisfies from "semver/functions/satisfies.js"
 
@@ -76,7 +75,6 @@ log(`solarwinds-apm ${meta.version}`)
 try {
 	logVersion("@opentelemetry/api")
 	logVersion("@opentelemetry/core")
-	log(`@opentelemetry/instrumentation ${instrumentation.version}`)
 } catch (error) {
 	log(error)
 }

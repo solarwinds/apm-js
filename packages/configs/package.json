@@ -1,15 +1,10 @@
 {
 	"name": "@solarwinds-apm/configs",
-	"version": "17.0.0-pre.0",
+	"private": true,
 	"license": "Apache-2.0",
 	"contributors": [
 		"Raphaël Thériault <raphael.theriault@solarwinds.com>"
 	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/solarwinds/apm-js.git",
-		"directory": "packages/configs"
-	},
 	"files": [
 		"./src/",
 		"./dist/",
@@ -22,10 +17,6 @@
 		"./package.json": "./package.json",
 		"./tsconfig.json": "./tsconfig.json"
 	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
-	},
 	"scripts": {
 		"build": "tsdown && oxfmt package.json",
 		"lint": "oxfmt --check && oxlint --deny-warnings",
@@ -36,7 +27,7 @@
 		"@tsconfig/node-ts": "*",
 		"@tsconfig/node22": "*",
 		"eslint-plugin-license-header": "^0.9.0",
-		"oxlint-config-presets": "^0.1.20",
+		"oxlint-config-presets": "^0.1.21",
 		"oxlint-tsgolint": "catalog:"
 	},
 	"devDependencies": {

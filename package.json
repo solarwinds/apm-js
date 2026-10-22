@@ -14,23 +14,21 @@
 		"publish": "nx run-many -t build -p solarwinds-apm -p @solarwinds-apm/instrumentations && pnpm publish -r",
 		"scan": "nx run-many -t scan && node scripts/lambda.js solarwinds-apm && node scripts/scan.js",
 		"test": "nx run-many -t test",
-		"version:check": "nx release plan:check",
-		"version:latest": "nx release version && nx release changelog",
-		"version:plan": "nx release plan",
-		"version:prerelease": "nx release version --preid pre",
+		"version:latest": "pnpm lane main --filter solarwinds-apm --filter @solarwinds-apm/instrumentations --filter @solarwinds-apm/sampling && pnpm version -r",
+		"version:prerelease": "pnpm lane pre --filter solarwinds-apm --filter @solarwinds-apm/instrumentations --filter @solarwinds-apm/sampling && pnpm version -r",
 		"version:testing": "node scripts/testing.js"
 	},
 	"devDependencies": {
-		"@nx/js": "^23.2.1",
+		"@nx/js": "^23.3.0",
 		"@types/node": "catalog:",
-		"nx": "^23.2.1",
+		"nx": "^23.3.0",
 		"oxfmt": "catalog:",
 		"typescript": "catalog:"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "pnpm",
-			"version": "^12.6.0"
+			"version": "^12.15.0"
 		}
 	}
 }

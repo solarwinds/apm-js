@@ -5,7 +5,6 @@ SPDX-License-Identifier: Apache-2.0
 
 import fs from "node:fs/promises"
 
-import instrumentation from "@opentelemetry/instrumentation/package.json" with { type: "json" }
 import base from "@solarwinds-apm/configs/tsdown"
 import { minVersion, compare } from "semver"
 import { build } from "tsdown"
@@ -24,9 +23,17 @@ async function updateDependencies() {
 	const pkg = JSON.parse(await fs.readFile("package.json", { encoding: "utf-8" })) as {
 		dependencies: Record<string, string>
 	}
+	const instrumentation = JSON.parse(
+		await fs.readFile("./node_modules/@opentelemetry/instrumentation/package.json", {
+			encoding: "utf-8",
+		}),
+	) as {
+		dependencies: Record<string, string>
+	}
+
 	for (const dep of DEPS) {
 		const selfRange = pkg.dependencies[dep]!
-		const otelRange = instrumentation.dependencies[dep]
+		const otelRange = instrumentation.dependencies[dep]!
 		pkg.dependencies[dep] = stricterRange(selfRange, otelRange)
 	}
 	await fs.writeFile("package.json", JSON.stringify(pkg))
