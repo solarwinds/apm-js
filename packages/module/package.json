@@ -17,9 +17,7 @@
 	"scripts": {
 		"build": "tsdown && oxfmt package.json",
 		"lint": "oxfmt --check && oxlint --deny-warnings",
-		"lint:fix": "oxlint --fix && oxfmt",
-		"release": "node ../../scripts/publish.js",
-		"scan": "node ../../scripts/scan.js"
+		"lint:fix": "oxlint --fix && oxfmt"
 	},
 	"devDependencies": {
 		"@solarwinds-apm/configs": "workspace:",

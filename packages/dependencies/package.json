@@ -18,8 +18,6 @@
 		"build": "tsdown && oxfmt package.json",
 		"lint": "oxfmt --check && oxlint --deny-warnings",
 		"lint:fix": "oxlint --fix && oxfmt",
-		"release": "node ../../scripts/publish.js",
-		"scan": "node ../../scripts/scan.js",
 		"test": "swtest -c src"
 	},
 	"devDependencies": {

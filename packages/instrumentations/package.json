@@ -32,7 +32,6 @@
 		"build": "tsdown && node compatibility.ts && oxfmt package.json COMPATIBILITY.md",
 		"lint": "oxfmt --check && oxlint --deny-warnings",
 		"lint:fix": "oxlint --fix && oxfmt",
-		"release": "node ../../scripts/publish.js",
 		"scan": "node ../../scripts/scan.js",
 		"test": "swtest -c src"
 	},
