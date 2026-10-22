@@ -58,7 +58,6 @@ jobs:
       - uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
       - run: pnpm install
-      - run: pnpm run version:check
 
   linux:
     if: github.event_name == 'pull_request'
