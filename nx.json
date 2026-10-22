@@ -51,42 +51,5 @@
 			"cache": true
 		}
 	},
-	"release": {
-		"versionPlans": {
-			"ignorePatternsForPlanCheck": ["**/*.test.ts", "**/test/**", "**/oxlint.config.ts"]
-		},
-		"version": {
-			"git": { "commit": true, "tag": true },
-			"updateDependents": "never"
-		},
-		"releaseTag": {
-			"requireSemver": true,
-			"strictPreid": true
-		},
-		"groups": {
-			"solarwinds-apm": {
-				"projects": ["packages/*", "!@solarwinds-apm/instrumentations"],
-				"projectsRelationship": "fixed",
-				"releaseTag": {
-					"pattern": "v{version}"
-				},
-				"changelog": {
-					"createRelease": false,
-					"entryWhenNoChanges": false
-				}
-			},
-			"instrumentations": {
-				"projects": ["@solarwinds-apm/instrumentations"],
-				"projectsRelationship": "fixed",
-				"releaseTag": {
-					"pattern": "instrumentations-{version}"
-				},
-				"changelog": {
-					"createRelease": false,
-					"entryWhenNoChanges": false
-				}
-			}
-		}
-	},
 	"analytics": false
 }
