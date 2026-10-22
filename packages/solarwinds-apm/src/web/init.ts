@@ -3,8 +3,7 @@ Copyright SolarWinds Worldwide, LLC.
 SPDX-License-Identifier: Apache-2.0
 */
 
-import { context, diag, metrics, propagation, trace } from "@opentelemetry/api"
-import { logs } from "@opentelemetry/api-logs"
+import { context, diag, metrics, propagation, trace, logs } from "@opentelemetry/api"
 import { ZoneContextManager } from "@opentelemetry/context-zone"
 import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core"
 import { registerInstrumentations } from "@opentelemetry/instrumentation"

@@ -73,7 +73,7 @@ export class TransactionNameProcessor extends NoopSpanProcessor implements SpanP
 			if (typeof name !== "string") {
 				name = this.#defaultName?.(span) ?? computedTransactionName(span)
 			}
-			name = this.#pool.registered(name)
+			name = this.#pool.registered(name as string)
 			this.#logger.debug("final transaction name", name)
 
 			span.attributes[TRANSACTION_NAME_ATTRIBUTE] = name

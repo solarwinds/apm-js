@@ -7,35 +7,33 @@ packages:
 catalog:
   # The API package should *never* be added as a dependency,
   # always as a peer dependency if it is used
-  "@opentelemetry/api": ^1.9.0
-
-  "@opentelemetry/api-logs": ^0.222.0
+  "@opentelemetry/api": ^1.10.0
   "@opentelemetry/semantic-conventions": ~1.43.0
 
   # Stable SDK components
-  "@opentelemetry/core": ^2.11.0
-  "@opentelemetry/context-async-hooks": ^2.11.0
-  "@opentelemetry/context-zone": ^2.11.0
-  "@opentelemetry/resources": ^2.11.0
-  "@opentelemetry/sdk-metrics": ^2.11.0
-  "@opentelemetry/sdk-trace": ^2.11.0
+  "@opentelemetry/core": ^3.0.0
+  "@opentelemetry/context-async-hooks": ^3.0.0
+  "@opentelemetry/context-zone": ^3.0.0
+  "@opentelemetry/resources": ^3.0.0
+  "@opentelemetry/sdk-metrics": ^3.0.0
+  "@opentelemetry/sdk-trace": ^3.0.0
 
   # Experimental SDK components
-  "@opentelemetry/instrumentation": ^0.222.0
-  "@opentelemetry/exporter-logs-otlp-proto": ^0.222.0
-  "@opentelemetry/exporter-metrics-otlp-proto": ^0.222.0
-  "@opentelemetry/exporter-trace-otlp-proto": ^0.222.0
-  "@opentelemetry/instrumentation-grpc": ^0.222.0
-  "@opentelemetry/instrumentation-http": ^0.222.0
-  "@opentelemetry/opentelemetry-browser-detector": ^0.222.0
-  "@opentelemetry/otlp-exporter-base": ^0.222.0
-  "@opentelemetry/sdk-logs": ^0.222.0
+  "@opentelemetry/instrumentation": ^0.300.0
+  "@opentelemetry/exporter-logs-otlp-proto": ^0.300.0
+  "@opentelemetry/exporter-metrics-otlp-proto": ^0.300.0
+  "@opentelemetry/exporter-trace-otlp-proto": ^0.300.0
+  "@opentelemetry/instrumentation-grpc": ^0.300.0
+  "@opentelemetry/instrumentation-http": ^0.300.0
+  "@opentelemetry/opentelemetry-browser-detector": ^0.300.0
+  "@opentelemetry/otlp-exporter-base": ^0.300.0
+  "@opentelemetry/sdk-logs": ^3.0.0
 
-  "@types/node": ^22
-  oxfmt: ^0.71.0
-  oxlint: ^1.86.0
-  oxlint-tsgolint: ~7.0.2003
-  tsdown: ^0.23.0
+  "@types/node": ^22.20.5
+  oxfmt: ^0.74.0
+  oxlint: ^1.89.0
+  oxlint-tsgolint: ~7.0.2004
+  tsdown: ^0.23.1
   typescript: ~7.0.2
 
 minimumReleaseAge: 2880 # 2 days
@@ -60,3 +58,10 @@ trustPolicyExclude:
   - chokidar@4.0.3
   - semver@6.3.1
   - undici-types@6.21.0
+
+versioning:
+  # Un/comment the following lines to switch between prerelease and release channels
+  lanes:
+    "solarwinds-apm": pre
+    "@solarwinds-apm/instrumentations": pre
+    "@solarwinds-apm/sampling": pre

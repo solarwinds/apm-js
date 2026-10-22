@@ -17,6 +17,7 @@
 				"{projectRoot}/package.json",
 				"{projectRoot}/tsconfig.json",
 				"{projectRoot}/tsdown.config.ts",
+				"{projectRoot}/build.ts",
 				"{projectRoot}/src/**"
 			],
 			"outputs": ["{projectRoot}/dist/**"],

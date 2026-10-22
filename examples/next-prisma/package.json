@@ -8,20 +8,20 @@
 		"start": "prisma generate && prisma migrate deploy && next start"
 	},
 	"dependencies": {
-		"@opentelemetry/api": "^1.9.0",
-		"@prisma/adapter-better-sqlite3": "^7.9.1",
-		"@prisma/client": "^7.9.1",
-		"@prisma/instrumentation": "^7.9.1",
+		"@opentelemetry/api": "^1.10.0",
+		"@prisma/adapter-better-sqlite3": "^7.10.1",
+		"@prisma/client": "^7.10.1",
+		"@prisma/instrumentation": "^7.10.1",
 		"better-sqlite3": "^13.0.3",
-		"next": "^16.3.8",
-		"react": "^19.3.0",
-		"react-dom": "^19.3.0",
+		"next": "^16.4.2",
+		"react": "^19.3.1",
+		"react-dom": "^19.3.1",
 		"solarwinds-apm": "workspace:^"
 	},
 	"devDependencies": {
-		"@types/node": "*",
+		"@types/node": "^22.20.5",
 		"@types/react": "^19.3.0",
-		"oxlint": "^1.86.0",
+		"oxlint": "^1.89.0",
 		"prisma": "^7.9.1",
 		"typescript": "~7.0.2"
 	}
