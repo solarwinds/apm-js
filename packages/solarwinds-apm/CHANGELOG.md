@@ -1,3 +1,9 @@
+# [16.3.1](https://github.com/solarwinds/apm-js/releases/tag/v16.3.1)
+
+## Fixes
+
+- Avoid infinite loop when running startup checks on Windows
+
 # [16.3.0](https://github.com/solarwinds/apm-js/releases/tag/v16.3.0)
 
 ## New features and improvements
