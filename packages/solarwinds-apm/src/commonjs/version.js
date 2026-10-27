@@ -87,9 +87,15 @@ try {
   log("solarwinds-apm " + PACKAGE.version);
 
   function logVersion(module) {
+    var regexp = new RegExp(module.replace("/", "[/\\\\]") + "[/\\\\]?$");
     var dir = require.resolve(module);
-    while (!dir.endsWith(module)) {
-      dir = path.dirname(dir);
+    while (!regexp.test(dir)) {
+      var parent = path.dirname(dir);
+      if (parent !== dir) {
+        dir = parent;
+      } else {
+        break;
+      }
     }
     var version = JSON.parse(
       fs.readFileSync(path.join(dir, "package.json"), {
