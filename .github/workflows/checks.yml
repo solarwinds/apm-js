@@ -190,7 +190,4 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - run: rm package.json && rm pnpm-lock.yaml && npm install --no-save node-releases
-      - run: node -e "require('assert').ok(${OP} require('${FILE}'))"
-        env:
-          OP: ${{ !matrix.pass && '!' || '' }}
-          FILE: ./packages/solarwinds-apm/dist/version.cjs
+      - run: node -e "require('assert').ok(${{ !matrix.pass && '!' || '' }} require('./packages/solarwinds-apm/dist/version.cjs'))"
