@@ -189,5 +189,5 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - run: rm package.json && rm pnpm-lock.yaml && npm install --no-save node-releases
+      - run: rm package.json && rm pnpm-lock.yaml && npm install --no-save node-releases @opentelemetry/api
       - run: node -e "require('assert').ok(${{ !matrix.pass && '!' || '' }} require('./packages/solarwinds-apm/dist/version.cjs'))"
