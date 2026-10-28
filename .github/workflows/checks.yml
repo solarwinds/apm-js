@@ -151,25 +151,31 @@ jobs:
     if: github.event_name == 'pull_request'
     needs:
       - checks
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
         # Include versions from the most recent until the first unsupported
         include:
           # LTS
+          - node: 26
+            os: ubuntu
+            pass: true
           - node: 24
+            os: windows
             pass: true
           - node: 22
+            os: ubuntu
             pass: true
           - node: 20
-            pass: true
-          - node: 18
+            os: windows
             pass: false
           # Unstable
-          - node: 23
+          - node: 25
+            os: ubuntu
             pass: false
           # Sanity check
           - node: 10
+            os: ubuntu
             pass: false
       fail-fast: false
 
