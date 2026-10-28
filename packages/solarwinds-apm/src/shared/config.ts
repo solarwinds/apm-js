@@ -179,6 +179,7 @@ export const schema = (defaults: Defaults) =>
 								for (const a of attributes) {
 									const component = span.attributes[a]
 									if (component != null) {
+										// oxlint-disable-next-line typescript/no-base-to-string
 										components.push(String(component))
 									}
 								}

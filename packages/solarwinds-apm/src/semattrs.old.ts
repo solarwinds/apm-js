@@ -3,7 +3,7 @@ Copyright SolarWinds Worldwide, LLC.
 SPDX-License-Identifier: Apache-2.0
 */
 
-/* oxlint-disable typescript/no-deprecated */
+// oxlint-disable typescript/no-deprecated
 export {
 	SEMATTRS_HTTP_METHOD as ATTR_HTTP_METHOD,
 	SEMATTRS_HTTP_SCHEME as ATTR_HTTP_SCHEME,

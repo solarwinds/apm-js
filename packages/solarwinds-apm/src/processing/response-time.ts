@@ -56,14 +56,14 @@ export class ResponseTimeProcessor extends NoopSpanProcessor implements SpanProc
 
 			const copy = [TRANSACTION_NAME_ATTRIBUTE]
 			if (span.kind === SpanKind.SERVER) {
-				/* oxlint-disable typescript/no-deprecated */
+				// oxlint-disable typescript/no-deprecated
 				copy.push(
 					ATTR_HTTP_REQUEST_METHOD,
 					ATTR_HTTP_RESPONSE_STATUS_CODE,
 					ATTR_HTTP_METHOD,
 					ATTR_HTTP_STATUS_CODE,
 				)
-				/* oxlint-enable typescript/no-deprecated */
+				// oxlint-enable typescript/no-deprecated
 			}
 			for (const a of copy) {
 				if (a in span.attributes) {

@@ -27,7 +27,6 @@
 		"build": "tsdown && oxfmt package.json",
 		"lint": "oxfmt --check && oxlint --deny-warnings",
 		"lint:fix": "oxlint --fix && oxfmt",
-		"release": "node ../../scripts/publish.js",
 		"scan": "node ../../scripts/scan.js",
 		"test": "swtest -c src"
 	},
@@ -37,10 +36,11 @@
 	"devDependencies": {
 		"@noble/hashes": "^2.4.0",
 		"@opentelemetry/api": "catalog:",
+		"@opentelemetry/core": "catalog:",
 		"@opentelemetry/sdk-metrics": "catalog:",
-		"@solarwinds-apm/configs": "workspace:^",
-		"@solarwinds-apm/module": "workspace:^",
-		"@solarwinds-apm/test": "workspace:^",
+		"@solarwinds-apm/configs": "workspace:",
+		"@solarwinds-apm/module": "workspace:",
+		"@solarwinds-apm/test": "workspace:",
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",
 		"tsdown": "catalog:",

@@ -1,5 +1,5 @@
 ---
-solarwinds-apm: minor
+"solarwinds-apm": minor
 ---
 
 New misc entrypoint with utility to list library dependencies

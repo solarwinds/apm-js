@@ -16,7 +16,6 @@ export default defineConfig({
 	deps: {
 		neverBundle: [
 			"@opentelemetry/api",
-			"@opentelemetry/api-logs",
 			"@opentelemetry/core",
 			"import-in-the-middle",
 			"require-in-the-middle",

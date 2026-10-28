@@ -3,13 +3,8 @@ Copyright SolarWinds Worldwide, LLC.
 SPDX-License-Identifier: Apache-2.0
 */
 
-import {
-	createTraceState,
-	defaultTextMapSetter,
-	ROOT_CONTEXT,
-	trace,
-	TraceFlags,
-} from "@opentelemetry/api"
+import { defaultTextMapSetter, ROOT_CONTEXT, trace, TraceFlags } from "@opentelemetry/api"
+import { TraceState } from "@opentelemetry/core"
 import { describe, expect, it } from "@solarwinds-apm/test"
 
 import { TraceContextPropagator } from "../../src/propagation/trace-context.ts"
@@ -35,7 +30,7 @@ describe("TraceContextPropagator", () => {
 			spanId: "0123456789abcdef",
 			traceId: "0123456789abcdef0123456789abcdef",
 			traceFlags: TraceFlags.SAMPLED,
-			traceState: createTraceState().set("foo", "bar"),
+			traceState: new TraceState().set("foo", "bar"),
 		})
 
 		propagator.inject(context, headers, defaultTextMapSetter)

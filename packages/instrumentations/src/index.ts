@@ -126,14 +126,14 @@ const INSTRUMENTATIONS = {
 } as const
 type Instrumentations = typeof INSTRUMENTATIONS
 
-/* oxlint-disable typescript/no-unnecessary-type-assertion */
+// oxlint-disable typescript/no-unnecessary-type-assertion
 // List of resource detectors and the import they come from
 // Later resource detectors will override attributes set by earlier ones, so the order here is important
 const RESOURCE_DETECTORS = [
 	// basic detectors, lowest precedence
-	["@opentelemetry/hostDetector", hostDetector as ResourceDetector, { core: true }],
-	["@opentelemetry/osDetector", osDetector as ResourceDetector, { core: true }],
-	["@opentelemetry/processDetector", processDetector as ResourceDetector, { core: true }],
+	["@opentelemetry/hostDetector", hostDetector, { core: true }],
+	["@opentelemetry/osDetector", osDetector, { core: true }],
+	["@opentelemetry/processDetector", processDetector, { core: true }],
 	[
 		"@opentelemetry/serviceInstanceIdDetector",
 		serviceInstanceIdDetector as ResourceDetector,
@@ -172,15 +172,15 @@ const RESOURCE_DETECTORS = [
 	["@opentelemetry/envDetector", envDetector as ResourceDetector, { core: true }],
 ] as const
 type ResourceDetectors = typeof RESOURCE_DETECTORS
-/* oxlint-enable typescript/no-unnecessary-type-assertion */
+// oxlint-enable typescript/no-unnecessary-type-assertion
 
 export type InstrumentationConfigMap = {
-	[I in keyof Instrumentations]?: Instrumentations[I][0] extends new (
+	[I in keyof Omit<Instrumentations, "@fastify/otel">]?: Instrumentations[I][0] extends new (
 		config: infer C,
 	) => Instrumentation
 		? C
 		: never
-}
+} & { "@fastify/otel"?: Fastify.FastifyOtelInstrumentationOpts }
 export type ResourceDetectorConfigMap = Partial<Record<ResourceDetectors[number][0], boolean>>
 
 export type Set = "none" | "core" | "all"

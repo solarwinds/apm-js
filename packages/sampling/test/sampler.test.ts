@@ -6,15 +6,8 @@ SPDX-License-Identifier: Apache-2.0
 import { createHmac, randomBytes } from "node:crypto"
 import { setTimeout } from "node:timers/promises"
 
-import {
-	createTraceState,
-	diag,
-	ROOT_CONTEXT,
-	type Span,
-	SpanKind,
-	trace,
-	TraceFlags,
-} from "@opentelemetry/api"
+import { diag, ROOT_CONTEXT, type Span, SpanKind, trace, TraceFlags } from "@opentelemetry/api"
+import { TraceState } from "@opentelemetry/core"
 import { DataPointType } from "@opentelemetry/sdk-metrics"
 import { SamplingDecision } from "@opentelemetry/sdk-trace"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
@@ -62,7 +55,7 @@ const makeSpan = (options: MakeSpan = {}): Span => {
 			spanId: object.id,
 			isRemote: object.remote,
 			traceFlags: object.sampled ? TraceFlags.SAMPLED : TraceFlags.NONE,
-			traceState: options.sw ? createTraceState(`sw=${object.id}-${swFlags}`) : undefined,
+			traceState: options.sw ? new TraceState(`sw=${object.id}-${swFlags}`) : undefined,
 		}),
 	} as Span
 }
