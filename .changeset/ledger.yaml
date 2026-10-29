@@ -1,0 +1,16 @@
+"@solarwinds-apm/instrumentations@4.0.0-pre.1":
+  dir: packages/instrumentations
+  intents:
+    - curvy-frogs-fetch
+    - quick-spiders-repair
+"@solarwinds-apm/sampling@17.0.0-pre.1":
+  dir: packages/sampling
+  intents:
+    - curvy-frogs-fetch
+    - quick-spiders-repair
+solarwinds-apm@17.0.0-pre.1:
+  dir: packages/solarwinds-apm
+  intents:
+    - curvy-frogs-fetch
+    - quick-spiders-repair
+    - tough-eggs-beg
