@@ -29,11 +29,7 @@ for (const major in releases) {
 	const maintained = NOW - eol <= 0
 	if (!maintained) {
 		log(
-			"The detected Node.js version (" +
-				process.version +
-				") has reached End Of Life (" +
-				release.end +
-				").",
+			`The detected Node.js version (${process.version}) has reached End Of Life (${release.end}).`,
 		)
 		log(
 			"SolarWinds STRONGLY recommends customers use a non-EOL Node.js version receiving security updates.",
@@ -48,19 +44,22 @@ if (supported) {
 }
 if (!supported) {
 	log(
-		"The detected Node.js version (" +
-			process.version +
-			") is not supported by the SolarWinds instrumentation library (" +
-			meta.engines.node +
-			").",
+		`The detected Node.js version (${process.version}) is not supported by the SolarWinds instrumentation library (${meta.engines.node}).`,
 	)
 	log("The application will not be instrumented to avoid potential compatibility issues.")
 }
 
 function logVersion(module: string) {
+	const regex = new RegExp(module.replace("/", "[/\\\\]") + "[/\\\\]?$")
+
 	let dir = require.resolve(module)
-	while (!dir.endsWith(module)) {
-		dir = path.dirname(dir)
+	while (!regex.test(dir)) {
+		const parent = path.dirname(dir)
+		if (parent !== dir) {
+			dir = parent
+		} else {
+			return
+		}
 	}
 
 	const meta = JSON.parse(
