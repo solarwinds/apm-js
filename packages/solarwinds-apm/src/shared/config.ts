@@ -89,12 +89,10 @@ export const schemas = {
 
 	serviceKey: v.pipe(
 		v.string(),
-		v.regex(/:.+$/),
 		v.transform((sk) => {
 			const [token, ...name] = sk.split(":")
 			return {
-				// oxlint-disable-next-line typescript/prefer-nullish-coalescing
-				token: token || undefined,
+				token: token! || undefined,
 				name: name.join(":") || undefined,
 			}
 		}),
