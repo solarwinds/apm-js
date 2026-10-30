@@ -89,13 +89,11 @@ export const schemas = {
 
 	serviceKey: v.pipe(
 		v.string(),
-		v.regex(/:.+$/),
 		v.transform((sk) => {
 			const [token, ...name] = sk.split(":")
 			return {
-				// oxlint-disable-next-line typescript/prefer-nullish-coalescing
-				token: token || undefined,
-				name: name.join(":"),
+				token: token! || undefined,
+				name: name.join(":") || undefined,
 			}
 		}),
 	),
@@ -125,24 +123,23 @@ export const schemas = {
 	]),
 } as const
 
-export interface Defaults {
-	serviceKey?: string
+export interface Options {
+	service?: string
+	needsToken: boolean
 	triggerTraceEnabled: boolean
 }
-export const schema = (defaults: Defaults) =>
+export const schema = (options: Options) =>
 	v.pipe(
 		v.object({
 			enabled: v.optional(schemas.boolean, true),
 
-			serviceKey: defaults.serviceKey
-				? v.optional(schemas.serviceKey, defaults.serviceKey)
-				: schemas.serviceKey,
+			serviceKey: options.needsToken ? schemas.serviceKey : v.optional(schemas.serviceKey),
 
 			collector: v.optional(schemas.url, "apm.collector.na-01.cloud.solarwinds.com"),
 
 			logLevel: v.optional(schemas.logLevel, "warn"),
 			tracingMode: v.optional(schemas.tracingMode),
-			triggerTraceEnabled: v.optional(schemas.boolean, defaults.triggerTraceEnabled),
+			triggerTraceEnabled: v.optional(schemas.boolean, options.triggerTraceEnabled),
 			exportLogsEnabled: v.optional(schemas.boolean, false),
 
 			transactionName: v.optional(
@@ -221,8 +218,12 @@ export const schema = (defaults: Defaults) =>
 		}),
 
 		v.transform((raw): Configuration => {
-			const service = getStringFromEnv("OTEL_SERVICE_NAME") ?? raw.serviceKey.name
-			const token = raw.serviceKey.token
+			const service =
+				getStringFromEnv("OTEL_SERVICE_NAME") ??
+				options.service ??
+				raw.serviceKey?.name ??
+				"unknown_service:js"
+			const token = raw.serviceKey?.token
 
 			const collector = raw.collector
 			const headers: Configuration["headers"] = {}
