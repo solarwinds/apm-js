@@ -250,12 +250,10 @@ describe("computedTransactionName", () => {
 	})
 
 	it("computes lambda span name", () => {
-		const init = process.env.AWS_LAMBDA_FUNCTION_NAME
 		process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
 
 		const span = trace.getTracer("test").startSpan("GET", {
 			attributes: {
-				"http.route": "/hello/:name",
 				"url.path": "/hello/world",
 			},
 		}) as sdk.Span
@@ -263,7 +261,39 @@ describe("computedTransactionName", () => {
 
 		expect(computedTransactionName(span)).to.equal("lambda")
 
-		process.env.AWS_LAMBDA_FUNCTION_NAME = init
+		delete process.env.AWS_LAMBDA_FUNCTION_NAME
+	})
+
+	it("computes azure service span name", () => {
+		process.env.WEBSITE_SITE_NAME = "azure"
+
+		const span = trace.getTracer("test").startSpan("GET", {
+			attributes: {
+				"url.path": "/hello/world",
+			},
+		}) as sdk.Span
+		span.end()
+
+		expect(computedTransactionName(span)).to.equal("/hello/world")
+
+		delete process.env.WEBSITE_SITE_NAME
+	})
+
+	it("computes azure functions span name", () => {
+		process.env.FUNCTIONS_WORKER_RUNTIME = "node"
+		process.env.WEBSITE_SITE_NAME = "azure"
+
+		const span = trace.getTracer("test").startSpan("GET", {
+			attributes: {
+				"url.path": "/hello/world",
+			},
+		}) as sdk.Span
+		span.end()
+
+		expect(computedTransactionName(span)).to.equal("azure")
+
+		delete process.env.FUNCTIONS_WORKER_RUNTIME
+		delete process.env.WEBSITE_SITE_NAME
 	})
 })
 

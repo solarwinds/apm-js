@@ -57,77 +57,79 @@ const schemas = {
 	),
 }
 
-const schema = v.pipe(
-	v.intersect([
-		sharedSchema({
-			serviceKey: environment.SERVERLESS_NAME ? `:${environment.SERVERLESS_NAME}` : undefined,
-			triggerTraceEnabled: true,
-		}),
+const schema = () =>
+	v.pipe(
+		v.intersect([
+			sharedSchema({
+				needsToken: environment.NEEDS_TOKEN,
+				service: environment.CLOUD_NAME,
+				triggerTraceEnabled: true,
+			}),
 
-		v.object({
-			trustedpath: v.optional(schemas.trustedpath),
+			v.object({
+				trustedpath: v.optional(schemas.trustedpath),
 
-			proxy: v.optional(schemas.url),
+				proxy: v.optional(schemas.url),
 
-			runtimeMetrics: v.optional(schemas.boolean, !environment.IS_SERVERLESS),
+				runtimeMetrics: v.optional(schemas.boolean, !environment.IS_SERVERLESS),
 
-			insertTraceContextIntoLogs: v.optional(schemas.boolean, false),
+				insertTraceContextIntoLogs: v.optional(schemas.boolean, false),
 
-			insertTraceContextIntoQueries: v.optional(schemas.boolean, false),
+				insertTraceContextIntoQueries: v.optional(schemas.boolean, false),
 
-			spanStacktraceFilter: v.optional(
-				v.pipe(
-					v.custom<(span: ReadableSpan) => boolean | number>(
-						(filter) => typeof filter === "function",
+				spanStacktraceFilter: v.optional(
+					v.pipe(
+						v.custom<(span: ReadableSpan) => boolean | number>(
+							(filter) => typeof filter === "function",
+						),
+						v.transform((filter) => (span: ReadableSpan) => {
+							const length = filter(span)
+							if (typeof length === "number") {
+								return length
+							} else {
+								return length ? 16 : 0
+							}
+						}),
 					),
-					v.transform((filter) => (span: ReadableSpan) => {
-						const length = filter(span)
-						if (typeof length === "number") {
-							return length
-						} else {
-							return length ? 16 : 0
-						}
-					}),
 				),
-			),
 
-			instrumentations: v.optional(
-				v.object({
-					configs: v.optional(v.record(v.string(), v.unknown()), {}),
-					extra: v.optional(v.array(v.unknown()), []),
-					set: v.optional(schemas.set, environment.IS_SERVERLESS ? "core" : "all"),
-				}),
-				{},
-			),
+				instrumentations: v.optional(
+					v.object({
+						configs: v.optional(v.record(v.string(), v.unknown()), {}),
+						extra: v.optional(v.array(v.unknown()), []),
+						set: v.optional(schemas.set, environment.IS_SERVERLESS ? "core" : "all"),
+					}),
+					{},
+				),
 
-			resourceDetectors: v.optional(
-				v.object({
-					configs: v.optional(v.record(v.string(), v.boolean()), {}),
-					extra: v.optional(v.array(v.unknown()), []),
-					set: v.optional(schemas.set, environment.IS_SERVERLESS ? "core" : "all"),
-				}),
-				{},
-			),
+				resourceDetectors: v.optional(
+					v.object({
+						configs: v.optional(v.record(v.string(), v.boolean()), {}),
+						extra: v.optional(v.array(v.unknown()), []),
+						set: v.optional(schemas.set, environment.IS_SERVERLESS ? "core" : "all"),
+					}),
+					{},
+				),
+			}),
+		]),
+
+		v.transform(({ instrumentations, resourceDetectors, ...raw }) => {
+			return {
+				instrumentations: instrumentations as Required<Instrumentations>,
+				resourceDetectors: resourceDetectors as Required<ResourceDetectors>,
+				...raw,
+			}
 		}),
-	]),
-
-	v.transform(({ instrumentations, resourceDetectors, ...raw }) => {
-		return {
-			instrumentations: instrumentations as Required<Instrumentations>,
-			resourceDetectors: resourceDetectors as Required<ResourceDetectors>,
-			...raw,
-		}
-	}),
-)
+	)
 
 /** User provided configuration for solarwinds-apm. */
-export interface Config extends v.InferInput<typeof schema> {
+export interface Config extends v.InferInput<ReturnType<typeof schema>> {
 	instrumentations?: Instrumentations
 	resourceDetectors?: ResourceDetectors
 }
 
 /** Processed configuration for Node.js solarwinds-apm. */
-export interface Configuration extends v.InferOutput<typeof schema> {
+export interface Configuration extends v.InferOutput<ReturnType<typeof schema>> {
 	source?: string
 }
 
@@ -186,12 +188,12 @@ export function read(): Configuration {
 		}
 	}
 
-	return { source, ...v.parse(schema, { ...file, ...env.object(process.env) }) }
+	return { source, ...v.parse(schema(), { ...file, ...env.object(process.env) }) }
 }
 
 export function printError(err: unknown): string {
 	if (err instanceof v.ValiError) {
-		const issues = err.issues as v.ValiError<typeof schema>["issues"]
+		const issues = err.issues as v.ValiError<ReturnType<typeof schema>>["issues"]
 		const flattened = v.flatten(issues)
 
 		// Label each issue by key. If the key isn't nested (doesn't contain a `.`)

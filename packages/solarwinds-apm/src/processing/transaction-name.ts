@@ -91,10 +91,10 @@ export function computedTransactionName(span: ReadableSpan): string {
 	const trim = (path: string) => path.split("/", 3).join("/")
 
 	// oxlint-disable typescript/no-deprecated
-	if (environment.SERVERLESS_NAME) {
-		return environment.SERVERLESS_NAME
-	} else if (typeof span.attributes[ATTR_HTTP_ROUTE] === "string") {
+	if (typeof span.attributes[ATTR_HTTP_ROUTE] === "string") {
 		return span.attributes[ATTR_HTTP_ROUTE]
+	} else if (environment.SERVERLESS_NAME) {
+		return environment.SERVERLESS_NAME
 	} else if (typeof span.attributes[ATTR_URL_PATH] === "string") {
 		return trim(span.attributes[ATTR_URL_PATH])
 	} else if (typeof span.attributes[ATTR_HTTP_TARGET] === "string") {
