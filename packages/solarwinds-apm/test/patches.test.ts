@@ -80,6 +80,8 @@ describe("patch", () => {
 
 		expect(resourceDetectors).to.deep.equal({
 			"@opentelemetry/awsLambdaDetector": false,
+			"@opentelemetry/azureAppServiceDetector": false,
+			"@opentelemetry/azureFunctionsDetector": false,
 		})
 	})
 
@@ -520,6 +522,109 @@ describe("patch", () => {
 					instrumentation: i,
 				})
 			}
+		})
+	})
+
+	describe("@opentelemetry/awsLambdaDetector", () => {
+		beforeEach(() => {
+			Reflect.deleteProperty(process.env, "AWS_LAMBDA_FUNCTION_NAME")
+		})
+
+		it("is enabled in lambda environment", () => {
+			process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
+
+			const [, configs] = patch({}, {}, options, diag)
+			expect(configs["@opentelemetry/awsLambdaDetector"]).to.equal(true)
+		})
+
+		it("respects user values outside lambda environments", () => {
+			const [, configs] = patch({}, { "@opentelemetry/awsLambdaDetector": true }, options, diag)
+			expect(configs["@opentelemetry/awsLambdaDetector"]).to.equal(true)
+		})
+
+		it("respects user values in lambda environments", () => {
+			process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
+
+			const [, configs] = patch(
+				{},
+				{ "@opentelemetry/awsLambdaDetector": false },
+				options,
+				diag,
+			)
+			expect(configs["@opentelemetry/awsLambdaDetector"]).to.equal(false)
+		})
+	})
+
+	describe("@opentelemetry/azureAppServiceDetector", () => {
+		beforeEach(() => {
+			Reflect.deleteProperty(process.env, "WEBSITE_SITE_NAME")
+		})
+
+		it("is enabled in azure environment", () => {
+			process.env.WEBSITE_SITE_NAME = "azure"
+
+			const [, configs] = patch({}, {}, options, diag)
+			expect(configs["@opentelemetry/azureAppServiceDetector"]).to.equal(true)
+		})
+
+		it("respects user values outside azure environments", () => {
+			const [, configs] = patch(
+				{},
+				{ "@opentelemetry/azureAppServiceDetector": true },
+				options,
+				diag,
+			)
+			expect(configs["@opentelemetry/azureAppServiceDetector"]).to.equal(true)
+		})
+
+		it("respects user values in azure environments", () => {
+			process.env.WEBSITE_SITE_NAME = "azure"
+
+			const [, configs] = patch(
+				{},
+				{ "@opentelemetry/azureAppServiceDetector": false },
+				options,
+				diag,
+			)
+			expect(configs["@opentelemetry/azureAppServiceDetector"]).to.equal(false)
+		})
+	})
+
+	describe("@opentelemetry/azureFunctionsDetector", () => {
+		beforeEach(() => {
+			Reflect.deleteProperty(process.env, "WEBSITE_SITE_NAME")
+			Reflect.deleteProperty(process.env, "FUNCTIONS_WORKER_RUNTIME")
+		})
+
+		it("is enabled in azure function environment", () => {
+			process.env.WEBSITE_SITE_NAME = "azure"
+			process.env.FUNCTIONS_WORKER_RUNTIME = "node"
+
+			const [, configs] = patch({}, {}, options, diag)
+			expect(configs["@opentelemetry/azureFunctionsDetector"]).to.equal(true)
+		})
+
+		it("respects user values outside azure function environments", () => {
+			const [, configs] = patch(
+				{},
+				{ "@opentelemetry/azureFunctionsDetector": true },
+				options,
+				diag,
+			)
+			expect(configs["@opentelemetry/azureFunctionsDetector"]).to.equal(true)
+		})
+
+		it("respects user values in azure function environments", () => {
+			process.env.WEBSITE_SITE_NAME = "azure"
+			process.env.FUNCTIONS_WORKER_RUNTIME = "node"
+
+			const [, configs] = patch(
+				{},
+				{ "@opentelemetry/azureFunctionsDetector": false },
+				options,
+				diag,
+			)
+			expect(configs["@opentelemetry/azureFunctionsDetector"]).to.equal(false)
 		})
 	})
 })

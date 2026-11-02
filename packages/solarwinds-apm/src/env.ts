@@ -22,12 +22,17 @@ export const environment = {
 	get IS_AZURE_SERVICE() {
 		return this.AZURE_SERVICE_NAME !== undefined
 	},
+	get IS_AZURE_FUNCTION() {
+		return IS_NODE && process.env.FUNCTIONS_WORKER_RUNTIME !== undefined
+	},
 
 	get SERVERLESS_NAME() {
-		return this.AWS_LAMBDA_NAME
+		return (
+			this.AWS_LAMBDA_NAME ?? (this.IS_AZURE_FUNCTION ? this.AZURE_SERVICE_NAME : undefined)
+		)
 	},
 	get IS_SERVERLESS() {
-		return this.IS_AWS_LAMBDA
+		return this.IS_AWS_LAMBDA || this.IS_AZURE_FUNCTION
 	},
 
 	get CLOUD_NAME() {
