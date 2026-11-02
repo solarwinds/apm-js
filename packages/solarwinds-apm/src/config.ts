@@ -61,7 +61,7 @@ const schema = v.pipe(
 	v.intersect([
 		sharedSchema({
 			needsToken: environment.NEEDS_TOKEN,
-			service: environment.SERVERLESS_NAME,
+			service: environment.CLOUD_NAME,
 			triggerTraceEnabled: true,
 		}),
 

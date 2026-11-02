@@ -24,9 +24,16 @@ export const environment = {
 	},
 
 	get SERVERLESS_NAME() {
-		return this.AWS_LAMBDA_NAME ?? this.AZURE_SERVICE_NAME
+		return this.AWS_LAMBDA_NAME
 	},
 	get IS_SERVERLESS() {
+		return this.IS_AWS_LAMBDA
+	},
+
+	get CLOUD_NAME() {
+		return this.AWS_LAMBDA_NAME ?? this.AZURE_SERVICE_NAME
+	},
+	get IS_CLOUD() {
 		return this.IS_AWS_LAMBDA || this.IS_AZURE_SERVICE
 	},
 
