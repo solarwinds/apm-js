@@ -16,10 +16,11 @@ describe("read", () => {
 				Reflect.deleteProperty(process.env, key)
 			}
 		}
-		process.env.SW_APM_SERVICE_KEY = "token:name"
 	})
 
 	it("returns proper defaults", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
+
 		const config = read()
 		const expected: Configuration = {
 			service: "name",
@@ -45,10 +46,33 @@ describe("read", () => {
 		expect(config).to.loosely.deep.equal(expected)
 	})
 
-	it("properly sets OTLP endpoints", () => {
-		process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
+	it("returns proper defaults for lambda", () => {
+		process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
 
 		const config = read()
+
+		expect(config.service).to.equal("lambda")
+		expect(config.token).to.be.undefined
+
+		delete process.env.AWS_LAMBDA_FUNCTION_NAME
+	})
+
+	it("returns proper defaults for azure service", () => {
+		process.env.SW_APM_SERVICE_KEY = "token"
+		process.env.WEBSITE_SITE_NAME = "azure"
+
+		const config = read()
+		expect(config.service).to.equal("azure")
+		expect(config.token).to.equal("token")
+
+		delete process.env.SW_APM_SERVICE_KEY
+	})
+
+	it("properly sets OTLP endpoints", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
+		process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
+		const config = read()
+
 		expect(config.otlp).to.deep.equal({
 			traces: "https://otel.collector.na-01.cloud.solarwinds.com/v1/traces",
 			metrics: "https://otel.collector.na-01.cloud.solarwinds.com/v1/metrics",
@@ -57,11 +81,12 @@ describe("read", () => {
 	})
 
 	it("properly uses OTLP env endpoints", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_COLLECTOR = "apm.collector.na-01.cloud.solarwinds.com"
 		process.env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://custom.endpoint"
 		process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = "http://custom.traces.endpoint/v1/traces"
-
 		const config = read()
+
 		expect(config.otlp).to.deep.equal({
 			traces: "http://custom.traces.endpoint/v1/traces",
 			metrics: "http://custom.endpoint/v1/metrics",
@@ -70,41 +95,55 @@ describe("read", () => {
 	})
 
 	it("parses booleans", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_ENABLED = "0"
-
 		const config = read()
+
 		expect(config).to.include({ enabled: false })
 	})
 
 	it("parses tracing mode", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_TRACING_MODE = "enabled"
-
 		const config = read()
+
 		expect(config).to.include({ tracingMode: true })
 	})
 
 	it("parses trusted path", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_TRUSTEDPATH = "package.json"
-
 		const config = read()
+
 		expect(config.trustedpath).to.include("solarwinds-apm")
 	})
 
 	it("parses otel service name", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.OTEL_SERVICE_NAME = "otel-name"
-
 		const config = read()
+
 		expect(config.service).to.equal("otel-name")
 	})
 
 	it("properly disables logging", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_LOG_LEVEL = "none"
-
 		const config = read()
+
 		expect(config.logLevel).to.equal(DiagLogLevel.NONE)
 	})
 
+	it("throws on empty service key", () => {
+		process.env.SW_APM_SERVICE_KEY = ""
+
+		expect(read)
+			.to.throw(Error)
+			.which.satisfies((error: unknown) => printError(error).includes("SERVICE_KEY"))
+	})
+
 	it("throws on bad boolean", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_ENABLED = "foo"
 
 		expect(read)
@@ -113,6 +152,7 @@ describe("read", () => {
 	})
 
 	it("throws on bad tracing mode", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_TRACING_MODE = "foo"
 
 		expect(read)
@@ -121,6 +161,7 @@ describe("read", () => {
 	})
 
 	it("throws on non-existent trusted path", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_TRUSTEDPATH = "foo"
 
 		expect(read)
@@ -129,15 +170,17 @@ describe("read", () => {
 	})
 
 	it("supports logs export by default", () => {
+		process.env.SW_APM_SERVICE_KEY = "token:name"
 		process.env.SW_APM_EXPORT_LOGS_ENABLED = "true"
-
 		const config = read()
+
 		expect(config.exportLogsEnabled).to.be.true
 	})
 
 	describe("transactionSettings", () => {
 		let config: Configuration
 		before(() => {
+			process.env.SW_APM_SERVICE_KEY = "token:name"
 			process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-settings.cjs"
 			config = read()
 		})
@@ -169,6 +212,7 @@ describe("read", () => {
 
 	describe("transactionName", () => {
 		it("supports string literals", () => {
+			process.env.SW_APM_SERVICE_KEY = "token:name"
 			process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-name.literal.cjs"
 			const config = read()
 
@@ -176,6 +220,7 @@ describe("read", () => {
 		})
 
 		it("supports functions", () => {
+			process.env.SW_APM_SERVICE_KEY = "token:name"
 			process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-name.function.cjs"
 			const config = read()
 
@@ -184,6 +229,7 @@ describe("read", () => {
 		})
 
 		it("supports schemes", () => {
+			process.env.SW_APM_SERVICE_KEY = "token:name"
 			process.env.SW_APM_CONFIG_FILE = "test/configs/transaction-name.schemes.cjs"
 			const config = read()
 
