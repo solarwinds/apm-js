@@ -526,7 +526,7 @@ describe("patch", () => {
 	})
 
 	describe("@opentelemetry/awsLambdaDetector", () => {
-		beforeEach(() => {
+		afterEach(() => {
 			Reflect.deleteProperty(process.env, "AWS_LAMBDA_FUNCTION_NAME")
 		})
 
@@ -556,7 +556,7 @@ describe("patch", () => {
 	})
 
 	describe("@opentelemetry/azureAppServiceDetector", () => {
-		beforeEach(() => {
+		afterEach(() => {
 			Reflect.deleteProperty(process.env, "WEBSITE_SITE_NAME")
 		})
 
@@ -591,7 +591,7 @@ describe("patch", () => {
 	})
 
 	describe("@opentelemetry/azureFunctionsDetector", () => {
-		beforeEach(() => {
+		afterEach(() => {
 			Reflect.deleteProperty(process.env, "WEBSITE_SITE_NAME")
 			Reflect.deleteProperty(process.env, "FUNCTIONS_WORKER_RUNTIME")
 		})

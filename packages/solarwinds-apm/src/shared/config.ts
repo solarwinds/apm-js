@@ -89,6 +89,7 @@ export const schemas = {
 
 	serviceKey: v.pipe(
 		v.string(),
+		v.nonEmpty(),
 		v.transform((sk) => {
 			const [token, ...name] = sk.split(":")
 			return {
