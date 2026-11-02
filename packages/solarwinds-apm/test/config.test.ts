@@ -65,7 +65,7 @@ describe("read", () => {
 		expect(config.service).to.equal("azure")
 		expect(config.token).to.equal("token")
 
-		delete process.env.SW_APM_SERVICE_KEY
+		delete process.env.WEBSITE_SITE_NAME
 	})
 
 	it("properly sets OTLP endpoints", () => {
