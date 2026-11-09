@@ -25,7 +25,6 @@ function exec(cmd) {
 }
 
 exec(`nx run-many -t build -p solarwinds-apm,@solarwinds-apm/example-${example}`)
-exec("docker compose -f docker/docker-compose.yml up -d --wait")
 
 if (collector) {
 	process.env.OTEL_EXPORTER_OTLP_ENDPOINT = proxy
@@ -41,6 +40,7 @@ process.on("SIGINT", () => {
 })
 
 try {
+	exec("docker compose -f docker/docker-compose.yml up -d --wait")
 	exec(`pnpm -F @solarwinds-apm/example-${example} start`)
 } catch (error) {
 	if (error.signal !== "SIGINT") {
