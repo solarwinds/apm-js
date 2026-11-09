@@ -249,51 +249,16 @@ describe("computedTransactionName", () => {
 		expect(computedTransactionName(span)).to.equal("/shop/products")
 	})
 
-	it("computes lambda span name", () => {
-		process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
-
+	it("computes serverless span name", () => {
 		const span = trace.getTracer("test").startSpan("GET", {
 			attributes: {
+				"faas.name": "faas",
 				"url.path": "/hello/world",
 			},
 		}) as sdk.Span
 		span.end()
 
-		expect(computedTransactionName(span)).to.equal("lambda")
-
-		delete process.env.AWS_LAMBDA_FUNCTION_NAME
-	})
-
-	it("computes azure service span name", () => {
-		process.env.WEBSITE_SITE_NAME = "azure"
-
-		const span = trace.getTracer("test").startSpan("GET", {
-			attributes: {
-				"url.path": "/hello/world",
-			},
-		}) as sdk.Span
-		span.end()
-
-		expect(computedTransactionName(span)).to.equal("/hello/world")
-
-		delete process.env.WEBSITE_SITE_NAME
-	})
-
-	it("computes azure functions span name", () => {
-		process.env.FUNCTIONS_WORKER_RUNTIME = "node"
-		process.env.WEBSITE_SITE_NAME = "azure"
-
-		const span = trace.getTracer("test").startSpan("GET", {
-			attributes: {
-				"url.path": "/hello/world",
-			},
-		}) as sdk.Span
-		span.end()
-
-		expect(computedTransactionName(span)).to.equal("azure")
-
-		delete process.env.FUNCTIONS_WORKER_RUNTIME
-		delete process.env.WEBSITE_SITE_NAME
+		expect(computedTransactionName(span)).to.equal("faas")
 	})
 })
 

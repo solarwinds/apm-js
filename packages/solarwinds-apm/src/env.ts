@@ -26,20 +26,14 @@ export const environment = {
 		return IS_NODE && process.env.FUNCTIONS_WORKER_RUNTIME !== undefined
 	},
 
-	get SERVERLESS_NAME() {
-		return (
-			this.AWS_LAMBDA_NAME ?? (this.IS_AZURE_FUNCTION ? this.AZURE_SERVICE_NAME : undefined)
-		)
-	},
-	get IS_SERVERLESS() {
-		return this.IS_AWS_LAMBDA || this.IS_AZURE_FUNCTION
-	},
-
 	get CLOUD_NAME() {
 		return this.AWS_LAMBDA_NAME ?? this.AZURE_SERVICE_NAME
 	},
 	get IS_CLOUD() {
 		return this.IS_AWS_LAMBDA || this.IS_AZURE_SERVICE
+	},
+	get IS_SERVERLESS() {
+		return this.IS_AWS_LAMBDA || this.IS_AZURE_FUNCTION
 	},
 
 	get NEEDS_TOKEN() {

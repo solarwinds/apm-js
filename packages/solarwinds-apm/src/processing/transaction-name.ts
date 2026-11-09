@@ -10,9 +10,9 @@ import {
 	type SpanProcessor,
 } from "@opentelemetry/sdk-trace"
 import { ATTR_HTTP_ROUTE, ATTR_URL_PATH } from "@opentelemetry/semantic-conventions"
+import { ATTR_FAAS_NAME } from "@opentelemetry/semantic-conventions/incubating"
 import { unref } from "@solarwinds-apm/module"
 
-import { environment } from "../env.ts"
 import { ATTR_HTTP_TARGET } from "../semattrs.old.ts"
 import { type Configuration } from "../shared/config.ts"
 import { componentLogger } from "../shared/logger.ts"
@@ -93,8 +93,8 @@ export function computedTransactionName(span: ReadableSpan): string {
 	// oxlint-disable typescript/no-deprecated
 	if (typeof span.attributes[ATTR_HTTP_ROUTE] === "string") {
 		return span.attributes[ATTR_HTTP_ROUTE]
-	} else if (environment.SERVERLESS_NAME) {
-		return environment.SERVERLESS_NAME
+	} else if (typeof span.attributes[ATTR_FAAS_NAME] === "string") {
+		return span.attributes[ATTR_FAAS_NAME]
 	} else if (typeof span.attributes[ATTR_URL_PATH] === "string") {
 		return trim(span.attributes[ATTR_URL_PATH])
 	} else if (typeof span.attributes[ATTR_HTTP_TARGET] === "string") {
