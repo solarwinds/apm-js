@@ -71,7 +71,7 @@
 		"@opentelemetry/core": "catalog:",
 		"@solarwinds-apm/instrumentations": "workspace:^",
 		"import-in-the-middle": "^3.5.2",
-		"node-releases": "^2.0.59",
+		"node-releases": "^2.0.63",
 		"require-in-the-middle": "^8.0.1"
 	},
 	"devDependencies": {
@@ -95,11 +95,11 @@
 		"@solarwinds-apm/test": "workspace:",
 		"@types/json-stringify-safe": "^5",
 		"@types/semver": "^7",
-		"enhanced-resolve": "^5.26.0",
+		"enhanced-resolve": "^5.26.1",
 		"json-stringify-safe": "^5.0.1",
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",
-		"semver": "^7.8.5",
+		"semver": "^7.8.6",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"valibot": "^1.5.0"

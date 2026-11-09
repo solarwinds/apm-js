@@ -4,12 +4,11 @@
 	"dependencies": {
 		"@opentelemetry/api": "^1.9.0",
 		"semver": "^7",
-		"{{name}}": "{{version}}"
+		"solarwinds-apm": "{{version}}"
 	},
 	"devEngines": {
 		"packageManager": {
-			"name": "pnpm",
-			"version": "^12.6.0"
+			"name": "pnpm"
 		}
 	}
 }

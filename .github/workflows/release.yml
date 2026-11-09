@@ -32,6 +32,9 @@ jobs:
           VERSION=$(cat packages/solarwinds-apm/package.json | jq -r '.version')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
+      - run: pnpm run wait ${{ steps.version.outputs.version }}
+        timeout-minutes: 60
+
   lambda:
     needs: publish
     uses: ./.github/workflows/lambda.yml

@@ -5,13 +5,12 @@ SPDX-License-Identifier: Apache-2.0
 
 import { execSync } from "node:child_process"
 import { cpSync, createWriteStream, readFileSync, rmSync, writeFileSync } from "node:fs"
-import process from "node:process"
 
 import { ZipArchive } from "archiver"
 import ora from "ora"
 
 const json = JSON.parse(readFileSync("packages/solarwinds-apm/package.json"))
-const [name, version = json.version] = process.argv.slice(2)
+const [version = json.version] = process.argv.slice(2)
 
 const rm = (...args) => {
 	try {
@@ -23,7 +22,7 @@ const rm = (...args) => {
 
 const replace = (file) => {
 	let contents = readFileSync(file, { encoding: "utf-8" })
-	contents = contents.replaceAll("{{name}}", name).replaceAll("{{version}}", version)
+	contents = contents.replaceAll("{{version}}", version)
 	writeFileSync(file, contents)
 }
 

@@ -60,7 +60,7 @@ import {
 import { containerDetector } from "@opentelemetry/resource-detector-container"
 import { gcpDetector } from "@opentelemetry/resource-detector-gcp"
 import {
-	envDetector,
+	resourceAttributesEnvDetector,
 	hostDetector,
 	osDetector,
 	processDetector,
@@ -169,7 +169,11 @@ const RESOURCE_DETECTORS = [
 	["@opentelemetry/gcpDetector", gcpDetector as ResourceDetector, { core: false }],
 
 	// env detector, highest precedence
-	["@opentelemetry/envDetector", envDetector as ResourceDetector, { core: true }],
+	[
+		"@opentelemetry/resourceAttributesEnvDetector",
+		resourceAttributesEnvDetector as ResourceDetector,
+		{ core: true },
+	],
 ] as const
 type ResourceDetectors = typeof RESOURCE_DETECTORS
 // oxlint-enable typescript/no-unnecessary-type-assertion

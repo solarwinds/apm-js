@@ -40,7 +40,7 @@
 | `mysql2`                    | `>=1.4.2 <4.0.0`                     | `@opentelemetry/instrumentation-mysql2`           |
 | `net`                       | `*`                                  | `@opentelemetry/instrumentation-net`              |
 | `openai`                    | `>=4.19.0 <7.0.0`                    | `@opentelemetry/instrumentation-openai`           |
-| `oracledb`                  | `>=6.7.0 <8.0.0`                     | `@opentelemetry/instrumentation-oracledb`         |
+| `oracledb`                  | `>=6.7.0 <27.0.0`                    | `@opentelemetry/instrumentation-oracledb`         |
 | `pg`                        | `>=8.0.3 <9.0.0`                     | `@opentelemetry/instrumentation-pg`               |
 | `pg-pool`                   | `>=2.0.0 <4.0.0`                     | `@opentelemetry/instrumentation-pg`               |
 | `pino`                      | `>=5.14.0 <11.0.0`                   | `@opentelemetry/instrumentation-pino`             |
