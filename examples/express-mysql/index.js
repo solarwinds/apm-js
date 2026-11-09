@@ -15,7 +15,7 @@ const logger = winston.createLogger({
 })
 
 const conn = mysql.createConnection({
-	host: "mysql",
+	host: "localhost",
 	user: "root",
 	password: "root",
 	database: "todo",

@@ -8,32 +8,32 @@ catalog:
   # The API package should *never* be added as a dependency,
   # always as a peer dependency if it is used
   "@opentelemetry/api": ^1.10.0
-  "@opentelemetry/semantic-conventions": ~1.43.0
+  "@opentelemetry/semantic-conventions": ~1.45.0
 
   # Stable SDK components
-  "@opentelemetry/core": ^3.0.0
-  "@opentelemetry/context-async-hooks": ^3.0.0
-  "@opentelemetry/context-zone": ^3.0.0
-  "@opentelemetry/resources": ^3.0.0
-  "@opentelemetry/sdk-metrics": ^3.0.0
-  "@opentelemetry/sdk-trace": ^3.0.0
+  "@opentelemetry/core": ^3.1.0
+  "@opentelemetry/context-async-hooks": ^3.1.0
+  "@opentelemetry/context-zone": ^3.1.0
+  "@opentelemetry/resources": ^3.1.0
+  "@opentelemetry/sdk-metrics": ^3.1.0
+  "@opentelemetry/sdk-trace": ^3.1.0
 
   # Experimental SDK components
-  "@opentelemetry/instrumentation": ^0.300.0
-  "@opentelemetry/exporter-logs-otlp-proto": ^0.300.0
-  "@opentelemetry/exporter-metrics-otlp-proto": ^0.300.0
-  "@opentelemetry/exporter-trace-otlp-proto": ^0.300.0
-  "@opentelemetry/instrumentation-grpc": ^0.300.0
-  "@opentelemetry/instrumentation-http": ^0.300.0
-  "@opentelemetry/opentelemetry-browser-detector": ^0.300.0
-  "@opentelemetry/otlp-exporter-base": ^0.300.0
-  "@opentelemetry/sdk-logs": ^3.0.0
+  "@opentelemetry/instrumentation": ^0.301.0
+  "@opentelemetry/exporter-logs-otlp-proto": ^0.301.0
+  "@opentelemetry/exporter-metrics-otlp-proto": ^0.301.0
+  "@opentelemetry/exporter-trace-otlp-proto": ^0.301.0
+  "@opentelemetry/instrumentation-grpc": ^0.301.0
+  "@opentelemetry/instrumentation-http": ^0.301.0
+  "@opentelemetry/opentelemetry-browser-detector": ^0.301.0
+  "@opentelemetry/otlp-exporter-base": ^0.301.0
+  "@opentelemetry/sdk-logs": ^3.1.0
 
   "@types/node": ^22.20.5
-  oxfmt: ^0.74.0
-  oxlint: ^1.89.0
-  oxlint-tsgolint: ~7.0.2004
-  tsdown: ^0.23.1
+  oxfmt: ^0.77.0
+  oxlint: ^1.92.0
+  oxlint-tsgolint: ~7.0.2006
+  tsdown: ^0.23.7
   typescript: ~7.0.2
 
 minimumReleaseAge: 2880 # 2 days
@@ -49,13 +49,11 @@ publicHoistPattern:
 
 allowBuilds:
   "@prisma/engines": false
-  better-sqlite3: false
   nx: true
   prisma: false
-  sharp: false
 
 trustPolicyExclude:
-  - chokidar@4.0.3
+  - prisma@7.10.1
   - semver@6.3.1
   - undici-types@6.21.0
 versioning:
@@ -63,3 +61,10 @@ versioning:
     solarwinds-apm: pre
     "@solarwinds-apm/instrumentations": pre
     "@solarwinds-apm/sampling": pre
+
+permissions:
+  tsdown:
+    skills: true
+skills:
+  dirs:
+    - .agents/skills

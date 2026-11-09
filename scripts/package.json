@@ -9,7 +9,7 @@
 	"dependencies": {
 		"archiver": "^8.0.0",
 		"dotenv": "^16.6.1",
-		"ora": "^9.4.1"
+		"ora": "^10.0.0"
 	},
 	"devDependencies": {
 		"@solarwinds-apm/configs": "workspace:^",

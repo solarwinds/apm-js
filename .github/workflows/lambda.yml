@@ -38,10 +38,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PACKAGE_NAME: ${{ inputs.type == 'production' && 'solarwinds-apm' || '@solarwinds/solarwinds-apm' }}
-      PACKAGE_VERSION: ${{ inputs.version }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -53,7 +49,7 @@ jobs:
           cache: false
 
       - run: pnpm install
-      - run: pnpm run lambda $PACKAGE_NAME $PACKAGE_VERSION
+      - run: pnpm run lambda ${{ inputs.version }}
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -117,7 +113,7 @@ jobs:
             aws lambda publish-layer-version \
               --layer-name $LAYER_NAME \
               --license-info "Apache 2.0" \
-              --compatible-runtimes nodejs24.x nodejs22.x nodejs20.x nodejs18.x \
+              --compatible-runtimes nodejs26.x nodejs24.x nodejs22.x \
               --zip-file fileb://layer.zip \
               --query 'LayerVersionArn' \
               --output text
