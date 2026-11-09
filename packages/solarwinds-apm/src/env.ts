@@ -23,7 +23,7 @@ export const environment = {
 		return this.AZURE_SERVICE_NAME !== undefined
 	},
 	get IS_AZURE_FUNCTION() {
-		return IS_NODE && process.env.FUNCTIONS_WORKER_RUNTIME !== undefined
+		return this.IS_AZURE_SERVICE && process.env.FUNCTIONS_WORKER_RUNTIME !== undefined
 	},
 
 	get CLOUD_NAME() {
