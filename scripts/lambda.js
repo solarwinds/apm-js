@@ -9,8 +9,12 @@ import { cpSync, createWriteStream, readFileSync, rmSync, writeFileSync } from "
 import { ZipArchive } from "archiver"
 import ora from "ora"
 
-const json = JSON.parse(readFileSync("packages/solarwinds-apm/package.json"))
+import json from "../packages/solarwinds-apm/package.json" with { type: "json" }
+
 const [version = json.version] = process.argv.slice(2)
+const apiVersion = JSON.parse(
+	execSync("pnpm config get --json catalog", { encoding: "utf-8" }),
+)["@opentelemetry/api"]
 
 const rm = (...args) => {
 	try {
@@ -22,7 +26,9 @@ const rm = (...args) => {
 
 const replace = (file) => {
 	let contents = readFileSync(file, { encoding: "utf-8" })
-	contents = contents.replaceAll("{{version}}", version)
+	contents = contents
+		.replaceAll("{{version}}", version)
+		.replaceAll("{{api-version}}", apiVersion)
 	writeFileSync(file, contents)
 }
 

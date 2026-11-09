@@ -25,10 +25,12 @@ function exec(cmd) {
 }
 
 exec(`nx run-many -t build -p solarwinds-apm,@solarwinds-apm/example-${example}`)
-exec("docker compose -f docker/docker-compose.yml up -d")
+exec("docker compose -f docker/docker-compose.yml up -d --wait")
 
 if (collector) {
-	process.env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://localhost:4318"
+	process.env.OTEL_EXPORTER_OTLP_ENDPOINT = proxy
+		? "http://collector:4318"
+		: "http://localhost:4318"
 }
 if (proxy) {
 	process.env.SW_APM_PROXY = "http://localhost:3128"

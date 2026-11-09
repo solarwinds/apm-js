@@ -54,7 +54,7 @@ try {
 		}
 	}
 
-	await import("{{name}}")
+	await import("solarwinds-apm")
 } catch (error) {
 	console.error("error while loading solarwinds-apm", error)
 }

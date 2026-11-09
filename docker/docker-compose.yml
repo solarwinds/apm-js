@@ -5,7 +5,7 @@ services:
     volumes:
       - ./collector/config.yml:/config.yml
     ports:
-      - 4318:4318
+      - 127.0.0.1:4318:4318
 
   proxy:
     image: saucelabs/forwarder
@@ -13,21 +13,35 @@ services:
       FORWARDER_PROXY_LOCALHOST: allow
       FORWARDER_LOG_HTTP: url
     ports:
-      - 3128:3128
+      - 127.0.0.1:3128:3128
 
   mysql:
     image: mysql:9
     environment:
       MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysql --host=127.0.0.1 --user=root --password="$${MYSQL_ROOT_PASSWORD}" --execute="SELECT 1"
+      interval: 5s
+      timeout: 5s
+      start_period: 1s
+      retries: 10
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - 3306:3306
+      - 127.0.0.1:3306:3306
   postgres:
     image: postgres:18
     environment:
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [CMD, pg_isready, -h, 127.0.0.1, -U, postgres]
+      interval: 5s
+      timeout: 5s
+      start_period: 1s
+      retries: 10
     volumes:
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - 5432:5432
+      - 127.0.0.1:5432:5432

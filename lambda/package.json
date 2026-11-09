@@ -2,7 +2,7 @@
 	"name": "@solarwinds-apm/lambda-shim",
 	"private": true,
 	"dependencies": {
-		"@opentelemetry/api": "^1.9.0",
+		"@opentelemetry/api": "{{api-version}}",
 		"semver": "^7",
 		"solarwinds-apm": "{{version}}"
 	},
