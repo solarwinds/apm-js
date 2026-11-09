@@ -12,7 +12,7 @@
 		"logs": "node scripts/logs.js",
 		"outputs": "node scripts/outputs.js",
 		"publish": "nx run-many -t build -p solarwinds-apm -p @solarwinds-apm/instrumentations && pnpm publish -r",
-		"scan": "nx run-many -t scan && node scripts/lambda.js solarwinds-apm && node scripts/scan.js",
+		"scan": "nx run-many -t scan && node scripts/lambda.js && node scripts/scan.js",
 		"test": "nx run-many -t test",
 		"version:latest": "pnpm lane main --filter solarwinds-apm --filter @solarwinds-apm/instrumentations --filter @solarwinds-apm/sampling && pnpm version -r && node ./scripts/version.js",
 		"version:prerelease": "pnpm lane pre --filter solarwinds-apm --filter @solarwinds-apm/instrumentations --filter @solarwinds-apm/sampling && pnpm version -r && node ./scripts/version.js",
