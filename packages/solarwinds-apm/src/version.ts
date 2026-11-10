@@ -3,8 +3,8 @@ Copyright SolarWinds Worldwide, LLC.
 SPDX-License-Identifier: Apache-2.0
 */
 
-import fs from "fs"
-import path from "path"
+import fs from "node:fs"
+import path from "node:path"
 
 import releases from "node-releases/data/release-schedule/release-schedule.json" with { type: "json" }
 import satisfies from "semver/functions/satisfies.js"

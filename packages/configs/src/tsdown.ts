@@ -10,6 +10,7 @@ export default defineConfig({
 	sourcemap: true,
 	dts: { sourcemap: true },
 	minify: { mangle: { keepNames: true } },
+	nodeProtocol: true,
 	exports: {
 		inlinedDependencies: false,
 	},

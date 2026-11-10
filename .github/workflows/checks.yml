@@ -19,112 +19,49 @@ jobs:
           cache: true
 
       - run: pnpm install
-
-      - run: pnpm build -p solarwinds-apm
+      - run: pnpm run build -p solarwinds-apm
       - run: pnpm run lint
-      - run: pnpm run test
-        env:
-          SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
-          SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
+
+      - name: COMPATIBILITY.md
+        run: git --no-pager diff --exit-code HEAD -- packages/instrumentations/COMPATIBILITY.md
 
       # load bearing .root file
       # actions/upload-artifact will make the archive root the topmost directory which contains all specified files
       # we can force it to be the root of the repo by including an empty file present at the root
       # see https://github.com/actions/upload-artifact#upload-using-multiple-paths-and-exclusions
-      - run: touch .root
-      - if: github.event_name == 'pull_request'
+      - if: github.event_name != 'push'
+        id: outputs
+        run: |
+          touch .root
+          {
+            echo 'paths<<EOF'
+            pnpm --silent outputs
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+      - if: github.event_name != 'push'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: build
           path: |
             .root
-            packages/**/dist/
-            packages/solarwinds-apm/src/timestamp.ts
+            ${{ steps.outputs.outputs.paths }}
+          include-hidden-files: true
           retention-days: 1
 
-  versions:
-    if: github.event_name == 'pull_request' && !contains(github.head_ref, 'release')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: lts/*
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
-          cache: true
-      - uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
-
-      - run: pnpm install
-
-  linux:
-    if: github.event_name == 'pull_request'
+  tests:
+    if: github.event_name != 'push'
     needs:
       - checks
-    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        image:
-          - 20-alpine3.20
-          - 20-amazonlinux2023
-          - 20-debian12
-          - 20-ubi8
-          - 20-ubuntu22.04
-          - 22-alpine
-          - 22-amazonlinux
-          - 22-debian
-          - 22-ubi
-          - 22-ubuntu
-          - 24-alpine
-          - 24-amazonlinux
-          - 24-debian
-          - 24-ubi
-          - 24-ubuntu
-        arch:
-          - x64
-          - arm64
-        # https://github.com/actions/runner/issues/801
-        exclude:
-          - image: 20-alpine3.20
-            arch: arm64
-          - image: 22-alpine
-            arch: arm64
-          - image: 24-alpine
-            arch: arm64
-      fail-fast: false
-    container:
-      image: ghcr.io/${{ github.repository }}/dev:${{ matrix.image }}
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: build
-          path: ./
-
-      - run: pnpm install --ignore-scripts
-        continue-on-error: true
-      - run: pnpm run test --excludeTaskDependencies
-        env:
-          SW_APM_COLLECTOR: ${{ secrets.SW_APM_COLLECTOR }}
-          SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
-
-  windows:
-    if: github.event_name == 'pull_request'
-    needs:
-      - checks
-    runs-on: windows-latest
-    strategy:
-      matrix:
+        os:
+          - ubuntu
+          - windows
         node:
-          - 20
-          - 22
+          - "22.18.0"
           - 24
+          - 26
       fail-fast: false
 
     steps:
@@ -148,7 +85,7 @@ jobs:
           SW_APM_SERVICE_KEY: ${{ secrets.SW_APM_SERVICE_KEY }}
 
   supports:
-    if: github.event_name == 'pull_request'
+    if: github.event_name != 'push'
     needs:
       - checks
     runs-on: ${{ matrix.os }}-latest
