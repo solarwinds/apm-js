@@ -6,6 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 import { setTimeout } from "node:timers/promises"
 
 import { trace } from "@opentelemetry/api"
+import { defaultResource, resourceFromAttributes } from "@opentelemetry/resources"
 import type * as sdk from "@opentelemetry/sdk-trace"
 import { describe, expect, it, otel } from "@solarwinds-apm/test"
 
@@ -249,21 +250,25 @@ describe("computedTransactionName", () => {
 		expect(computedTransactionName(span)).to.equal("/shop/products")
 	})
 
-	it("computes lambda span name", () => {
-		const init = process.env.AWS_LAMBDA_FUNCTION_NAME
-		process.env.AWS_LAMBDA_FUNCTION_NAME = "lambda"
+	it("computes serverless span name", async () => {
+		await otel.reset({
+			trace: {
+				resource: defaultResource().merge(
+					resourceFromAttributes({
+						"faas.name": "faas",
+					}),
+				),
+			},
+		})
 
 		const span = trace.getTracer("test").startSpan("GET", {
 			attributes: {
-				"http.route": "/hello/:name",
 				"url.path": "/hello/world",
 			},
 		}) as sdk.Span
 		span.end()
 
-		expect(computedTransactionName(span)).to.equal("lambda")
-
-		process.env.AWS_LAMBDA_FUNCTION_NAME = init
+		expect(computedTransactionName(span)).to.equal("faas")
 	})
 })
 

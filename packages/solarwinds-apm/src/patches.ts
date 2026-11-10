@@ -167,6 +167,13 @@ const RESOURCE_DETECTOR_PATCHERS = [
 	resourceDetectorPatcher(["@opentelemetry/awsLambdaDetector"], (enabled) => {
 		return enabled ?? environment.IS_AWS_LAMBDA
 	}),
+
+	resourceDetectorPatcher(["@opentelemetry/azureAppServiceDetector"], (enabled) => {
+		return enabled ?? environment.IS_AZURE_SERVICE
+	}),
+	resourceDetectorPatcher(["@opentelemetry/azureFunctionsDetector"], (enabled) => {
+		return enabled ?? environment.IS_AZURE_FUNCTION
+	}),
 ]
 
 const ENV_PATCHERS = [

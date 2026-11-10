@@ -134,6 +134,7 @@ export function init(): boolean {
 		}),
 	)
 
+	log(`${config.service} successfully instrumented with SolarWinds APM`)
 	return true
 }
 
