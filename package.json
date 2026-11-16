@@ -19,16 +19,16 @@
 		"wait": "node scripts/wait.js"
 	},
 	"devDependencies": {
-		"@nx/js": "^24.0.5",
+		"@nx/js": "^24.0.6",
 		"@types/node": "catalog:",
-		"nx": "^24.0.5",
+		"nx": "^24.0.6",
 		"oxfmt": "catalog:",
 		"typescript": "catalog:"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "pnpm",
-			"version": "^12.15.0",
+			"version": "^12.21.0",
 			"onFail": "warn"
 		}
 	}
