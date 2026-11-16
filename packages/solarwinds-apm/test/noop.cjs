@@ -1,3 +1,8 @@
+/*
+Copyright SolarWinds Worldwide, LLC.
+SPDX-License-Identifier: Apache-2.0
+*/
+
 const apm = require("../index.cjs")
 const assert = require("assert")
 
