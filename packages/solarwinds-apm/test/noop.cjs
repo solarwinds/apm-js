@@ -10,4 +10,7 @@ void (async () => {
 	assert.equal(await apm.waitUntilReady(), false)
 	assert.equal(apm.setTransactionName("test"), false)
 	await apm.forceFlush()
-})()
+})().catch((error) => {
+	console.error(error)
+	process.exitCode = 1
+})
