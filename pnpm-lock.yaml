@@ -407,7 +407,7 @@ importers:
         version: 0.9.0(eslint@9.39.4(jiti@2.7.0)(supports-color@10.2.2))
       oxlint-config-presets:
         specifier: ^0.1.21
-        version: 0.1.21(oxlint@1.93.0(oxlint-tsgolint@7.0.2007))
+        version: 0.1.22(oxlint@1.93.0(oxlint-tsgolint@7.0.2007))
       oxlint-tsgolint:
         specifier: 'catalog:'
         version: 7.0.2007
@@ -456,7 +456,7 @@ importers:
         version: 0.35.0(@opentelemetry/api@1.10.0)
       import-in-the-middle:
         specifier: '*'
-        version: 3.5.2
+        version: 3.6.0
       require-in-the-middle:
         specifier: '*'
         version: 8.0.1(supports-color@10.2.2)
@@ -710,7 +710,7 @@ importers:
         version: link:../instrumentations
       import-in-the-middle:
         specifier: ^3.5.2
-        version: 3.5.2
+        version: 3.6.0
       node-releases:
         specifier: ^2.0.64
         version: 2.0.64
@@ -3965,8 +3965,8 @@ packages:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
 
-  es-module-lexer@3.0.2:
-    resolution: {integrity: sha512-BuIB67FngDSyQ/dpQNOZybwdEBDUGJQvOqwWr4ha/ufYiqzuEwPkKO2zLhRAgay28tStRIHUeWmszZAJo3GCOg==}
+  es-module-lexer@3.0.4:
+    resolution: {integrity: sha512-BldNY5mwkVu+cQ5Ymn3e6hB9Sx8XHx4ZevWbiUyZbfKxJxYO27Hf0wfzkxIaD5CAJMaGl3YspKELj0ff/7nCMA==}
 
   es-object-atoms@1.1.1:
     resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
@@ -4328,8 +4328,8 @@ packages:
   import-in-the-middle@2.0.6:
     resolution: {integrity: sha512-3vZV3jX0XRFW3EJDTwzWoZa+RH1b8eTTx6YOCjglrLyPuepwoBti1k3L2dKwdCUrnVEfc5CuRuGstaC/uQJJaw==}
 
-  import-in-the-middle@3.5.2:
-    resolution: {integrity: sha512-WseIA/4o56+GYO3RmlOPvejYi771OFeJEeK/ejROsr9bdjW+E5NXTOD1Di8TL40Qgg3JJX9aa97Hf8iiSVIKZw==}
+  import-in-the-middle@3.6.0:
+    resolution: {integrity: sha512-xRU7hI24S2FhucXtuZXn8EpcOjfVP6iiEQyR0USayPeaOroEmSsNlqnl95866iRdRtkHrd6Q/Z4D14R60au0+A==}
     engines: {node: '>=18'}
 
   import-without-cache@0.4.1:
@@ -4783,8 +4783,8 @@ packages:
       vite-plus:
         optional: true
 
-  oxlint-config-presets@0.1.21:
-    resolution: {integrity: sha512-NF1rZca5M06SNa0SEkxb2RX9atQU9d/T//skyZJrZF0xLuBjfQESuiRHjRqOYNZY3l+IIGuqbzG1Ky2xvP2HUg==}
+  oxlint-config-presets@0.1.22:
+    resolution: {integrity: sha512-WhGhfDp9V6vNWwyQb1mbMsbhhfzSpMJhDf3d3N/JEs+gCgUqhxQpOypOmyISGbgIG5aet57/dRjIdzHzk9t5sw==}
     peerDependencies:
       oxlint: '>=0.15.0'
     peerDependenciesMeta:
@@ -7466,7 +7466,7 @@ snapshots:
   '@opentelemetry/instrumentation@0.300.0(@opentelemetry/api@1.10.0)(supports-color@10.2.2)':
     dependencies:
       '@opentelemetry/api': 1.10.0
-      import-in-the-middle: 3.5.2
+      import-in-the-middle: 3.6.0
       require-in-the-middle: 8.0.1(supports-color@10.2.2)
     transitivePeerDependencies:
       - supports-color
@@ -7474,7 +7474,7 @@ snapshots:
   '@opentelemetry/instrumentation@0.301.0(@opentelemetry/api@1.10.0)(supports-color@10.2.2)':
     dependencies:
       '@opentelemetry/api': 1.10.0
-      import-in-the-middle: 3.5.2
+      import-in-the-middle: 3.6.0
       require-in-the-middle: 8.0.1(supports-color@10.2.2)
     transitivePeerDependencies:
       - supports-color
@@ -7482,7 +7482,7 @@ snapshots:
   '@opentelemetry/instrumentation@0.301.2(@opentelemetry/api@1.10.0)(supports-color@10.2.2)':
     dependencies:
       '@opentelemetry/api': 1.10.0
-      import-in-the-middle: 3.5.2
+      import-in-the-middle: 3.6.0
       require-in-the-middle: 8.0.1(supports-color@10.2.2)
     transitivePeerDependencies:
       - supports-color
@@ -8867,7 +8867,7 @@ snapshots:
 
   es-errors@1.3.0: {}
 
-  es-module-lexer@3.0.2: {}
+  es-module-lexer@3.0.4: {}
 
   es-object-atoms@1.1.1:
     dependencies:
@@ -9304,10 +9304,10 @@ snapshots:
       cjs-module-lexer: 2.2.0
       module-details-from-path: 1.0.4
 
-  import-in-the-middle@3.5.2:
+  import-in-the-middle@3.6.0:
     dependencies:
       cjs-module-lexer: 2.2.0
-      es-module-lexer: 3.0.2
+      es-module-lexer: 3.0.4
       module-details-from-path: 1.0.4
 
   import-without-cache@0.4.1: {}
@@ -9838,7 +9838,7 @@ snapshots:
       '@oxfmt/binding-win32-ia32-msvc': 0.78.0
       '@oxfmt/binding-win32-x64-msvc': 0.78.0
 
-  oxlint-config-presets@0.1.21(oxlint@1.93.0(oxlint-tsgolint@7.0.2007)):
+  oxlint-config-presets@0.1.22(oxlint@1.93.0(oxlint-tsgolint@7.0.2007)):
     optionalDependencies:
       oxlint: 1.93.0(oxlint-tsgolint@7.0.2007)
 
