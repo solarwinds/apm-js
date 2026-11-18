@@ -1,152 +1,47 @@
 services:
-  20-alpine:
-    build:
-      context: .
-      dockerfile: 20-alpine3.20.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  20-amazonlinux:
-    build:
-      context: .
-      dockerfile: 20-amazonlinux2023.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  20-debian:
-    build:
-      context: .
-      dockerfile: 20-debian12.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  20-ubi:
-    build:
-      context: .
-      dockerfile: 20-ubi8.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  20-ubuntu:
-    build:
-      context: .
-      dockerfile: 20-ubuntu22.04.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-
-  22-alpine:
-    build:
-      context: .
-      dockerfile: 22-alpine.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  22-amazonlinux:
-    build:
-      context: .
-      dockerfile: 22-amazonlinux.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  22-debian:
-    build:
-      context: .
-      dockerfile: 22-debian.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  22-ubi:
-    build:
-      context: .
-      dockerfile: 22-ubi.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  22-ubuntu:
-    build:
-      context: .
-      dockerfile: 22-ubuntu.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-
-  24-alpine:
-    build:
-      context: .
-      dockerfile: 24-alpine.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  24-amazonlinux:
-    build:
-      context: .
-      dockerfile: 24-amazonlinux.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  24-debian:
-    build:
-      context: .
-      dockerfile: 24-debian.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  24-ubi:
-    build:
-      context: .
-      dockerfile: 24-ubi.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-  24-ubuntu:
-    build:
-      context: .
-      dockerfile: 24-ubuntu.Dockerfile
-    volumes:
-      - ..:/solarwinds-apm
-    links:
-      - otel-collector
-
-  otel-collector:
+  collector:
     image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector}
-    command: [--config=/solarwinds-apm/docker/otel-collector/config.yml]
+    command: [--config=/config.yml]
     volumes:
-      - ..:/solarwinds-apm
-    expose:
-      - 4317
+      - ./collector/config.yml:/config.yml
+    ports:
+      - 127.0.0.1:4318:4318
 
   proxy:
     image: saucelabs/forwarder
     environment:
       FORWARDER_PROXY_LOCALHOST: allow
       FORWARDER_LOG_HTTP: url
-    expose:
-      - 3128
+    ports:
+      - 127.0.0.1:3128:3128
 
   mysql:
     image: mysql:9
     environment:
       MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysql --host=127.0.0.1 --user=root --password="$${MYSQL_ROOT_PASSWORD}" --execute="SELECT 1"
+      interval: 5s
+      timeout: 5s
+      start_period: 1s
+      retries: 10
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 127.0.0.1:3306:3306
   postgres:
     image: postgres:18
     environment:
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [CMD, pg_isready, -h, 127.0.0.1, -U, postgres]
+      interval: 5s
+      timeout: 5s
+      start_period: 1s
+      retries: 10
     volumes:
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 127.0.0.1:5432:5432

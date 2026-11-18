@@ -21,7 +21,7 @@ This project contains a few examples of how to use the library in the [`examples
 
 ## Node.js Version Support
 
-The packages in this project support all LTS Node.js versions up until their End Of Life plus 1 year. At the moment this means Node.js 18, 20, 22 and 24 are supported.
+The supported versions are defined in the `engines` field of [`solarwinds-apm/package.json`](./packages/solarwinds-apm/package.json). We consider removing support for a Node.js version that has reached its [end-of-life](https://endoflife.date/nodejs) date less than a year ago a breaking change. However, we may remove support for Node.js versions that have been EOL for more than a year in a minor release.
 
 ## License
 

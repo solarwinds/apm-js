@@ -1,6 +1,6 @@
 "use server"
 
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3"
+import { PrismaLibSql } from "@prisma/adapter-libsql"
 import { revalidatePath } from "next/cache"
 
 import { PrismaClient, type Item } from "./db/client"
@@ -8,7 +8,7 @@ import { PrismaClient, type Item } from "./db/client"
 let client: PrismaClient | undefined
 function db(): PrismaClient {
 	return (client ??= new PrismaClient({
-		adapter: new PrismaBetterSqlite3({ url: "./prisma/db.sqlite" }),
+		adapter: new PrismaLibSql({ url: "file:prisma/db.sqlite" }),
 	}))
 }
 

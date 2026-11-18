@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS items (
 
 const app = fastify({ logger: true })
 app.register(pg, {
-	host: "postgres",
+	host: "localhost",
 	user: "postgres",
 	password: "postgres",
 	database: "todo",

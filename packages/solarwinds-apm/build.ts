@@ -60,6 +60,7 @@ async function runBuild() {
 			},
 			cjs: {
 				target: ["es2015"],
+				nodeProtocol: "strip",
 				entry: {
 					version: "./src/version.ts",
 					misc: "./src/misc.ts",
