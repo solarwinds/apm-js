@@ -2,4 +2,4 @@
 "solarwinds-apm": minor
 ---
 
-Use module.registerHooks on supported runtimes
+Use `module.registerHooks` on supported runtimes

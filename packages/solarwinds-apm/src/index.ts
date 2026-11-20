@@ -9,6 +9,7 @@ import { createAddHookMessageChannel } from "import-in-the-middle"
 import {
 	register as registerHooks,
 	supportsSyncHooks,
+	type RegisterHooksOptions,
 } from "import-in-the-middle/register-hooks.mjs"
 
 import { environment } from "./env.ts"
@@ -39,7 +40,7 @@ if (supported && !initialised) {
 
 		const { registerOptions, waitForAllMessagesAcknowledged } = createAddHookMessageChannel()
 		if (supportsSyncHooks()) {
-			registerHooks(registerOptions.data)
+			registerHooks(registerOptions.data as RegisterHooksOptions)
 		} else {
 			register("../hook.mjs", import.meta.url, registerOptions)
 		}
