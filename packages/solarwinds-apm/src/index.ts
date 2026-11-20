@@ -6,6 +6,11 @@ SPDX-License-Identifier: Apache-2.0
 import { createRequire, register } from "node:module"
 
 import { createAddHookMessageChannel } from "import-in-the-middle"
+import {
+	register as registerHooks,
+	supportsSyncHooks,
+	type RegisterHooksOptions,
+} from "import-in-the-middle/register-hooks.mjs"
 
 import { environment } from "./env.ts"
 import { INIT } from "./flags.ts"
@@ -34,7 +39,11 @@ if (supported && !initialised) {
 		})
 
 		const { registerOptions, waitForAllMessagesAcknowledged } = createAddHookMessageChannel()
-		register("../hook.mjs", import.meta.url, registerOptions)
+		if (supportsSyncHooks()) {
+			registerHooks(registerOptions.data as RegisterHooksOptions)
+		} else {
+			register("../hook.mjs", import.meta.url, registerOptions)
+		}
 		initialised = init()
 		// TODO: this is the last bit of async code
 		await waitForAllMessagesAcknowledged()
