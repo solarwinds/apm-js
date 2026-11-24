@@ -28,6 +28,10 @@ try {
 if (supported) {
 	const { register } = require("node:module")
 	const { pathToFileURL } = require("node:url")
+	const {
+		register: registerHooks,
+		supportsSyncHooks,
+	} = require("import-in-the-middle/register-hooks.mjs")
 	const { default: log } = require("./dist/log.mjs")
 	const { INIT } = require("./dist/flags.mjs")
 	const { init, initNoop } = require("./dist/init.mjs")
@@ -44,7 +48,11 @@ if (supported) {
 				writable: true,
 			})
 
-			register("./hook.mjs", pathToFileURL(__filename))
+			if (supportsSyncHooks()) {
+				registerHooks()
+			} else {
+				register("./hook.mjs", pathToFileURL(__filename))
+			}
 			initialised = init()
 
 			Reflect.defineProperty(globalThis, INIT, {
