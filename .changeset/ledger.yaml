@@ -3,6 +3,10 @@
   intents:
     - curvy-frogs-fetch
     - quick-spiders-repair
+"@solarwinds-apm/instrumentations@4.0.0-pre.2":
+  dir: packages/instrumentations
+  intents:
+    - chilly-kings-hear
 "@solarwinds-apm/sampling@17.0.0-pre.1":
   dir: packages/sampling
   intents:
@@ -14,3 +18,9 @@ solarwinds-apm@17.0.0-pre.1:
     - curvy-frogs-fetch
     - quick-spiders-repair
     - tough-eggs-beg
+solarwinds-apm@17.0.0-pre.2:
+  dir: packages/solarwinds-apm
+  intents:
+    - gentle-peaches-judge
+    - light-melons-flow
+    - mean-planes-sin
