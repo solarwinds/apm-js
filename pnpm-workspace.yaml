@@ -30,7 +30,7 @@ catalog:
   "@opentelemetry/sdk-logs": ^3.1.1
 
   "@types/node": ^22.20.5
-  oxfmt: ^0.79.0
+  oxfmt: ^0.80.0
   oxlint: ^1.93.0
   oxlint-tsgolint: ~7.0.2007
   tsdown: ^0.23.7
